@@ -19,3 +19,11 @@
 *.exe
 *.out
 *.app
+
+# VS files
+*.sln
+*.suo
+*.sdf
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
