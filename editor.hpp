@@ -9,6 +9,8 @@ using namespace scene;
 using namespace video;
 using namespace gui;
 
+class ToolBar;
+
 class Editor :public IEventReceiver
 {
 private:
@@ -19,15 +21,19 @@ private:
 	ISceneManager*              m_scene_manager;
 	IGUIEnvironment*            m_gui_env;
 
+    ToolBar*                    m_toolbar;
+
 	bool init();
-	void initToolbar();
 
 	Editor() {};
 
 public:
-	static Editor* getEditor();
-	bool		   run();
-	virtual bool   OnEvent(const SEvent& event);
+	static Editor*    getEditor();
+	bool		      run();
+	virtual bool      OnEvent(const SEvent& event);
+
+    IVideoDriver*     getVideoDriver() { return m_video_driver; }
+    IGUIEnvironment*  getGUIEnv()      { return m_gui_env;      }
 };
 
 #endif
