@@ -11,6 +11,7 @@ using namespace gui;
 
 class ToolBar;
 class ToolBox;
+class Track;
 
 class Editor :public IEventReceiver
 {
@@ -24,6 +25,7 @@ private:
 
     ToolBar*                    m_toolbar;
     ToolBox*                    m_toolbox;
+    Track*                      m_track;
     dimension2du                m_screen_size;
 
 	bool init();
