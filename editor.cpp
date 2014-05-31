@@ -1,15 +1,16 @@
 #include "editor.hpp"
 
 #include "toolbar.hpp"
+#include "toolbox.hpp"
 
 Editor* Editor::m_editor = 0;
 
 // ----------------------------------------------------------------------------
 bool Editor::init()
 {
-	m_device = createDevice(video::EDT_OPENGL,
-		dimension2d<u32>(1024, 768), 16,
-		false, false, true, 0);
+	m_device = createDevice(EDT_OPENGL,
+            m_screen_size, 16,
+		    false, false, true, 0);
 
 	if (!m_device) return false;
 	m_device->setResizable(true);
@@ -25,18 +26,20 @@ bool Editor::init()
 		vector3df(0, 0, 50)
 		);
 
-    m_toolbar = ToolBar::getToolBar();
+    m_toolbar     = ToolBar::getToolBar();
+    m_toolbox     = ToolBox::getToolBox();
 
     return true;
 } // init
 
 
 // ----------------------------------------------------------------------------
-Editor* Editor::getEditor()
+Editor* Editor::getEditor(dimension2du screen_size)
 {
 	if (m_editor != 0) return m_editor;
 
 	m_editor = new Editor();
+    m_editor->m_screen_size = screen_size;
 	if (!m_editor->init()) return 0;
 	return m_editor;
 } // getEditor
@@ -45,9 +48,6 @@ Editor* Editor::getEditor()
 bool Editor::run()
 {
 	if (!m_device) return 0;
-
-    // temporary stuff: editor should read screen size from xml and store it
-    unsigned int last_screen_x = 0;
 
 	while (m_device->run())
     {
@@ -59,10 +59,11 @@ bool Editor::run()
 		
 		m_video_driver->endScene();
 
-        if (m_video_driver->getScreenSize().Width != last_screen_x)
+        if (m_video_driver->getScreenSize() != m_screen_size)
         {
-            last_screen_x = m_video_driver->getScreenSize().Width;
-            m_toolbar->reallocate(last_screen_x);
+            m_screen_size = m_video_driver->getScreenSize();
+            m_toolbar->reallocate();
+            m_toolbox->reallocate();
         }
 
     }

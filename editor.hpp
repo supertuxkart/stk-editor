@@ -10,6 +10,7 @@ using namespace video;
 using namespace gui;
 
 class ToolBar;
+class ToolBox;
 
 class Editor :public IEventReceiver
 {
@@ -22,18 +23,21 @@ private:
 	IGUIEnvironment*            m_gui_env;
 
     ToolBar*                    m_toolbar;
+    ToolBox*                    m_toolbox;
+    dimension2du                m_screen_size;
 
 	bool init();
 
 	Editor() {};
 
 public:
-	static Editor*    getEditor();
+    static Editor*    getEditor(dimension2du screen_size = dimension2du(1024, 768));
 	bool		      run();
 	virtual bool      OnEvent(const SEvent& event);
 
     IVideoDriver*     getVideoDriver() { return m_video_driver; }
     IGUIEnvironment*  getGUIEnv()      { return m_gui_env;      }
+    dimension2du      getScreenSize()  { return m_screen_size; }
 };
 
 #endif
