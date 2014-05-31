@@ -1,7 +1,12 @@
 #ifndef TOOLBAR_HPP
 #define TOOLBAR_HPP
 
-#include "editor.hpp"
+#include <irrlicht.h>
+
+using namespace irr;
+using namespace video;
+using namespace gui;
+
 #include <string>
 
 class ToolBar
@@ -40,15 +45,15 @@ private:
 
     // private functions:
 
-    void            init(unsigned int screen_x);
+    void            init();
     ITexture*       loadImg(const char* file_path);
     void            buttonInit(unsigned int ix, ToolboxButtonIndex TBI, 
                     const char* file_path, const wchar_t* text);
     ToolBar() {};
 
 public:
-    static ToolBar* getToolBar(unsigned int screen_x = 1024);
-    void reallocate(unsigned int screen_x);
+    static ToolBar*     getToolBar();
+    void                reallocate();
 };
 
 #endif

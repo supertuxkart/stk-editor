@@ -1,11 +1,12 @@
 #include "toolbar.hpp"
 
+#include "editor.hpp"
 #include <iostream>
 
 ToolBar* ToolBar::m_toolbar = 0;
 
 // ----------------------------------------------------------------------------
-void ToolBar::init(unsigned int screen_x)
+void ToolBar::init()
 {
     m_bar = Editor::getEditor()->getGUIEnv()->addToolBar();
     m_bar->setMinSize(dimension2du(0,50));
@@ -29,7 +30,7 @@ void ToolBar::init(unsigned int screen_x)
     buttonInit(16, TBI_SETTINGS,    "settings.png", L"Settings");
     buttonInit(17, TBI_EXIT,        "exit.png",     L"Quit");
 
-    reallocate(screen_x);
+    reallocate();
 
 } // init
 
@@ -56,14 +57,14 @@ void ToolBar::buttonInit(unsigned int ix, ToolboxButtonIndex TBI,
 } // buttonInit
 
 // ----------------------------------------------------------------------------
-ToolBar* ToolBar::getToolBar(unsigned int screen_x)
+ToolBar* ToolBar::getToolBar()
 {
     if (m_toolbar != 0) return m_toolbar;
 
     m_toolbar = new ToolBar();
-    m_toolbar->init(screen_x);
+    m_toolbar->init();
     return m_toolbar;
-} // getEditor
+} // getToolBar
 
 // ----------------------------------------------------------------------------
 int min(int x, int y)
@@ -73,8 +74,9 @@ int min(int x, int y)
 } // min
 
 // ----------------------------------------------------------------------------
-void ToolBar::reallocate(unsigned int screen_x)
+void ToolBar::reallocate()
 {
+    unsigned int screen_x = Editor::getEditor()->getScreenSize().Width;
     int max_dist_between_blocks = 50;
 
     // first 4 icon - new, open, save, save as
