@@ -11,7 +11,7 @@ using namespace gui;
 
 class ToolBar
 {
-private:
+public:
 
     // toolbar button id-s:
     enum ToolboxButtonIndex
@@ -36,6 +36,7 @@ private:
         TBI_EXIT
     };
 
+private:
     // private variables:
 
     static ToolBar* m_toolbar;
