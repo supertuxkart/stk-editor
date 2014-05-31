@@ -24,14 +24,17 @@ bool Editor::init()
 	m_scene_manager = m_device->getSceneManager();
 	m_gui_env       = m_device->getGUIEnvironment();
 
-	m_scene_manager->addCameraSceneNode(0,
-		vector3df(0, 0, -50),
-		vector3df(0, 0, 50)
-		);
+    m_track = Track::getTrack();
+
+    m_track->setNormalCamera(m_scene_manager->addCameraSceneNode(0,
+                                    vector3df(0, 50, 0),
+                                    vector3df(0, 0, -10))
+                            );
 
     m_toolbar = ToolBar::getToolBar();
     m_toolbox = ToolBox::getToolBox();
-    m_track   = Track::getTrack();
+
+    ISceneNode* node = m_scene_manager->addCubeSceneNode();
 
     return true;
 } // init
@@ -53,8 +56,17 @@ bool Editor::run()
 {
 	if (!m_device) return 0;
 
+    
+    long current_time = m_device->getTimer()->getTime();
+    long last_time    = current_time;
+    
+
 	while (m_device->run())
     {
+
+        current_time = m_device->getTimer()->getTime();
+        m_track->animate(current_time - last_time);
+
 		// drawing
 		m_video_driver->beginScene(true, true, SColor(255, 80, 0, 170));
 
@@ -70,6 +82,7 @@ bool Editor::run()
             m_toolbox->reallocate();
         }
 
+        last_time = current_time;
     }
 	return 1;
 } // run
@@ -111,6 +124,16 @@ bool Editor::OnEvent(const SEvent& event)
         } // EventType == EGET_BUTTON_CLICKED
     } // EventType == EET_GUI_EVENT
 
+    if (event.EventType == EET_KEY_INPUT_EVENT)
+    {
+        m_track->keyEvent(event.KeyInput.Key, event.KeyInput.PressedDown);
+    } // EventType == EET_KEY_INPUT_EVENT
+
+    if (event.EventType == EET_MOUSE_INPUT_EVENT 
+        && event.MouseInput.Event == EMIE_MOUSE_WHEEL)
+    {
+        m_track->setMouseWheelState(event.MouseInput.Wheel);
+    }
 
 	return false;
 } // OnEvent
