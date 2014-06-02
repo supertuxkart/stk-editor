@@ -26,11 +26,17 @@ bool Editor::init()
 
     m_track = Track::getTrack();
 
-    m_track->setNormalCamera(m_scene_manager->addCameraSceneNode(0,
-                                    vector3df(0, 50, 0),
-                                    vector3df(0, 0, -10))
-                            );
-
+    ICameraSceneNode* cam = m_scene_manager->addCameraSceneNodeMaya();
+    cam->setFarValue(20000.f);
+    cam->setTarget(vector3df(0, 0, 0));
+    cam->setInputReceiverEnabled(false);
+    m_track->setFreeCamera(cam);
+    
+    cam = m_scene_manager->addCameraSceneNode(0, vector3df(0, 50, 0), 
+                                                 vector3df(0, 0, -10));
+    m_scene_manager->setActiveCamera(cam);
+    m_track->setNormalCamera(cam);
+    
     m_toolbar = ToolBar::getToolBar();
     m_toolbox = ToolBox::getToolBox();
 
@@ -108,6 +114,9 @@ bool Editor::OnEvent(const SEvent& event)
                 break;
             case ToolBar::TBI_ROTATE:
                 m_track->setState(Track::ROTATE);
+                break;
+            case ToolBar::TBI_CAM:
+                m_track->setState(Track::FREECAM);
                 break;
             case ToolBar::TBI_GRID_ON_OFF:
                 m_track->setGrid(!m_track->isGridOn());

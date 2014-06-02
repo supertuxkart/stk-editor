@@ -1,4 +1,5 @@
 #include "track.hpp"
+#include "editor.hpp"
 
 Track* Track::m_track = 0;
 
@@ -65,6 +66,18 @@ void Track::init()
 // ----------------------------------------------------------------------------
 void Track::setState(State state)
 {
+    ISceneManager* scene_manager = Editor::getEditor()->getSceneManager();
+    if (m_state == State::FREECAM && state != State::FREECAM)
+    {
+        m_state = State::SELECT;
+        m_free_camera->setInputReceiverEnabled(false);
+        scene_manager->setActiveCamera(m_normal_camera);
+    }
+    else if (m_state != State::FREECAM && state == State::FREECAM)
+    {
+        m_free_camera->setInputReceiverEnabled(true);
+        scene_manager->setActiveCamera(m_free_camera);
+    }
     m_state = state;
 } // setState
 
@@ -103,5 +116,6 @@ void Track::keyEvent(EKEY_CODE code, bool pressed)
 // ----------------------------------------------------------------------------
 void Track::animate(long dt)
 {
-    animateNormalCamera(dt);
+    if ( m_state != State::FREECAM)
+        animateNormalCamera(dt);
 } // animate

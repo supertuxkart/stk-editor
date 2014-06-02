@@ -34,6 +34,7 @@ private:
     // camera used for editing
     // position has to be uploaded manually
     ICameraSceneNode*   m_normal_camera;
+    ICameraSceneNode*   m_free_camera;
 
     bool                m_key_state[m_key_num];
     bool                m_grid_on;
@@ -51,7 +52,9 @@ public:
     void          keyEvent(EKEY_CODE code, bool pressed);
     void          animate(long dt);
 
+
     void          setNormalCamera(ICameraSceneNode* cam) { m_normal_camera     = cam; }
+    void          setFreeCamera(ICameraSceneNode* cam)   { m_free_camera       = cam; }
     void          setMouseWheelState(int ms)             { m_mouse_wheel_state = ms;  }
 
     bool          isGridOn()        { return m_grid_on; }

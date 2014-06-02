@@ -37,9 +37,10 @@ public:
 	bool		      run();
 	virtual bool      OnEvent(const SEvent& event);
 
-    IVideoDriver*     getVideoDriver() { return m_video_driver; }
-    IGUIEnvironment*  getGUIEnv()      { return m_gui_env;      }
-    dimension2du      getScreenSize()  { return m_screen_size; }
+    IVideoDriver*     getVideoDriver()  { return m_video_driver;  }
+    ISceneManager*    getSceneManager() { return m_scene_manager; }
+    IGUIEnvironment*  getGUIEnv()       { return m_gui_env;       }
+    dimension2du      getScreenSize()   { return m_screen_size;   }
 };
 
 #endif
