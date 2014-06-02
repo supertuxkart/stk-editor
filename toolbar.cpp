@@ -17,18 +17,17 @@ void ToolBar::init()
     buttonInit(3,  TBI_SAVE_AS,     "save_as.png",  L"Save as");
     buttonInit(4,  TBI_UNDO,        "undo.png",     L"Undo");
     buttonInit(5,  TBI_REDO,        "redo.png",     L"Redo");
-    buttonInit(6,  TBI_CAM_1,       "cam1.png",     L"Normal Camera");
-    buttonInit(7,  TBI_CAM_2,       "cam2.png",     L"Free Camera");
-    buttonInit(8,  TBI_SELECT,      "select.png",   L"Select");
-    buttonInit(9,  TBI_MOVE,        "move.png",     L"Move");
-    buttonInit(10, TBI_ROTATE,      "rotate.png",   L"Rotate");
-    buttonInit(11, TBI_DELETE,      "delete.png",   L"Delete");
-    buttonInit(12, TBI_GRID_ON_OFF, "grid.png",     L"Grid On / Off");
-    buttonInit(13, TBI_GRID_INC,    "gridinc.png",  L"Increase grid density");
-    buttonInit(14, TBI_GRID_DEC,    "griddec.png",  L"Decrease grid density");
-    buttonInit(15, TBI_TRY,         "try.png",      L"Try your track");
-    buttonInit(16, TBI_SETTINGS,    "settings.png", L"Settings");
-    buttonInit(17, TBI_EXIT,        "exit.png",     L"Quit");
+    buttonInit(6,  TBI_CAM,         "cam1.png",     L"Free Camera Mode");
+    buttonInit(7,  TBI_SELECT,      "select.png",   L"Select");
+    buttonInit(8,  TBI_MOVE,        "move.png",     L"Move");
+    buttonInit(9, TBI_ROTATE,      "rotate.png",   L"Rotate");
+    buttonInit(10, TBI_DELETE,      "delete.png",   L"Delete");
+    buttonInit(11, TBI_GRID_ON_OFF, "grid.png",     L"Grid On / Off");
+    buttonInit(12, TBI_GRID_INC,    "gridinc.png",  L"Increase grid density");
+    buttonInit(13, TBI_GRID_DEC,    "griddec.png",  L"Decrease grid density");
+    buttonInit(14, TBI_TRY,         "try.png",      L"Try your track");
+    buttonInit(15, TBI_SETTINGS,    "settings.png", L"Settings");
+    buttonInit(16, TBI_EXIT,        "exit.png",     L"Quit");
 
     reallocate();
 
@@ -89,26 +88,21 @@ void ToolBar::reallocate()
     for (int i = 4; i < 6; i++)
         m_buttons[i]->setRelativePosition(position2di(block_begin + i * 50, 5));
 
-    // third block: 2 icon - cam1, cam2
+    // fourth block: 5 icon - free camera, select, move, rotate, delete
     block_begin += min((screen_x - 18 * 50) / 6, max_dist_between_blocks);
-    for (int i = 6; i < 8; i++)
-        m_buttons[i]->setRelativePosition(position2di(block_begin + i * 50, 5));
-
-    // fourth block: 4 icon - select, move, rotate, delete
-    block_begin += min((screen_x - 18 * 50) / 6, max_dist_between_blocks);
-    for (int i = 8; i < 12; i++)
+    for (int i = 6; i < 11; i++)
         m_buttons[i]->setRelativePosition(position2di(block_begin + i * 50, 5));
 
     // fifth block: 3 icon - grid, grid+, grid-
     block_begin += min((screen_x - 18 * 50) / 6, max_dist_between_blocks);
-    for (int i = 12; i < 15; i++)
+    for (int i = 11; i < 14; i++)
         m_buttons[i]->setRelativePosition(position2di(block_begin + i * 50, 5));
 
     // test
     block_begin += min((screen_x - 18 * 50) / 6, max_dist_between_blocks);
-    m_buttons[15]->setRelativePosition(position2di(block_begin + 15 * 50, 5));
+    m_buttons[14]->setRelativePosition(position2di(block_begin + 15 * 50, 5));
 
     // last block: 2 icon - settings, quit
-    m_buttons[16]->setRelativePosition(position2di(screen_x - 100, 5));
-    m_buttons[17]->setRelativePosition(position2di(screen_x - 50, 5));
+    m_buttons[15]->setRelativePosition(position2di(screen_x - 100, 5));
+    m_buttons[16]->setRelativePosition(position2di(screen_x - 50, 5));
 } // reallocate
