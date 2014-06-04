@@ -67,13 +67,13 @@ void Track::init()
 void Track::setState(State state)
 {
     ISceneManager* scene_manager = Editor::getEditor()->getSceneManager();
-    if (m_state == State::FREECAM && state != State::FREECAM)
+    if (m_state == FREECAM && state != FREECAM)
     {
-        m_state = State::SELECT;
+        m_state = SELECT;
         m_free_camera->setInputReceiverEnabled(false);
         scene_manager->setActiveCamera(m_normal_camera);
     }
-    else if (m_state != State::FREECAM && state == State::FREECAM)
+    else if (m_state != FREECAM && state == FREECAM)
     {
         m_free_camera->setInputReceiverEnabled(true);
         scene_manager->setActiveCamera(m_free_camera);
@@ -110,12 +110,14 @@ void Track::keyEvent(EKEY_CODE code, bool pressed)
     case KEY_KEY_D:
         m_key_state[D_PRESSED] = pressed;
         break;
+    default:
+        break;
     }
 } // keyEvent
 
 // ----------------------------------------------------------------------------
 void Track::animate(long dt)
 {
-    if ( m_state != State::FREECAM)
+    if ( m_state != FREECAM)
         animateNormalCamera(dt);
 } // animate
