@@ -13,7 +13,7 @@ bool Editor::init()
 {
 	m_device = createDevice(EDT_OPENGL,
             m_screen_size, 16,
-		    false, false, true, this);
+		    false, false, true);
 
 	if (!m_device) return false;
 	m_device->setResizable(true);
@@ -31,16 +31,17 @@ bool Editor::init()
     cam->setTarget(vector3df(0, 0, 0));
     cam->setInputReceiverEnabled(false);
     m_track->setFreeCamera(cam);
-    
-    cam = m_scene_manager->addCameraSceneNode(0, vector3df(0, 50, 0), 
+
+    cam = m_scene_manager->addCameraSceneNode(0, vector3df(0, 50, 0),
                                                  vector3df(0, 0, -10));
     m_scene_manager->setActiveCamera(cam);
     m_track->setNormalCamera(cam);
-    
+
     m_toolbar = ToolBar::getToolBar();
     m_toolbox = ToolBox::getToolBox();
 
-    ISceneNode* node = m_scene_manager->addCubeSceneNode();
+
+    m_device->setEventReceiver(this);
 
     return true;
 } // init
@@ -62,10 +63,10 @@ bool Editor::run()
 {
 	if (!m_device) return 0;
 
-    
+
     long current_time = m_device->getTimer()->getTime();
     long last_time    = current_time;
-    
+
 
 	while (m_device->run())
     {
@@ -78,7 +79,7 @@ bool Editor::run()
 
 		m_scene_manager->drawAll();
 		m_gui_env->drawAll();
-		
+
 		m_video_driver->endScene();
 
         if (m_video_driver->getScreenSize() != m_screen_size)
@@ -101,6 +102,7 @@ bool Editor::OnEvent(const SEvent& event)
         s32 id = event.GUIEvent.Caller->getID();
         if (event.GUIEvent.EventType == EGET_BUTTON_CLICKED)
         {
+            m_gui_env->removeFocus(m_gui_env->getFocus()->getParent());
             switch (id)
             {
             case ToolBar::TBI_EXIT:
@@ -110,10 +112,13 @@ bool Editor::OnEvent(const SEvent& event)
                 m_track->setState(Track::SELECT);
                 break;
             case ToolBar::TBI_MOVE:
-                m_track->setState(Track::SELECT);
+                m_track->setState(Track::MOVE);
                 break;
             case ToolBar::TBI_ROTATE:
                 m_track->setState(Track::ROTATE);
+                break;
+            case ToolBar::TBI_DELETE:
+                m_track->setState(Track::DELETE);
                 break;
             case ToolBar::TBI_CAM:
                 m_track->setState(Track::FREECAM);
@@ -130,18 +135,21 @@ bool Editor::OnEvent(const SEvent& event)
             default:
                 std::cerr << "Button click isn't handled!" << std::endl;
             }
+            return true;
         } // EventType == EGET_BUTTON_CLICKED
     } // EventType == EET_GUI_EVENT
+
+    if (m_gui_env->getFocus() != NULL) return false;
 
     if (event.EventType == EET_KEY_INPUT_EVENT)
     {
         m_track->keyEvent(event.KeyInput.Key, event.KeyInput.PressedDown);
     } // EventType == EET_KEY_INPUT_EVENT
 
-    if (event.EventType == EET_MOUSE_INPUT_EVENT 
-        && event.MouseInput.Event == EMIE_MOUSE_WHEEL)
+    if (event.EventType == EET_MOUSE_INPUT_EVENT)
     {
-        m_track->setMouseWheelState(event.MouseInput.Wheel);
+        if (event.MouseInput.Y < 50) return false;
+        m_track->mouseEvent(event);
     }
 
 	return false;
