@@ -9,7 +9,7 @@ void ToolBox::init()
 {
     IGUIEnvironment* env = Editor::getEditor()->getGUIEnv();
     dimension2du ss = Editor::getEditor()->getScreenSize();
-    
+
     m_boxwnd = env->addWindow(
             rect<s32>(),
             false, L"Stuffs", 0, 0
@@ -20,7 +20,7 @@ void ToolBox::init()
     m_boxwnd->getCloseButton()->setVisible(false);
     m_boxwnd->setDrawTitlebar(false);
 
-    
+
     // create tab control and tabs
     m_tab = env->addTabControl(
         core::rect<s32>(), m_boxwnd, true, true);
@@ -28,11 +28,11 @@ void ToolBox::init()
     m_tab->setMinSize(dimension2du(250, ss.Height - 50));
     m_tab->setRelativePosition(position2di(0, 0));
 
-    IGUITab* t1 = m_tab->addTab(L"Terrain");
-    IGUITab* t2 = m_tab->addTab(L"Road");
-    IGUITab* t3 = m_tab->addTab(L"Env");
-    IGUITab* t4 = m_tab->addTab(L"Extra");
-    IGUITab* t5 = m_tab->addTab(L"Blocks");
+    m_tab->addTab(L"Terrain");
+    m_tab->addTab(L"Road");
+    m_tab->addTab(L"Env");
+    m_tab->addTab(L"Extra");
+    m_tab->addTab(L"Blocks");
 
 
 } // init
