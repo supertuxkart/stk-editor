@@ -2,13 +2,13 @@
 #define TRACK_HPP
 
 #include "command.hpp"
+#include "entitymanager.hpp"
 
 #include <irrlicht.h>
 #include <list>
 
 class Entity;
 class Command;
-class CommandHandler;
 
 using namespace irr;
 using namespace scene;
@@ -31,7 +31,8 @@ public:
         W_PRESSED,
         A_PRESSED,
         S_PRESSED,
-        D_PRESSED
+        D_PRESSED,
+        CTRL_PRESSED
     };
 
     struct MouseData
@@ -72,18 +73,18 @@ public:
 
 private:
     static Track*       m_track;
-    static const int    m_key_num = 4;
+    static const int    m_key_num = 5;
 
     State               m_state;
 
     MouseData           m_mouse_data;
 
+    EntityManager       m_entity_manager;
+
     CommandHandler      m_command_handler;
 
     // command not yet finished
     Command*            m_active_cmd;
-
-    std::list<Entity*>  m_selected_elements;
 
     // camera used for editing
     // position has to be uploaded manually
@@ -98,6 +99,7 @@ private:
     void                animateNormalCamera(long dt);
 
     void                animateEditing();
+    void                animateSelection();
 
 public:
     static Track* getTrack();

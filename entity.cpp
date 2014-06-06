@@ -8,15 +8,17 @@
 using namespace irr;
 using namespace core;
 
+s32 Entity::ID = 0;
 
 // ----------------------------------------------------------------------------
-Entity::Entity(unsigned int ID, std::string model)
+Entity::Entity(std::string model)
 {
-    m_ID = ID;
+    ID++;
     m_model_name = model;
     // m_sc_node = ...
 
     m_sc_node = Editor::getEditor()->getSceneManager()->addCubeSceneNode();
+    m_sc_node->setID(ID);
 
 } // Entity
 
@@ -42,7 +44,7 @@ void Entity::move(float dx, float dy, float dz)
 {
     if (!m_sc_node)
     {
-        std::cerr << m_ID << " node can't move, because it doesn't exist...";
+        std::cerr << " move cmd failed: node doesn't exist...";
         std::cerr << std::endl;
         return;
     }
@@ -54,7 +56,7 @@ void Entity::rotate(float dx, float dy, float dz)
 {
     if (!m_sc_node)
     {
-        std::cerr << m_ID << " node can't rotate, because it doesn't exist...";
+        std::cerr << " rotation failed: node doesn't exist...";
         std::cerr << std::endl;
         return;
     }

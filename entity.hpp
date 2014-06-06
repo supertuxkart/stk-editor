@@ -11,17 +11,23 @@ using namespace scene;
 class Entity
 {
 private:
-    unsigned int m_ID;
+    static s32   ID;
     ISceneNode*  m_sc_node;
     std::string  m_model_name;
 public:
-    Entity(unsigned int ID, std::string model);
+    Entity(std::string model);
     
     void kill();
     void resurrect();
 
     void move  (float dx, float dy, float dz);
     void rotate(float dx, float dy, float dz);
+
+    bool hasSceneNode(ISceneNode* node)     { return (node == m_sc_node); }
+    
+    void drawBoundingBox()                   { m_sc_node->setDebugDataVisible(scene::EDS_BBOX); }
+    void clearBoundingBox()                   { m_sc_node->setDebugDataVisible(0);    }
+
 };
 
 #endif

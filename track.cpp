@@ -106,11 +106,26 @@ void Track::animateEditing()
     if (m_mouse_data.leftPressed() || m_mouse_data.rightPressed())
     {
         // new operation start
-        if (m_state == MOVE) m_active_cmd = new MoveCmd(m_selected_elements);
-        else m_active_cmd = new RotateCmd(m_selected_elements);
+        if (m_state == MOVE) m_active_cmd = new MoveCmd(m_entity_manager.getSelection());
+        else m_active_cmd = new RotateCmd(m_entity_manager.getSelection());
         m_mouse_data.setStorePoint();
     }
 
+}
+
+// ----------------------------------------------------------------------------
+void Track::animateSelection()
+{
+    if (m_mouse_data.leftPressed())
+    {
+        if (!m_key_state[CTRL_PRESSED]) m_entity_manager.clearSelection();
+        
+        m_entity_manager.selectNode(
+            Editor::getEditor()->getSceneManager()->getSceneCollisionManager()
+                ->getSceneNodeFromScreenCoordinatesBB(
+                    vector2d<s32>(m_mouse_data.x, m_mouse_data.y
+            )));
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -132,9 +147,13 @@ void Track::init()
     m_grid_on = true;
     for (int i = 0; i < m_key_num; i++) m_key_state[i] = false;
 
-    Entity* e = new Entity(0, "radnom_name");
+    Entity* e;
 
-    m_selected_elements.push_back(e);
+    for (int i = 0; i < 10; i++)
+    {
+        e = new Entity("radnom_name");
+        m_entity_manager.add(e);
+    }
 
 } // init
 
@@ -187,6 +206,10 @@ void Track::keyEvent(EKEY_CODE code, bool pressed)
     case KEY_KEY_D:
         m_key_state[D_PRESSED] = pressed;
         break;
+    case KEY_CONTROL:
+    case KEY_LCONTROL:
+        m_key_state[CTRL_PRESSED] = pressed;
+        break;
     default:
         break;
     }
@@ -237,7 +260,15 @@ void Track::animate(long dt)
     {
         animateNormalCamera(dt);
         if (m_state == MOVE || m_state == ROTATE)
-            animateEditing();
+        {
+            // holding ctrl down will let you select elements in move/rotate state
+            if (m_key_state[CTRL_PRESSED]) animateSelection();
+            else animateEditing();
+        }
+        else if (m_state == SELECT)
+        {
+            animateSelection();
+        }
     }
 
 
