@@ -20,7 +20,6 @@ public:
     enum State
     {
         SELECT,
-        DELETE,
         MOVE,
         ROTATE,
         PLACE,
@@ -109,6 +108,7 @@ public:
     void          changeGridDensity(int dir);
     void          keyEvent(EKEY_CODE code, bool pressed);
     void          mouseEvent(const SEvent& event);
+    void          deleteCmd();
     void          animate(long dt);
 
     void          setNormalCamera(ICameraSceneNode* cam) { m_normal_camera     = cam; }

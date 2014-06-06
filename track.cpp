@@ -255,6 +255,17 @@ void Track::mouseEvent(const SEvent& e)
 } // mouseEvent
 
 // ----------------------------------------------------------------------------
+void Track::deleteCmd()
+{
+    Command* dcmd = new DelCmd(m_entity_manager.getSelection());
+
+    m_entity_manager.clearSelection();
+    dcmd->redo();
+    m_command_handler.add(dcmd);
+
+} //deleteCmd
+
+// ----------------------------------------------------------------------------
 void Track::animate(long dt)
 {
     if (m_state != FREECAM)

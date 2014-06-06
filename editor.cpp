@@ -124,7 +124,7 @@ bool Editor::OnEvent(const SEvent& event)
                 m_track->setState(Track::ROTATE);
                 break;
             case ToolBar::TBI_DELETE:
-                m_track->setState(Track::DELETE);
+                m_track->deleteCmd();
                 break;
             case ToolBar::TBI_CAM:
                 m_track->setState(Track::FREECAM);

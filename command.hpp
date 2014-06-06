@@ -28,10 +28,15 @@ public:
 // ----------------------------------------------------------------------------
 class DelCmd : public Command
 {
+private:
+    bool m_rdy;
 public:
-    DelCmd(std::list<ISceneNode*> e) :Command(e)  {                       }
-    void redo(ISceneNode* e)                      { e->setVisible(false); }
-    void undo(ISceneNode* e)                      { e->setVisible( true); }
+    DelCmd(std::list<ISceneNode*> e) :Command(e)        { m_rdy = false; }
+
+    void redo(ISceneNode* e)      { e->setVisible(false); m_rdy =  true; }
+    void undo(ISceneNode* e)      { e->setVisible( true); m_rdy = false; }
+
+    DelCmd::~DelCmd();
 };
 
 // ----------------------------------------------------------------------------
