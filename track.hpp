@@ -111,8 +111,11 @@ public:
 
     void          setNormalCamera(ICameraSceneNode* cam) { m_normal_camera     = cam; }
     void          setFreeCamera(ICameraSceneNode* cam)   { m_free_camera       = cam; }
+    void          undo()                                 { m_command_handler.undo();  }
+    void          redo()                                 { m_command_handler.redo();  }
 
     bool          isGridOn()        { return m_grid_on; }
+    
 };
 
 #endif

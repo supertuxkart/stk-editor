@@ -108,6 +108,12 @@ bool Editor::OnEvent(const SEvent& event)
             case ToolBar::TBI_EXIT:
                 m_device->closeDevice();
                 break;
+            case ToolBar::TBI_UNDO:
+                m_track->undo();
+                break;
+            case ToolBar::TBI_REDO:
+                m_track->redo();
+                break;
             case ToolBar::TBI_SELECT:
                 m_track->setState(Track::SELECT);
                 break;
