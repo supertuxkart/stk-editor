@@ -27,6 +27,7 @@ bool Editor::init()
     m_track = Track::getTrack();
 
     ICameraSceneNode* cam = m_scene_manager->addCameraSceneNodeMaya();
+    cam->setID(1);
     cam->setFarValue(20000.f);
     cam->setTarget(vector3df(0, 0, 0));
     cam->setInputReceiverEnabled(false);
@@ -34,6 +35,7 @@ bool Editor::init()
 
     cam = m_scene_manager->addCameraSceneNode(0, vector3df(0, 50, 0),
                                                  vector3df(0, 0, -10));
+    cam->setID(2);
     m_scene_manager->setActiveCamera(cam);
     m_track->setNormalCamera(cam);
 

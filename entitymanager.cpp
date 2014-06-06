@@ -22,6 +22,7 @@ void EntityManager::selectNode(ISceneNode* node)
 {
 
     std::cout << node->getID() << std::endl;
+    if (node->getID() == -1) node->setID(1);
     
     // if this isn't a track object, we have nothing to do here
     if (node->getID() < 1) return;

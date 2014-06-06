@@ -3,6 +3,8 @@
 
 #include <iostream>
 
+#define MAGIC_NUMBER 8192
+
 Track* Track::m_track = 0;
 
 // ----------------------------------------------------------------------------
@@ -119,11 +121,14 @@ void Track::animateSelection()
     {
         if (!m_key_state[CTRL_PRESSED]) m_entity_manager.clearSelection();
         
-        m_entity_manager.selectNode(
-            Editor::getEditor()->getSceneManager()->getSceneCollisionManager()
-                ->getSceneNodeFromScreenCoordinatesBB(
-                    vector2d<s32>(m_mouse_data.x, m_mouse_data.y
-            )));
+        ISceneNode* node;
+        node = Editor::getEditor()->getSceneManager()->getSceneCollisionManager()
+            ->getSceneNodeFromScreenCoordinatesBB(
+                vector2d<s32>(m_mouse_data.x, m_mouse_data.y), MAGIC_NUMBER);
+            
+
+        if (node)
+            m_entity_manager.selectNode(node);
     }
 }
 
@@ -152,7 +157,7 @@ void Track::init()
     {
         node = Editor::getEditor()->getSceneManager()->addCubeSceneNode();
 
-        node->setID(i);
+        node->setID(MAGIC_NUMBER + i);
         m_entity_manager.add(node);
     }
 
