@@ -5,7 +5,7 @@
 // ----------------------------------------------------------------------------
 void Command::redo()
 {
-    std::list<Entity*>::iterator it;
+    std::list<ISceneNode*>::iterator it;
     for (it = m_elements.begin(); it != m_elements.end(); it++)
         redo((*it));
 } // redo
@@ -13,7 +13,7 @@ void Command::redo()
 // ----------------------------------------------------------------------------
 void Command::undo()
 {
-    std::list<Entity*>::iterator it;
+    std::list<ISceneNode*>::iterator it;
     for (it = m_elements.begin(); it != m_elements.end(); it++)
         undo((*it));
 } // undo
@@ -58,4 +58,33 @@ void CommandHandler::undo()
         m_it--;
         (*m_it)->undo();
     }
+} // undo
+
+
+// ----------------------------------------------------------------------------
+// MoveCmd  -------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+void MoveCmd::redo(ISceneNode *node)
+{
+    node->setPosition(node->getPosition() + vector3df(m_dx, m_dy, m_dz));
+} // redo
+
+// ----------------------------------------------------------------------------
+void MoveCmd::undo(ISceneNode *node)
+{
+    node->setPosition(node->getPosition() + vector3df(-m_dx, -m_dy, -m_dz));
+} // undo
+
+// ----------------------------------------------------------------------------
+// RotateCmd  -----------------------------------------------------------------
+// ----------------------------------------------------------------------------
+void RotateCmd::redo(ISceneNode *node)
+{
+    node->setRotation(node->getRotation() + vector3df(m_dx, m_dy, m_dz));
+} // redo
+
+// ----------------------------------------------------------------------------
+void RotateCmd::undo(ISceneNode *node)
+{
+    node->setRotation(node->getRotation() + vector3df(-m_dx, -m_dy, -m_dz));
 } // undo

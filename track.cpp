@@ -1,6 +1,5 @@
 #include "track.hpp"
 #include "editor.hpp"
-#include "entity.hpp"
 
 #include <iostream>
 
@@ -147,12 +146,14 @@ void Track::init()
     m_grid_on = true;
     for (int i = 0; i < m_key_num; i++) m_key_state[i] = false;
 
-    Entity* e;
+    ISceneNode* node;
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 1; i < 10; i++)
     {
-        e = new Entity("radnom_name");
-        m_entity_manager.add(e);
+        node = Editor::getEditor()->getSceneManager()->addCubeSceneNode();
+
+        node->setID(i);
+        m_entity_manager.add(node);
     }
 
 } // init
