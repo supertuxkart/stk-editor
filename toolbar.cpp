@@ -11,23 +11,23 @@ void ToolBar::init()
     m_bar = Editor::getEditor()->getGUIEnv()->addToolBar();
     m_bar->setMinSize(dimension2du(0,50));
 
-    buttonInit(0,  TBI_NEW,         "new.png",      L"New");
-    buttonInit(1,  TBI_OPEN,        "open.png",     L"Open");
-    buttonInit(2,  TBI_SAVE,        "save.png",     L"Save");
-    buttonInit(3,  TBI_SAVE_AS,     "save_as.png",  L"Save as");
-    buttonInit(4,  TBI_UNDO,        "undo.png",     L"Undo");
-    buttonInit(5,  TBI_REDO,        "redo.png",     L"Redo");
-    buttonInit(6,  TBI_CAM,         "cam1.png",     L"Free Camera Mode");
-    buttonInit(7,  TBI_SELECT,      "select.png",   L"Select");
-    buttonInit(8,  TBI_MOVE,        "move.png",     L"Move");
-    buttonInit(9, TBI_ROTATE,      "rotate.png",   L"Rotate");
-    buttonInit(10, TBI_DELETE,      "delete.png",   L"Delete");
-    buttonInit(11, TBI_GRID_ON_OFF, "grid.png",     L"Grid On / Off");
-    buttonInit(12, TBI_GRID_INC,    "gridinc.png",  L"Increase grid density");
-    buttonInit(13, TBI_GRID_DEC,    "griddec.png",  L"Decrease grid density");
-    buttonInit(14, TBI_TRY,         "try.png",      L"Try your track");
-    buttonInit(15, TBI_SETTINGS,    "settings.png", L"Settings");
-    buttonInit(16, TBI_EXIT,        "exit.png",     L"Quit");
+    buttonInit(0,  TBI_NEW,         "img/new.png",      L"New");
+    buttonInit(1,  TBI_OPEN,        "img/open.png",     L"Open");
+    buttonInit(2,  TBI_SAVE,        "img/save.png",     L"Save");
+    buttonInit(3,  TBI_SAVE_AS,     "img/save_as.png",  L"Save as");
+    buttonInit(4,  TBI_UNDO,        "img/undo.png",     L"Undo");
+    buttonInit(5,  TBI_REDO,        "img/redo.png",     L"Redo");
+    buttonInit(6,  TBI_CAM,         "img/cam1.png",     L"Free Camera Mode");
+    buttonInit(7,  TBI_SELECT,      "img/select.png",   L"Select");
+    buttonInit(8,  TBI_MOVE,        "img/move.png",     L"Move");
+    buttonInit(9, TBI_ROTATE,       "img/rotate.png",   L"Rotate");
+    buttonInit(10, TBI_DELETE,      "img/delete.png",   L"Delete");
+    buttonInit(11, TBI_GRID_ON_OFF, "img/grid.png",     L"Grid On / Off");
+    buttonInit(12, TBI_GRID_INC,    "img/gridinc.png",  L"Increase grid density");
+    buttonInit(13, TBI_GRID_DEC,    "img/griddec.png",  L"Decrease grid density");
+    buttonInit(14, TBI_TRY,         "img/try.png",      L"Try your track");
+    buttonInit(15, TBI_SETTINGS,    "img/settings.png", L"Settings");
+    buttonInit(16, TBI_EXIT,        "img/exit.png",     L"Quit");
 
     reallocate();
 
