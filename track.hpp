@@ -22,6 +22,7 @@ public:
         SELECT,
         MOVE,
         ROTATE,
+        SCALE,
         PLACE,
         FREECAM
     };
@@ -31,7 +32,8 @@ public:
         A_PRESSED,
         S_PRESSED,
         D_PRESSED,
-        CTRL_PRESSED
+        CTRL_PRESSED,
+        SHIFT_PRESSED
     };
 
     struct MouseData
@@ -64,19 +66,20 @@ public:
         bool rightPressed()       { bool b = right_pressed;   right_pressed = false; return b;  }
 
         // return value is true if left mouse button was released after the last call
-        bool leftReleased()        { bool b = left_released;  left_released = false; return b;  }
+        bool leftReleased()       { bool b = left_released;  left_released = false; return b;  }
 
         // return value is true if right mouse button was released after the last call
-        bool rightReleased()       { bool b = right_released; right_released = false; return b; }
+        bool rightReleased()      { bool b = right_released; right_released = false; return b; }
+
     };
 
 private:
     static Track*       m_track;
-    static const int    m_key_num = 5;
+    static const int    m_key_num = 6;
 
     State               m_state;
 
-    MouseData           m_mouse_data;
+    MouseData           m_mouse;
 
     EntityManager       m_entity_manager;
 

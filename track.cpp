@@ -55,13 +55,13 @@ void Track::animateNormalCamera(long dt)
     };
 
 
-    if (m_mouse_data.wheel != 0)
+    if (m_mouse.wheel != 0)
     {
         pos = m_normal_camera->getPosition();
-        pos.Y += -dt * m_mouse_data.wheel;
+        pos.Y += -dt * m_mouse.wheel;
         if (pos.Y < 10) pos.Y = 10;
         m_normal_camera->setPosition(pos);
-        m_mouse_data.wheel = 0;
+        m_mouse.wheel = 0;
     }
 
 } // animateCamera
@@ -72,22 +72,22 @@ void Track::animateEditing()
 
     if (m_active_cmd)
     {
-        if (m_mouse_data.left_btn_down)
+        if (m_mouse.left_btn_down)
         {
             m_active_cmd->undo();
-            m_active_cmd->update(-m_mouse_data.dx(), 0, m_mouse_data.dy());
+            m_active_cmd->update(-m_mouse.dx(), 0, m_mouse.dy());
             m_active_cmd->redo();
         }
-        if (m_mouse_data.right_btn_down)
+        if (m_mouse.right_btn_down)
         {
             m_active_cmd->undo();
-            m_active_cmd->update(0, -m_mouse_data.dy(), 0);
+            m_active_cmd->update(0, -m_mouse.dy(), 0);
             m_active_cmd->redo();
         }
-        m_mouse_data.setStorePoint();
+        m_mouse.setStorePoint();
 
-        if ((m_mouse_data.rightPressed() && m_mouse_data.left_btn_down) ||
-            (m_mouse_data.leftPressed() && m_mouse_data.right_btn_down))
+        if ((m_mouse.rightPressed() && m_mouse.left_btn_down) ||
+            (m_mouse.leftPressed() && m_mouse.right_btn_down))
         {
             // cancel operation
             m_active_cmd->undo();
@@ -97,19 +97,32 @@ void Track::animateEditing()
         }
     } 
 
-    if (m_mouse_data.leftReleased() || m_mouse_data.rightReleased())
+    if (m_mouse.leftReleased() || m_mouse.rightReleased())
     {
         // operation finished - if there was any
         if (m_active_cmd != 0) m_command_handler.add(m_active_cmd);
         m_active_cmd = 0;
     }
 
-    if (m_mouse_data.leftPressed() || m_mouse_data.rightPressed())
+    if (m_mouse.leftPressed() || m_mouse.rightPressed())
     {
         // new operation start
-        if (m_state == MOVE) m_active_cmd = new MoveCmd(m_entity_manager.getSelection());
-        else m_active_cmd = new RotateCmd(m_entity_manager.getSelection());
-        m_mouse_data.setStorePoint();
+        switch (m_state)
+        {
+        case MOVE:
+            m_active_cmd = new MoveCmd(m_entity_manager.getSelection(),
+                                       m_key_state[SHIFT_PRESSED]);
+            break;
+        case ROTATE:
+            m_active_cmd = new RotateCmd(m_entity_manager.getSelection(),
+                                         m_key_state[SHIFT_PRESSED]);
+            break;
+        case SCALE:
+            m_active_cmd = new ScaleCmd(m_entity_manager.getSelection(),
+                                        m_key_state[SHIFT_PRESSED]);
+            break;
+        }
+        m_mouse.setStorePoint();
     }
 
 }
@@ -117,14 +130,14 @@ void Track::animateEditing()
 // ----------------------------------------------------------------------------
 void Track::animateSelection()
 {
-    if (m_mouse_data.leftPressed())
+    if (m_mouse.leftPressed())
     {
         if (!m_key_state[CTRL_PRESSED]) m_entity_manager.clearSelection();
         
         ISceneNode* node;
         node = Editor::getEditor()->getSceneManager()->getSceneCollisionManager()
             ->getSceneNodeFromScreenCoordinatesBB(
-                vector2d<s32>(m_mouse_data.x, m_mouse_data.y), MAGIC_NUMBER);
+                vector2d<s32>(m_mouse.x, m_mouse.y), MAGIC_NUMBER);
             
 
         if (node)
@@ -155,7 +168,11 @@ void Track::init()
 
     for (int i = 1; i < 10; i++)
     {
-        node = Editor::getEditor()->getSceneManager()->addCubeSceneNode();
+        // node = Editor::getEditor()->getSceneManager()->addCubeSceneNode();
+        
+        node = Editor::getEditor()->getSceneManager()->addAnimatedMeshSceneNode(
+            Editor::getEditor()->getSceneManager()->getMesh("Cat.obj")
+            );
 
         node->setID(MAGIC_NUMBER + i);
         m_entity_manager.add(node);
@@ -212,6 +229,10 @@ void Track::keyEvent(EKEY_CODE code, bool pressed)
     case KEY_KEY_D:
         m_key_state[D_PRESSED] = pressed;
         break;
+    case KEY_SHIFT:
+    case KEY_LSHIFT:
+        m_key_state[SHIFT_PRESSED] = pressed;
+        break;
     case KEY_CONTROL:
     case KEY_LCONTROL:
         m_key_state[CTRL_PRESSED] = pressed;
@@ -227,31 +248,31 @@ void Track::mouseEvent(const SEvent& e)
     switch (e.MouseInput.Event)
     {
     case EMIE_MOUSE_WHEEL:
-        m_mouse_data.wheel = e.MouseInput.Wheel;
+        m_mouse.wheel = e.MouseInput.Wheel;
         break;
     case EMIE_LMOUSE_PRESSED_DOWN:
-        m_mouse_data.left_btn_down  = true;
-        m_mouse_data.left_pressed   = true;
-        m_mouse_data.left_released  = false;
+        m_mouse.left_btn_down  = true;
+        m_mouse.left_pressed   = true;
+        m_mouse.left_released  = false;
         break;
     case EMIE_LMOUSE_LEFT_UP:
-        m_mouse_data.left_btn_down  = false;
-        m_mouse_data.left_pressed   = false;
-        m_mouse_data.left_released  = true;
+        m_mouse.left_btn_down  = false;
+        m_mouse.left_pressed   = false;
+        m_mouse.left_released  = true;
         break;
     case EMIE_RMOUSE_PRESSED_DOWN:
-        m_mouse_data.right_btn_down = true;
-        m_mouse_data.right_pressed  = true;
-        m_mouse_data.right_released = false;
+        m_mouse.right_btn_down = true;
+        m_mouse.right_pressed  = true;
+        m_mouse.right_released = false;
         break;
     case EMIE_RMOUSE_LEFT_UP:
-        m_mouse_data.right_btn_down = false;
-        m_mouse_data.right_pressed  = false;
-        m_mouse_data.right_released = true;
+        m_mouse.right_btn_down = false;
+        m_mouse.right_pressed  = false;
+        m_mouse.right_released = true;
         break;
     case EMIE_MOUSE_MOVED:
-        m_mouse_data.x              = e.MouseInput.X;
-        m_mouse_data.y              = e.MouseInput.Y;
+        m_mouse.x              = e.MouseInput.X;
+        m_mouse.y              = e.MouseInput.Y;
         break;
     default:
         break;
@@ -276,7 +297,7 @@ void Track::animate(long dt)
     if (m_state != FREECAM)
     {
         animateNormalCamera(dt);
-        if (m_state == MOVE || m_state == ROTATE)
+        if (m_state == MOVE || m_state == ROTATE || m_state == SCALE)
         {
             // holding ctrl down will let you select elements in move/rotate state
             if (m_key_state[CTRL_PRESSED]) animateSelection();
