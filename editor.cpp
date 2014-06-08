@@ -1,8 +1,11 @@
 #include "editor.hpp"
 
 #include "toolbar.hpp"
-#include "toolbox.hpp"
+#include "toolbox/toolbox.hpp"
 #include "track.hpp"
+
+
+#include "toolbox/element.hpp"
 
 #include <iostream>
 
@@ -16,6 +19,7 @@ bool Editor::init()
 		    false, false, true);
 
 	if (!m_device) return false;
+
 	m_device->setResizable(true);
 
 	m_device->setWindowCaption(L"SuperTuxKart Track Editor");
@@ -124,6 +128,9 @@ bool Editor::OnEvent(const SEvent& event)
                 break;
             case ToolBar::TBI_ROTATE:
                 m_track->setState(Track::ROTATE);
+                break;
+            case ToolBar::TBI_SCALE:
+                m_track->setState(Track::SCALE);
                 break;
             case ToolBar::TBI_DELETE:
                 m_track->deleteCmd();
