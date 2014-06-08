@@ -17,6 +17,8 @@ protected:
     virtual void redo(ISceneNode* e) = 0;
     virtual void undo(ISceneNode* e) = 0;
 
+    void         limit(float& a, float& b, float& c);
+
 public:
     Command(std::list<ISceneNode*> elements) { m_elements = elements; }
     virtual ~Command() {};
@@ -44,9 +46,11 @@ class MoveCmd : public Command
 {
 private:
     float m_dx, m_dy, m_dz;
+    bool m_limited;
 public:
-    MoveCmd(std::list<ISceneNode*> e) :Command(e) { m_dx = 0; m_dy = 0; m_dz = 0;    }
-    void update(float a, float b, float c)        { m_dx += a; m_dy += b; m_dz += c; }
+    MoveCmd(std::list<ISceneNode*> e, bool limited);
+
+    void update(float a, float b, float c)  { m_dx += a; m_dy += b; m_dz += c; }
 
     void redo(ISceneNode* e);
     void undo(ISceneNode* e);
@@ -57,9 +61,27 @@ class RotateCmd : public Command
 {
 private:
     float m_dx, m_dy, m_dz;
+    bool m_limited;
 public:
-    RotateCmd(std::list<ISceneNode*> e) :Command(e) { m_dx = 0; m_dy = 0; m_dz = 0;    }
-    void update(float a, float b, float c)          { m_dx += a; m_dy += b; m_dz += c; }
+    RotateCmd(std::list<ISceneNode*> e, bool limited);
+
+    void update(float a, float b, float c)  { m_dx += a; m_dy += b; m_dz += c; }
+
+    void redo(ISceneNode* e);
+    void undo(ISceneNode* e);
+};
+
+// ----------------------------------------------------------------------------
+class ScaleCmd : public Command
+{
+private:
+    float m_dx, m_dy, m_dz;
+    bool m_limited;
+public:
+    ScaleCmd(std::list<ISceneNode*> e, bool limited);
+
+    void update(float a, float b, float c)  { m_dx += a; m_dy += b; m_dz += c; }
+
     void redo(ISceneNode* e);
     void undo(ISceneNode* e);
 };

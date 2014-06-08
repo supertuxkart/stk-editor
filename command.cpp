@@ -20,6 +20,23 @@ void Command::undo()
 
 
 // ----------------------------------------------------------------------------
+// This function will set the two variable with smaller absolout value to 0
+void Command::limit(float& a, float& b, float& c)
+{
+    if (a*a > b*b && a*a > c*c)
+    {
+        b = 0;
+        c = 0;
+    }
+    else
+    {
+        a = 0;
+        if (b*b > c*c) c = 0;
+        else b = 0;
+    }
+}
+
+// ----------------------------------------------------------------------------
 // CommandHandler  ------------------------------------------------------------
 // ----------------------------------------------------------------------------
 CommandHandler::CommandHandler()
@@ -80,30 +97,97 @@ DelCmd::~DelCmd()
 // ----------------------------------------------------------------------------
 // MoveCmd  -------------------------------------------------------------------
 // ----------------------------------------------------------------------------
+
+MoveCmd::MoveCmd(std::list<ISceneNode*> e, bool limited) :Command(e) 
+{
+    m_dx = 0; m_dy = 0; m_dz = 0;
+    m_limited = limited;
+}
+
+// ----------------------------------------------------------------------------
 void MoveCmd::redo(ISceneNode *node)
 {
-    node->setPosition(node->getPosition() + vector3df(m_dx, m_dy, m_dz));
+    float dx, dy, dz;
+    dx = m_dx; dy = m_dy; dz = m_dz;
+    if (m_limited) limit(dx, dy, dz);
+    node->setPosition(node->getPosition() + vector3df(dx / 10.0, dy / 10.0, dz / 10.0));
 } // redo
 
 // ----------------------------------------------------------------------------
 void MoveCmd::undo(ISceneNode *node)
 {
-    node->setPosition(node->getPosition() + vector3df(-m_dx, -m_dy, -m_dz));
+    float dx, dy, dz;
+    dx = m_dx; dy = m_dy; dz = m_dz;
+    if (m_limited) limit(dx, dy, dz);
+    node->setPosition(node->getPosition() + vector3df(-dx / 10.0, -dy / 10.0, -dz / 10.0));
 } // undo
-
 
 // ----------------------------------------------------------------------------
 // RotateCmd  -----------------------------------------------------------------
 // ----------------------------------------------------------------------------
+
+RotateCmd::RotateCmd(std::list<ISceneNode*> e, bool limited) :Command(e) 
+{
+    m_dx = 0; m_dy = 0; m_dz = 0;
+    m_limited = limited;
+}
+
+// ----------------------------------------------------------------------------
 void RotateCmd::redo(ISceneNode *node)
 {
-    node->setRotation(node->getRotation() + vector3df(m_dx, m_dy, m_dz));
+    float dx, dy, dz;
+    dx = m_dx; dy = m_dy; dz = m_dz;
+    if (m_limited) limit(dx, dy, dz);
+    node->setRotation(node->getRotation() + vector3df(dz, dy, dx));
 } // redo
 
 // ----------------------------------------------------------------------------
 void RotateCmd::undo(ISceneNode *node)
 {
-    node->setRotation(node->getRotation() + vector3df(-m_dx, -m_dy, -m_dz));
+    float dx, dy, dz;
+    dx = m_dx; dy = m_dy; dz = m_dz;
+    if (m_limited) limit(dx, dy, dz);
+    node->setRotation(node->getRotation() + vector3df(-dz, -dy, -dx));
 } // undo
 
+
+// ----------------------------------------------------------------------------
+// ScaleCmd  -----------------------------------------------------------------
+// ----------------------------------------------------------------------------
+
+ScaleCmd::ScaleCmd(std::list<ISceneNode*> e, bool limited) :Command(e)
+{
+    m_dx = 0; m_dy = 0; m_dz = 0;
+    m_limited = limited;
+}
+
+// ----------------------------------------------------------------------------
+void ScaleCmd::redo(ISceneNode *node)
+{
+    float dx, dy, dz;
+    dx = m_dx; dy = m_dy; dz = m_dz;
+    limit(dx, dy, dz);
+    if (m_limited)
+    {
+        dx = dx + dy + dz;
+        dy = dx;
+        dz = dx;
+    }
+    node->setScale(node->getScale() + vector3df(dz / 10.0, dy / 10.0, dx / 10.0));
+} // redo
+
+// ----------------------------------------------------------------------------
+void ScaleCmd::undo(ISceneNode *node)
+{
+    float dx, dy, dz;
+    dx = m_dx; dy = m_dy; dz = m_dz;
+    limit(dx, dy, dz);
+    if (m_limited)
+    {
+        dx = dx + dy + dz;
+        dy = dx;
+        dz = dx;
+    }
+    node->setScale(node->getScale() + vector3df(-dz / 10.0, -dy / 10.0, -dx/ 10.0));
+} // undo
 
