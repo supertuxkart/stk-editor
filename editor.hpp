@@ -37,6 +37,7 @@ public:
 	bool		      run();
 	virtual bool      OnEvent(const SEvent& event);
 
+    IrrlichtDevice*   getDevice()       { return m_device;        }
     IVideoDriver*     getVideoDriver()  { return m_video_driver;  }
     ISceneManager*    getSceneManager() { return m_scene_manager; }
     IGUIEnvironment*  getGUIEnv()       { return m_gui_env;       }
