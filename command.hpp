@@ -38,7 +38,7 @@ public:
     void redo(ISceneNode* e)      { e->setVisible(false); m_rdy =  true; }
     void undo(ISceneNode* e)      { e->setVisible( true); m_rdy = false; }
 
-    DelCmd::~DelCmd();
+    ~DelCmd();
 };
 
 // ----------------------------------------------------------------------------
