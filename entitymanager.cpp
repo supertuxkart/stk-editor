@@ -20,13 +20,6 @@ void EntityManager::clearSelection()
 */
 void EntityManager::selectNode(ISceneNode* node)
 {
-
-    std::cout << node->getID() << std::endl;
-    if (node->getID() == -1) node->setID(1);
-    
-    // if this isn't a track object, we have nothing to do here
-    if (node->getID() < 1) return;
-
     // we check if it is selected already
     std::list<ISceneNode*>::iterator it;
     for (it = m_selected_elements.begin(); it != m_selected_elements.end(); it++)
