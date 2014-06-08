@@ -3,11 +3,21 @@
 
 #include <irrlicht.h>
 
+#include<map>
+
+class Library;
+
 using namespace irr;
 using namespace gui;
+using namespace core;
 
 class ToolBox
 {
+public:
+    static const int ENV_BTN_ID  = 100;
+    static const int ENV_BTN_NUM = 40;
+    static const int ENV_CB_ID   = 1111;
+    static const int TBOX_ID     = 1112;
 private:
 
     // private variables:
@@ -17,14 +27,23 @@ private:
     IGUIWindow*     m_boxwnd;
     IGUITabControl* m_tab;
 
+    Library*        m_env_lib;
+    IGUIComboBox*   m_env_cb;
+    IGUIEditBox*    m_env_search_field;
+
+    std::pair<IGUIButton*, stringw> m_env_btn_table[ENV_BTN_NUM];
+
     // private functions:
 
     void    init();
+    void    initEnvTab();
 
     ToolBox() {};
 
 public:
     static ToolBox*     getToolBox();
+    stringw             getEnvModelPathFromBtnId(int ID);
+    void                refreshEnvBtnTable();
     void                reallocate();
 };
 

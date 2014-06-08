@@ -13,7 +13,7 @@ private:
     std::list<ISceneNode*>  m_elements;
     std::list<ISceneNode*>  m_selected_elements;
 public:
-    void add(ISceneNode* e)                     { m_elements.push_back(e); }
+    void add(ISceneNode* e)                      { m_elements.push_back(e); }
     std::list<ISceneNode*>  getSelection()       { return m_selected_elements; }
 
     void                    clearSelection();

@@ -14,12 +14,23 @@ class Element;
 class Library
 {
 private:
-    stringw name;
+    stringw      m_name;
+    unsigned int m_buffer_size;
+    
     std::map<stringw, std::list<Element*>*> m_element_table;
+
+    std::list<Element*> m_selected_elements;
+
 public:
-    Library(stringw name);
+    Library(stringw name, unsigned int buffer_size = 12);
+
     std::list<stringw>   getCategoryList();
-    std::list<Element*>  getElements(stringw s, stringw categ = "");
+    void                 selectElements(stringw s, stringw categ = "");
+    std::list<Element*>  getElements(unsigned int ix = 0);
+
+    unsigned int         getSelectionPageNum()  
+                { return m_selected_elements.size() / m_buffer_size + 1; }
+
     ~Library();
 };
 

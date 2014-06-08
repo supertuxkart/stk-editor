@@ -7,6 +7,8 @@
 #include <irrlicht.h>
 #include <list>
 
+#define MAGIC_NUMBER 8192
+
 class Entity;
 class Command;
 
@@ -76,12 +78,16 @@ public:
 private:
     static Track*       m_track;
     static const int    m_key_num = 6;
+    
+    static int          m_last_entity_ID;
 
     State               m_state;
 
     MouseData           m_mouse;
 
     EntityManager       m_entity_manager;
+
+    ISceneNode*         m_new_entity;
 
     CommandHandler      m_command_handler;
 
@@ -97,11 +103,14 @@ private:
     bool                m_key_state[m_key_num];
     bool                m_grid_on;
 
+
+
     Track() {};
     void                animateNormalCamera(long dt);
 
     void                animateEditing();
     void                animateSelection();
+    void                animatePlacing();
 
 public:
     static Track* getTrack();
@@ -112,6 +121,7 @@ public:
     void          keyEvent(EKEY_CODE code, bool pressed);
     void          mouseEvent(const SEvent& event);
     void          deleteCmd();
+    void          setNewEntity(const stringw path);
     void          animate(long dt);
 
     void          setNormalCamera(ICameraSceneNode* cam) { m_normal_camera     = cam; }
@@ -119,7 +129,7 @@ public:
     void          undo()                                 { m_command_handler.undo();  }
     void          redo()                                 { m_command_handler.redo();  }
 
-    bool          isGridOn()        { return m_grid_on; }
+    bool          isGridOn()                             { return m_grid_on; }
     
 };
 

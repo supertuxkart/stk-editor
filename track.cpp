@@ -3,9 +3,8 @@
 
 #include <iostream>
 
-#define MAGIC_NUMBER 8192
-
-Track* Track::m_track = 0;
+Track* Track::m_track          = 0;
+int    Track::m_last_entity_ID = MAGIC_NUMBER;
 
 // ----------------------------------------------------------------------------
 Track::MouseData::MouseData()
@@ -24,7 +23,7 @@ Track::MouseData::MouseData()
     y = 0;
     prev_x = 0;
     prev_y = 0;
-}
+} // MouseData
 
 // ----------------------------------------------------------------------------
 void Track::animateNormalCamera(long dt)
@@ -75,13 +74,13 @@ void Track::animateEditing()
         if (m_mouse.left_btn_down)
         {
             m_active_cmd->undo();
-            m_active_cmd->update(-m_mouse.dx(), 0, m_mouse.dy());
+            m_active_cmd->update(-m_mouse.dx(), 0.0f, m_mouse.dy());
             m_active_cmd->redo();
         }
         if (m_mouse.right_btn_down)
         {
             m_active_cmd->undo();
-            m_active_cmd->update(0, -m_mouse.dy(), 0);
+            m_active_cmd->update(0.0f, -m_mouse.dy(), 0.0f);
             m_active_cmd->redo();
         }
         m_mouse.setStorePoint();
@@ -95,7 +94,7 @@ void Track::animateEditing()
             m_active_cmd = 0;
             return;
         }
-    } 
+    }
 
     if (m_mouse.leftReleased() || m_mouse.rightReleased())
     {
@@ -121,11 +120,13 @@ void Track::animateEditing()
             m_active_cmd = new ScaleCmd(m_entity_manager.getSelection(),
                                         m_key_state[SHIFT_PRESSED]);
             break;
+        default:
+            break;
         }
         m_mouse.setStorePoint();
     }
 
-}
+} // animateEditing
 
 // ----------------------------------------------------------------------------
 void Track::animateSelection()
@@ -133,17 +134,40 @@ void Track::animateSelection()
     if (m_mouse.leftPressed())
     {
         if (!m_key_state[CTRL_PRESSED]) m_entity_manager.clearSelection();
-        
+
         ISceneNode* node;
         node = Editor::getEditor()->getSceneManager()->getSceneCollisionManager()
             ->getSceneNodeFromScreenCoordinatesBB(
                 vector2d<s32>(m_mouse.x, m_mouse.y), MAGIC_NUMBER);
-            
+
 
         if (node)
             m_entity_manager.selectNode(node);
     }
-}
+} // animateSelection
+
+// ----------------------------------------------------------------------------
+void Track::animatePlacing()
+{
+    if (m_new_entity)
+    {
+
+        ISceneCollisionManager* cm = Editor::getEditor()->getSceneManager()
+            ->getSceneCollisionManager();
+        line3d<f32> r = cm->getRayFromScreenCoordinates(vector2d<s32>(m_mouse.x, m_mouse.y));
+        m_new_entity->setPosition(r.start + r.getVector().normalize()*25);
+
+
+        if (m_mouse.leftPressed())
+        {
+            m_last_entity_ID++;
+            m_new_entity->setID(m_last_entity_ID);
+            m_entity_manager.add(m_new_entity);
+            m_new_entity = m_new_entity->clone();
+        }
+
+    }
+} // animatePlacing
 
 // ----------------------------------------------------------------------------
 Track* Track::getTrack()
@@ -161,6 +185,7 @@ void Track::init()
 {
     m_active_cmd = 0;
     m_state = SELECT;
+    m_new_entity = 0;
     m_grid_on = true;
     for (int i = 0; i < m_key_num; i++) m_key_state[i] = false;
 
@@ -169,12 +194,12 @@ void Track::init()
     for (int i = 1; i < 10; i++)
     {
         // node = Editor::getEditor()->getSceneManager()->addCubeSceneNode();
-        
+
         node = Editor::getEditor()->getSceneManager()->addAnimatedMeshSceneNode(
             Editor::getEditor()->getSceneManager()->getMesh("Cat.obj")
             );
-
-        node->setID(MAGIC_NUMBER + i);
+        m_last_entity_ID = MAGIC_NUMBER + i;
+        node->setID(m_last_entity_ID);
         m_entity_manager.add(node);
     }
 
@@ -184,6 +209,9 @@ void Track::init()
 void Track::setState(State state)
 {
     ISceneManager* scene_manager = Editor::getEditor()->getSceneManager();
+
+    if (m_state == PLACE && state != PLACE) m_new_entity->remove();
+
     if (m_state == FREECAM && state != FREECAM)
     {
         m_state = SELECT;
@@ -292,6 +320,18 @@ void Track::deleteCmd()
 } //deleteCmd
 
 // ----------------------------------------------------------------------------
+void Track::setNewEntity(const stringw path)
+{
+    if (m_state != PLACE)
+        m_state = PLACE;
+    if (m_new_entity != 0) m_new_entity->remove();
+
+    ISceneManager* sm = Editor::getEditor()->getSceneManager();
+    m_new_entity = sm->addAnimatedMeshSceneNode(sm->getMesh(path));
+
+} // setNewEntity
+
+// ----------------------------------------------------------------------------
 void Track::animate(long dt)
 {
     if (m_state != FREECAM)
@@ -304,10 +344,9 @@ void Track::animate(long dt)
             else animateEditing();
         }
         else if (m_state == SELECT)
-        {
             animateSelection();
-        }
+        else if (m_state == PLACE)
+            animatePlacing();
     }
-
 
 } // animate

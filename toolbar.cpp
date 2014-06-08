@@ -34,23 +34,11 @@ void ToolBar::init()
 
 } // init
 
-// ----------------------------------------------------------------------------
-ITexture* ToolBar::loadImg(const char* file_path)
-{
-    IVideoDriver* driver = Editor::getEditor()->getVideoDriver();
-    ITexture* img = driver->getTexture(file_path);
-    if (img == 0)
-    {
-        std::cerr << "Missing image: " << file_path << std::endl;
-    }
-    return img;
-} // loadImg
-
 void ToolBar::buttonInit(unsigned int ix, ToolboxButtonIndex TBI, 
                     const char* file_path, const wchar_t* text)
 {
     ITexture* img;
-    img = loadImg(file_path);
+    img = Editor::loadImg(file_path);
     m_buttons[ix] = m_bar->addButton(TBI, 0, text, img, 0, false, true);
     m_buttons[ix]->setMaxSize(dimension2du(40, 40));
     m_buttons[ix]->setMinSize(dimension2du(40, 40));

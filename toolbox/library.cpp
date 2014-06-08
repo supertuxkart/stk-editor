@@ -6,8 +6,10 @@
 using namespace io;
 
 // ----------------------------------------------------------------------------
-Library::Library(stringw name)
+Library::Library(stringw name, unsigned int buffer_size)
 {
+    m_buffer_size = buffer_size;
+    m_name        = name;
     IFileSystem* file_system = Editor::getEditor()->getDevice()->getFileSystem();
     path wd = file_system->getWorkingDirectory();
 
@@ -60,18 +62,17 @@ std::list<stringw> Library::getCategoryList()
 } // getCategoryList
 
 // ----------------------------------------------------------------------------
-std::list<Element*> Library::getElements(stringw s, stringw categ)
+void Library::selectElements(stringw s, stringw categ)
 {
-    std::list<Element*> elements;
-
-    if (categ == "")
+    m_selected_elements.clear();
+    if (categ == "All")
     {
         std::map<stringw, std::list<Element*>*>::iterator it;
         for (it = m_element_table.begin(); it != m_element_table.end(); ++it)
         {
             std::list<Element*>::iterator iit;
             for (iit = (*it).second->begin(); iit != (*it).second->end(); ++iit)
-                if ((*iit)->tagBeginsWith(s)) elements.push_back(*iit);
+                if ((*iit)->tagBeginsWith(s)) m_selected_elements.push_back(*iit);
         } // category iteration
     } // categ == ""
     else
@@ -81,12 +82,27 @@ std::list<Element*> Library::getElements(stringw s, stringw categ)
         {
             std::list<Element*>::iterator iit;
             for (iit = (*it).second->begin(); iit != (*it).second->end(); ++iit)
-                if ((*iit)->tagBeginsWith(s)) elements.push_back(*iit);
+                if ((*iit)->tagBeginsWith(s)) m_selected_elements.push_back(*iit);
         }
     } // categ != ""
 
-    return elements;
+} // selectElements
 
+// ----------------------------------------------------------------------------
+std::list<Element*> Library::getElements(unsigned int ix)
+{
+    std::list<Element*> elements;
+    std::list<Element*>::iterator it = m_selected_elements.begin();
+
+    for (unsigned int i = 0; i < ix * m_buffer_size; i++, it++);
+
+    for (unsigned int i = 0; i < m_buffer_size && it != m_selected_elements.end(); i++)
+    {
+        elements.push_back(*it);
+        it++;
+    }
+
+    return elements;
 } // getElements
 
 

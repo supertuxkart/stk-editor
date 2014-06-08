@@ -24,11 +24,11 @@ public:
     Element(IXMLReader* xml);
     
     bool        tagBeginsWith (const stringw& s);
-    bool        nameBeginsWith(const stringw& s);
 
+    stringw     getName()     { return m_name;     }
     stringw     getCategory() { return m_category; }
     stringw     getImg()      { return m_img;      }
-    stringw     getPath()     { return m_model;    }
+    stringw     getModel()    { return m_model;    }
     bool        isValid()     { return m_valid;    }
 };
 

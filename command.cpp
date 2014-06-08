@@ -110,7 +110,7 @@ void MoveCmd::redo(ISceneNode *node)
     float dx, dy, dz;
     dx = m_dx; dy = m_dy; dz = m_dz;
     if (m_limited) limit(dx, dy, dz);
-    node->setPosition(node->getPosition() + vector3df(dx / 10.0, dy / 10.0, dz / 10.0));
+    node->setPosition(node->getPosition() + vector3df(dx / 10.0f, dy / 10.0f, dz / 10.0f));
 } // redo
 
 // ----------------------------------------------------------------------------
@@ -119,7 +119,7 @@ void MoveCmd::undo(ISceneNode *node)
     float dx, dy, dz;
     dx = m_dx; dy = m_dy; dz = m_dz;
     if (m_limited) limit(dx, dy, dz);
-    node->setPosition(node->getPosition() + vector3df(-dx / 10.0, -dy / 10.0, -dz / 10.0));
+    node->setPosition(node->getPosition() + vector3df(-dx / 10.0f, -dy / 10.0f, -dz / 10.0f));
 } // undo
 
 // ----------------------------------------------------------------------------
@@ -173,7 +173,7 @@ void ScaleCmd::redo(ISceneNode *node)
         dy = dx;
         dz = dx;
     }
-    node->setScale(node->getScale() + vector3df(dz / 10.0, dy / 10.0, dx / 10.0));
+    node->setScale(node->getScale() + vector3df(dz / 10.0f, dy / 10.0f, dx / 10.0f));
 } // redo
 
 // ----------------------------------------------------------------------------
@@ -188,6 +188,6 @@ void ScaleCmd::undo(ISceneNode *node)
         dy = dx;
         dz = dx;
     }
-    node->setScale(node->getScale() + vector3df(-dz / 10.0, -dy / 10.0, -dx/ 10.0));
+    node->setScale(node->getScale() + vector3df(-dz / 10.0f, -dy / 10.0f, -dx/ 10.0f));
 } // undo
 

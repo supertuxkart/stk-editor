@@ -4,9 +4,6 @@
 #include "toolbox/toolbox.hpp"
 #include "track.hpp"
 
-
-#include "toolbox/element.hpp"
-
 #include <iostream>
 
 Editor* Editor::m_editor = 0;
@@ -113,48 +110,77 @@ bool Editor::OnEvent(const SEvent& event)
             {
             case ToolBar::TBI_EXIT:
                 m_device->closeDevice();
-                break;
+                return true;
             case ToolBar::TBI_UNDO:
                 m_track->undo();
-                break;
+                return true;
             case ToolBar::TBI_REDO:
                 m_track->redo();
-                break;
+                return true;
             case ToolBar::TBI_SELECT:
                 m_track->setState(Track::SELECT);
-                break;
+                return true;
             case ToolBar::TBI_MOVE:
                 m_track->setState(Track::MOVE);
-                break;
+                return true;
             case ToolBar::TBI_ROTATE:
                 m_track->setState(Track::ROTATE);
-                break;
+                return true;
             case ToolBar::TBI_SCALE:
                 m_track->setState(Track::SCALE);
-                break;
+                return true;
             case ToolBar::TBI_DELETE:
                 m_track->deleteCmd();
-                break;
+                return true;
             case ToolBar::TBI_CAM:
                 m_track->setState(Track::FREECAM);
-                break;
+                return true;
             case ToolBar::TBI_GRID_ON_OFF:
                 m_track->setGrid(!m_track->isGridOn());
-                break;
+                return true;
             case ToolBar::TBI_GRID_INC:
                 m_track->changeGridDensity(1);
-                break;
+                return true;
             case ToolBar::TBI_GRID_DEC:
                 m_track->changeGridDensity(-1);
-                break;
+                return true;
             default:
-                std::cerr << "Button click isn't handled!" << std::endl;
+                if (id >= ToolBox::ENV_BTN_ID &&
+                    id < ToolBox::ENV_BTN_ID + ToolBox::ENV_BTN_NUM)
+                {
+                    // element is picked from env panel
+                    m_track->setNewEntity(m_toolbox->getEnvModelPathFromBtnId(id));
+                    return true;
+                }
+                else
+                    std::cerr << "Button click isn't handled!" << std::endl;
             }
-            return true;
         } // EventType == EGET_BUTTON_CLICKED
+        else
+            if (event.EventType == EGET_ELEMENT_FOCUS_LOST)
+            {
+                switch (event.GUIEvent.Caller->getID())
+                {
+                case ToolBox::ENV_CB_ID:
+                    m_toolbox->refreshEnvBtnTable();
+                    return true;
+                default:
+                    break;
+                }
+            } // EventType == EGET_ELEMENT_FOCUS_LOST
     } // EventType == EET_GUI_EVENT
 
     if (m_gui_env->getFocus() != NULL) return false;
+
+
+    IGUIElement* focused = m_gui_env->getFocus();
+    while (focused)
+    {
+        if (focused->isVisible() && focused->getID() == ToolBox::TBOX_ID)
+            return false;
+        focused = focused->getParent();
+    }
+
 
     if (event.EventType == EET_KEY_INPUT_EVENT)
     {
@@ -169,3 +195,9 @@ bool Editor::OnEvent(const SEvent& event)
 
 	return false;
 } // OnEvent
+
+// ----------------------------------------------------------------------------
+ITexture* Editor::loadImg(const stringw& file_path)
+{
+    return m_editor->m_video_driver->getTexture(file_path);
+} // loadImg

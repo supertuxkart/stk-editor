@@ -37,17 +37,11 @@ Element::Element(io::IXMLReader* xml)
 // ----------------------------------------------------------------------------
 bool Element::tagBeginsWith(const stringw& s)
 {
+    if (s == "") return true;
     std::list<stringw>::iterator it;
     for (it = m_tags.begin(); it != m_tags.end(); ++it)
     {
         if ((*it).equalsn(s, s.size())) return true;
     }
-    return false;
-}
-
-// ----------------------------------------------------------------------------
-bool Element::nameBeginsWith(const stringw& s)
-{
     return m_name.equalsn(s, s.size());
 }
-

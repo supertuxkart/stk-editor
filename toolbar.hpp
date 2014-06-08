@@ -47,7 +47,6 @@ private:
     // private functions:
 
     void            init();
-    ITexture*       loadImg(const char* file_path);
     void            buttonInit(unsigned int ix, ToolboxButtonIndex TBI, 
                     const char* file_path, const wchar_t* text);
     ToolBar() {};

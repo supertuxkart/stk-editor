@@ -33,9 +33,11 @@ private:
 	Editor() {};
 
 public:
-    static Editor*    getEditor(dimension2du screen_size = dimension2du(1024, 768));
+    static Editor*    getEditor(dimension2du screen_size = dimension2du(1280, 720));
 	bool		      run();
 	virtual bool      OnEvent(const SEvent& event);
+
+    static ITexture*  loadImg(const stringw& file_path);
 
     IrrlichtDevice*   getDevice()       { return m_device;        }
     IVideoDriver*     getVideoDriver()  { return m_video_driver;  }
