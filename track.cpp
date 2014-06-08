@@ -210,7 +210,11 @@ void Track::setState(State state)
 {
     ISceneManager* scene_manager = Editor::getEditor()->getSceneManager();
 
-    if (m_state == PLACE && state != PLACE) m_new_entity->remove();
+    if (m_state == PLACE && state != PLACE)
+    {
+        m_new_entity->remove();
+        m_new_entity = 0;
+    }
 
     if (m_state == FREECAM && state != FREECAM)
     {
@@ -324,7 +328,11 @@ void Track::setNewEntity(const stringw path)
 {
     if (m_state != PLACE)
         m_state = PLACE;
-    if (m_new_entity != 0) m_new_entity->remove();
+    if (m_new_entity != 0)
+    {
+        m_new_entity->remove();
+        m_new_entity = 0;
+    }
 
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
     m_new_entity = sm->addAnimatedMeshSceneNode(sm->getMesh(path));
