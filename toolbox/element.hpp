@@ -15,6 +15,7 @@ class Element
 {
 private:
     stringw             m_name;
+    stringw             m_category;
     std::list<stringw>  m_tags;
     stringw             m_img;
     stringw             m_model;
@@ -25,9 +26,10 @@ public:
     bool        tagBeginsWith (const stringw& s);
     bool        nameBeginsWith(const stringw& s);
 
-    stringw     getImg()      { return m_img;   }
-    stringw     getPath()     { return m_model; }
-    bool        isValid()     { return m_valid; }
+    stringw     getCategory() { return m_category; }
+    stringw     getImg()      { return m_img;      }
+    stringw     getPath()     { return m_model;    }
+    bool        isValid()     { return m_valid;    }
 };
 
 #endif
