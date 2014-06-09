@@ -144,36 +144,35 @@ bool Editor::OnEvent(const SEvent& event)
             case ToolBar::TBI_GRID_DEC:
                 m_track->changeGridDensity(-1);
                 return true;
-            case ToolBox::ENV_BTN_ID + ToolBox::ENV_BTN_NUM:
-                m_toolbox->switchEnvPage(-1);
-                break;
-            case ToolBox::ENV_BTN_ID + ToolBox::ENV_BTN_NUM + 1:
-                m_toolbox->switchEnvPage(1);
-                break;
             default:
                 if (id >= ToolBox::ENV_BTN_ID &&
-                    id < ToolBox::ENV_BTN_ID + ToolBox::ENV_BTN_NUM)
+                    id < ToolBox::ENV_BTN_ID + m_toolbox->getEnvBtnNum())
                 {
                     // element is picked from env panel
                     m_track->setNewEntity(m_toolbox->getEnvModelPathFromBtnId(id));
                     return true;
                 }
+                else if (id == ToolBox::ENV_BTN_ID + m_toolbox->getEnvBtnNum())
+                    m_toolbox->switchEnvPage(-1);
+                else if (id == ToolBox::ENV_BTN_ID + m_toolbox->getEnvBtnNum() + 1)
+                    m_toolbox->switchEnvPage(1);
                 else
                     std::cerr << "Button click isn't handled!" << std::endl;
             }
         } // EventType == EGET_BUTTON_CLICKED
         else
-            if (event.EventType == EGET_ELEMENT_FOCUS_LOST)
+            if (event.GUIEvent.EventType == EGET_COMBO_BOX_CHANGED)
             {
                 switch (event.GUIEvent.Caller->getID())
                 {
                 case ToolBox::ENV_CB_ID:
+                    m_toolbox->resetEnvIndex();
                     m_toolbox->refreshEnvBtnTable();
                     return true;
                 default:
                     break;
                 }
-            } // EventType == EGET_ELEMENT_FOCUS_LOST
+            } // GUIEvent.EventType == EGET_COMBO_BOX_CHANGED
     } // EventType == EET_GUI_EVENT
 
     if (m_gui_env->getFocus() != NULL) return false;

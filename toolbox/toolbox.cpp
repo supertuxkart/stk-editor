@@ -46,50 +46,60 @@ void ToolBox::init()
 void ToolBox::initEnvTab()
 {
     IGUIEnvironment* gui_env = Editor::getEditor()->getGUIEnv();
+    m_env_tab = m_tab->addTab(L"Env");
+    dimension2du ss = Editor::getEditor()->getScreenSize();
 
-    IGUITab* env = m_tab->addTab(L"Env");
-
-    m_env_cb = gui_env->addComboBox(rect<s32>(25, 10, 200, 30), env, ENV_CB_ID);
+    m_env_cb = gui_env->addComboBox(rect<s32>(25, 10, 200, 30), m_env_tab, ENV_CB_ID);
     m_env_cb->addItem(L"All");
     m_env_cb->setSelected(0);
-    m_env_lib = new Library(L"env",ENV_BTN_NUM);
 
+    // !before new Lib
+    initEnvTabButtons();
+
+    m_env_lib = new Library(L"env", m_env_btn_num);
     std::list<stringw> list = m_env_lib->getCategoryList();
     std::list<stringw>::iterator it;
-
     for (it = list.begin(); it != list.end(); it++)
     {
         m_env_cb->addItem((*it).c_str());
     }
-
-    m_env_search_field = gui_env->addEditBox(L"", rect<s32>(25, 40, 200, 60), true, env);
-
-    for (int i = 0; i < 8; i++)
-    {
-        m_env_btn_table[4 * i].first = gui_env->addButton
-            (rect<s32>(10, i * 60 + 80, 60, i * 60 + 130), env, ENV_BTN_ID + 4 * i);
-
-        m_env_btn_table[4 * i + 1].first = gui_env->addButton
-            (rect<s32>(70, i * 60 + 80, 120, i * 60 + 130), env, ENV_BTN_ID + 4 * i + 1);
-
-        m_env_btn_table[4 * i + 2].first = gui_env->addButton
-            (rect<s32>(130, i * 60 + 80, 180, i * 60 + 130), env, ENV_BTN_ID + 4 * i + 2);
-
-        m_env_btn_table[4 * i + 3].first = gui_env->addButton
-            (rect<s32>(190, i * 60 + 80, 240, i * 60 + 130), env, ENV_BTN_ID + 4 * i + 3);
-    }
-
-    for (int i = 0; i < ENV_BTN_NUM; i++) m_env_btn_table[i].second = L"";
-
     refreshEnvBtnTable();
 
-    m_env_index = 0;
-    m_env_next  = gui_env->addButton
-        (rect<s32>(190, 600, 240, 620), env, ENV_BTN_ID + ENV_BTN_NUM + 1);
+    m_env_search_field = gui_env->addEditBox(L"", rect<s32>(25, 40, 200, 60), true, m_env_tab);
 
-    m_env_prev  = gui_env->addButton
-        (rect<s32>(10, 600, 60, 620), env, ENV_BTN_ID + ENV_BTN_NUM);
-}
+    m_env_index = 0;
+
+    m_env_next  = gui_env->addButton(rect<s32>(190, ss.Height - 120, 240, ss.Height - 100),
+                                     m_env_tab, ENV_BTN_ID + m_env_btn_num + 1);
+
+    m_env_prev  = gui_env->addButton(rect<s32>(10, ss.Height - 120, 60, ss.Height - 100),
+                                     m_env_tab, ENV_BTN_ID + m_env_btn_num);
+} // initEnvTab()
+
+// ----------------------------------------------------------------------------
+void ToolBox::initEnvTabButtons()
+{
+    IGUIEnvironment* gui_env = Editor::getEditor()->getGUIEnv();
+    dimension2du ss = Editor::getEditor()->getScreenSize();
+    m_env_btn_num = (ss.Height - 200) / 60 * 4;
+    m_env_btn_table = new std::pair<IGUIButton*, stringw>[m_env_btn_num];
+
+    for (int i = 0; i < m_env_btn_num / 4; i++)
+    {
+        m_env_btn_table[4 * i].first = gui_env->addButton
+            (rect<s32>(10, i * 60 + 80, 60, i * 60 + 130), m_env_tab, ENV_BTN_ID + 4 * i);
+
+        m_env_btn_table[4 * i + 1].first = gui_env->addButton
+            (rect<s32>(70, i * 60 + 80, 120, i * 60 + 130), m_env_tab, ENV_BTN_ID + 4 * i + 1);
+
+        m_env_btn_table[4 * i + 2].first = gui_env->addButton
+            (rect<s32>(130, i * 60 + 80, 180, i * 60 + 130), m_env_tab, ENV_BTN_ID + 4 * i + 2);
+
+        m_env_btn_table[4 * i + 3].first = gui_env->addButton
+            (rect<s32>(190, i * 60 + 80, 240, i * 60 + 130), m_env_tab, ENV_BTN_ID + 4 * i + 3);
+    }
+    for (int i = 0; i < m_env_btn_num; i++) m_env_btn_table[i].second = L"";
+} // initEnvTabButtons
 
 // ----------------------------------------------------------------------------
 ToolBox* ToolBox::getToolBox()
@@ -105,7 +115,7 @@ ToolBox* ToolBox::getToolBox()
 // ----------------------------------------------------------------------------
 stringw ToolBox::getEnvModelPathFromBtnId(int ID)
 {
-    assert(ID - ENV_BTN_ID >= 0 && ID - ENV_BTN_ID < ENV_BTN_NUM);
+    assert(ID - ENV_BTN_ID >= 0 && ID - ENV_BTN_ID < m_env_btn_num);
     return m_env_btn_table[ID - ENV_BTN_ID].second;
 } // getEnvModelPathFromBtnId
 
@@ -121,7 +131,7 @@ void ToolBox::refreshEnvBtnTable()
     IFileSystem* file_system = Editor::getEditor()->getDevice()->getFileSystem();
     stringw dir = file_system->getWorkingDirectory() + L"/libraries/env/img/";
     int i;
-    for (i = 0; i < ENV_BTN_NUM && it != elements.end(); i++, it++)
+    for (i = 0; i < m_env_btn_num && it != elements.end(); i++, it++)
     {
         ITexture* img = Editor::loadImg(dir + (*it)->getImg());
         m_env_btn_table[i].first->setVisible(true);
@@ -130,7 +140,7 @@ void ToolBox::refreshEnvBtnTable()
         m_env_btn_table[i].second = (*it)->getModel();
     }
 
-    for (; i < ENV_BTN_NUM; i++)
+    for (; i < m_env_btn_num; i++)
     {
         m_env_btn_table[i].first->setVisible(false);
     }
@@ -146,17 +156,32 @@ void ToolBox::reallocate()
     m_boxwnd->setRelativePosition(position2di(ss.Width-250,50));
     m_tab->setMinSize(dimension2du(250, ss.Height - 50));
 
+    m_env_next->setRelativePosition(rect<s32>(190, ss.Height - 120, 240, ss.Height - 100));
+    m_env_prev->setRelativePosition(rect<s32>(10, ss.Height - 120, 60, ss.Height - 100));
+
+    int new_btn_num = (ss.Height - 200) / 60 * 4;
+    if (new_btn_num != m_env_btn_num)
+    {
+        for (int i = 0; i < m_env_btn_num; i++)
+            m_env_btn_table[i].first->remove();
+        delete [] m_env_btn_table;
+        m_env_lib->setBufferSize(new_btn_num);
+        initEnvTabButtons();
+        refreshEnvBtnTable();
+        m_env_next->setID(ENV_BTN_ID + m_env_btn_num + 1);
+        m_env_prev->setID(ENV_BTN_ID + m_env_btn_num);
+    }
+
 } // reallocate
 
 // ----------------------------------------------------------------------------
 void ToolBox::switchEnvPage(int dir)
 {
-    int i = m_env_lib->getSelectionPageNum();
     if (dir < 0 && m_env_index > 0)
         m_env_index--;
     else if (dir > 0 && m_env_index < m_env_lib->getSelectionPageNum()-1)
         m_env_index++;
-    
+
     refreshEnvBtnTable();
 
 } // switchEnvPage

@@ -30,6 +30,8 @@ public:
 
     unsigned int         getSelectionPageNum();
 
+    void                 setBufferSize(unsigned int bs)     { m_buffer_size = bs; }
+
     ~Library();
 };
 

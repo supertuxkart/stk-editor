@@ -15,7 +15,6 @@ class ToolBox
 {
 public:
     static const int ENV_BTN_ID  = 100;
-    static const int ENV_BTN_NUM = 32;
     static const int ENV_CB_ID   = 1111;
     static const int TBOX_ID     = 1112;
 private:
@@ -31,16 +30,19 @@ private:
     IGUIComboBox*   m_env_cb;
     IGUIEditBox*    m_env_search_field;
 
+    IGUITab*        m_env_tab;
     unsigned int    m_env_index;
     IGUIButton*     m_env_next;
     IGUIButton*     m_env_prev;
+    int             m_env_btn_num;
 
-    std::pair<IGUIButton*, stringw> m_env_btn_table[ENV_BTN_NUM];
+    std::pair<IGUIButton*, stringw> *m_env_btn_table;
 
     // private functions:
 
     void    init();
     void    initEnvTab();
+    void    initEnvTabButtons();
 
     ToolBox() {};
 
@@ -51,6 +53,8 @@ public:
     void                reallocate();
 
     void                switchEnvPage(int dir);
+    int                 getEnvBtnNum()              { return m_env_btn_num; }
+    void                resetEnvIndex()             { m_env_index = 0;      }
 };
 
 #endif
