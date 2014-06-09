@@ -162,6 +162,10 @@ void Track::animatePlacing()
             m_last_entity_ID++;
             m_new_entity->setID(m_last_entity_ID);
             m_entity_manager.add(m_new_entity);
+            std::list<ISceneNode*> list;
+            list.push_back(m_new_entity);
+            Command* cmd = new CreateCmd(list);
+            m_command_handler.add(cmd);
             m_new_entity = m_new_entity->clone();
         }
 

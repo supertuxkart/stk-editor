@@ -42,6 +42,20 @@ public:
 };
 
 // ----------------------------------------------------------------------------
+class CreateCmd : public Command
+{
+private:
+    bool m_rdy;
+public:
+    CreateCmd(std::list<ISceneNode*> e) :Command(e)     { m_rdy = true;  }
+
+    void redo(ISceneNode* e)      { e->setVisible(true);  m_rdy = true;  }
+    void undo(ISceneNode* e)      { e->setVisible(false); m_rdy = false; }
+
+    ~CreateCmd();
+};
+
+// ----------------------------------------------------------------------------
 class MoveCmd : public Command
 {
 private:
