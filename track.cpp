@@ -151,7 +151,6 @@ void Track::animatePlacing()
 {
     if (m_new_entity)
     {
-
         ISceneCollisionManager* cm = Editor::getEditor()->getSceneManager()
             ->getSceneCollisionManager();
         line3d<f32> r = cm->getRayFromScreenCoordinates(vector2d<s32>(m_mouse.x, m_mouse.y));
@@ -277,37 +276,48 @@ void Track::keyEvent(EKEY_CODE code, bool pressed)
 // ----------------------------------------------------------------------------
 void Track::mouseEvent(const SEvent& e)
 {
-    switch (e.MouseInput.Event)
+    dimension2du ss = Editor::getEditor()->getScreenSize();
+    if (e.MouseInput.Y < 50 || e.MouseInput.X > ss.Width - 250)
     {
-    case EMIE_MOUSE_WHEEL:
-        m_mouse.wheel = e.MouseInput.Wheel;
-        break;
-    case EMIE_LMOUSE_PRESSED_DOWN:
-        m_mouse.left_btn_down  = true;
-        m_mouse.left_pressed   = true;
-        m_mouse.left_released  = false;
-        break;
-    case EMIE_LMOUSE_LEFT_UP:
-        m_mouse.left_btn_down  = false;
-        m_mouse.left_pressed   = false;
-        m_mouse.left_released  = true;
-        break;
-    case EMIE_RMOUSE_PRESSED_DOWN:
-        m_mouse.right_btn_down = true;
-        m_mouse.right_pressed  = true;
-        m_mouse.right_released = false;
-        break;
-    case EMIE_RMOUSE_LEFT_UP:
-        m_mouse.right_btn_down = false;
-        m_mouse.right_pressed  = false;
-        m_mouse.right_released = true;
-        break;
-    case EMIE_MOUSE_MOVED:
-        m_mouse.x              = e.MouseInput.X;
-        m_mouse.y              = e.MouseInput.Y;
-        break;
-    default:
-        break;
+        if (m_new_entity && m_new_entity->isVisible())
+            m_new_entity->setVisible(false);
+    }
+    else
+    {
+        if (m_new_entity && !m_new_entity->isVisible())
+            m_new_entity->setVisible(true);
+        switch (e.MouseInput.Event)
+        {
+        case EMIE_MOUSE_WHEEL:
+            m_mouse.wheel = e.MouseInput.Wheel;
+            break;
+        case EMIE_LMOUSE_PRESSED_DOWN:
+            m_mouse.left_btn_down = true;
+            m_mouse.left_pressed = true;
+            m_mouse.left_released = false;
+            break;
+        case EMIE_LMOUSE_LEFT_UP:
+            m_mouse.left_btn_down = false;
+            m_mouse.left_pressed = false;
+            m_mouse.left_released = true;
+            break;
+        case EMIE_RMOUSE_PRESSED_DOWN:
+            m_mouse.right_btn_down = true;
+            m_mouse.right_pressed = true;
+            m_mouse.right_released = false;
+            break;
+        case EMIE_RMOUSE_LEFT_UP:
+            m_mouse.right_btn_down = false;
+            m_mouse.right_pressed = false;
+            m_mouse.right_released = true;
+            break;
+        case EMIE_MOUSE_MOVED:
+            m_mouse.x = e.MouseInput.X;
+            m_mouse.y = e.MouseInput.Y;
+            break;
+        default:
+            break;
+        }
     }
 
 } // mouseEvent

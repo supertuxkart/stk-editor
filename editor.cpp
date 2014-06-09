@@ -194,7 +194,6 @@ bool Editor::OnEvent(const SEvent& event)
 
     if (event.EventType == EET_MOUSE_INPUT_EVENT)
     {
-        if (event.MouseInput.Y < 50) return false;
         m_track->mouseEvent(event);
     }
 
