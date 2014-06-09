@@ -28,8 +28,7 @@ public:
     void                 selectElements(stringw s, stringw categ = "");
     std::list<Element*>  getElements(unsigned int ix = 0);
 
-    unsigned int         getSelectionPageNum()  
-                { return m_selected_elements.size() / m_buffer_size + 1; }
+    unsigned int         getSelectionPageNum();
 
     ~Library();
 };

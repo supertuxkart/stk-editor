@@ -144,6 +144,12 @@ bool Editor::OnEvent(const SEvent& event)
             case ToolBar::TBI_GRID_DEC:
                 m_track->changeGridDensity(-1);
                 return true;
+            case ToolBox::ENV_BTN_ID + ToolBox::ENV_BTN_NUM:
+                m_toolbox->switchEnvPage(-1);
+                break;
+            case ToolBox::ENV_BTN_ID + ToolBox::ENV_BTN_NUM + 1:
+                m_toolbox->switchEnvPage(1);
+                break;
             default:
                 if (id >= ToolBox::ENV_BTN_ID &&
                     id < ToolBox::ENV_BTN_ID + ToolBox::ENV_BTN_NUM)

@@ -64,7 +64,7 @@ void ToolBox::initEnvTab()
 
     m_env_search_field = gui_env->addEditBox(L"", rect<s32>(25, 40, 200, 60), true, env);
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 8; i++)
     {
         m_env_btn_table[4 * i].first = gui_env->addButton
             (rect<s32>(10, i * 60 + 80, 60, i * 60 + 130), env, ENV_BTN_ID + 4 * i);
@@ -82,6 +82,13 @@ void ToolBox::initEnvTab()
     for (int i = 0; i < ENV_BTN_NUM; i++) m_env_btn_table[i].second = L"";
 
     refreshEnvBtnTable();
+
+    m_env_index = 0;
+    m_env_next  = gui_env->addButton
+        (rect<s32>(190, 600, 240, 620), env, ENV_BTN_ID + ENV_BTN_NUM + 1);
+
+    m_env_prev  = gui_env->addButton
+        (rect<s32>(10, 600, 60, 620), env, ENV_BTN_ID + ENV_BTN_NUM);
 }
 
 // ----------------------------------------------------------------------------
@@ -107,7 +114,7 @@ stringw ToolBox::getEnvModelPathFromBtnId(int ID)
 void ToolBox::refreshEnvBtnTable()
 {
     m_env_lib->selectElements("",m_env_cb->getItem(m_env_cb->getSelected()));
-    std::list<Element*> elements = m_env_lib->getElements();
+    std::list<Element*> elements = m_env_lib->getElements(m_env_index);
 
     std::list<Element*>::iterator it = elements.begin();
 
@@ -116,8 +123,10 @@ void ToolBox::refreshEnvBtnTable()
     int i;
     for (i = 0; i < ENV_BTN_NUM && it != elements.end(); i++, it++)
     {
+        ITexture* img = Editor::loadImg(dir + (*it)->getImg());
         m_env_btn_table[i].first->setVisible(true);
-        m_env_btn_table[i].first->setImage(Editor::loadImg(dir + (*it)->getImg()));
+        m_env_btn_table[i].first->setImage(img);
+        m_env_btn_table[i].first->setPressedImage(img);
         m_env_btn_table[i].second = (*it)->getModel();
     }
 
@@ -138,3 +147,16 @@ void ToolBox::reallocate()
     m_tab->setMinSize(dimension2du(250, ss.Height - 50));
 
 } // reallocate
+
+// ----------------------------------------------------------------------------
+void ToolBox::switchEnvPage(int dir)
+{
+    int i = m_env_lib->getSelectionPageNum();
+    if (dir < 0 && m_env_index > 0)
+        m_env_index--;
+    else if (dir > 0 && m_env_index < m_env_lib->getSelectionPageNum()-1)
+        m_env_index++;
+    
+    refreshEnvBtnTable();
+
+} // switchEnvPage
