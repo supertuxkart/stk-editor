@@ -1,13 +1,13 @@
 NAME = stk-editor
 
-SRC = $(wildcard *.cpp)
+SRC = $(wildcard *.cpp toolbox/*.cpp)
 OBJ = $(SRC:.cpp=.o)
 HDR = $(wildcard *.hpp)
 
 # Irr paths will depend on your system.
 IRR_INCLUDE ?= /opt/irr2/include/irrlicht
 IRR_LIB ?= /opt/irr2/lib/libIrrlicht.a
-CXXFLAGS += -isystem $(IRR_INCLUDE)
+CXXFLAGS += -isystem $(IRR_INCLUDE) -I.
 LDFLAGS += $(IRR_LIB)
 
 CXXFLAGS += -Wall -Wextra
