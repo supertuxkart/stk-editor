@@ -1,6 +1,8 @@
 #include "track.hpp"
 #include "editor.hpp"
 
+#include "entities/terrain.hpp"
+
 #include <iostream>
 
 Track* Track::m_track          = 0;
@@ -192,19 +194,10 @@ void Track::init()
     m_grid_on = true;
     for (int i = 0; i < m_key_num; i++) m_key_state[i] = false;
 
-    ISceneNode* node;
+    ISceneManager* sm = Editor::getEditor()->getSceneManager();
 
-    for (int i = 1; i < 10; i++)
-    {
-        // node = Editor::getEditor()->getSceneManager()->addCubeSceneNode();
-
-        node = Editor::getEditor()->getSceneManager()->addAnimatedMeshSceneNode(
-            Editor::getEditor()->getSceneManager()->getMesh("Cat.obj")
-            );
-        m_last_entity_ID = MAGIC_NUMBER + i;
-        node->setID(m_last_entity_ID);
-        m_entity_manager.add(node);
-    }
+    m_terrain = new Terrain(sm->getRootSceneNode(), sm, EPIC_MAGIC_NUMBER+1);
+    m_terrain->setSize(25, 25, 20, 20);
 
 } // init
 
@@ -281,47 +274,49 @@ void Track::keyEvent(EKEY_CODE code, bool pressed)
 void Track::mouseEvent(const SEvent& e)
 {
     dimension2du ss = Editor::getEditor()->getScreenSize();
+
+    // check if mouse is outside of the viewport's domain
     if (e.MouseInput.Y < 50 || e.MouseInput.X > ss.Width - 250)
     {
         if (m_new_entity && m_new_entity->isVisible())
             m_new_entity->setVisible(false);
+        return;
     }
-    else
+   
+    if (m_new_entity && !m_new_entity->isVisible())
+        m_new_entity->setVisible(true);
+
+    switch (e.MouseInput.Event)
     {
-        if (m_new_entity && !m_new_entity->isVisible())
-            m_new_entity->setVisible(true);
-        switch (e.MouseInput.Event)
-        {
-        case EMIE_MOUSE_WHEEL:
-            m_mouse.wheel = e.MouseInput.Wheel;
-            break;
-        case EMIE_LMOUSE_PRESSED_DOWN:
-            m_mouse.left_btn_down = true;
-            m_mouse.left_pressed = true;
-            m_mouse.left_released = false;
-            break;
-        case EMIE_LMOUSE_LEFT_UP:
-            m_mouse.left_btn_down = false;
-            m_mouse.left_pressed = false;
-            m_mouse.left_released = true;
-            break;
-        case EMIE_RMOUSE_PRESSED_DOWN:
-            m_mouse.right_btn_down = true;
-            m_mouse.right_pressed = true;
-            m_mouse.right_released = false;
-            break;
-        case EMIE_RMOUSE_LEFT_UP:
-            m_mouse.right_btn_down = false;
-            m_mouse.right_pressed = false;
-            m_mouse.right_released = true;
-            break;
-        case EMIE_MOUSE_MOVED:
-            m_mouse.x = e.MouseInput.X;
-            m_mouse.y = e.MouseInput.Y;
-            break;
-        default:
-            break;
-        }
+    case EMIE_MOUSE_WHEEL:
+        m_mouse.wheel = e.MouseInput.Wheel;
+        break;
+    case EMIE_LMOUSE_PRESSED_DOWN:
+        m_mouse.left_btn_down = true;
+        m_mouse.left_pressed = true;
+        m_mouse.left_released = false;
+        break;
+    case EMIE_LMOUSE_LEFT_UP:
+        m_mouse.left_btn_down = false;
+        m_mouse.left_pressed = false;
+        m_mouse.left_released = true;
+        break;
+    case EMIE_RMOUSE_PRESSED_DOWN:
+        m_mouse.right_btn_down = true;
+        m_mouse.right_pressed = true;
+        m_mouse.right_released = false;
+        break;
+    case EMIE_RMOUSE_LEFT_UP:
+        m_mouse.right_btn_down = false;
+        m_mouse.right_pressed = false;
+        m_mouse.right_released = true;
+        break;
+    case EMIE_MOUSE_MOVED:
+        m_mouse.x = e.MouseInput.X;
+        m_mouse.y = e.MouseInput.Y;
+        break;
+    default:
+        break;
     }
 
 } // mouseEvent

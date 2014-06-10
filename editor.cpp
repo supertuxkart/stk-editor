@@ -2,11 +2,82 @@
 
 #include "toolbar.hpp"
 #include "toolbox/toolbox.hpp"
+#include "toolbox/envpanel.hpp"
 #include "track.hpp"
 
 #include <iostream>
 
 Editor* Editor::m_editor = 0;
+
+// ----------------------------------------------------------------------------
+bool Editor::buttonClicked(int ID)
+{
+    // ToolBar buttons
+    switch (ID)
+    {
+    case ToolBar::TBI_EXIT:
+        m_device->closeDevice();
+        return true;
+    case ToolBar::TBI_UNDO:
+        m_track->undo();
+        return true;
+    case ToolBar::TBI_REDO:
+        m_track->redo();
+        return true;
+    case ToolBar::TBI_SELECT:
+        m_track->setState(Track::SELECT);
+        return true;
+    case ToolBar::TBI_MOVE:
+        m_track->setState(Track::MOVE);
+        return true;
+    case ToolBar::TBI_ROTATE:
+        m_track->setState(Track::ROTATE);
+        return true;
+    case ToolBar::TBI_SCALE:
+        m_track->setState(Track::SCALE);
+        return true;
+    case ToolBar::TBI_DELETE:
+        m_track->deleteCmd();
+        return true;
+    case ToolBar::TBI_CAM:
+        m_track->setState(Track::FREECAM);
+        return true;
+    case ToolBar::TBI_GRID_ON_OFF:
+        m_track->setGrid(!m_track->isGridOn());
+        return true;
+    case ToolBar::TBI_GRID_INC:
+        m_track->changeGridDensity(1);
+        return true;
+    case ToolBar::TBI_GRID_DEC:
+        m_track->changeGridDensity(-1);
+        return true;
+    default:
+        break;
+    }
+
+    EnvPanel* ep = EnvPanel::getEnvPanel();
+    // env panel
+    if (ID >= ep->FIRST_BTN_ID &&
+        ID < ep->FIRST_BTN_ID + ep->getBtnNum())
+    {
+        // element is picked from env panel
+        m_track->setNewEntity(EnvPanel::getEnvPanel()->getModelPathFromBtnId(ID));
+        return true;
+    }
+    if (ID == ep->FIRST_BTN_ID + ep->getBtnNum())
+    {
+        ep->switchPage(-1);
+        return true;
+    }
+    if (ID == ep->FIRST_BTN_ID + ep->getBtnNum() + 1)
+    {
+        ep->switchPage(1);
+        return true;
+    }
+    
+    std::cerr << "Button click isn't handled!" << std::endl;
+    return false;    
+}
 
 // ----------------------------------------------------------------------------
 bool Editor::init()
@@ -35,14 +106,13 @@ bool Editor::init()
     m_track->setFreeCamera(cam);
 
     cam = m_scene_manager->addCameraSceneNode(0, vector3df(0, 50, 0),
-                                                 vector3df(0, 0, -10));
+                                                 vector3df(0, -30, -10));
     cam->setID(2);
     m_scene_manager->setActiveCamera(cam);
     m_track->setNormalCamera(cam);
 
     m_toolbar = ToolBar::getToolBar();
     m_toolbox = ToolBox::getToolBox();
-
 
     m_device->setEventReceiver(this);
 
@@ -106,98 +176,41 @@ bool Editor::OnEvent(const SEvent& event)
         if (event.GUIEvent.EventType == EGET_BUTTON_CLICKED)
         {
             m_gui_env->removeFocus(m_gui_env->getFocus()->getParent());
-            switch (id)
+            return buttonClicked(id);
+        }
+        else
+        if (event.GUIEvent.EventType == EGET_COMBO_BOX_CHANGED)
+        {
+            switch (event.GUIEvent.Caller->getID())
             {
-            case ToolBar::TBI_EXIT:
-                m_device->closeDevice();
-                return true;
-            case ToolBar::TBI_UNDO:
-                m_track->undo();
-                return true;
-            case ToolBar::TBI_REDO:
-                m_track->redo();
-                return true;
-            case ToolBar::TBI_SELECT:
-                m_track->setState(Track::SELECT);
-                return true;
-            case ToolBar::TBI_MOVE:
-                m_track->setState(Track::MOVE);
-                return true;
-            case ToolBar::TBI_ROTATE:
-                m_track->setState(Track::ROTATE);
-                return true;
-            case ToolBar::TBI_SCALE:
-                m_track->setState(Track::SCALE);
-                return true;
-            case ToolBar::TBI_DELETE:
-                m_track->deleteCmd();
-                return true;
-            case ToolBar::TBI_CAM:
-                m_track->setState(Track::FREECAM);
-                return true;
-            case ToolBar::TBI_GRID_ON_OFF:
-                m_track->setGrid(!m_track->isGridOn());
-                return true;
-            case ToolBar::TBI_GRID_INC:
-                m_track->changeGridDensity(1);
-                return true;
-            case ToolBar::TBI_GRID_DEC:
-                m_track->changeGridDensity(-1);
+            case EnvPanel::CB_ID:
+                EnvPanel::getEnvPanel()->resetIndex();
+                EnvPanel::getEnvPanel()->refreshBtnTable();
                 return true;
             default:
-                if (id >= ToolBox::ENV_BTN_ID &&
-                    id < ToolBox::ENV_BTN_ID + m_toolbox->getEnvBtnNum())
-                {
-                    // element is picked from env panel
-                    m_track->setNewEntity(m_toolbox->getEnvModelPathFromBtnId(id));
-                    return true;
-                }
-                else if (id == ToolBox::ENV_BTN_ID + m_toolbox->getEnvBtnNum())
-                    m_toolbox->switchEnvPage(-1);
-                else if (id == ToolBox::ENV_BTN_ID + m_toolbox->getEnvBtnNum() + 1)
-                    m_toolbox->switchEnvPage(1);
-                else
-                    std::cerr << "Button click isn't handled!" << std::endl;
+                break;
             }
-        } // EventType == EGET_BUTTON_CLICKED
-        else
-            if (event.GUIEvent.EventType == EGET_COMBO_BOX_CHANGED)
-            {
-                switch (event.GUIEvent.Caller->getID())
-                {
-                case ToolBox::ENV_CB_ID:
-                    m_toolbox->resetEnvIndex();
-                    m_toolbox->refreshEnvBtnTable();
-                    return true;
-                default:
-                    break;
-                }
-            } // GUIEvent.EventType == EGET_COMBO_BOX_CHANGED
+        } // GUIEvent.EventType == EGET_COMBO_BOX_CHANGED
     } // EventType == EET_GUI_EVENT
 
+    // gui active, there is nothing we should do
     if (m_gui_env->getFocus() != NULL) return false;
 
-
-    IGUIElement* focused = m_gui_env->getFocus();
-    while (focused)
-    {
-        if (focused->isVisible() && focused->getID() == ToolBox::TBOX_ID)
-            return false;
-        focused = focused->getParent();
-    }
-
-
+    // keyboard event
     if (event.EventType == EET_KEY_INPUT_EVENT)
     {
         m_track->keyEvent(event.KeyInput.Key, event.KeyInput.PressedDown);
-    } // EventType == EET_KEY_INPUT_EVENT
+        return true;
+    }
 
+    // mouse event
     if (event.EventType == EET_MOUSE_INPUT_EVENT)
     {
         m_track->mouseEvent(event);
     }
 
 	return false;
+
 } // OnEvent
 
 // ----------------------------------------------------------------------------

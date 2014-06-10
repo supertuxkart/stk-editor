@@ -31,6 +31,7 @@ private:
 	bool init();
 
 	Editor() {};
+    bool                        buttonClicked(int ID);
 
 public:
     static Editor*    getEditor(dimension2du screen_size = dimension2du(1280, 720));

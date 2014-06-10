@@ -2,15 +2,17 @@
 #define TRACK_HPP
 
 #include "command.hpp"
-#include "entitymanager.hpp"
+#include "entities/entitymanager.hpp"
 
 #include <irrlicht.h>
 #include <list>
 
-#define MAGIC_NUMBER 8192
+#define MAGIC_NUMBER      8192
+#define EPIC_MAGIC_NUMBER 24576
 
 class Entity;
 class Command;
+class Terrain;
 
 using namespace irr;
 using namespace scene;
@@ -90,6 +92,8 @@ private:
     ISceneNode*         m_new_entity;
 
     CommandHandler      m_command_handler;
+
+    Terrain*            m_terrain;
 
     // command not yet finished
     Command*            m_active_cmd;
