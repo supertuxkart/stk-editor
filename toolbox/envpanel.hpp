@@ -14,8 +14,9 @@ using namespace core;
 class EnvPanel
 {
 public:
-    static const int FIRST_BTN_ID = 101;
-    static const int CB_ID = 100;
+    static const int FIRST_BTN_ID = 102;
+    static const int CB_ID = 101;
+    static const int SF_ID = 100;
 private:
 
     // private variables:

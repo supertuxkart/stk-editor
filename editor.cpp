@@ -191,6 +191,18 @@ bool Editor::OnEvent(const SEvent& event)
                 break;
             }
         } // GUIEvent.EventType == EGET_COMBO_BOX_CHANGED
+        if (event.GUIEvent.EventType == EGET_EDITBOX_CHANGED)
+        {
+            switch (event.GUIEvent.Caller->getID())
+            {
+            case EnvPanel::SF_ID:
+                EnvPanel::getEnvPanel()->resetIndex();
+                EnvPanel::getEnvPanel()->refreshBtnTable();
+                return true;
+            default:
+                break;
+            }
+        }
     } // EventType == EET_GUI_EVENT
 
     // gui active, there is nothing we should do

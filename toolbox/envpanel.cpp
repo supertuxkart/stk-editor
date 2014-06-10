@@ -29,9 +29,8 @@ void EnvPanel::init()
     {
         m_cb->addItem((*it).c_str());
     }
-    refreshBtnTable();
 
-    m_search_field = gui_env->addEditBox(L"", rect<s32>(25, 40, 200, 60), true, m_tab);
+    m_search_field = gui_env->addEditBox(L"", rect<s32>(25, 40, 200, 60), true, m_tab, SF_ID);
 
     m_index = 0;
 
@@ -40,6 +39,8 @@ void EnvPanel::init()
 
     m_prev = gui_env->addButton(rect<s32>(10, ss.Height - 120, 60, ss.Height - 100),
         m_tab, FIRST_BTN_ID + m_btn_num);
+
+    refreshBtnTable();
 
 } // init
 
@@ -92,8 +93,8 @@ stringw EnvPanel::getModelPathFromBtnId(int ID)
 
 // ----------------------------------------------------------------------------
 void EnvPanel::refreshBtnTable()
-{
-    m_lib->selectElements("",m_cb->getItem(m_cb->getSelected()));
+{ 
+    m_lib->selectElements(m_search_field->getText(), m_cb->getItem(m_cb->getSelected()));
     std::list<Element*> elements = m_lib->getElements(m_index);
 
     std::list<Element*>::iterator it = elements.begin();
