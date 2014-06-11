@@ -3,6 +3,7 @@
 #include "toolbar.hpp"
 #include "toolbox/toolbox.hpp"
 #include "toolbox/envpanel.hpp"
+#include "toolbox/terrpanel.hpp"
 #include "track.hpp"
 
 #include <iostream>
@@ -12,9 +13,9 @@ Editor* Editor::m_editor = 0;
 // ----------------------------------------------------------------------------
 bool Editor::buttonClicked(int ID)
 {
-    // ToolBar buttons
     switch (ID)
     {
+    // ToolBar buttons
     case ToolBar::TBI_EXIT:
         m_device->closeDevice();
         return true;
@@ -50,6 +51,16 @@ bool Editor::buttonClicked(int ID)
         return true;
     case ToolBar::TBI_GRID_DEC:
         m_track->changeGridDensity(-1);
+        return true;
+    // ToolBox / Terrain buttons:
+    case TerrPanel::H_EDGE_1:
+        TerrPanel::getTerrPanel()->btnDown(TerrPanel::H_EDGE_1);
+        return true;
+    case TerrPanel::H_EDGE_2:
+        TerrPanel::getTerrPanel()->btnDown(TerrPanel::H_EDGE_2);
+        return true;
+    case TerrPanel::H_EDGE_3:
+        TerrPanel::getTerrPanel()->btnDown(TerrPanel::H_EDGE_3);
         return true;
     default:
         break;
@@ -105,8 +116,8 @@ bool Editor::init()
     cam->setInputReceiverEnabled(false);
     m_track->setFreeCamera(cam);
 
-    cam = m_scene_manager->addCameraSceneNode(0, vector3df(0, 50, 0),
-                                                 vector3df(0, -30, -10));
+    cam = m_scene_manager->addCameraSceneNode(0, vector3df(25, 50, 25),
+                                                 vector3df(25, -30, -15));
     cam->setID(2);
     m_scene_manager->setActiveCamera(cam);
     m_track->setNormalCamera(cam);
@@ -173,6 +184,7 @@ bool Editor::OnEvent(const SEvent& event)
     if (event.EventType == EET_GUI_EVENT)
     {
         s32 id = event.GUIEvent.Caller->getID();
+
         if (event.GUIEvent.EventType == EGET_BUTTON_CLICKED)
         {
             m_gui_env->removeFocus(m_gui_env->getFocus()->getParent());
@@ -198,6 +210,18 @@ bool Editor::OnEvent(const SEvent& event)
             case EnvPanel::SF_ID:
                 EnvPanel::getEnvPanel()->resetIndex();
                 EnvPanel::getEnvPanel()->refreshBtnTable();
+                return true;
+            default:
+                break;
+            }
+        }
+        if (event.GUIEvent.EventType == EGET_SCROLL_BAR_CHANGED)
+        {
+            switch (event.GUIEvent.Caller->getID())
+            {
+            case TerrPanel::H_INTENSITY:
+            case TerrPanel::H_RADIUS:
+                TerrPanel::getTerrPanel()->refreshTerrModData();
                 return true;
             default:
                 break;

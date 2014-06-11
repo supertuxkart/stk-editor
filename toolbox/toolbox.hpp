@@ -4,6 +4,7 @@
 #include <irrlicht.h>
 
 class EnvPanel;
+class TerrPanel;
 
 using namespace irr;
 using namespace gui;
@@ -20,6 +21,7 @@ private:
     static ToolBox* m_toolbox;
 
     EnvPanel*       m_env_panel;
+    TerrPanel*      m_terr_panel;
 
     IGUIWindow*     m_boxwnd;
     IGUITabControl* m_tab;

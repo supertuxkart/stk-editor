@@ -10,6 +10,16 @@ using namespace core;
 
 class Terrain :public ISceneNode
 {
+public:
+    struct TerrainMod
+    {
+        int   edge_type;
+        int   ID;
+        float radius;
+        float dh;
+        long  countdown;
+    };
+
 private:
     SMaterial       m_material;
     
@@ -23,19 +33,20 @@ private:
     int             m_last_mod_ID;
     float*          m_vertex_h_before;
 
+    aabbox3d<f32>   m_bounding_box;
+
 public:
     Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id);
     ~Terrain();
 
     void         setSize(float x, float y, int nx, int nz);
 
-    void         modify(line3d<float> ray, float radius, float dh, int MID);
+    void         modify(line3d<float> ray, TerrainMod tm);
 
     virtual void OnRegisterSceneNode();
     virtual void render();
 
-    virtual const aabbox3d<f32>& getBoundingBox() const
-        {return aabbox3d<f32>(0,0,0,m_x,1,m_z);}
+    virtual const aabbox3d<f32>& getBoundingBox() const   { return m_bounding_box; }
 
     virtual u32 getMaterialCount() const
         {return 1;}

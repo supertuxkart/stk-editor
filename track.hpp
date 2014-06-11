@@ -3,20 +3,20 @@
 
 #include "command.hpp"
 #include "entities/entitymanager.hpp"
+#include "entities/terrain.hpp"
 
 #include <irrlicht.h>
 #include <list>
 
 #define MAGIC_NUMBER      8192
-#define EPIC_MAGIC_NUMBER 24576
 
 class Entity;
 class Command;
-class Terrain;
 
 using namespace irr;
 using namespace scene;
 using namespace core;
+
 
 class Track
 {
@@ -28,6 +28,7 @@ public:
         ROTATE,
         SCALE,
         PLACE,
+        TERRAIN_MOD,
         FREECAM
     };
     enum Key
@@ -78,22 +79,22 @@ public:
     };
 
 private:
-    static Track*       m_track;
-    static const int    m_key_num = 6;
+    static Track*           m_track;
+    static const int        m_key_num = 6;
     
-    static int          m_last_entity_ID;
+    static int              m_last_entity_ID;
 
-    State               m_state;
+    State                   m_state;
 
-    MouseData           m_mouse;
+    MouseData               m_mouse;
 
-    EntityManager       m_entity_manager;
+    EntityManager           m_entity_manager;
 
-    ISceneNode*         m_new_entity;
+    ISceneNode*             m_new_entity;
 
-    CommandHandler      m_command_handler;
+    CommandHandler          m_command_handler;
 
-    Terrain*            m_terrain;
+    Terrain*                m_terrain;
 
     // command not yet finished
     Command*            m_active_cmd;
@@ -107,7 +108,7 @@ private:
     bool                m_key_state[m_key_num];
     bool                m_grid_on;
 
-
+    static const long   TERRAIN_WAIT_TIME = 200;
 
     Track() {};
     void                animateNormalCamera(long dt);
@@ -115,6 +116,7 @@ private:
     void                animateEditing();
     void                animateSelection();
     void                animatePlacing();
+    void                animateTerrainMod(long dt);
 
 public:
     static Track* getTrack();

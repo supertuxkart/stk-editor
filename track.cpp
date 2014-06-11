@@ -1,7 +1,7 @@
 #include "track.hpp"
 #include "editor.hpp"
 
-#include "entities/terrain.hpp"
+#include "toolbox/terrpanel.hpp"
 
 #include <iostream>
 
@@ -140,7 +140,7 @@ void Track::animateSelection()
         ISceneNode* node;
         node = Editor::getEditor()->getSceneManager()->getSceneCollisionManager()
             ->getSceneNodeFromScreenCoordinatesBB(
-                vector2d<s32>(m_mouse.x, m_mouse.y), MAGIC_NUMBER);
+                vector2d<s32>(m_mouse.x, m_mouse.y), 10);
 
 
         if (node)
@@ -175,6 +175,37 @@ void Track::animatePlacing()
 } // animatePlacing
 
 // ----------------------------------------------------------------------------
+void Track::animateTerrainMod(long dt)
+{
+    Terrain::TerrainMod* tm = TerrPanel::getTerrPanel()->getTerrainModData();
+
+    if (m_mouse.leftReleased() || m_mouse.rightReleased())
+        tm->countdown = -1;
+
+    tm->countdown -= dt;
+
+    if (tm->countdown > 0) return;
+
+    tm->countdown = TERRAIN_WAIT_TIME;
+
+    if (m_mouse.leftPressed() ||m_mouse.rightPressed())
+        tm->ID++;
+
+    if (m_mouse.left_btn_down || m_mouse.right_btn_down)
+    {
+        ISceneCollisionManager* cm;
+        cm = Editor::getEditor()->getSceneManager()->getSceneCollisionManager();
+
+        if (m_mouse.right_btn_down) tm->dh *= -1;
+
+        m_terrain->modify(
+            cm->getRayFromScreenCoordinates(vector2d<s32>(m_mouse.x,m_mouse.y)),*tm);
+        if (m_mouse.right_btn_down) tm->dh *= -1;
+    }
+
+} // animateTerrainMod
+
+// ----------------------------------------------------------------------------
 Track* Track::getTrack()
 {
     if (m_track != 0) return m_track;
@@ -189,15 +220,15 @@ Track* Track::getTrack()
 void Track::init()
 {
     m_active_cmd = 0;
-    m_state = SELECT;
+    m_state = TERRAIN_MOD;
     m_new_entity = 0;
     m_grid_on = true;
     for (int i = 0; i < m_key_num; i++) m_key_state[i] = false;
 
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
 
-    m_terrain = new Terrain(sm->getRootSceneNode(), sm, EPIC_MAGIC_NUMBER+1);
-    m_terrain->setSize(25, 25, 20, 20);
+    m_terrain = new Terrain(sm->getRootSceneNode(), sm, 1);
+    m_terrain->setSize(50, 50, 50, 50);
 
 } // init
 
@@ -364,6 +395,8 @@ void Track::animate(long dt)
             animateSelection();
         else if (m_state == PLACE)
             animatePlacing();
+        else if (m_state == TERRAIN_MOD)
+            animateTerrainMod(dt);
     }
 
 } // animate

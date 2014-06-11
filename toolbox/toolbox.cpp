@@ -1,6 +1,7 @@
 #include "toolbox/toolbox.hpp"
 
 #include "toolbox/envpanel.hpp"
+#include "toolbox/terrpanel.hpp"
 #include "editor.hpp"
 
 
@@ -29,7 +30,8 @@ void ToolBox::init()
     m_tab->setMinSize(dimension2du(250, ss.Height - 50));
     m_tab->setRelativePosition(position2di(0, 0));
 
-    m_tab->addTab(L"Terrain");
+    m_terr_panel = TerrPanel::getTerrPanel(m_tab->addTab(L"Terrain"));
+
     m_tab->addTab(L"Road");
 
     m_env_panel = EnvPanel::getEnvPanel(m_tab->addTab(L"Env"));

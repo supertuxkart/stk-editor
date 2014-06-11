@@ -1,26 +1,31 @@
 #include "entities/terrain.hpp"
 
+// ----------------------------------------------------------------------------
 Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id)
     :ISceneNode(parent, mgr, id)
 {
+    m_vertices = 0;
+    m_indices  = 0;
     m_material.Wireframe = true;
     m_material.Lighting = false;
     ISceneNode::setAutomaticCulling(EAC_OFF);
     m_vertex_h_before = 0;
-}
+    m_last_mod_ID     = -1;
+} // Terrain
 
-
+// ----------------------------------------------------------------------------
 Terrain::~Terrain()
 {
-}
 
+} // ~Terrain
 
-void Terrain::modify(line3d<float> ray, float radius, float dh, int MID)
+// ----------------------------------------------------------------------------
+void Terrain::modify(line3d<float> ray, TerrainMod tm)
 {
 
-    if (MID != m_last_mod_ID)
+    if (tm.ID != m_last_mod_ID)
     {
-        m_last_mod_ID = MID;
+        m_last_mod_ID = tm.ID;
         if (m_vertex_h_before != 0) delete[] m_vertex_h_before;
         m_vertex_h_before = new float[m_vertex_count];
         for (int i = 0; i < m_vertex_count; i++)
@@ -40,8 +45,8 @@ void Terrain::modify(line3d<float> ray, float radius, float dh, int MID)
     int ix = p.X / (m_x / m_nx);
     int iz = p.Z / (m_z / m_nz);
 
-    int dx = (radius / (m_x / m_nx) + 1);
-    int dz = (radius / (m_z / m_nz) + 1);
+    int dx = (tm.radius / (m_x / m_nx) + 1);
+    int dz = (tm.radius / (m_z / m_nz) + 1);
   
     bool b = true;
 
@@ -58,27 +63,36 @@ void Terrain::modify(line3d<float> ray, float radius, float dh, int MID)
             {
                 vector2df pos = vector2df(m_vertices[(iz + j) * m_nx + ix + i].Pos.X,
                                           m_vertices[(iz + j) * m_nx + ix + i].Pos.Z);
-                if ((kpos - pos).getLength() < radius) 
+                if ((kpos - pos).getLength() < tm.radius) 
                 {
-                    float dist = radius - (kpos - pos).getLength();
-                    float h = dist * dh / radius;
+                    float h;
+                    if (tm.edge_type == 1) h = tm.dh;
+                    else
+                    {
+                        float dist = tm.radius - (kpos - pos).getLength();
+                        h = dist * tm.dh / tm.radius;
+                        if (tm.edge_type == 3) h = sqrt(fabs(h)) * h / fabs(h);
+                    }
                     
                     m_vertices[(iz + j) * m_nx + ix + i].Pos.Y += h;
                     if (fabs((m_vertices[(iz + j) * m_nx + ix + i].Pos.Y -
-                            m_vertex_h_before[(iz + j) * m_nx + ix + i])) > fabs(dh))
+                            m_vertex_h_before[(iz + j) * m_nx + ix + i])) > fabs(tm.dh))
                     {
                         m_vertices[(iz + j) * m_nx + ix + i].Pos.Y =
-                            m_vertex_h_before[(iz + j) * m_nx + ix + i] + dh;
+                            m_vertex_h_before[(iz + j) * m_nx + ix + i] + tm.dh;
                     }
 
                 }
             }
         }
 
-}
+} // modify
 
+// ----------------------------------------------------------------------------
 void Terrain::setSize(float x, float y, int nx, int nz)
 {
+    m_bounding_box = aabbox3d<f32>(0,0,0,x,0,y);
+
     if (m_vertices) delete[] m_vertices;
     if (m_indices)  delete[] m_indices;
 
@@ -112,16 +126,18 @@ void Terrain::setSize(float x, float y, int nx, int nz)
     m_x = x; m_nx = nx;
     m_z = y; m_nz = nz;
 
-}
+} // setSize
 
+// ----------------------------------------------------------------------------
 void Terrain::OnRegisterSceneNode()
 {
     if (IsVisible)
         SceneManager->registerNodeForRendering(this);
 
     ISceneNode::OnRegisterSceneNode();
-}
+} // OnRegisterSceneNode
 
+// ----------------------------------------------------------------------------
 void Terrain::render()
 {
 
@@ -134,4 +150,4 @@ void Terrain::render()
         &m_indices[0], m_quad_count * 2,
         video::EVT_STANDARD, EPT_TRIANGLES,
         video::EIT_16BIT);
-}
+} // render
