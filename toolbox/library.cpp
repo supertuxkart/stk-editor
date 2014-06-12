@@ -108,6 +108,7 @@ std::list<Element*> Library::getElements(unsigned int ix)
 // ----------------------------------------------------------------------------
 unsigned int Library::getSelectionPageNum()
 {
+    if (m_selected_elements.empty()) return 1;
     int pn = m_selected_elements.size() / m_buffer_size;
     if (m_selected_elements.size() % m_buffer_size != 0) pn++;
     return pn;

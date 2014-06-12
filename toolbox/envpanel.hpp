@@ -14,9 +14,9 @@ using namespace core;
 class EnvPanel
 {
 public:
-    static const int FIRST_BTN_ID = 102;
-    static const int CB_ID = 101;
-    static const int SF_ID = 100;
+    static const int FIRST_BTN_ID = 302;
+    static const int CB_ID = 301;
+    static const int SF_ID = 300;
 private:
 
     // private variables:
@@ -27,7 +27,7 @@ private:
     IGUIComboBox*   m_cb;
     IGUIEditBox*    m_search_field;
 
-    IGUITab*        m_tab;
+    IGUIWindow*     m_wndw;
     unsigned int    m_index;
     IGUIButton*     m_next;
     IGUIButton*     m_prev;
@@ -43,7 +43,7 @@ private:
     EnvPanel() {};
 
 public:
-    static EnvPanel*    getEnvPanel(IGUITab* tab = 0);
+    static EnvPanel*    getEnvPanel(IGUIWindow* wndw = 0);
     stringw             getModelPathFromBtnId(int ID);
     void                refreshBtnTable();
     void                reallocate(dimension2du ss);

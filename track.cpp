@@ -140,7 +140,7 @@ void Track::animateSelection()
         ISceneNode* node;
         node = Editor::getEditor()->getSceneManager()->getSceneCollisionManager()
             ->getSceneNodeFromScreenCoordinatesBB(
-                vector2d<s32>(m_mouse.x, m_mouse.y), 10);
+                vector2d<s32>(m_mouse.x, m_mouse.y), MAGIC_NUMBER);
 
 
         if (node)
@@ -193,13 +193,14 @@ void Track::animateTerrainMod(long dt)
 
     if (m_mouse.left_btn_down || m_mouse.right_btn_down)
     {
+
         ISceneCollisionManager* cm;
         cm = Editor::getEditor()->getSceneManager()->getSceneCollisionManager();
+        line3d<float> ray;
+        ray = cm->getRayFromScreenCoordinates(vector2d<s32>(m_mouse.x, m_mouse.y));
 
         if (m_mouse.right_btn_down) tm->dh *= -1;
-
-        m_terrain->modify(
-            cm->getRayFromScreenCoordinates(vector2d<s32>(m_mouse.x,m_mouse.y)),*tm);
+        m_terrain->modify(ray,*tm);
         if (m_mouse.right_btn_down) tm->dh *= -1;
     }
 
@@ -220,7 +221,7 @@ Track* Track::getTrack()
 void Track::init()
 {
     m_active_cmd = 0;
-    m_state = TERRAIN_MOD;
+    m_state = SELECT;
     m_new_entity = 0;
     m_grid_on = true;
     for (int i = 0; i < m_key_num; i++) m_key_state[i] = false;

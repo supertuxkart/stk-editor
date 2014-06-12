@@ -52,15 +52,17 @@ bool Editor::buttonClicked(int ID)
     case ToolBar::TBI_GRID_DEC:
         m_track->changeGridDensity(-1);
         return true;
+    // ToolBox BTN:
+    case ToolBox::TWND_ID:
+    case ToolBox::EWND_ID:
+        m_toolbox->setWndw(ID);
+        return true;
     // ToolBox / Terrain buttons:
     case TerrPanel::H_EDGE_1:
-        TerrPanel::getTerrPanel()->btnDown(TerrPanel::H_EDGE_1);
-        return true;
     case TerrPanel::H_EDGE_2:
-        TerrPanel::getTerrPanel()->btnDown(TerrPanel::H_EDGE_2);
-        return true;
     case TerrPanel::H_EDGE_3:
-        TerrPanel::getTerrPanel()->btnDown(TerrPanel::H_EDGE_3);
+        TerrPanel::getTerrPanel()->btnDown(ID);
+        m_track->setState(Track::TERRAIN_MOD);
         return true;
     default:
         break;
@@ -106,6 +108,17 @@ bool Editor::init()
 	m_video_driver  = m_device->getVideoDriver();
 	m_scene_manager = m_device->getSceneManager();
 	m_gui_env       = m_device->getGUIEnvironment();
+
+    IGUISkin* skin = m_gui_env->getSkin();
+    IGUIFont* font = m_gui_env->getFont(L"font/font1.png");
+    skin->setFont(font);
+    
+    for (s32 i = 0; i<EGDC_COUNT; ++i)
+    {
+        video::SColor col = skin->getColor((EGUI_DEFAULT_COLOR)i);
+        col.setAlpha(255);
+        skin->setColor((EGUI_DEFAULT_COLOR)i, col);
+    }
 
     m_track = Track::getTrack();
 
@@ -222,6 +235,7 @@ bool Editor::OnEvent(const SEvent& event)
             case TerrPanel::H_INTENSITY:
             case TerrPanel::H_RADIUS:
                 TerrPanel::getTerrPanel()->refreshTerrModData();
+                m_track->setState(Track::TERRAIN_MOD);
                 return true;
             default:
                 break;

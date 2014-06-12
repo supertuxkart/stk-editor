@@ -30,7 +30,7 @@ private:
 
     static TerrPanel*       m_terr_panel;
 
-    IGUITab*                m_tab;
+    IGUIWindow*             m_wndw;
 
     IGUIScrollBar*          m_h_radius;
     IGUIScrollBar*          m_h_intensity;
@@ -46,7 +46,7 @@ private:
     void init();
 
 public:
-    static TerrPanel*     getTerrPanel(IGUITab* tab = 0);
+    static TerrPanel*     getTerrPanel(IGUIWindow* wndw = 0);
 
     Terrain::TerrainMod*  getTerrainModData()         { return &m_tmod; }
     void                  btnDown(int btn);

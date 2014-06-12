@@ -27,6 +27,7 @@ private:
     u16*            m_indices;
     unsigned int    m_vertex_count;
     unsigned int    m_quad_count;
+
     f32             m_x, m_z;
     int             m_nx, m_nz;
 
@@ -34,6 +35,9 @@ private:
     float*          m_vertex_h_before;
 
     aabbox3d<f32>   m_bounding_box;
+
+    void            coinAroundIntersection(line3d<float> ray, float r, vector2df* cpos,
+                                           int* ix, int* iz, int* dx, int* dz);
 
 public:
     Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id);

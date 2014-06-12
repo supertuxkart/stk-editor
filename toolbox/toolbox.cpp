@@ -11,35 +11,36 @@ ToolBox* ToolBox::m_toolbox = 0;
 void ToolBox::init()
 {
     IGUIEnvironment* gui_env = Editor::getEditor()->getGUIEnv();
-    dimension2du ss = Editor::getEditor()->getScreenSize();
 
-    m_boxwnd = gui_env->addWindow(
+    m_wndw = gui_env->addWindow(
             rect<s32>(),
-            false, L"Stuffs", 0, TBOX_ID
-        );
-    m_boxwnd->setMinSize(dimension2du(250, ss.Height-50));
-    m_boxwnd->setRelativePosition(position2di(ss.Width-250,50));
-    m_boxwnd->setDraggable(false);
-    m_boxwnd->getCloseButton()->setVisible(false);
-    m_boxwnd->setDrawTitlebar(false);
+            false, L"Stuffs", 0, TBOX_ID);
+    initWndw(m_wndw);
+    dimension2du ss = Editor::getEditor()->getScreenSize();
+    m_wndw->setRelativePosition(position2di(ss.Width - 250, 50));
 
-    // create tab control and tabs
-    m_tab = gui_env->addTabControl(
-        core::rect<s32>(), m_boxwnd, true, true);
+    m_terr_wndw = gui_env->addWindow(rect<s32>(), false, L"Env", m_wndw, TWND_ID);
+    m_terr_panel = TerrPanel::getTerrPanel(m_terr_wndw);
+    initWndw(m_terr_wndw);
 
-    m_tab->setMinSize(dimension2du(250, ss.Height - 50));
-    m_tab->setRelativePosition(position2di(0, 0));
+    m_env_wndw = gui_env->addWindow(rect<s32>(), false, L"Env", m_wndw, EWND_ID);
+    m_env_panel = EnvPanel::getEnvPanel(m_env_wndw);
+    initWndw(m_env_wndw);    
+    m_env_wndw->setVisible(false);
 
-    m_terr_panel = TerrPanel::getTerrPanel(m_tab->addTab(L"Terrain"));
+    gui_env->addButton(rect<s32>(0, 0, 50, 50), m_wndw,   TWND_ID);
+    gui_env->addButton(rect<s32>(50, 0, 100, 50), m_wndw, EWND_ID);
 
-    m_tab->addTab(L"Road");
+} // init
 
-    m_env_panel = EnvPanel::getEnvPanel(m_tab->addTab(L"Env"));
-
-    m_tab->addTab(L"Extra");
-    m_tab->addTab(L"Blocks");
-
-} // ini
+void ToolBox::initWndw(IGUIWindow* wndw)
+{
+    dimension2du ss = Editor::getEditor()->getScreenSize();
+    wndw->setMinSize(dimension2du(250, ss.Height - 50));
+    wndw->setDraggable(false);
+    wndw->getCloseButton()->setVisible(false);
+    wndw->setDrawTitlebar(false);
+}
 
 // ----------------------------------------------------------------------------
 ToolBox* ToolBox::getToolBox()
@@ -56,11 +57,27 @@ void ToolBox::reallocate()
 {
     dimension2du ss = Editor::getEditor()->getScreenSize();
 
-    m_boxwnd->setMinSize(dimension2du(250, ss.Height-50));
-    m_boxwnd->setRelativePosition(position2di(ss.Width-250,50));
-    m_tab->setMinSize(dimension2du(250, ss.Height - 50));
+    m_wndw->setMinSize(dimension2du(250, ss.Height-50));
+    m_wndw->setRelativePosition(position2di(ss.Width-250,50));
 
     m_env_panel->reallocate(ss);
 
 } // reallocate
 
+// ----------------------------------------------------------------------------
+void ToolBox::setWndw(int ID)
+{
+    m_terr_wndw->setVisible(false);
+    m_env_wndw->setVisible(false);
+    switch(ID)
+    {
+    case TWND_ID:
+        m_terr_wndw->setVisible(true);
+        break;
+    case EWND_ID:
+        m_env_wndw->setVisible(true);
+        break;
+    default:
+        break;
+    }
+}

@@ -13,7 +13,9 @@ using namespace core;
 class ToolBox
 {
 public:
-    static const int TBOX_ID     = 1112;
+    static const int TBOX_ID     = 100;
+    static const int TWND_ID     = 101;
+    static const int EWND_ID     = 102;
 private:
 
     // private variables:
@@ -23,8 +25,10 @@ private:
     EnvPanel*       m_env_panel;
     TerrPanel*      m_terr_panel;
 
-    IGUIWindow*     m_boxwnd;
-    IGUITabControl* m_tab;
+    IGUIWindow*     m_wndw;
+    
+    IGUIWindow*     m_terr_wndw;
+    IGUIWindow*     m_env_wndw;
 
     // private functions:
 
@@ -32,9 +36,13 @@ private:
 
     ToolBox() {};
 
+protected:
+    void                initWndw(IGUIWindow* wndw);
+
 public:
     static ToolBox*     getToolBox();
     void                reallocate();
+    void                setWndw(int ID);
 };
 
 #endif

@@ -15,7 +15,9 @@ void EnvPanel::init()
     IGUIEnvironment* gui_env = Editor::getEditor()->getGUIEnv();
     dimension2du ss = Editor::getEditor()->getScreenSize();
 
-    m_cb = gui_env->addComboBox(rect<s32>(25, 10, 200, 30), m_tab, CB_ID);
+    m_wndw->setRelativePosition(position2di(0, 50));
+
+    m_cb = gui_env->addComboBox(rect<s32>(25, 10, 200, 30), m_wndw, CB_ID);
     m_cb->addItem(L"All");
     m_cb->setSelected(0);
 
@@ -30,15 +32,15 @@ void EnvPanel::init()
         m_cb->addItem((*it).c_str());
     }
 
-    m_search_field = gui_env->addEditBox(L"", rect<s32>(25, 40, 200, 60), true, m_tab, SF_ID);
+    m_search_field = gui_env->addEditBox(L"", rect<s32>(25, 40, 200, 60), true, m_wndw, SF_ID);
 
     m_index = 0;
 
-    m_next = gui_env->addButton(rect<s32>(190, ss.Height - 120, 240, ss.Height - 100),
-        m_tab, FIRST_BTN_ID + m_btn_num + 1);
+    m_next = gui_env->addButton(rect<s32>(190, ss.Height - 128, 240, ss.Height - 108),
+        m_wndw, FIRST_BTN_ID + m_btn_num + 1);
 
-    m_prev = gui_env->addButton(rect<s32>(10, ss.Height - 120, 60, ss.Height - 100),
-        m_tab, FIRST_BTN_ID + m_btn_num);
+    m_prev = gui_env->addButton(rect<s32>(10, ss.Height - 128, 60, ss.Height - 108),
+        m_wndw, FIRST_BTN_ID + m_btn_num);
 
     refreshBtnTable();
 
@@ -55,16 +57,16 @@ void EnvPanel::initButtons()
     for (int i = 0; i < m_btn_num / 4; i++)
     {
         m_btn_table[4 * i].first = gui_env->addButton
-            (rect<s32>(10, i * 60 + 80, 60, i * 60 + 130), m_tab, FIRST_BTN_ID + 4 * i);
+            (rect<s32>(10, i * 60 + 80, 60, i * 60 + 130), m_wndw, FIRST_BTN_ID + 4 * i);
 
         m_btn_table[4 * i + 1].first = gui_env->addButton
-            (rect<s32>(70, i * 60 + 80, 120, i * 60 + 130), m_tab, FIRST_BTN_ID + 4 * i + 1);
+            (rect<s32>(70, i * 60 + 80, 120, i * 60 + 130), m_wndw, FIRST_BTN_ID + 4 * i + 1);
 
         m_btn_table[4 * i + 2].first = gui_env->addButton
-            (rect<s32>(130, i * 60 + 80, 180, i * 60 + 130), m_tab, FIRST_BTN_ID + 4 * i + 2);
+            (rect<s32>(130, i * 60 + 80, 180, i * 60 + 130), m_wndw, FIRST_BTN_ID + 4 * i + 2);
 
         m_btn_table[4 * i + 3].first = gui_env->addButton
-            (rect<s32>(190, i * 60 + 80, 240, i * 60 + 130), m_tab, FIRST_BTN_ID + 4 * i + 3);
+            (rect<s32>(190, i * 60 + 80, 240, i * 60 + 130), m_wndw, FIRST_BTN_ID + 4 * i + 3);
     }
 
     for (int i = 0; i < m_btn_num; i++) m_btn_table[i].second = L"";
@@ -72,12 +74,12 @@ void EnvPanel::initButtons()
 } // initButtons
 
 // ----------------------------------------------------------------------------
-EnvPanel* EnvPanel::getEnvPanel(IGUITab* tab)
+EnvPanel* EnvPanel::getEnvPanel(IGUIWindow* wndw)
 {
     if (m_env_panel != 0) return m_env_panel;
 
     m_env_panel = new EnvPanel();
-    m_env_panel->m_tab = tab;
+    m_env_panel->m_wndw = wndw;
     m_env_panel->init();
     return m_env_panel;
 } // getEnvPanel
@@ -121,8 +123,11 @@ void EnvPanel::refreshBtnTable()
 // ----------------------------------------------------------------------------
 void EnvPanel::reallocate(dimension2du ss)
 {
-    m_next->setRelativePosition(rect<s32>(190, ss.Height - 120, 240, ss.Height - 100));
-    m_prev->setRelativePosition(rect<s32>(10, ss.Height - 120, 60, ss.Height - 100));
+
+    m_wndw->setMinSize(dimension2du(250, ss.Height - 50));
+
+    m_next->setRelativePosition(rect<s32>(190, ss.Height - 128, 240, ss.Height - 108));
+    m_prev->setRelativePosition(rect<s32>(10, ss.Height - 128, 60, ss.Height - 108));
 
     int new_btn_num = (ss.Height - 200) / 60 * 4;
     if (new_btn_num != m_btn_num)
