@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<element name="cat2" category="cats">
+      <img path="cat1.png">
+      <model path="cat.obj">
+      <tag name="cat">
+      <tag name="animal">
+</element>

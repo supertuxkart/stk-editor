@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<element name="cat1" category="horses">
+      <img path="horse.png">
+      <model path="horse.b3d">
+      <tag name="horse">
+      <tag name="animal">
+</element>
