@@ -217,17 +217,9 @@ void Terrain::highlight(line3d<float> ray, float radius)
         m_highlight_mesh.indices = 0;
     }
 
-    m_highlight_mesh.vertex_count = 0;
     int x = 2 * dx + 1;
     int z = 2 * dz + 1;
-    for (int i = -dx; i <= dx; i++)
-        for (int j = -dz; j <= dz; j++)
-        {
-            if ((ix + i < 0) || (ix + i >= m_nx) ||
-                (iz + j < 0) || (iz + j >= m_nz))
-                return;
-            m_highlight_mesh.vertex_count++;
-        }
+    m_highlight_mesh.vertex_count = x * z;
 
     m_highlight_mesh.vertices = new S3DVertex[m_highlight_mesh.vertex_count];
     m_highlight_mesh.quad_count = (x - 1) * (z - 1);
@@ -257,9 +249,13 @@ void Terrain::highlight(line3d<float> ray, float radius)
                 {
                     m_highlight_mesh.vertices[k].Color = SColor(0, 255, 0, 0);
                 }
-
-                k++;
             }
+            else
+            {
+                m_highlight_mesh.vertices[k].Pos   = vector3df(m_x / m_nx * (ix+i), 0, m_z / m_nz *(iz+j));
+                m_highlight_mesh.vertices[k].Color = SColor(0, 255, 0, 0);
+            }
+            k++;
         }
     createIndexList(m_highlight_mesh.indices, x, z);
 
