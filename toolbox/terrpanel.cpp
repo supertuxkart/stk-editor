@@ -115,11 +115,11 @@ void TerrPanel::btnDown(int btn)
         break;
     case H_MIN_CUT_BTN:
         m_tmod.max_cut = false;
-        m_tmod.cut_v = atof(((stringc)m_cut_eb->getText()).c_str());
+        m_tmod.cut_v = (float) atof(((stringc)m_cut_eb->getText()).c_str());
         break;
     case H_MAX_CUT_BTN:
         m_tmod.max_cut = true;
-        m_tmod.cut_v = atof(((stringc)m_cut_eb->getText()).c_str());
+        m_tmod.cut_v = (float) atof(((stringc)m_cut_eb->getText()).c_str());
         break;
     default:
         break;
@@ -134,7 +134,7 @@ void TerrPanel::refreshTerrModData()
     m_tmod.max    = m_h_max_cb->isChecked();
     m_tmod.min    = m_h_min_cb->isChecked();
     
-    m_tmod.max_v = atof(((stringc)m_h_max_value->getText()).c_str());
-    m_tmod.min_v = atof(((stringc)m_h_min_value->getText()).c_str());
-    m_tmod.cut_v = atof(((stringc) m_cut_eb->getText()).c_str());
+    m_tmod.max_v = (float) atof(((stringc)m_h_max_value->getText()).c_str());
+    m_tmod.min_v = (float) atof(((stringc)m_h_min_value->getText()).c_str());
+    m_tmod.cut_v = (float) atof(((stringc)m_cut_eb->getText()).c_str());
 }

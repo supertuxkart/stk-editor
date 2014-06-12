@@ -78,13 +78,13 @@ void Track::animateEditing()
         if (m_mouse.left_btn_down)
         {
             m_active_cmd->undo();
-            m_active_cmd->update(-m_mouse.dx(), 0.0f, m_mouse.dy());
+            m_active_cmd->update((float)-m_mouse.dx(), 0.0f, (float)m_mouse.dy());
             m_active_cmd->redo();
         }
         if (m_mouse.right_btn_down)
         {
             m_active_cmd->undo();
-            m_active_cmd->update(0.0f, -m_mouse.dy(), 0.0f);
+            m_active_cmd->update(0.0f, (float) -m_mouse.dy(), 0.0f);
             m_active_cmd->redo();
         }
         m_mouse.setStorePoint();

@@ -6,13 +6,13 @@
 
 // ----------------------------------------------------------------------------
 /** This function calculates the index of the vertex, which is closest to the
- *  ray - (y=0) plain intersection point, and also give back some additional 
+ *  ray - (y=0) plain intersection point, and also give back some additional
  *  data to describe a circle around the point
  *  \param ray A 3d line which hits the surface
  *  \param r Radius of the circle
  *  \param cpos Coordinates of the vertex, which is closest to the intersection
  *  \param ix index of the vertex closest to the intersection
- *  \param iz 
+ *  \param iz
  *  \param dx [ix+-dx][iz+-dz] describes a square, which contain every point p,
  *  with | cpos - p | < r
  *  \param dz
@@ -27,13 +27,11 @@ void Terrain::coinAroundIntersection(line3d<float> ray, float r, vector2df* cpos
     float     t = -p1.Y / v.Y;
     vector3df p = vector3df(p1.X + v.X * t, 0, p1.Z + v.Z * t);
 
-    int iix = p.X / (m_x / m_nx) + 0.5;
-    int iiz = p.Z / (m_z / m_nz) + 0.5;
+    int iix = (int) (p.X / (m_x / m_nx) + 0.5);
+    int iiz = (int) (p.Z / (m_z / m_nz) + 0.5);
 
     *dx = (int) (r / (m_x / m_nx) + 1);
     *dz = (int) (r / (m_z / m_nz) + 1);
-
-    bool b = true;
 
     *cpos = vector2df(m_mesh.vertices[iiz * m_nx + iix].Pos.X,
                       m_mesh.vertices[iiz * m_nx + iix].Pos.Z);
@@ -51,7 +49,7 @@ void Terrain::createIndexList(u16* indices, int x, int z)
             indices[ix] = i +     (j + 1) * x;   ix++;
             indices[ix] = i + 1 + (j + 1) * x;   ix++;
             indices[ix] = i + 1 +  j      * x;   ix++;
-            
+
             indices[ix] = i + 1 +  j      * x;   ix++;
             indices[ix] = i +  j          * x;   ix++;
             indices[ix] = i + (j + 1)     * x;   ix++;
@@ -71,7 +69,7 @@ Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id)
     m_last_mod_ID     = -1;
     m_material.Wireframe = true;
     m_material.Lighting = false;
-    
+
     m_material.BackfaceCulling = false;
     m_material.MaterialType = EMT_TRANSPARENT_VERTEX_ALPHA;
 
@@ -85,7 +83,7 @@ Terrain::~Terrain()
 {
     if (m_mesh.vertices) delete[] m_mesh.vertices;
     if (m_mesh.indices)  delete[] m_mesh.indices;
-    
+
     if (m_highlight_mesh.vertices) delete[] m_highlight_mesh.vertices;
     if (m_highlight_mesh.indices)  delete[] m_highlight_mesh.indices;
 
@@ -94,7 +92,7 @@ Terrain::~Terrain()
 
 // ----------------------------------------------------------------------------
 /** Function for the basic terrain modifier tool: it is used to change terrain
- *  height around a point. In every phase, the difference between old and new 
+ *  height around a point. In every phase, the difference between old and new
  *  height is limited to tm.dh. A phase is defined by an ID: it is stored in
  *  m_last_mod_ID - one phase can consist of more than one function call
  *  \param ray A 3d line which determines the central point
@@ -115,7 +113,7 @@ void Terrain::modify(line3d<float> ray, const TerrainMod& tm)
         }
     }
 
-    int ix, iz, dx, dz;  
+    int ix, iz, dx, dz;
     vector2df cpos;
     coinAroundIntersection(ray, tm.radius, &cpos, &ix, &iz, &dx, &dz);
 
@@ -132,7 +130,7 @@ void Terrain::modify(line3d<float> ray, const TerrainMod& tm)
             {
                 vector2df pos = vector2df(m_mesh.vertices[(iz + j) * m_nx + ix + i].Pos.X,
                                           m_mesh.vertices[(iz + j) * m_nx + ix + i].Pos.Z);
-                if ((cpos - pos).getLength() < tm.radius) 
+                if ((cpos - pos).getLength() < tm.radius)
                 {
                     float h;
                     // edge type and the distance from the intersection point will define
@@ -147,7 +145,7 @@ void Terrain::modify(line3d<float> ray, const TerrainMod& tm)
                     // new height
                     f32* y = &(m_mesh.vertices[(iz + j) * m_nx + ix + i].Pos.Y);
                     *y += h;
-                    
+
                     // check if the limit is reached, correction if necessary
                     if (fabs((*y - m_vertex_h_before[(iz + j) * m_nx + ix + i])) > fabs(tm.dh))
                     {
@@ -239,7 +237,7 @@ void Terrain::highlight(line3d<float> ray, float radius)
             {
                 m_highlight_mesh.vertices[k] =
                     m_mesh.vertices[(iz + j) * m_nx + ix + i];
-                m_highlight_mesh.vertices[k].Pos.Y += 0.2;
+                m_highlight_mesh.vertices[k].Pos.Y += 0.2f;
                 m_highlight_mesh.vertices[k].Color = SColor(255, 255, 0, 0);
 
                 vector2df pos;
@@ -282,7 +280,7 @@ void Terrain::setSize(float x, float z, int nx, int nz)
 
     m_mesh.quad_count = (nx - 1) * (nz - 1);
     m_mesh.indices = new u16[m_mesh.quad_count * 6];
-    
+
     for (int j = 0; j < nz; j++)
         for (int i = 0; i < nx; i++)
         {
@@ -292,7 +290,7 @@ void Terrain::setSize(float x, float z, int nx, int nz)
         }
 
     createIndexList(m_mesh.indices, nx, nz);
-    
+
     m_x = x; m_nx = nx;
     m_z = z; m_nz = nz;
 
@@ -322,9 +320,9 @@ void Terrain::render()
 
     if (m_highlight_mesh.vertices)
     {
-        driver->drawVertexPrimitiveList(&m_highlight_mesh.vertices[0], 
+        driver->drawVertexPrimitiveList(&m_highlight_mesh.vertices[0],
                                          m_highlight_mesh.vertex_count,
-                                         &m_highlight_mesh.indices[0], 
+                                         &m_highlight_mesh.indices[0],
                                          m_highlight_mesh.quad_count * 2,
                                          video::EVT_STANDARD, EPT_TRIANGLES,
                                          video::EIT_16BIT);
