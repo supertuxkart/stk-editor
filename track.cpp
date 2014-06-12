@@ -11,6 +11,8 @@ int    Track::m_last_entity_ID = MAGIC_NUMBER;
 // ----------------------------------------------------------------------------
 Track::MouseData::MouseData()
 {
+    in_view = false;
+
     wheel = 0;
     left_btn_down = false;
     right_btn_down = false;
@@ -177,7 +179,15 @@ void Track::animatePlacing()
 // ----------------------------------------------------------------------------
 void Track::animateTerrainMod(long dt)
 {
+    if (!m_mouse.in_view) return;
+
+    ISceneCollisionManager* cm;
+    cm = Editor::getEditor()->getSceneManager()->getSceneCollisionManager();
+    line3d<float> ray;
+    ray = cm->getRayFromScreenCoordinates(vector2d<s32>(m_mouse.x, m_mouse.y));
     Terrain::TerrainMod* tm = TerrPanel::getTerrPanel()->getTerrainModData();
+
+    m_terrain->highlight(ray, tm->radius);
 
     if (m_mouse.leftReleased() || m_mouse.rightReleased())
         tm->countdown = -1;
@@ -193,12 +203,6 @@ void Track::animateTerrainMod(long dt)
 
     if (m_mouse.left_btn_down || m_mouse.right_btn_down)
     {
-
-        ISceneCollisionManager* cm;
-        cm = Editor::getEditor()->getSceneManager()->getSceneCollisionManager();
-        line3d<float> ray;
-        ray = cm->getRayFromScreenCoordinates(vector2d<s32>(m_mouse.x, m_mouse.y));
-
         if (m_mouse.right_btn_down) tm->dh *= -1;
         m_terrain->modify(ray,*tm);
         if (m_mouse.right_btn_down) tm->dh *= -1;
@@ -256,7 +260,12 @@ void Track::setState(State state)
         scene_manager->setActiveCamera(m_free_camera);
     }
 
-    m_state = state;
+    if (m_state == FREECAM && state == FREECAM)
+    {
+        m_state = SELECT;
+        m_free_camera->setInputReceiverEnabled(false);
+        scene_manager->setActiveCamera(m_normal_camera);
+    } else m_state = state;
 
 } // setState
 
@@ -312,9 +321,11 @@ void Track::mouseEvent(const SEvent& e)
     {
         if (m_new_entity && m_new_entity->isVisible())
             m_new_entity->setVisible(false);
+        m_mouse.in_view = false;
         return;
     }
-   
+
+    m_mouse.in_view = true;
     if (m_new_entity && !m_new_entity->isVisible())
         m_new_entity->setVisible(true);
 
@@ -401,3 +412,11 @@ void Track::animate(long dt)
     }
 
 } // animate
+
+
+// ----------------------------------------------------------------------------
+Track::~Track()
+{
+    if (m_active_cmd) delete m_active_cmd;
+    if (m_terrain)    delete m_terrain;
+}

@@ -1,5 +1,9 @@
 #include "entities/terrain.hpp"
 
+#include "editor.hpp"
+
+#include <assert.h>
+
 // ----------------------------------------------------------------------------
 /** This function calculates the index of the vertex, which is closest to the
  *  ray - (y=0) plain intersection point, and also give back some additional 
@@ -23,20 +27,36 @@ void Terrain::coinAroundIntersection(line3d<float> ray, float r, vector2df* cpos
     float     t = -p1.Y / v.Y;
     vector3df p = vector3df(p1.X + v.X * t, 0, p1.Z + v.Z * t);
 
-    int iix = p.X / (m_x / m_nx);
-    int iiz = p.Z / (m_z / m_nz);
+    int iix = p.X / (m_x / m_nx) + 0.5;
+    int iiz = p.Z / (m_z / m_nz) + 0.5;
 
     *dx = (int) (r / (m_x / m_nx) + 1);
     *dz = (int) (r / (m_z / m_nz) + 1);
 
     bool b = true;
 
-    *cpos = vector2df(m_vertices[iiz * m_nx + iix].Pos.X,
-        m_vertices[iiz * m_nx + iix].Pos.Z);
+    *cpos = vector2df(m_mesh.vertices[iiz * m_nx + iix].Pos.X,
+                      m_mesh.vertices[iiz * m_nx + iix].Pos.Z);
     *ix = iix;
     *iz = iiz;
 }
 
+// ----------------------------------------------------------------------------
+void Terrain::createIndexList(u16* indices, int x, int z)
+{
+    int ix = 0;
+    for (int j = 0; j < z - 1; j++)
+        for (int i = 0; i < x - 1; i++)
+        {
+            indices[ix] = i +     (j + 1) * x;   ix++;
+            indices[ix] = i + 1 + (j + 1) * x;   ix++;
+            indices[ix] = i + 1 +  j      * x;   ix++;
+            
+            indices[ix] = i + 1 +  j      * x;   ix++;
+            indices[ix] = i +  j          * x;   ix++;
+            indices[ix] = i + (j + 1)     * x;   ix++;
+        }
+}
 
 // ----------------------------------------------------------------------------
 /** The constuctor does not create a usable surface, it just call the base class
@@ -45,23 +65,31 @@ void Terrain::coinAroundIntersection(line3d<float> ray, float r, vector2df* cpos
 Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id)
     :ISceneNode(parent, mgr, id)
 {
-    m_vertices = 0;
-    m_indices  = 0;
+    m_mesh.vertices   = 0;
+    m_mesh.indices    = 0;
+    m_vertex_h_before = 0;
+    m_last_mod_ID     = -1;
     m_material.Wireframe = true;
     m_material.Lighting = false;
-    ISceneNode::setAutomaticCulling(EAC_OFF);
-    m_vertex_h_before    = 0;
-    m_last_mod_ID        = -1;
+    
+    m_material.BackfaceCulling = false;
+    m_material.MaterialType = EMT_TRANSPARENT_VERTEX_ALPHA;
+
+    m_highlight_mesh.vertices = 0;
+    m_highlight_mesh.indices  = 0;
 
 } // Terrain
 
 // ----------------------------------------------------------------------------
 Terrain::~Terrain()
 {
-    if (m_vertices) delete[] m_vertices;
-    if (m_indices)  delete[] m_indices;
-} // ~Terrain
+    if (m_mesh.vertices) delete[] m_mesh.vertices;
+    if (m_mesh.indices)  delete[] m_mesh.indices;
+    
+    if (m_highlight_mesh.vertices) delete[] m_highlight_mesh.vertices;
+    if (m_highlight_mesh.indices)  delete[] m_highlight_mesh.indices;
 
+} // ~Terrain
 
 
 // ----------------------------------------------------------------------------
@@ -77,12 +105,13 @@ void Terrain::modify(line3d<float> ray, TerrainMod tm)
 
     if (tm.ID != m_last_mod_ID)
     {
+        // new phase, we save the current state
         m_last_mod_ID = tm.ID;
         if (m_vertex_h_before != 0) delete[] m_vertex_h_before;
-        m_vertex_h_before = new float[m_vertex_count];
-        for (unsigned int i = 0; i < m_vertex_count; i++)
+        m_vertex_h_before = new float[m_mesh.vertex_count];
+        for (unsigned int i = 0; i < m_mesh.vertex_count; i++)
         {
-            m_vertex_h_before[i] = m_vertices[i].Pos.Y;
+            m_vertex_h_before[i] = m_mesh.vertices[i].Pos.Y;
         }
     }
 
@@ -101,8 +130,8 @@ void Terrain::modify(line3d<float> ray, TerrainMod tm)
             if (iz + j < 0 || iz + j > m_nz - 1) b = false;
             if (b)
             {
-                vector2df pos = vector2df(m_vertices[(iz + j) * m_nx + ix + i].Pos.X,
-                                          m_vertices[(iz + j) * m_nx + ix + i].Pos.Z);
+                vector2df pos = vector2df(m_mesh.vertices[(iz + j) * m_nx + ix + i].Pos.X,
+                                          m_mesh.vertices[(iz + j) * m_nx + ix + i].Pos.Z);
                 if ((cpos - pos).getLength() < tm.radius) 
                 {
                     float h;
@@ -116,19 +145,87 @@ void Terrain::modify(line3d<float> ray, TerrainMod tm)
                         if (tm.edge_type == 3) h = sqrt(fabs(h)) * h / fabs(h);
                     }
                     // new height
-                    m_vertices[(iz + j) * m_nx + ix + i].Pos.Y += h;
+                    m_mesh.vertices[(iz + j) * m_nx + ix + i].Pos.Y += h;
                     
                     // check if the limit is reached, correction if necessary
-                    if (fabs((m_vertices[(iz + j) * m_nx + ix + i].Pos.Y -
+                    if (fabs((m_mesh.vertices[(iz + j) * m_nx + ix + i].Pos.Y -
                             m_vertex_h_before[(iz + j) * m_nx + ix + i])) > fabs(tm.dh))
                     {
-                        m_vertices[(iz + j) * m_nx + ix + i].Pos.Y =
+                        m_mesh.vertices[(iz + j) * m_nx + ix + i].Pos.Y =
                             m_vertex_h_before[(iz + j) * m_nx + ix + i] + tm.dh;
                     }
                 } // distance < radius
             } // b -> this squere point is a valid vertex
         } // for loop - critical squere
 } // modify
+
+// ----------------------------------------------------------------------------
+void Terrain::highlight(line3d<float> ray, float radius)
+{
+    int ix, iz, dx, dz;
+    vector2df cpos;
+    coinAroundIntersection(ray, radius, &cpos, &ix, &iz, &dx, &dz);
+
+    if (m_highlight_mesh.vertices)
+    {
+        delete[] m_highlight_mesh.vertices;
+        m_highlight_mesh.vertices = 0;
+    }
+    if (m_highlight_mesh.indices)
+    {
+        delete[] m_highlight_mesh.indices;
+        m_highlight_mesh.indices = 0;
+    }
+
+    m_highlight_mesh.vertex_count = 0;
+    int x = 2 * dx + 1;
+    int z = 2 * dz + 1;
+    for (int i = -dx; i <= dx; i++)
+        for (int j = -dz; j <= dz; j++)
+        {
+            if ((ix + i < 0) || (ix + i >= m_nx) ||
+                (iz + j < 0) || (iz + j >= m_nz))
+                return;
+            m_highlight_mesh.vertex_count++;
+        }
+
+    m_highlight_mesh.vertices = new S3DVertex[m_highlight_mesh.vertex_count];
+    m_highlight_mesh.quad_count = (x - 1) * (z - 1);
+    m_highlight_mesh.indices = new u16[m_highlight_mesh.quad_count * 6];
+
+
+    bool b;
+    int k = 0;
+
+    for (int j = -dz; j <= dz; j++)
+        for (int i = -dx; i <= dx; i++)
+        {
+            b = true;
+            // check if the point is outside of the terrain
+            if (ix + i < 0 || ix + i > m_nx - 1) b = false;
+            if (iz + j < 0 || iz + j > m_nz - 1) b = false;
+            if (b)
+            {
+                m_highlight_mesh.vertices[k] =
+                    m_mesh.vertices[(iz + j) * m_nx + ix + i];
+                m_highlight_mesh.vertices[k].Pos.Y += 0.2;
+                m_highlight_mesh.vertices[k].Color = SColor(255, 255, 0, 0);
+
+                vector2df pos;
+                pos = vector2df(m_mesh.vertices[(iz + j) * m_nx + ix + i].Pos.X,
+                                m_mesh.vertices[(iz + j) * m_nx + ix + i].Pos.Z);
+                if ((cpos - pos).getLength() > radius)
+                {
+                    m_highlight_mesh.vertices[k].Color = SColor(0, 255, 0, 0);
+                }
+
+                k++;
+            }
+        }
+
+    createIndexList(m_highlight_mesh.indices, x, z);
+
+} // highlight
 
 // ----------------------------------------------------------------------------
 /** This function will create the vertices and the indicies. It is possible to
@@ -143,35 +240,24 @@ void Terrain::setSize(float x, float z, int nx, int nz)
 {
     m_bounding_box = aabbox3d<f32>(0,0,0,x,0,z);
 
-    if (m_vertices) delete[] m_vertices;
-    if (m_indices)  delete[] m_indices;
+    if (m_mesh.vertices) delete[] m_mesh.vertices;
+    if (m_mesh.indices)  delete[] m_mesh.indices;
 
-    m_vertex_count = nx * nz;
-    m_vertices     = new S3DVertex[m_vertex_count];
+    m_mesh.vertex_count = nx * nz;
+    m_mesh.vertices = new S3DVertex[m_mesh.vertex_count];
 
-    m_quad_count = (nx - 1) * (nz - 1);
-    m_indices    = new u16[m_quad_count*6];
+    m_mesh.quad_count = (nx - 1) * (nz - 1);
+    m_mesh.indices = new u16[m_mesh.quad_count * 6];
     
     for (int j = 0; j < nz; j++)
         for (int i = 0; i < nx; i++)
         {
-            m_vertices[j * nx + i].Pos     = vector3df(x / nx * i, 0,  z / nz *j);
-            m_vertices[j * nx + i].Color   = SColor(125, 0, 255, 0);
-            m_vertices[j * nx + i].TCoords = vector2df(i / x, j / z);
+            m_mesh.vertices[j * nx + i].Pos     = vector3df(x / nx * i, 0,  z / nz *j);
+            m_mesh.vertices[j * nx + i].Color   = SColor(255, 0, 255, 0);
+            m_mesh.vertices[j * nx + i].TCoords = vector2df(i / x, j / z);
         }
 
-    int ix = 0;
-    for (int j = 0; j < nz - 1; j++)
-        for (int i = 0; i < nx - 1; i++)
-        {
-            m_indices[ix] = i +     (j + 1) * nx;   ix++;
-            m_indices[ix] = i + 1 + (j + 1) * nx;   ix++;
-            m_indices[ix] = i + 1 + j       * nx;   ix++;
-
-            m_indices[ix] = i + 1 + j       * nx;   ix++;
-            m_indices[ix] = i + j           * nx;   ix++;
-            m_indices[ix] = i + (j + 1) * nx;   ix++;
-        }
+    createIndexList(m_mesh.indices, nx, nz);
     
     m_x = x; m_nx = nx;
     m_z = z; m_nz = nz;
@@ -190,15 +276,24 @@ void Terrain::OnRegisterSceneNode()
 // ----------------------------------------------------------------------------
 void Terrain::render()
 {
-
     IVideoDriver* driver = SceneManager->getVideoDriver();
 
     driver->setMaterial(m_material);
     driver->setTransform(video::ETS_WORLD, IdentityMatrix);
 
-    driver->drawVertexPrimitiveList(&m_vertices[0], m_vertex_count,
-        &m_indices[0], m_quad_count * 2,
-        video::EVT_STANDARD, EPT_TRIANGLES,
-        video::EIT_16BIT);
+    driver->drawVertexPrimitiveList(&m_mesh.vertices[0], m_mesh.vertex_count,
+                                    &m_mesh.indices[0], m_mesh.quad_count * 2,
+                                    video::EVT_STANDARD, EPT_TRIANGLES,
+                                    video::EIT_16BIT);
+
+    if (m_highlight_mesh.vertices)
+    {
+        driver->drawVertexPrimitiveList(&m_highlight_mesh.vertices[0], 
+                                         m_highlight_mesh.vertex_count,
+                                         &m_highlight_mesh.indices[0], 
+                                         m_highlight_mesh.quad_count * 2,
+                                         video::EVT_STANDARD, EPT_TRIANGLES,
+                                         video::EIT_16BIT);
+    }
 
 } // render

@@ -20,13 +20,18 @@ public:
         long  countdown;
     };
 
+    struct Mesh
+    {
+        S3DVertex*      vertices;
+        u16*            indices;
+        unsigned int    vertex_count;
+        unsigned int    quad_count;
+    };
+
 private:
     SMaterial       m_material;
-    
-    S3DVertex*      m_vertices;
-    u16*            m_indices;
-    unsigned int    m_vertex_count;
-    unsigned int    m_quad_count;
+
+    Mesh            m_mesh;
 
     f32             m_x, m_z;
     int             m_nx, m_nz;
@@ -34,29 +39,28 @@ private:
     int             m_last_mod_ID;
     float*          m_vertex_h_before;
 
+    Mesh            m_highlight_mesh;
+
     aabbox3d<f32>   m_bounding_box;
 
     void            coinAroundIntersection(line3d<float> ray, float r, vector2df* cpos,
                                            int* ix, int* iz, int* dx, int* dz);
+    void            createIndexList(u16* indices, int x, int z);
 
 public:
     Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id);
     ~Terrain();
 
-    void         setSize(float x, float y, int nx, int nz);
+    void                         setSize(float x, float y, int nx, int nz);
+    void                         modify(line3d<float> ray, TerrainMod tm);
+    void                         highlight(line3d<float> ray, float radius);
 
-    void         modify(line3d<float> ray, TerrainMod tm);
+    virtual void                 OnRegisterSceneNode();
+    virtual void                 render();
 
-    virtual void OnRegisterSceneNode();
-    virtual void render();
-
-    virtual const aabbox3d<f32>& getBoundingBox() const   { return m_bounding_box; }
-
-    virtual u32 getMaterialCount() const
-        {return 1;}
-
-    virtual SMaterial& getMaterial(u32 i)
-        {return m_material;}
+    virtual const aabbox3d<f32>& getBoundingBox()   const { return m_bounding_box; }
+    virtual u32                  getMaterialCount() const { return 1; }
+    virtual SMaterial&           getMaterial(u32 i)       { return m_material; }
 
 };
 

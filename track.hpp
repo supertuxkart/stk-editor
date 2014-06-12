@@ -43,6 +43,7 @@ public:
 
     struct MouseData
     {
+        bool                    in_view;
         f32                     wheel;
         bool                    left_btn_down;
         bool                    right_btn_down;
@@ -137,6 +138,8 @@ public:
 
     bool          isGridOn()                             { return m_grid_on; }
     
+    ~Track();
+
 };
 
 #endif
