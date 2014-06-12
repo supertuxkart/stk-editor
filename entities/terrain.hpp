@@ -23,7 +23,7 @@ public:
         bool  min;
         float min_v;
         bool  max_cut;
-        float cat_v;
+        float cut_v;
     };
 
     struct Mesh

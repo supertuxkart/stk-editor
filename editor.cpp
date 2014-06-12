@@ -64,9 +64,11 @@ bool Editor::buttonClicked(int ID)
         TerrPanel::getTerrPanel()->btnDown(ID);
         m_track->setState(Track::TERRAIN_MOD);
         return true;
-    case ToolBar::TBI_NEW:
+    case TerrPanel::H_MAX_CUT_BTN:
+    case TerrPanel::H_MIN_CUT_BTN:
+        TerrPanel::getTerrPanel()->btnDown(ID);
         m_track->setState(Track::TERRAIN_CUT);
-        break;
+        return true;
     default:
         break;
     }
@@ -234,6 +236,10 @@ bool Editor::OnEvent(const SEvent& event)
             case EnvPanel::SF_ID:
                 EnvPanel::getEnvPanel()->resetIndex();
                 EnvPanel::getEnvPanel()->refreshBtnTable();
+                return true;
+            case TerrPanel::H_CUT_VALUE_EB:
+                m_track->setState(Track::TERRAIN_CUT);
+                TerrPanel::getTerrPanel()->refreshTerrModData();
                 return true;
             default:
                 break;

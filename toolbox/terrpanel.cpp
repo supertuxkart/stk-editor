@@ -65,13 +65,22 @@ void TerrPanel::init()
     b2->setImage(Editor::loadImg("img/edge2.png"));
     b3->setImage(Editor::loadImg("img/edge3.png"));
 
+    gui_env->addStaticText(L"RCT:", rect<s32>(10, 180, 200, 200),
+        false, false, m_wndw, -1, false)->setOverrideFont(font);
+    
+    m_cut_eb = gui_env->addEditBox(L"3", rect<s32>(80, 178, 130, 198),
+        true, m_wndw, H_CUT_VALUE_EB);
+    gui_env->addButton(rect<s32>(145, 178, 185, 198), m_wndw, H_MAX_CUT_BTN);
+    gui_env->addButton(rect<s32>(195, 178, 235, 198), m_wndw, H_MIN_CUT_BTN);
+
+
     m_tmod.ID        = 0;
     m_tmod.countdown = -1;
     m_tmod.edge_type = 1;
     m_tmod.max       = false;
     m_tmod.min       = false;
     m_tmod.max_cut   = true;
-    m_tmod.cat_v     = 3;
+    m_tmod.cut_v     = 3;
     refreshTerrModData();
 
 } // init
@@ -104,6 +113,16 @@ void TerrPanel::btnDown(int btn)
         m_tmod.edge_type = 3;
         m_active_edge_frame->setRelativePosition(position2di(200, 125));
         break;
+    case H_MIN_CUT_BTN:
+        m_tmod.max_cut = false;
+        m_tmod.cut_v = atof(((stringc)m_cut_eb->getText()).c_str());
+        break;
+    case H_MAX_CUT_BTN:
+        m_tmod.max_cut = true;
+        m_tmod.cut_v = atof(((stringc)m_cut_eb->getText()).c_str());
+        break;
+    default:
+        break;
     }
 } // btnDown
 
@@ -115,8 +134,7 @@ void TerrPanel::refreshTerrModData()
     m_tmod.max    = m_h_max_cb->isChecked();
     m_tmod.min    = m_h_min_cb->isChecked();
     
-    stringc s = m_h_max_value->getText();
-    m_tmod.max_v = atof(s.c_str());
-    s = m_h_min_value->getText();
-    m_tmod.min_v = atof(s.c_str());
+    m_tmod.max_v = atof(((stringc)m_h_max_value->getText()).c_str());
+    m_tmod.min_v = atof(((stringc)m_h_min_value->getText()).c_str());
+    m_tmod.cut_v = atof(((stringc) m_cut_eb->getText()).c_str());
 }

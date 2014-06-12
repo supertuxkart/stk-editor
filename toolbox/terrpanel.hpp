@@ -25,7 +25,10 @@ public:
         H_MIN_CHECK_BOX,
         H_MAX_CHECK_BOX,
         H_MIN_EDIT_BOX,
-        H_MAX_EDIT_BOX
+        H_MAX_EDIT_BOX,
+        H_MIN_CUT_BTN,
+        H_MAX_CUT_BTN,
+        H_CUT_VALUE_EB
     };
 
 private:
@@ -46,6 +49,8 @@ private:
 
     IGUICheckBox*           m_h_min_cb;
     IGUICheckBox*           m_h_max_cb;
+
+    IGUIEditBox*            m_cut_eb;
     
     Terrain::TerrainMod     m_tmod;
 
