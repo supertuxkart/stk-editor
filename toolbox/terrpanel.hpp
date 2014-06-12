@@ -21,7 +21,11 @@ public:
         H_EDGE_2,
         H_EDGE_3,
         H_RADIUS,
-        H_INTENSITY
+        H_INTENSITY,
+        H_MIN_CHECK_BOX,
+        H_MAX_CHECK_BOX,
+        H_MIN_EDIT_BOX,
+        H_MAX_EDIT_BOX
     };
 
 private:
@@ -36,6 +40,12 @@ private:
     IGUIScrollBar*          m_h_intensity;
 
     IGUIImage*              m_active_edge_frame;
+
+    IGUIEditBox*            m_h_min_value;
+    IGUIEditBox*            m_h_max_value;
+
+    IGUICheckBox*           m_h_min_cb;
+    IGUICheckBox*           m_h_max_cb;
     
     Terrain::TerrainMod     m_tmod;
 

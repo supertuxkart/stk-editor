@@ -64,6 +64,9 @@ bool Editor::buttonClicked(int ID)
         TerrPanel::getTerrPanel()->btnDown(ID);
         m_track->setState(Track::TERRAIN_MOD);
         return true;
+    case ToolBar::TBI_NEW:
+        m_track->setState(Track::TERRAIN_CUT);
+        break;
     default:
         break;
     }
@@ -110,7 +113,7 @@ bool Editor::init()
 	m_gui_env       = m_device->getGUIEnvironment();
 
     IGUISkin* skin = m_gui_env->getSkin();
-    IGUIFont* font = m_gui_env->getFont(L"font/font1.png");
+    IGUIFont* font = m_gui_env->getFont(L"font/font2.png");
     skin->setFont(font);
     
     for (s32 i = 0; i<EGDC_COUNT; ++i)
@@ -188,6 +191,14 @@ bool Editor::run()
 
         last_time = current_time;
     }
+
+    delete m_track;
+    delete m_toolbox;
+    delete m_toolbar;
+
+    // crash ??? 
+    // m_device->drop();
+
 	return 1;
 } // run
 
@@ -234,6 +245,19 @@ bool Editor::OnEvent(const SEvent& event)
             {
             case TerrPanel::H_INTENSITY:
             case TerrPanel::H_RADIUS:
+                TerrPanel::getTerrPanel()->refreshTerrModData();
+                m_track->setState(Track::TERRAIN_MOD);
+                return true;
+            default:
+                break;
+            }
+        }
+        if (event.GUIEvent.EventType == EGET_CHECKBOX_CHANGED)
+        {
+            switch (event.GUIEvent.Caller->getID())
+            {
+            case TerrPanel::H_MAX_CHECK_BOX:
+            case TerrPanel::H_MIN_CHECK_BOX:
                 TerrPanel::getTerrPanel()->refreshTerrModData();
                 m_track->setState(Track::TERRAIN_MOD);
                 return true;

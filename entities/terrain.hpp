@@ -18,6 +18,12 @@ public:
         float radius;
         float dh;
         long  countdown;
+        bool  max;
+        float max_v;
+        bool  min;
+        float min_v;
+        bool  max_cut;
+        float cat_v;
     };
 
     struct Mesh
@@ -52,7 +58,8 @@ public:
     ~Terrain();
 
     void                         setSize(float x, float y, int nx, int nz);
-    void                         modify(line3d<float> ray, TerrainMod tm);
+    void                         modify(line3d<float> ray, const TerrainMod& tm);
+    void                         cut(line3d<float> ray, const TerrainMod& tm);
     void                         highlight(line3d<float> ray, float radius);
 
     virtual void                 OnRegisterSceneNode();

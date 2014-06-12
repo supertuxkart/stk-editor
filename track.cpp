@@ -189,25 +189,28 @@ void Track::animateTerrainMod(long dt)
 
     m_terrain->highlight(ray, tm->radius);
 
-    if (m_mouse.leftReleased() || m_mouse.rightReleased())
-        tm->countdown = -1;
-
-    tm->countdown -= dt;
-
-    if (tm->countdown > 0) return;
-
-    tm->countdown = TERRAIN_WAIT_TIME;
-
-    if (m_mouse.leftPressed() ||m_mouse.rightPressed())
-        tm->ID++;
-
-    if (m_mouse.left_btn_down || m_mouse.right_btn_down)
+    if (m_state == TERRAIN_CUT)
     {
-        if (m_mouse.right_btn_down) tm->dh *= -1;
-        m_terrain->modify(ray,*tm);
-        if (m_mouse.right_btn_down) tm->dh *= -1;
+        if (m_mouse.left_btn_down) m_terrain->cut(ray, *tm);
     }
 
+    if (m_state == TERRAIN_MOD)
+    {
+        if (m_mouse.leftReleased() || m_mouse.rightReleased())
+            tm->countdown = -1;
+        tm->countdown -= dt;
+        if (tm->countdown > 0) return;
+        tm->countdown = TERRAIN_WAIT_TIME;
+
+        if (m_mouse.leftPressed() || m_mouse.rightPressed())
+            tm->ID++;
+        if (m_mouse.left_btn_down || m_mouse.right_btn_down)
+        {
+            if (m_mouse.right_btn_down) tm->dh *= -1;
+            m_terrain->modify(ray, *tm);
+            if (m_mouse.right_btn_down) tm->dh *= -1;
+        }
+    }
 } // animateTerrainMod
 
 // ----------------------------------------------------------------------------
@@ -407,7 +410,7 @@ void Track::animate(long dt)
             animateSelection();
         else if (m_state == PLACE)
             animatePlacing();
-        else if (m_state == TERRAIN_MOD)
+        else if (m_state == TERRAIN_MOD || m_state == TERRAIN_CUT)
             animateTerrainMod(dt);
     }
 

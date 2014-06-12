@@ -100,7 +100,7 @@ Terrain::~Terrain()
  *  \param ray A 3d line which determines the central point
  *  \param tm It contains data about the modification, like radius, intensity, ID
  */
-void Terrain::modify(line3d<float> ray, TerrainMod tm)
+void Terrain::modify(line3d<float> ray, const TerrainMod& tm)
 {
 
     if (tm.ID != m_last_mod_ID)
@@ -145,19 +145,59 @@ void Terrain::modify(line3d<float> ray, TerrainMod tm)
                         if (tm.edge_type == 3) h = sqrt(fabs(h)) * h / fabs(h);
                     }
                     // new height
-                    m_mesh.vertices[(iz + j) * m_nx + ix + i].Pos.Y += h;
+                    f32* y = &(m_mesh.vertices[(iz + j) * m_nx + ix + i].Pos.Y);
+                    *y += h;
                     
                     // check if the limit is reached, correction if necessary
-                    if (fabs((m_mesh.vertices[(iz + j) * m_nx + ix + i].Pos.Y -
-                            m_vertex_h_before[(iz + j) * m_nx + ix + i])) > fabs(tm.dh))
+                    if (fabs((*y - m_vertex_h_before[(iz + j) * m_nx + ix + i])) > fabs(tm.dh))
                     {
-                        m_mesh.vertices[(iz + j) * m_nx + ix + i].Pos.Y =
-                            m_vertex_h_before[(iz + j) * m_nx + ix + i] + tm.dh;
+                        *y = m_vertex_h_before[(iz + j) * m_nx + ix + i] + tm.dh;
+                    }
+                    // check if max / min value is ok
+                    {
+                        if (tm.max && *y > tm.max_v) *y = tm.max_v;
+                        if (tm.min && *y < tm.min_v) *y = tm.min_v;
                     }
                 } // distance < radius
             } // b -> this squere point is a valid vertex
         } // for loop - critical squere
 } // modify
+
+
+// ----------------------------------------------------------------------------
+/** Function will set height inside radius to mv, if (max && height > mv) or if
+*   (!max && height < mv)
+*   \param ray: 3d line which determines the intersection point
+*   \param max: it decides if bigger or smaller values are effected
+*   \param mv:  the max/min value
+*/
+void Terrain::cut(line3d<float> ray, const TerrainMod& tm)
+{
+    int ix, iz, dx, dz;
+    vector2df cpos;
+    coinAroundIntersection(ray, tm.radius, &cpos, &ix, &iz, &dx, &dz);
+
+    bool b = true;
+
+    for (int i = -dx; i <= dx; i++)
+        for (int j = -dz; j <= dz; j++)
+        {
+            b = true;
+            // check if the point is outside of the terrain
+            if (ix + i < 0 || ix + i > m_nx - 1) b = false;
+            if (iz + j < 0 || iz + j > m_nz - 1) b = false;
+            if (b)
+            {
+                vector2df pos = vector2df(m_mesh.vertices[(iz + j) * m_nx + ix + i].Pos.X,
+                    m_mesh.vertices[(iz + j) * m_nx + ix + i].Pos.Z);
+                if ((cpos - pos).getLength() < tm.radius)
+                {
+                    f32* y = &(m_mesh.vertices[(iz + j) * m_nx + ix + i].Pos.Y);
+                    if (tm.max_cut && *y > tm.cat_v || !tm.max_cut && *y < tm.cat_v) *y = tm.cat_v;
+                } // distance < radius
+            } // b -> this squere point is a valid vertex
+        } // for loop - critical squere
+} // cut
 
 // ----------------------------------------------------------------------------
 void Terrain::highlight(line3d<float> ray, float radius)
@@ -193,7 +233,6 @@ void Terrain::highlight(line3d<float> ray, float radius)
     m_highlight_mesh.quad_count = (x - 1) * (z - 1);
     m_highlight_mesh.indices = new u16[m_highlight_mesh.quad_count * 6];
 
-
     bool b;
     int k = 0;
 
@@ -222,7 +261,6 @@ void Terrain::highlight(line3d<float> ray, float radius)
                 k++;
             }
         }
-
     createIndexList(m_highlight_mesh.indices, x, z);
 
 } // highlight

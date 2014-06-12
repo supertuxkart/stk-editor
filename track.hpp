@@ -29,6 +29,7 @@ public:
         SCALE,
         PLACE,
         TERRAIN_MOD,
+        TERRAIN_CUT,
         FREECAM
     };
     enum Key
