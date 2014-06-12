@@ -193,7 +193,7 @@ void Terrain::cut(line3d<float> ray, const TerrainMod& tm)
                 if ((cpos - pos).getLength() < tm.radius)
                 {
                     f32* y = &(m_mesh.vertices[(iz + j) * m_nx + ix + i].Pos.Y);
-                    if (tm.max_cut && *y > tm.cat_v || !tm.max_cut && *y < tm.cat_v) *y = tm.cat_v;
+                    if ((tm.max_cut && *y > tm.cat_v) || (!tm.max_cut && *y < tm.cat_v)) *y = tm.cat_v;
                 } // distance < radius
             } // b -> this squere point is a valid vertex
         } // for loop - critical squere
