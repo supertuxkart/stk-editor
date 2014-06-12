@@ -198,14 +198,15 @@ void Track::animateTerrainMod(long dt)
     {
         if (m_mouse.leftReleased() || m_mouse.rightReleased())
             tm->countdown = -1;
+
         tm->countdown -= dt;
         if (tm->countdown > 0) return;
-        tm->countdown = TERRAIN_WAIT_TIME;
 
         if (m_mouse.leftPressed() || m_mouse.rightPressed())
             tm->ID++;
         if (m_mouse.left_btn_down || m_mouse.right_btn_down)
         {
+            tm->countdown = TERRAIN_WAIT_TIME;
             if (m_mouse.right_btn_down) tm->dh *= -1;
             m_terrain->modify(ray, *tm);
             if (m_mouse.right_btn_down) tm->dh *= -1;
