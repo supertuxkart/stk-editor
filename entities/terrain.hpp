@@ -62,6 +62,8 @@ public:
     void                         cut(line3d<float> ray, const TerrainMod& tm);
     void                         highlight(line3d<float> ray, float radius);
 
+    vector3df                    placeBBtoGround(aabbox3d<f32> box, line3d<float> ray);
+
     virtual void                 OnRegisterSceneNode();
     virtual void                 render();
 

@@ -143,7 +143,7 @@ void Track::animateSelection()
         node = Editor::getEditor()->getSceneManager()->getSceneCollisionManager()
             ->getSceneNodeFromScreenCoordinatesBB(
                 vector2d<s32>(m_mouse.x, m_mouse.y), MAGIC_NUMBER);
-
+        
 
         if (node)
             m_entity_manager.selectNode(node);
@@ -158,7 +158,10 @@ void Track::animatePlacing()
         ISceneCollisionManager* cm = Editor::getEditor()->getSceneManager()
             ->getSceneCollisionManager();
         line3d<f32> r = cm->getRayFromScreenCoordinates(vector2d<s32>(m_mouse.x, m_mouse.y));
-        m_new_entity->setPosition(r.start + r.getVector().normalize()*25);
+
+        
+
+        m_new_entity->setPosition(m_terrain->placeBBtoGround(m_new_entity->getBoundingBox(), r));
 
 
         if (m_mouse.leftPressed())

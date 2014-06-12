@@ -2,6 +2,7 @@
 
 #include "editor.hpp"
 
+#include <algorithm>
 #include <assert.h>
 
 // ----------------------------------------------------------------------------
@@ -18,7 +19,7 @@
  *  \param dz
  */
 void Terrain::coinAroundIntersection(line3d<float> ray, float r, vector2df* cpos,
-                                     int* ix, int* iz, int* dx, int* dz)
+                                     int* ix, int* iz, int* dx = 0, int* dz = 0)
 {
     vector3df p1 = ray.start - getPosition();
     vector3df p2 = ray.end - getPosition();
@@ -30,8 +31,8 @@ void Terrain::coinAroundIntersection(line3d<float> ray, float r, vector2df* cpos
     int iix = (int) (p.X / (m_x / m_nx) + 0.5);
     int iiz = (int) (p.Z / (m_z / m_nz) + 0.5);
 
-    *dx = (int) (r / (m_x / m_nx) + 1);
-    *dz = (int) (r / (m_z / m_nz) + 1);
+    if (dx) *dx = (int) (r / (m_x / m_nx) + 1);
+    if (dz) *dz = (int) (r / (m_z / m_nz) + 1);
 
     *cpos = vector2df(m_mesh.vertices[iiz * m_nx + iix].Pos.X,
                       m_mesh.vertices[iiz * m_nx + iix].Pos.Z);
@@ -88,6 +89,43 @@ Terrain::~Terrain()
     if (m_highlight_mesh.indices)  delete[] m_highlight_mesh.indices;
 
 } // ~Terrain
+
+// ----------------------------------------------------------------------------
+/** This function will create the vertices and the indicies. It is possible to
+*  call it anytime to resize the terrain, but doing so means the death of the
+*  old terrain, as new vertices are created with height 0
+*  \param x the size of the terrain along the x axis
+*  \param z the size of the terrain along the y axis
+*  \param nx vertex count along the x axis
+*  \param nz vertex count along the z axis
+*/
+void Terrain::setSize(float x, float z, int nx, int nz)
+{
+    m_bounding_box = aabbox3d<f32>(0, 0, 0, x, 0, z);
+
+    if (m_mesh.vertices) delete[] m_mesh.vertices;
+    if (m_mesh.indices)  delete[] m_mesh.indices;
+
+    m_mesh.vertex_count = nx * nz;
+    m_mesh.vertices = new S3DVertex[m_mesh.vertex_count];
+
+    m_mesh.quad_count = (nx - 1) * (nz - 1);
+    m_mesh.indices = new u16[m_mesh.quad_count * 6];
+
+    for (int j = 0; j < nz; j++)
+        for (int i = 0; i < nx; i++)
+        {
+        m_mesh.vertices[j * nx + i].Pos = vector3df(x / nx * i, 0, z / nz *j);
+        m_mesh.vertices[j * nx + i].Color = SColor(255, 0, 255, 0);
+        m_mesh.vertices[j * nx + i].TCoords = vector2df(i / x, j / z);
+        }
+
+    createIndexList(m_mesh.indices, nx, nz);
+
+    m_x = x; m_nx = nx;
+    m_z = z; m_nz = nz;
+
+} // setSize
 
 
 // ----------------------------------------------------------------------------
@@ -260,41 +298,33 @@ void Terrain::highlight(line3d<float> ray, float radius)
 } // highlight
 
 // ----------------------------------------------------------------------------
-/** This function will create the vertices and the indicies. It is possible to
- *  call it anytime to resize the terrain, but doing so means the death of the
- *  old terrain, as new vertices are created with height 0
- *  \param x the size of the terrain along the x axis
- *  \param z the size of the terrain along the y axis
- *  \param nx vertex count along the x axis
- *  \param nz vertex count along the z axis
- */
-void Terrain::setSize(float x, float z, int nx, int nz)
+vector3df Terrain::placeBBtoGround(aabbox3d<f32> box, line3d<float> ray)
 {
-    m_bounding_box = aabbox3d<f32>(0,0,0,x,0,z);
+    vector3df edges[8];
+    box.getEdges(edges);
 
-    if (m_mesh.vertices) delete[] m_mesh.vertices;
-    if (m_mesh.indices)  delete[] m_mesh.indices;
+    int ix, iz, dx, dz;
+    vector2df cpos;
+    coinAroundIntersection(ray, 0, &cpos, &ix, &iz);
 
-    m_mesh.vertex_count = nx * nz;
-    m_mesh.vertices = new S3DVertex[m_mesh.vertex_count];
+    f32 max_h = -30000;
+    dx = (int)(edges[4].X / (m_x / m_nx) + 1);
+    dz = (int)(edges[2].Z / (m_z / m_nz) + 1);
 
-    m_mesh.quad_count = (nx - 1) * (nz - 1);
-    m_mesh.indices = new u16[m_mesh.quad_count * 6];
-
-    for (int j = 0; j < nz; j++)
-        for (int i = 0; i < nx; i++)
+    for (int i = -dx; i <= dx; i++)
+        for (int j = -dz; j <= dz; j++)
         {
-            m_mesh.vertices[j * nx + i].Pos     = vector3df(x / nx * i, 0,  z / nz *j);
-            m_mesh.vertices[j * nx + i].Color   = SColor(255, 0, 255, 0);
-            m_mesh.vertices[j * nx + i].TCoords = vector2df(i / x, j / z);
-        }
+            // check if the point is outside of the terrain
+            if (ix + i > 0 && ix + i < m_nx && iz + j > 0 && iz + j < m_nz)
+            {
+                max_h = std::max((m_mesh.vertices[(iz + j) * m_nx + ix + i].Pos.Y),max_h);
+            } // this squere point is a valid vertex
+        } // for loop - critical rectangle
 
-    createIndexList(m_mesh.indices, nx, nz);
+    return vector3df(cpos.X, max_h /*+ edges[1].Y*/, cpos.Y);
 
-    m_x = x; m_nx = nx;
-    m_z = z; m_nz = nz;
+} // getMaxHeight
 
-} // setSize
 
 // ----------------------------------------------------------------------------
 void Terrain::OnRegisterSceneNode()
