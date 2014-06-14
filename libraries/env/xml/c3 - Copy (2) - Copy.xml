@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<element name="cat3" category="cats">
-      <img path="cat2.png">
-      <model path="cat.obj">
-      <tag name="cat">
-      <tag name="animal">
-</element>

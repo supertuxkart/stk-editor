@@ -89,7 +89,8 @@ EnvPanel* EnvPanel::getEnvPanel(IGUIWindow* wndw)
 stringw EnvPanel::getModelPathFromBtnId(int ID)
 {
     assert(ID - FIRST_BTN_ID >= 0 && ID - FIRST_BTN_ID < m_btn_num);
-    return m_btn_table[ID - FIRST_BTN_ID].second;
+    stringw dir = L"libraries/env/model/";
+    return dir + m_btn_table[ID - FIRST_BTN_ID].second;
 } // getModelPathFromBtnId
 
 
@@ -101,8 +102,7 @@ void EnvPanel::refreshBtnTable()
 
     std::list<Element*>::iterator it = elements.begin();
 
-    IFileSystem* file_system = Editor::getEditor()->getDevice()->getFileSystem();
-    stringw dir = file_system->getWorkingDirectory() + L"/libraries/env/img/";
+    stringw dir = L"libraries/env/img/";
     int i;
     for (i = 0; i < m_btn_num && it != elements.end(); i++, it++)
     {
