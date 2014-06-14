@@ -298,18 +298,15 @@ void Terrain::highlight(line3d<float> ray, float radius)
 } // highlight
 
 // ----------------------------------------------------------------------------
-vector3df Terrain::placeBBtoGround(aabbox3d<f32> box, line3d<float> ray)
-{
-    vector3df edges[8];
-    box.getEdges(edges);
-
+vector3df Terrain::placeBBtoGround(const aabbox3d<f32>& box, line3d<float> ray)
+{    
     int ix, iz, dx, dz;
     vector2df cpos;
-    coinAroundIntersection(ray, 0, &cpos, &ix, &iz);
+    coinAroundIntersection(ray, 0, &cpos, &ix, &iz);    
 
     f32 max_h = -30000;
-    dx = (int)(edges[4].X / (m_x / m_nx) + 1);
-    dz = (int)(edges[2].Z / (m_z / m_nz) + 1);
+    dx = (int)(box.MaxEdge.X / (m_x / m_nx) + 1);
+    dz = (int)(box.MaxEdge.Z / (m_z / m_nz) + 1);
 
     for (int i = -dx; i <= dx; i++)
         for (int j = -dz; j <= dz; j++)
@@ -321,7 +318,7 @@ vector3df Terrain::placeBBtoGround(aabbox3d<f32> box, line3d<float> ray)
             } // this squere point is a valid vertex
         } // for loop - critical rectangle
 
-    return vector3df(cpos.X, max_h /*+ edges[1].Y*/, cpos.Y);
+    return vector3df(cpos.X, max_h - box.MinEdge.Y, cpos.Y);
 
 } // getMaxHeight
 

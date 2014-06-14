@@ -160,8 +160,9 @@ void Track::animatePlacing()
         line3d<f32> r = cm->getRayFromScreenCoordinates(vector2d<s32>(m_mouse.x, m_mouse.y));
 
         
-
-        m_new_entity->setPosition(m_terrain->placeBBtoGround(m_new_entity->getBoundingBox(), r));
+        m_new_entity->setPosition(vector3df(0, 0, 0));
+        m_new_entity->updateAbsolutePosition();
+        m_new_entity->setPosition(m_terrain->placeBBtoGround(m_new_entity->getTransformedBoundingBox(), r));
 
 
         if (m_mouse.leftPressed())
