@@ -202,9 +202,7 @@ void Terrain::initMaterials()
     IGPUProgrammingServices* gpu = vd->getGPUProgrammingServices();
     s32 material_type;
     material_type = gpu->addHighLevelShaderMaterialFromFiles(
-        "terrainshader.vs", "main", video::EVST_VS_3_0,
-        "terrainshader.ps", "main", video::EPST_PS_3_0,
-        this, video::EMT_SOLID, 0, EGSL_DEFAULT);
+        "terrainshader.vs", "terrainshader.ps", this, EMT_SOLID);
 
     m_material.MaterialType = (E_MATERIAL_TYPE)material_type;
 
@@ -465,11 +463,11 @@ void Terrain::render()
 // ----------------------------------------------------------------------------
 void Terrain::OnSetConstants(video::IMaterialRendererServices* services, s32 userData)
 {
-    float tex_0 = 0.0f;
-    float tex_1 = 1.0f;
-    float tex_2 = 2.0f;
-    float tex_3 = 3.0f;
-    float tex_4 = 4.0f;
+    int tex_0 = 0;
+    int tex_1 = 1;
+    int tex_2 = 2;
+    int tex_3 = 3;
+    int tex_4 = 4;
 
     services->setPixelShaderConstant("splatting", &tex_0, 1);
     services->setPixelShaderConstant("terrain_1", &tex_1, 1);
