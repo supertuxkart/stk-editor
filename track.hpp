@@ -30,6 +30,7 @@ public:
         PLACE,
         TERRAIN_MOD,
         TERRAIN_CUT,
+        TERRAIN_DRAW,
         FREECAM
     };
     enum Key

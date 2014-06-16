@@ -19,7 +19,7 @@ void TerrPanel::init()
                            false, false, m_wndw, -1, false);
 
     m_h_radius = gui_env->addScrollBar(true, rect<s32>(100, 45, 240, 55),
-        m_wndw, H_RADIUS);
+        m_wndw, RADIUS);
     m_h_radius->setMin(1);
     m_h_radius->setMax(100);
     m_h_radius->setSmallStep(1);
@@ -31,11 +31,11 @@ void TerrPanel::init()
 
     m_h_intensity = gui_env->addScrollBar(true, rect<s32>(100, 75, 240, 85),
         m_wndw, H_INTENSITY);
-    m_h_intensity->setMin(-100);
+    m_h_intensity->setMin(1);
     m_h_intensity->setMax(100);
     m_h_intensity->setSmallStep(1);
     m_h_intensity->setLargeStep(10);
-    m_h_intensity->setPos(10);
+    m_h_intensity->setPos(20);
 
 
     m_h_max_cb = gui_env->addCheckBox(false, rect<s32>(15, 90, 100, 120), 
@@ -73,6 +73,18 @@ void TerrPanel::init()
     gui_env->addButton(rect<s32>(145, 178, 185, 198), m_wndw, H_MAX_CUT_BTN);
     gui_env->addButton(rect<s32>(195, 178, 235, 198), m_wndw, H_MIN_CUT_BTN);
 
+    IGUIButton* b4 = gui_env->addButton(rect<s32>(10,  230, 60,  280), m_wndw, M_T1);
+    IGUIButton* b5 = gui_env->addButton(rect<s32>(70,  230, 120, 280), m_wndw, M_T2);
+    IGUIButton* b6 = gui_env->addButton(rect<s32>(130, 230, 180, 280), m_wndw, M_T3);
+    IGUIButton* b7 = gui_env->addButton(rect<s32>(190, 230, 240, 280), m_wndw, M_T4);
+    b4->setImage(Editor::loadImg("img/t1.png"));
+    b5->setImage(Editor::loadImg("img/t2.jpg"));
+    b6->setImage(Editor::loadImg("img/t3.jpg"));
+    b7->setImage(Editor::loadImg("img/t4.jpg"));
+
+
+
+
 
     m_tmod.ID        = 0;
     m_tmod.countdown = -1;
@@ -81,6 +93,7 @@ void TerrPanel::init()
     m_tmod.min       = false;
     m_tmod.max_cut   = true;
     m_tmod.cut_v     = 3;
+    m_tmod.col_mask  = SColor(255, 0, 0, 0);
     refreshTerrModData();
 
 } // init
@@ -120,6 +133,18 @@ void TerrPanel::btnDown(int btn)
     case H_MAX_CUT_BTN:
         m_tmod.max_cut = true;
         m_tmod.cut_v = (float) atof(((stringc)m_cut_eb->getText()).c_str());
+        break;
+    case M_T1:
+        m_tmod.col_mask = SColor(255, 0, 0, 0);
+        break;
+    case M_T2:
+        m_tmod.col_mask = SColor(0, 255, 0, 0);
+        break;
+    case M_T3:
+        m_tmod.col_mask = SColor(0, 0, 255, 0);
+        break;
+    case M_T4:
+        m_tmod.col_mask = SColor(0, 0, 0, 255);
         break;
     default:
         break;

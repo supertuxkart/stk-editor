@@ -20,7 +20,6 @@ public:
         H_EDGE_1 = FGEI,
         H_EDGE_2,
         H_EDGE_3,
-        H_RADIUS,
         H_INTENSITY,
         H_MIN_CHECK_BOX,
         H_MAX_CHECK_BOX,
@@ -28,7 +27,12 @@ public:
         H_MAX_EDIT_BOX,
         H_MIN_CUT_BTN,
         H_MAX_CUT_BTN,
-        H_CUT_VALUE_EB
+        H_CUT_VALUE_EB,
+        RADIUS,
+        M_T1,
+        M_T2,
+        M_T3,
+        M_T4
     };
 
 private:
@@ -52,7 +56,7 @@ private:
 
     IGUIEditBox*            m_cut_eb;
     
-    Terrain::TerrainMod     m_tmod;
+    TerrainMod              m_tmod;
 
     // private functions:
 
@@ -63,7 +67,7 @@ private:
 public:
     static TerrPanel*     getTerrPanel(IGUIWindow* wndw = 0);
 
-    Terrain::TerrainMod*  getTerrainModData()         { return &m_tmod; }
+    TerrainMod*           getTerrainModData()         { return &m_tmod; }
     void                  btnDown(int btn);
     void                  refreshTerrModData();
 };

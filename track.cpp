@@ -189,13 +189,21 @@ void Track::animateTerrainMod(long dt)
     cm = Editor::getEditor()->getSceneManager()->getSceneCollisionManager();
     line3d<float> ray;
     ray = cm->getRayFromScreenCoordinates(vector2d<s32>(m_mouse.x, m_mouse.y));
-    Terrain::TerrainMod* tm = TerrPanel::getTerrPanel()->getTerrainModData();
+    TerrainMod* tm = TerrPanel::getTerrPanel()->getTerrainModData();
+    tm->ray = ray;
 
-    m_terrain->highlight(ray, tm->radius);
+    m_terrain->highlight(tm);
 
     if (m_state == TERRAIN_CUT)
     {
-        if (m_mouse.left_btn_down) m_terrain->cut(ray, *tm);
+        if (m_mouse.left_btn_down) m_terrain->cut(tm);
+        return;
+    }
+
+    if (m_state == TERRAIN_DRAW)
+    {
+        if (m_mouse.left_btn_down) m_terrain->draw(*tm);
+        return;
     }
 
     if (m_state == TERRAIN_MOD)
@@ -212,9 +220,10 @@ void Track::animateTerrainMod(long dt)
         {
             tm->countdown = TERRAIN_WAIT_TIME;
             if (m_mouse.right_btn_down) tm->dh *= -1;
-            m_terrain->modify(ray, *tm);
+            m_terrain->modify(tm);
             if (m_mouse.right_btn_down) tm->dh *= -1;
         }
+        return;
     }
 } // animateTerrainMod
 
@@ -240,8 +249,7 @@ void Track::init()
 
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
 
-    m_terrain = new Terrain(sm->getRootSceneNode(), sm, 1);
-    m_terrain->setSize(50, 50, 50, 50);
+    m_terrain = new Terrain(sm->getRootSceneNode(), sm, 1, 50, 50, 100, 100);
 
 } // init
 
@@ -396,6 +404,7 @@ void Track::setNewEntity(const stringw path)
 
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
     m_new_entity = sm->addAnimatedMeshSceneNode(sm->getMesh(path));
+    //m_new_entity->setMaterialFlag(EMF_LIGHTING, false);
 
 } // setNewEntity
 
@@ -415,7 +424,8 @@ void Track::animate(long dt)
             animateSelection();
         else if (m_state == PLACE)
             animatePlacing();
-        else if (m_state == TERRAIN_MOD || m_state == TERRAIN_CUT)
+        else if (m_state == TERRAIN_MOD || m_state == TERRAIN_CUT 
+                                        || m_state == TERRAIN_DRAW)
             animateTerrainMod(dt);
     }
 

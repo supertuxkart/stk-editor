@@ -69,6 +69,13 @@ bool Editor::buttonClicked(int ID)
         TerrPanel::getTerrPanel()->btnDown(ID);
         m_track->setState(Track::TERRAIN_CUT);
         return true;
+    case TerrPanel::M_T1:
+    case TerrPanel::M_T2:
+    case TerrPanel::M_T3:
+    case TerrPanel::M_T4:
+        TerrPanel::getTerrPanel()->btnDown(ID);
+        m_track->setState(Track::TERRAIN_DRAW);
+        return true;
     default:
         break;
     }
@@ -118,6 +125,13 @@ bool Editor::init()
     IGUIFont* font = m_gui_env->getFont(L"font/font2.png");
     skin->setFont(font);
     
+    
+    m_scene_manager->setAmbientLight(SColorf(0.3f, 0.3f, 0.3f, 1.0f));
+    ILightSceneNode* l = m_scene_manager->addLightSceneNode(0, vector3df(0, 1, 0), 
+                                              SColorf(1.0f, 1.0f, 1.0f), 500, -1);
+    l->setLightType(ELT_DIRECTIONAL);
+    l->setPosition(vector3df(0, 1, 0));
+
     for (s32 i = 0; i<EGDC_COUNT; ++i)
     {
         video::SColor col = skin->getColor((EGUI_DEFAULT_COLOR)i);
@@ -250,7 +264,7 @@ bool Editor::OnEvent(const SEvent& event)
             switch (event.GUIEvent.Caller->getID())
             {
             case TerrPanel::H_INTENSITY:
-            case TerrPanel::H_RADIUS:
+            case TerrPanel::RADIUS:
                 TerrPanel::getTerrPanel()->refreshTerrModData();
                 m_track->setState(Track::TERRAIN_MOD);
                 return true;
