@@ -3,6 +3,9 @@
 
 #include <irrlicht.h>
 
+#define MAGIC_NUMBER            8192
+#define ANOTHER_MAGIC_NUMBER    16384
+
 using namespace irr;
 using namespace core;
 using namespace scene;

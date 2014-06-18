@@ -4,6 +4,7 @@
 #include <irrlicht.h>
 
 using namespace irr;
+using namespace scene;
 using namespace core;
 using namespace video;
 
@@ -33,6 +34,16 @@ struct Mesh
     u16*            indices;
     unsigned int    vertex_count;
     unsigned int    quad_count;
+};
+
+struct ControlPoint
+{
+    vector3df        vel;
+    vector3df        pos;
+    vector3df        normal;
+    float            t;
+    ISceneNode*      node;
+    ISceneNode*      normal_node;
 };
 
 #endif

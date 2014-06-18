@@ -52,6 +52,12 @@ bool Editor::buttonClicked(int ID)
     case ToolBar::TBI_GRID_DEC:
         m_track->changeGridDensity(-1);
         return true;
+    case ToolBar::TBI_NEW:
+        m_track->setRoadEditingMode(true);
+        return true;
+    case ToolBar::TBI_OPEN:
+        m_track->setRoadEditingMode(false);
+        return true;
     // ToolBox BTN:
     case ToolBox::TWND_ID:
     case ToolBox::EWND_ID:

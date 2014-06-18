@@ -80,12 +80,23 @@ void Track::animateEditing()
             m_active_cmd->undo();
             m_active_cmd->update((float)-m_mouse.dx(), 0.0f, (float)m_mouse.dy());
             m_active_cmd->redo();
+            if (m_road_editing)
+            {
+                m_spline->updatePosition();
+                m_road->refresh();
+            }
+
         }
         if (m_mouse.right_btn_down)
         {
             m_active_cmd->undo();
             m_active_cmd->update(0.0f, (float) -m_mouse.dy(), 0.0f);
             m_active_cmd->redo();
+            if (m_road_editing) 
+            {
+                m_spline->updatePosition();
+                m_road->refresh();
+            }
         }
         m_mouse.setStorePoint();
 
@@ -139,10 +150,12 @@ void Track::animateSelection()
     {
         if (!m_key_state[CTRL_PRESSED]) m_entity_manager.clearSelection();
 
+        int id = (m_road_editing) ? ANOTHER_MAGIC_NUMBER : MAGIC_NUMBER;
+
         ISceneNode* node;
         node = Editor::getEditor()->getSceneManager()->getSceneCollisionManager()
             ->getSceneNodeFromScreenCoordinatesBB(
-                vector2d<s32>(m_mouse.x, m_mouse.y), MAGIC_NUMBER);
+                vector2d<s32>(m_mouse.x, m_mouse.y), id);
         
 
         if (node)
@@ -175,6 +188,13 @@ void Track::animatePlacing()
             Command* cmd = new CreateCmd(list);
             m_command_handler.add(cmd);
             m_new_entity = m_new_entity->clone();
+        }
+        if (m_mouse.rightPressed())
+        {
+            vector3df p = m_terrain->placeBBtoGround(m_new_entity->getTransformedBoundingBox(), r);
+            p.Y += 3.0;
+            m_spline->addControlPoint(p);
+            m_road->refresh();
         }
 
     }
@@ -228,6 +248,27 @@ void Track::animateTerrainMod(long dt)
 } // animateTerrainMod
 
 // ----------------------------------------------------------------------------
+void Track::leaveState()
+{
+    ISceneManager* sm = Editor::getEditor()->getSceneManager();
+    switch (m_state)
+    {
+    case PLACE:
+        m_new_entity->remove();
+        m_new_entity = 0;
+        return;
+    case FREECAM:
+        m_free_camera->setInputReceiverEnabled(false);
+        sm->setActiveCamera(m_normal_camera);
+        return;
+    default:
+        break;
+    }
+
+
+} // leaveState
+
+// ----------------------------------------------------------------------------
 Track* Track::getTrack()
 {
     if (m_track != 0) return m_track;
@@ -243,6 +284,7 @@ void Track::init()
 {
     m_active_cmd = 0;
     m_state = SELECT;
+    m_road_editing = false;
     m_new_entity = 0;
     m_grid_on = true;
     for (int i = 0; i < m_key_num; i++) m_key_state[i] = false;
@@ -251,6 +293,9 @@ void Track::init()
 
     m_terrain = new Terrain(sm->getRootSceneNode(), sm, 1, 50, 50, 100, 100);
 
+    m_spline = new TCR(sm->getRootSceneNode(), sm, 0);
+    m_road   = new Road(sm->getRootSceneNode(), sm, 0, m_spline);
+
 } // init
 
 // ----------------------------------------------------------------------------
@@ -258,32 +303,29 @@ void Track::setState(State state)
 {
     ISceneManager* scene_manager = Editor::getEditor()->getSceneManager();
 
-    if (m_state == PLACE && state != PLACE)
-    {
-        m_new_entity->remove();
-        m_new_entity = 0;
-    }
+    if (m_state == FREECAM && state == FREECAM) state = SELECT;
 
-    if (m_state == FREECAM && state != FREECAM)
-    {
-        m_state = SELECT;
-        m_free_camera->setInputReceiverEnabled(false);
-        scene_manager->setActiveCamera(m_normal_camera);
-    }
-    else if (m_state != FREECAM && state == FREECAM)
+    if (state != m_state) leaveState();
+    else return;
+
+    if (state == FREECAM)
     {
         m_free_camera->setInputReceiverEnabled(true);
         scene_manager->setActiveCamera(m_free_camera);
     }
-
-    if (m_state == FREECAM && state == FREECAM)
-    {
-        m_state = SELECT;
-        m_free_camera->setInputReceiverEnabled(false);
-        scene_manager->setActiveCamera(m_normal_camera);
-    } else m_state = state;
+        
+    m_state = state;
 
 } // setState
+
+// ----------------------------------------------------------------------------
+void Track::setRoadEditingMode(bool rem)
+{
+    m_spline->setNodeVisibility(rem);
+    if (rem != m_road_editing)
+        m_entity_manager.clearSelection();
+    m_road_editing = rem;
+} // setRoadEditingMode
 
 // ----------------------------------------------------------------------------
 void Track::setGrid(bool grid_on)
@@ -395,7 +437,7 @@ void Track::deleteCmd()
 void Track::setNewEntity(const stringw path)
 {
     if (m_state != PLACE)
-        m_state = PLACE;
+        setState(PLACE);
     if (m_new_entity != 0)
     {
         m_new_entity->remove();
@@ -404,7 +446,6 @@ void Track::setNewEntity(const stringw path)
 
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
     m_new_entity = sm->addAnimatedMeshSceneNode(sm->getMesh(path));
-    //m_new_entity->setMaterialFlag(EMF_LIGHTING, false);
 
 } // setNewEntity
 

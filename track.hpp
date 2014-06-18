@@ -4,11 +4,11 @@
 #include "command.hpp"
 #include "entities/entitymanager.hpp"
 #include "entities/terrain.hpp"
+#include "road/bezier.hpp"
+#include "road/tcr.hpp"
+#include "road/road.hpp"
 
 #include <irrlicht.h>
-#include <list>
-
-#define MAGIC_NUMBER      8192
 
 class Entity;
 class Command;
@@ -88,6 +88,7 @@ private:
     static int              m_last_entity_ID;
 
     State                   m_state;
+    bool                    m_road_editing;
 
     MouseData               m_mouse;
 
@@ -98,6 +99,9 @@ private:
     CommandHandler          m_command_handler;
 
     Terrain*                m_terrain;
+
+    Road*                   m_road;
+    ISpline*                m_spline;
 
     // command not yet finished
     Command*            m_active_cmd;
@@ -121,10 +125,13 @@ private:
     void                animatePlacing();
     void                animateTerrainMod(long dt);
 
+    void                leaveState();
+
 public:
     static Track* getTrack();
     void          init();
     void          setState(State state);
+    void          setRoadEditingMode(bool rem);
     void          setGrid(bool grid_on);
     void          changeGridDensity(int dir);
     void          keyEvent(EKEY_CODE code, bool pressed);
