@@ -293,7 +293,7 @@ void Track::init()
 
     m_terrain = new Terrain(sm->getRootSceneNode(), sm, 1, 50, 50, 100, 100);
 
-    m_spline = new TCR(sm->getRootSceneNode(), sm, 0);
+    m_spline = new Bezier(sm->getRootSceneNode(), sm, 0);
     m_road   = new Road(sm->getRootSceneNode(), sm, 0, m_spline);
 
 } // init
