@@ -77,14 +77,10 @@ void TerrPanel::init()
     IGUIButton* b5 = gui_env->addButton(rect<s32>(70,  230, 120, 280), m_wndw, M_T2);
     IGUIButton* b6 = gui_env->addButton(rect<s32>(130, 230, 180, 280), m_wndw, M_T3);
     IGUIButton* b7 = gui_env->addButton(rect<s32>(190, 230, 240, 280), m_wndw, M_T4);
-    b4->setImage(Editor::loadImg("img/t1.png"));
-    b5->setImage(Editor::loadImg("img/t2.jpg"));
-    b6->setImage(Editor::loadImg("img/t3.jpg"));
-    b7->setImage(Editor::loadImg("img/t4.jpg"));
-
-
-
-
+    b4->setImage(Editor::loadImg(L"libraries/terrain/t1.png"));
+    b5->setImage(Editor::loadImg(L"libraries/terrain/t2.jpg"));
+    b6->setImage(Editor::loadImg(L"libraries/terrain/t3.jpg"));
+    b7->setImage(Editor::loadImg(L"libraries/terrain/t4.jpg"));
 
     m_tmod.ID        = 0;
     m_tmod.countdown = -1;
