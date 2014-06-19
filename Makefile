@@ -12,7 +12,7 @@ LDFLAGS += $(IRR_LIB)
 
 CXXFLAGS += -Wall -Wextra
 LDFLAGS += -Wl,-O1
-LDFLAGS += -lz -lpng -ljpeg -L /usr/X11R7/lib -lGL
+LDFLAGS += -lz -lpng -ljpeg -L /usr/X11R7/lib -lGL -lX11 -lXxf86vm
 
 .PHONY: all clean
 
