@@ -30,10 +30,10 @@ struct TerrainMod
 
 struct Mesh
 {
-    S3DVertex*      vertices;
-    u16*            indices;
-    unsigned int    vertex_count;
-    unsigned int    quad_count;
+    S3DVertex2TCoords*  vertices;
+    u16*                indices;
+    unsigned int        vertex_count;
+    unsigned int        quad_count;
 };
 
 struct ControlPoint

@@ -84,7 +84,7 @@ void Road::refresh()
     m_mesh.vertex_count = (int)(1.0f / m_detail + 1) * m_width_vert_num;
     m_mesh.quad_count   = (int)(1.0f / m_detail)      * (m_width_vert_num-1);
 
-    m_mesh.vertices = new S3DVertex[m_mesh.vertex_count];
+    m_mesh.vertices = new S3DVertex2TCoords[m_mesh.vertex_count];
     m_mesh.indices  = new u16[m_mesh.quad_count * 6];
 
     vector3df last_point = m_spline->p(0);
@@ -139,7 +139,7 @@ void Road::render()
     
     driver->drawVertexPrimitiveList(&m_mesh.vertices[0], m_mesh.vertex_count,
         &m_mesh.indices[0], m_mesh.quad_count * 2,
-        video::EVT_STANDARD, EPT_TRIANGLES,
+        video::EVT_2TCOORDS, EPT_TRIANGLES,
         video::EIT_16BIT);
 
 } // render

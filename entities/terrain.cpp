@@ -228,7 +228,7 @@ ITexture* Terrain::createSplattingImg()
         for (u32 j = 0; j < SPIMG_Y; j++)
             img->setPixel(i, j, SColor(255, 0, 0, 0));
 
-    splattingImg = img;
+    m_splattingImg = img;
     return vd->addTexture("splatt", img);
 } // initSplattingImg
 
@@ -251,7 +251,7 @@ void Terrain::draw(const TerrainMod& tm)
     u8* img;
     img = (u8*) m_material.getTexture(0)->lock(ETLM_READ_WRITE);
 
-    vector2df tex = m_mesh.vertices[iz * m_nx + ix].TCoords;
+    vector2df tex = m_mesh.vertices[iz * m_nx + ix].TCoords2;
 
     vector2di tc = vector2di((int)(tex.X * SPIMG_X), (int)(tex.Y * SPIMG_X));
 
@@ -263,7 +263,7 @@ void Terrain::draw(const TerrainMod& tm)
         if ((i - tc.X)*(i - tc.X) + (j - tc.Y)*(j - tc.Y) < r*r)
             if ((i > 0 && i < SPIMG_X && j > 0 && j < SPIMG_Y))
             {
-                splattingImg->setPixel(i, j, tm.col_mask);
+                m_splattingImg->setPixel(i, j, tm.col_mask);
                 img[j * SPIMG_X * 4 + i * 4] = tm.col_mask.getBlue();
                 img[j * SPIMG_X * 4 + i*4 + 1] = tm.col_mask.getGreen();
                 img[j * SPIMG_X * 4 + i*4 + 2] = tm.col_mask.getRed();
@@ -282,9 +282,12 @@ Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id,
 {
     m_bounding_box = aabbox3d<f32>(0, 0, 0, x, 0, z);
 
-    m_mesh.vertex_count = nx * nz;
-    m_mesh.vertices = new S3DVertex[m_mesh.vertex_count];
+    m_tile_num_x = 10;
+    m_tile_num_z = 10;
 
+    m_mesh.vertex_count = nx * nz;
+    m_mesh.vertices = new S3DVertex2TCoords[m_mesh.vertex_count];
+    
     m_mesh.quad_count = (nx - 1) * (nz - 1);
     m_mesh.indices = new u16[m_mesh.quad_count * 6];
 
@@ -293,7 +296,9 @@ Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id,
     {
         m_mesh.vertices[j * nx + i].Pos = vector3df(x / nx * i, 0, z / nz *j);
         m_mesh.vertices[j * nx + i].Color = SColor(255, 0, 200, 100);
-        m_mesh.vertices[j * nx + i].TCoords = vector2df(i / (float)nx, j / (float)nz);
+        m_mesh.vertices[j * nx + i].TCoords  = 
+            vector2df(i / (float)nx * m_tile_num_x, j / (float)nz * m_tile_num_z);
+        m_mesh.vertices[j * nx + i].TCoords2 = vector2df(i / (float)nx, j / (float)nz);
     }
 
     createIndexList(m_mesh.indices, nx, nz);
@@ -384,7 +389,7 @@ void Terrain::highlight(TerrainMod* tm)
     int z = 2 * dz + 1;
     m_highlight_mesh.vertex_count = x * z;
 
-    m_highlight_mesh.vertices = new S3DVertex[m_highlight_mesh.vertex_count];
+    m_highlight_mesh.vertices = new S3DVertex2TCoords[m_highlight_mesh.vertex_count];
     m_highlight_mesh.quad_count = (x - 1) * (z - 1);
     m_highlight_mesh.indices = new u16[m_highlight_mesh.quad_count * 6];
 
@@ -443,7 +448,7 @@ void Terrain::render()
 
     driver->drawVertexPrimitiveList(&m_mesh.vertices[0], m_mesh.vertex_count,
                                     &m_mesh.indices[0], m_mesh.quad_count * 2,
-                                    video::EVT_STANDARD, EPT_TRIANGLES,
+                                    video::EVT_2TCOORDS, EPT_TRIANGLES,
                                     video::EIT_16BIT);
 
     if (m_highlight_mesh.vertices)
@@ -453,7 +458,7 @@ void Terrain::render()
                                          m_highlight_mesh.vertex_count,
                                          &m_highlight_mesh.indices[0],
                                          m_highlight_mesh.quad_count * 2,
-                                         video::EVT_STANDARD, EPT_TRIANGLES,
+                                         video::EVT_2TCOORDS, EPT_TRIANGLES,
                                          video::EIT_16BIT);
     }
 

@@ -37,7 +37,10 @@ private:
 
     static const int    SPIMG_X;
     static const int    SPIMG_Y;
-    IImage*             splattingImg;
+    IImage*             m_splattingImg;
+
+    u16                 m_tile_num_x;
+    u16                 m_tile_num_z;
 
 // ----------------------------------------------------------------------------
     // private functions - geometry
