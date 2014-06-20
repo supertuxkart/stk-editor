@@ -2,6 +2,7 @@
 #include "toolbox/element.hpp"
 
 #include "editor.hpp"
+#include <iostream>
 
 using namespace io;
 
@@ -13,12 +14,16 @@ Library::Library(stringw name, unsigned int buffer_size)
     IFileSystem* file_system = Editor::getEditor()->getDevice()->getFileSystem();
     path wd = file_system->getWorkingDirectory();
 
-    IFileArchive* dir;
+    IFileArchive* dir = 0;
     stringw dir_path = "/libraries/";
     dir_path += name;
     dir_path += "/xml";
 
-    file_system->addFileArchive(wd+dir_path,true,false,EFAT_FOLDER,"",&dir);
+    if (!file_system->addFileArchive(wd + dir_path, true, false, EFAT_FOLDER, "", &dir))
+    {
+        std::cerr << "An important directory could not be loaded... maybe it is missing.";
+        exit(-1);
+    }
 
     const IFileList* file_list = dir->getFileList();
 
