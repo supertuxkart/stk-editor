@@ -255,7 +255,7 @@ void Terrain::draw(const TerrainMod& tm)
 
     vector2di tc = vector2di((int)(tex.X * SPIMG_X), (int)(tex.Y * SPIMG_X));
 
-    int r = (int)(tm.radius / m_nx * SPIMG_X);
+    int r = (int)(tm.radius / m_x * SPIMG_X);
 
     for (int i = tc.X - r; i < tc.X + r; i++)
         for (int j = tc.Y - r; j < tc.Y + r; j++)
@@ -264,10 +264,10 @@ void Terrain::draw(const TerrainMod& tm)
             if ((i > 0 && i < SPIMG_X && j > 0 && j < SPIMG_Y))
             {
                 m_splattingImg->setPixel(i, j, tm.col_mask);
-                img[j * SPIMG_X * 4 + i * 4] = tm.col_mask.getBlue();
-                img[j * SPIMG_X * 4 + i*4 + 1] = tm.col_mask.getGreen();
-                img[j * SPIMG_X * 4 + i*4 + 2] = tm.col_mask.getRed();
-                img[j * SPIMG_X * 4 + i*4 + 3] = tm.col_mask.getAlpha();
+                img[j * SPIMG_X * 4 + i * 4] += tm.col_mask.getBlue();
+                img[j * SPIMG_X * 4 + i*4 + 1] += tm.col_mask.getGreen();
+                img[j * SPIMG_X * 4 + i*4 + 2] += tm.col_mask.getRed();
+                img[j * SPIMG_X * 4 + i*4 + 3] += tm.col_mask.getAlpha();
             }
         }
     m_material.getTexture(0)->unlock();
@@ -370,6 +370,7 @@ void Terrain::cut(TerrainMod* tm)
 // ----------------------------------------------------------------------------
 void Terrain::highlight(TerrainMod* tm)
 {
+
     if (m_highlight_mesh.vertices)
     {
         delete[] m_highlight_mesh.vertices;
@@ -397,6 +398,7 @@ void Terrain::highlight(TerrainMod* tm)
     callOnVertices(tm,true,true);
 
     createIndexList(m_highlight_mesh.indices, x, z);
+
 } // highlight
 
 
