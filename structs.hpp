@@ -41,9 +41,11 @@ struct ControlPoint
     vector3df        vel;
     vector3df        pos;
     vector3df        normal;
+    float            width;
     float            t;
     ISceneNode*      node;
     ISceneNode*      normal_node;
+    ISceneNode*      width_node;
 };
 
 #endif

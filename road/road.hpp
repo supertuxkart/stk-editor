@@ -20,7 +20,7 @@ private:
     aabbox3d<f32>   m_bounding_box;
 
 
-    void        calcVertexRow(vector3df p, vector3df n, vector3df w, int offset);
+    void        calcVertexRow(vector3df p, vector3df n, vector3df w, int offset, float wx);
     void        createIndexList(int nj, int ni);
 
 public:

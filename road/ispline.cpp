@@ -47,11 +47,22 @@ ControlPoint ISpline::newControlPoint(vector3df p)
     ControlPoint cp;
     cp.pos = p;
     cp.normal = vector3df(0.0f, 1.0f, 0.0f);
+    cp.width  = 1.0f;
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
-    cp.node = sm->addSphereSceneNode(0.2, 16, 0, ANOTHER_MAGIC_NUMBER + 2 * m_cp_num, p);
-    cp.normal_node = sm->addSphereSceneNode(0.2, 16, cp.node, ANOTHER_MAGIC_NUMBER + 2 * m_cp_num + 1,vector3df(0,1,0));
+    cp.node = sm->addSphereSceneNode(0.2, 16, 0, 
+        ANOTHER_MAGIC_NUMBER + 3 * m_cp_num, p);
+    cp.node->getMaterial(0).DiffuseColor = SColor(255, 255, 0, 0);
+    cp.node->getMaterial(0).AmbientColor = SColor(255, 255, 0, 0);
+
+    cp.normal_node = sm->addSphereSceneNode(0.1, 16, cp.node, 
+        ANOTHER_MAGIC_NUMBER + 3 * m_cp_num + 1,vector3df(0,1,0));
     cp.normal_node->getMaterial(0).DiffuseColor = SColor(255, 0, 255, 0);
     cp.normal_node->getMaterial(0).AmbientColor = SColor(255, 0, 255, 0);
+        
+    cp.width_node = sm->addSphereSceneNode(0.1, 16, cp.node, 
+        ANOTHER_MAGIC_NUMBER + 3 * m_cp_num + 2, vector3df(1, 0, 0));
+    cp.width_node->getMaterial(0).DiffuseColor = SColor(255, 0, 0, 255);
+    cp.width_node->getMaterial(0).AmbientColor = SColor(255, 0, 0, 255);
 
     return cp;
 
@@ -131,12 +142,19 @@ void ISpline::insertControlPoint(vector3df p)
 void ISpline::updatePosition()
 {
     list<ControlPoint>::Iterator it;
-
+    vector3df v;
     for (it = m_control_points.begin(); it != m_control_points.end(); it++)
     {
+        v = it->normal_node->getPosition();
+        v.normalize();
+        it->normal_node->setPosition(v);
         it->pos = it->node->getPosition();
         it->normal = it->normal_node->getPosition();
         it->normal.normalize();
+        
+        v = it->width_node->getPosition();
+        it->width = v.X;
+        it->width_node->setPosition(vector3df(v.X, 0.0f, 0.0f));
     }
     calculateVelocity();
 } // updatePosition

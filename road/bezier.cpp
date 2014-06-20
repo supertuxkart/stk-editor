@@ -42,3 +42,17 @@ vector3df Bezier::getNormal(float t)
     }
     return v;
 } // getNormal
+
+
+// ----------------------------------------------------------------------------
+float Bezier::getWidth(float t)
+{
+    float f = 0;
+    list<ControlPoint>::Iterator it = m_control_points.begin();
+    for (int i = 0; it != m_control_points.end(); it++, i++)
+    {
+        f = f + it->width * bi(i, t);
+    }
+    return f;
+} // getWidth
+
