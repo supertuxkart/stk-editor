@@ -7,6 +7,7 @@
 #include "road/bezier.hpp"
 #include "road/tcr.hpp"
 #include "road/road.hpp"
+#include "road/driveline.hpp"
 
 #include <irrlicht.h>
 
@@ -100,7 +101,7 @@ private:
 
     Terrain*                m_terrain;
 
-    Road*                   m_road;
+    DriveLine*              m_road;
     ISpline*                m_spline;
 
     // command not yet finished
