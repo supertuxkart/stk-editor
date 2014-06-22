@@ -17,22 +17,23 @@ public:
     
     enum
     {
-        H_EDGE_1 = FGEI,
-        H_EDGE_2,
-        H_EDGE_3,
-        H_INTENSITY,
+        RADIUS = FGEI,
+        INTENSITY,
+        EDGE_1,
+        EDGE_2,
+        EDGE_3,
+        M_T1,
+        M_T2,
+        M_T3,
+        M_T4,
         H_MIN_CHECK_BOX,
         H_MAX_CHECK_BOX,
         H_MIN_EDIT_BOX,
         H_MAX_EDIT_BOX,
-        H_MIN_CUT_BTN,
-        H_MAX_CUT_BTN,
-        H_CUT_VALUE_EB,
-        RADIUS,
-        M_T1,
-        M_T2,
-        M_T3,
-        M_T4
+        H_BTN,
+        T_SOFT_BTN,
+        T_HARD_BTN,
+        T_BRIGHTNESS_BTN
     };
 
 private:
@@ -53,8 +54,6 @@ private:
 
     IGUICheckBox*           m_h_min_cb;
     IGUICheckBox*           m_h_max_cb;
-
-    IGUIEditBox*            m_cut_eb;
     
     TerrainMod              m_tmod;
 

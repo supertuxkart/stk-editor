@@ -30,8 +30,6 @@ public:
         SCALE,
         PLACE,
         TERRAIN_MOD,
-        TERRAIN_CUT,
-        TERRAIN_DRAW,
         FREECAM
     };
     enum Key
@@ -116,7 +114,7 @@ private:
     bool                m_key_state[m_key_num];
     bool                m_grid_on;
 
-    static const long   TERRAIN_WAIT_TIME = 200;
+    static const long   TERRAIN_WAIT_TIME = 50;
 
     Track() {};
     void                animateNormalCamera(long dt);

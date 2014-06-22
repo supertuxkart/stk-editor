@@ -214,17 +214,6 @@ void Track::animateTerrainMod(long dt)
 
     m_terrain->highlight(tm);
 
-    if (m_state == TERRAIN_CUT)
-    {
-        if (m_mouse.left_btn_down) m_terrain->cut(tm);
-        return;
-    }
-
-    if (m_state == TERRAIN_DRAW)
-    {
-        if (m_mouse.left_btn_down) m_terrain->draw(*tm);
-        return;
-    }
 
     if (m_state == TERRAIN_MOD)
     {
@@ -234,14 +223,12 @@ void Track::animateTerrainMod(long dt)
         tm->countdown -= dt;
         if (tm->countdown > 0) return;
 
-        if (m_mouse.leftPressed() || m_mouse.rightPressed())
-            tm->ID++;
         if (m_mouse.left_btn_down || m_mouse.right_btn_down)
         {
             tm->countdown = TERRAIN_WAIT_TIME;
-            if (m_mouse.right_btn_down) tm->dh *= -1;
+            if (m_mouse.right_btn_down) tm->left_click = false;
+            else tm->left_click = true;
             m_terrain->modify(tm);
-            if (m_mouse.right_btn_down) tm->dh *= -1;
         }
         return;
     }
@@ -260,6 +247,9 @@ void Track::leaveState()
     case FREECAM:
         m_free_camera->setInputReceiverEnabled(false);
         sm->setActiveCamera(m_normal_camera);
+        return;
+    case TERRAIN_MOD:
+        m_terrain->setHighlightVisibility(false);
         return;
     default:
         break;
@@ -307,6 +297,11 @@ void Track::setState(State state)
 
     if (state != m_state) leaveState();
     else return;
+
+    if (state == TERRAIN_MOD)
+    {
+        m_terrain->setHighlightVisibility(true);
+    }
 
     if (state == FREECAM)
     {
@@ -455,19 +450,28 @@ void Track::animate(long dt)
     if (m_state != FREECAM)
     {
         animateNormalCamera(dt);
-        if (m_state == MOVE || m_state == ROTATE || m_state == SCALE)
+        switch (m_state)
         {
+        case MOVE:
+        case ROTATE:
+        case SCALE:
             // holding ctrl down will let you select elements in move/rotate state
             if (m_key_state[CTRL_PRESSED]) animateSelection();
             else animateEditing();
-        }
-        else if (m_state == SELECT)
+            return;
+
+        case SELECT:
             animateSelection();
-        else if (m_state == PLACE)
+            return;
+        case PLACE:
             animatePlacing();
-        else if (m_state == TERRAIN_MOD || m_state == TERRAIN_CUT 
-                                        || m_state == TERRAIN_DRAW)
+            return;
+        case TERRAIN_MOD:
             animateTerrainMod(dt);
+            return;
+        default:
+            return;
+        }
     }
 
 } // animate

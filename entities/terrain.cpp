@@ -50,7 +50,7 @@ void Terrain::callOnVertices(TerrainMod* tmod, bool call_outside,
             tmod->dist = tmod->radius - (cpos - pos).getLength();
             if (tmod->dist > 0 || call_in_square)
             {
-                (*this.*m_fp)(*tmod, ix, iz, i, j);
+                (*this.*m_fp_h)(*tmod, ix, iz, i, j);
             }
         }
         tmod->index += 1;
@@ -84,15 +84,7 @@ void Terrain::vertexHighlight(const TerrainMod& tm, int ix, int iz, int i, int j
 } // vertexHighlight
 
 // ----------------------------------------------------------------------------
-void Terrain::vertexCut(const TerrainMod& tm, int ix, int iz, int i, int j)
-{
-    f32* y = &(m_mesh.vertices[(iz + j) * m_nx + ix + i].Pos.Y);
-    if ((tm.max_cut && *y > tm.cut_v) || (!tm.max_cut && *y < tm.cut_v))
-        *y = tm.cut_v;
-} // vertexHighlight
-
-// ----------------------------------------------------------------------------
-void Terrain::modifyVertex(const TerrainMod& tm, int ix, int iz, int i, int j)
+void Terrain::vertexHeight(const TerrainMod& tm, int ix, int iz, int i, int j)
 {
     float h;
     // edge type and the distance from the intersection point will define
@@ -107,17 +99,12 @@ void Terrain::modifyVertex(const TerrainMod& tm, int ix, int iz, int i, int j)
     f32* y = &(m_mesh.vertices[(iz + j) * m_nx + ix + i].Pos.Y);
     *y += h;
 
-    // check if the limit is reached, correction if necessary
-    if (fabs((*y - m_vertex_h_before[(iz + j) * m_nx + ix + i])) > fabs(tm.dh))
-    {
-        *y = m_vertex_h_before[(iz + j) * m_nx + ix + i] + tm.dh;
-    }
     // check if max / min value is ok
                     {
                         if (tm.max && *y > tm.max_v) *y = tm.max_v;
                         if (tm.min && *y < tm.min_v) *y = tm.min_v;
                     }
-} // modifyVertex
+} // vertexHeight
 
 
 // ----------------------------------------------------------------------------
@@ -257,23 +244,86 @@ void Terrain::draw(const TerrainMod& tm)
 
     int r = (int)(tm.radius / m_x * SPIMG_X);
 
+    double e = tm.dh / 10.0f;
+    if (!tm.left_click) e *= -1;
+
     for (int i = tc.X - r; i < tc.X + r; i++)
         for (int j = tc.Y - r; j < tc.Y + r; j++)
         {
         if ((i - tc.X)*(i - tc.X) + (j - tc.Y)*(j - tc.Y) < r*r)
             if ((i > 0 && i < SPIMG_X && j > 0 && j < SPIMG_Y))
             {
-                m_splattingImg->setPixel(i, j, tm.col_mask);
-                img[j * SPIMG_X * 4 + i * 4] += tm.col_mask.getBlue();
-                img[j * SPIMG_X * 4 + i*4 + 1] += tm.col_mask.getGreen();
-                img[j * SPIMG_X * 4 + i*4 + 2] += tm.col_mask.getRed();
-                img[j * SPIMG_X * 4 + i*4 + 3] += tm.col_mask.getAlpha();
+            switch (tm.type)
+                {
+                case HEIGHT_MOD:
+                    pixelHardBrush(img, j * SPIMG_X * 4 + i * 4, tm.col_mask, false);
+                    break;
+                case HARD_BRUSH:
+                    pixelHardBrush(img, j * SPIMG_X * 4 + i * 4, tm.col_mask, !tm.left_click);
+                    break;
+                case SOFT_BRUSH:
+                    pixelSoftBrush(img, j * SPIMG_X * 4 + i * 4, tm.col_mask, e);
+                    break;
+                case BRIGHTNESS_MOD:
+                    pixelBrigBrush(img, j * SPIMG_X * 4 + i * 4, e * 255);
+                    break;
+                }
             }
         }
     m_material.getTexture(0)->unlock();
 
 } // draw
 
+
+// ----------------------------------------------------------------------------
+void Terrain::pixelHardBrush(u8* img, int ix, SColor col, bool erase)
+{
+    if (erase)
+    {
+        if (col.getBlue() > 0)  { img[ix]     = 0; return; }
+        if (col.getGreen() > 0) { img[ix + 1] = 0; return; }
+        if (col.getRed() > 0)   { img[ix + 2] = 0; return; }
+                                  img[ix + 3] = 0; return;
+    }
+    
+    img[ix + 3] = col.getAlpha();
+    img[ix + 2] = col.getRed();
+    img[ix + 1] = col.getGreen();
+    img[ix + 0] = col.getBlue();
+
+} // vertexHardBrush
+
+// ----------------------------------------------------------------------------
+void Terrain::pixelSoftBrush(u8* img, int ix, SColor col, double e)
+{
+    if (e > 0)
+    {
+        img[ix + 3] = std::max(std::min(img[ix + 3] + e * col.getAlpha()
+            - e * col.getRed() - e * col.getGreen() - e * col.getBlue(), 255.0), 0.0);
+        img[ix + 2] = std::max(std::min(img[ix + 2] + e * col.getRed()
+            - e * col.getAlpha() - e * col.getGreen() - e * col.getBlue(), 255.0), 0.0);
+        img[ix + 1] = std::max(std::min(img[ix + 1] + e * col.getGreen()
+            - e * col.getRed() - e * col.getAlpha() - e * col.getBlue(), 255.0), 0.0);
+        img[ix + 0] = std::max(std::min(img[ix + 0] + e * col.getBlue()
+            - e * col.getRed() - e * col.getGreen() - e * col.getAlpha(), 255.0), 0.0);
+    }
+    else
+    {
+        img[ix + 3] = std::max(img[ix + 3] + e * col.getAlpha(), 0.0);
+        img[ix + 2] = std::max(img[ix + 2] + e * col.getRed(), 0.0);
+        img[ix + 1] = std::max(img[ix + 1] + e * col.getGreen(), 0.0);
+        img[ix + 0] = std::max(img[ix + 0] + e * col.getBlue(), 0.0);
+    }
+
+} // vertexSoftBrush
+
+// ----------------------------------------------------------------------------
+void Terrain::pixelBrigBrush(u8* img, int ix, double e)
+{
+    for (int i = 0; i < 4; i++)
+    if (img[ix + i] > 0) 
+        img[ix + i] = std::max(std::min(img[ix + i] + e, 255.0), 1.0);
+} // vertexBrigBrush
 
 // ----------------------------------------------------------------------------
 Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id,
@@ -308,13 +358,12 @@ Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id,
 
     recalculateNormals();
 
-    m_vertex_h_before = 0;
-    m_last_mod_ID = -1;
-
     m_highlight_mesh.vertices = 0;
     m_highlight_mesh.indices = 0;
 
     initMaterials();
+
+    m_highlight_visible = false;
 
 } // Terrain
 
@@ -339,33 +388,22 @@ Terrain::~Terrain()
  */
 void Terrain::modify(TerrainMod* tm)
 {
-    if (tm->ID != m_last_mod_ID)
+    if (tm->type == HEIGHT_MOD)
     {
-        // new phase, we save the current state
-        m_last_mod_ID = tm->ID;
-        if (m_vertex_h_before != 0) delete[] m_vertex_h_before;
-        m_vertex_h_before = new float[m_mesh.vertex_count];
-        for (unsigned int i = 0; i < m_mesh.vertex_count; i++)
-        {
-            m_vertex_h_before[i] = m_mesh.vertices[i].Pos.Y;
-        }
+        if (!tm->left_click) tm->dh *= -1;
+
+        draw(*tm);
+
+        m_fp_h = &Terrain::vertexHeight;
+        callOnVertices(tm);
+        if (!tm->left_click) tm->dh *= -1;
+        recalculateNormals();
+        highlight(tm);
+        return;
     }
-    m_fp = &Terrain::modifyVertex;
-    callOnVertices(tm);
-    recalculateNormals();
+    else
+        draw(*tm);
 } // modify
-
-
-// ----------------------------------------------------------------------------
-/** Function will set height inside radius to cut_v
- * if (max_cut && height > cat_v) or if (!max_cut && height < cat_v)
-*/
-void Terrain::cut(TerrainMod* tm)
-{
-    m_fp = &Terrain::vertexCut;
-    callOnVertices(tm);
-    recalculateNormals();
-} // cut
 
 // ----------------------------------------------------------------------------
 void Terrain::highlight(TerrainMod* tm)
@@ -394,7 +432,7 @@ void Terrain::highlight(TerrainMod* tm)
     m_highlight_mesh.quad_count = (x - 1) * (z - 1);
     m_highlight_mesh.indices = new u16[m_highlight_mesh.quad_count * 6];
 
-    m_fp = &Terrain::vertexHighlight;
+    m_fp_h = &Terrain::vertexHighlight;
     callOnVertices(tm,true,true);
 
     createIndexList(m_highlight_mesh.indices, x, z);
@@ -453,7 +491,7 @@ void Terrain::render()
                                     video::EVT_2TCOORDS, EPT_TRIANGLES,
                                     video::EIT_16BIT);
 
-    if (m_highlight_mesh.vertices)
+    if (m_highlight_mesh.vertices && m_highlight_visible)
     {
         driver->setMaterial(m_highlight_material);
         driver->drawVertexPrimitiveList(&m_highlight_mesh.vertices[0],

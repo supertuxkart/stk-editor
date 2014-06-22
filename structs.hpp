@@ -8,12 +8,20 @@ using namespace scene;
 using namespace core;
 using namespace video;
 
+enum
+{
+    HEIGHT_MOD,
+    HARD_BRUSH,
+    SOFT_BRUSH,
+    BRIGHTNESS_MOD
+};
+
 struct TerrainMod
 {
+    bool    left_click;
     line3df ray;
     bool    in_terrain;
     int     edge_type;
-    int     ID;
     float   radius;
     float   dh;
     long    countdown;
@@ -21,11 +29,10 @@ struct TerrainMod
     float   max_v;
     bool    min;
     float   min_v;
-    bool    max_cut;
-    float   cut_v;
     int     index;
     float   dist;
     SColor  col_mask;
+    int     type;
 };
 
 struct Mesh

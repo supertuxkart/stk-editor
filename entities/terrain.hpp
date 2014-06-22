@@ -22,14 +22,13 @@ private:
     f32                 m_x, m_z;
     // vertex count in a single row/column
     int                 m_nx, m_nz;
-    
-    int                 m_last_mod_ID;
-    float*              m_vertex_h_before;
 
     aabbox3d<f32>       m_bounding_box;
 
-    void (Terrain::*m_fp) (const TerrainMod&, int, int, int, int);
+    bool                m_highlight_visible;
 
+    void (Terrain::*m_fp_h) (const TerrainMod&, int, int, int, int);
+    
 // ----------------------------------------------------------------------------
     // private variables - material
     SMaterial           m_material;
@@ -42,14 +41,15 @@ private:
     u16                 m_tile_num_x;
     u16                 m_tile_num_z;
 
+    void (Terrain::*m_fp_b) (u8*,int,SColor);
+
 // ----------------------------------------------------------------------------
     // private functions - geometry
     void    callOnVertices(TerrainMod* tmod, bool call_outside = false, 
                                              bool call_in_square = false);
 
     void    vertexHighlight(const TerrainMod& tm, int ix, int iz, int i, int j);
-    void    vertexCut      (const TerrainMod& tm, int ix, int iz, int i, int j);
-    void    modifyVertex   (const TerrainMod& tm, int ix, int iz, int i, int j);
+    void    vertexHeight   (const TerrainMod& tm, int ix, int iz, int i, int j);
 
 
     bool    intersectionPoint(const line3df& ray, float r, vector2df* cpos,
@@ -61,8 +61,13 @@ private:
 // ----------------------------------------------------------------------------
     // private functions - material
     
-    void      initMaterials();
-    ITexture* createSplattingImg();
+    void        initMaterials();
+    ITexture*   createSplattingImg();
+    void        draw(const TerrainMod& tm);
+
+    void        pixelHardBrush(u8* img, int ix, SColor col, bool erase);
+    void        pixelSoftBrush(u8* img, int ix, SColor col, double e);
+    void        pixelBrigBrush(u8* img, int ix, double e);
     
 // ----------------------------------------------------------------------------
 public:
@@ -77,9 +82,7 @@ public:
 
     vector3df    placeBBtoGround(const aabbox3d<f32>& box, line3d<float> ray);
 
-    // material:
-
-    void        draw(const TerrainMod& tm);
+    void        setHighlightVisibility(bool b) { m_highlight_visible = b; }
 
 
 // ----------------------------------------------------------------------------
