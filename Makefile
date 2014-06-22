@@ -10,7 +10,7 @@ IRR_LIB ?= /opt/irr2/lib/libIrrlicht.a
 CXXFLAGS += -isystem $(IRR_INCLUDE) -I.
 LDFLAGS += $(IRR_LIB)
 
-CXXFLAGS += -Wall -Wextra
+CXXFLAGS += -Wall -Wextra -g
 LDFLAGS += -Wl,-O1
 LDFLAGS += -lz -lpng -ljpeg -L /usr/X11R7/lib -lGL -lX11 -lXxf86vm
 
