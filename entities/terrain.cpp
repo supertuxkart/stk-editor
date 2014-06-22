@@ -37,17 +37,19 @@ void Terrain::callOnVertices(TerrainMod* tmod, bool call_outside,
     {
         tmod->in_terrain = true;
         // check if the point is outside of the terrain
-        if (ix + i < 0 || ix + i > m_nx - 1 || iz + j < 0 || iz + j > m_nz - 1)
+        if (ix + i < 1 || ix + i > m_nx - 2 || iz + j < 1 || iz + j > m_nz - 2)
             tmod->in_terrain = false;
 
-        if (tmod->in_terrain || call_outside)
+        if (call_outside && !tmod->in_terrain) (*this.*m_fp_h)(*tmod, ix, iz, i, j);
+        else if (tmod->in_terrain)
         {
-
+            S3DVertex2TCoords vert = m_mesh.vertices[(iz + j) * m_nx + ix + i];
             vector2df pos;
-            pos = vector2df(m_mesh.vertices[(iz + j) * m_nx + ix + i].Pos.X,
-                m_mesh.vertices[(iz + j) * m_nx + ix + i].Pos.Z);
+            pos = vector2df(vert.Pos.X, vert.Pos.Z);
+
             // check if the point is in radius
             tmod->dist = tmod->radius - (cpos - pos).getLength();
+
             if (tmod->dist > 0 || call_in_square)
             {
                 (*this.*m_fp_h)(*tmod, ix, iz, i, j);
@@ -381,10 +383,8 @@ Terrain::~Terrain()
 
 // ----------------------------------------------------------------------------
 /** Function for the basic terrain modifier tool: it is used to change terrain
- *  height around a point. In every phase, the difference between old and new
- *  height is limited to tm.dh. A phase is defined by an ID: it is stored in
- *  m_last_mod_ID - one phase can consist of more than one function call
- *  \param tm It contains data about the modification, like radius, intensity, ID
+ *  height around a point.
+ *  \param tm It contains data about the modification, like radius, intensity
  */
 void Terrain::modify(TerrainMod* tm)
 {
