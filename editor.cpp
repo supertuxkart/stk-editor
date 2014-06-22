@@ -64,23 +64,19 @@ bool Editor::buttonClicked(int ID)
         m_toolbox->setWndw(ID);
         return true;
     // ToolBox / Terrain buttons:
-    case TerrPanel::H_EDGE_1:
-    case TerrPanel::H_EDGE_2:
-    case TerrPanel::H_EDGE_3:
-        TerrPanel::getTerrPanel()->btnDown(ID);
-        m_track->setState(Track::TERRAIN_MOD);
-        return true;
-    case TerrPanel::H_MAX_CUT_BTN:
-    case TerrPanel::H_MIN_CUT_BTN:
-        TerrPanel::getTerrPanel()->btnDown(ID);
-        m_track->setState(Track::TERRAIN_CUT);
-        return true;
+    case TerrPanel::EDGE_1:
+    case TerrPanel::EDGE_2:
+    case TerrPanel::EDGE_3:
     case TerrPanel::M_T1:
     case TerrPanel::M_T2:
     case TerrPanel::M_T3:
     case TerrPanel::M_T4:
+    case TerrPanel::H_BTN:
+    case TerrPanel::T_SOFT_BTN:
+    case TerrPanel::T_HARD_BTN:
+    case TerrPanel::T_BRIGHTNESS_BTN:
         TerrPanel::getTerrPanel()->btnDown(ID);
-        m_track->setState(Track::TERRAIN_DRAW);
+        m_track->setState(Track::TERRAIN_MOD);
         return true;
     default:
         break;
@@ -257,10 +253,6 @@ bool Editor::OnEvent(const SEvent& event)
                 EnvPanel::getEnvPanel()->resetIndex();
                 EnvPanel::getEnvPanel()->refreshBtnTable();
                 return true;
-            case TerrPanel::H_CUT_VALUE_EB:
-                m_track->setState(Track::TERRAIN_CUT);
-                TerrPanel::getTerrPanel()->refreshTerrModData();
-                return true;
             default:
                 break;
             }
@@ -269,7 +261,7 @@ bool Editor::OnEvent(const SEvent& event)
         {
             switch (event.GUIEvent.Caller->getID())
             {
-            case TerrPanel::H_INTENSITY:
+            case TerrPanel::INTENSITY:
             case TerrPanel::RADIUS:
                 TerrPanel::getTerrPanel()->refreshTerrModData();
                 m_track->setState(Track::TERRAIN_MOD);
