@@ -52,26 +52,6 @@ void Road::createIndexList(int nj, int ni)
 } // createIndexList
 
 // ----------------------------------------------------------------------------
-Road::Road(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s)
-                              :ISceneNode(parent, mgr, id)
-{
-    m_spline            = s;
-    m_mesh.indices      = 0;
-    m_mesh.vertices     = 0;
-    m_mesh.vertex_count = 0;
-    m_mesh.quad_count   = 0;
-    m_detail            = 0.25f;
-    m_width             = 10.0f;
-    m_width_vert_num    = 12;
-
-    m_material.Wireframe       = true;
-    m_material.Lighting        = false;
-    m_material.BackfaceCulling = false;
-
-} // Road
-
-
-// ----------------------------------------------------------------------------
 void Road::refresh()
 {
     assert(m_width_vert_num % 4 == 0);
@@ -120,31 +100,3 @@ void Road::refresh()
     createIndexList((int)(1.0f / m_detail * spn + 1), m_width_vert_num);
 
 } // refresh
-
-// ----------------------------------------------------------------------------
-void Road::OnRegisterSceneNode()
-{
-    if (IsVisible)
-        SceneManager->registerNodeForRendering(this);
-
-    ISceneNode::OnRegisterSceneNode();
-
-} // OnRegisterSceneNode
-
-// ----------------------------------------------------------------------------
-void Road::render()
-{
-    IVideoDriver* driver = SceneManager->getVideoDriver();
-
-    if (m_mesh.vertices == 0) return;
-
-    driver->setMaterial(m_material);
-    driver->setTransform(ETS_WORLD, IdentityMatrix);
-    
-    driver->drawVertexPrimitiveList(&m_mesh.vertices[0], m_mesh.vertex_count,
-        &m_mesh.indices[0], m_mesh.quad_count * 2,
-        video::EVT_2TCOORDS, EPT_TRIANGLES,
-        video::EIT_16BIT);
-
-} // render
-

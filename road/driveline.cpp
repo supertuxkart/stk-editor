@@ -2,25 +2,6 @@
 
 
 // ----------------------------------------------------------------------------
-DriveLine::DriveLine(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s)
-                    :ISceneNode(parent, mgr, id)
-{
-    m_spline = s;
-    m_mesh.indices = 0;
-    m_mesh.vertices = 0;
-    m_mesh.vertex_count = 0;
-    m_mesh.quad_count = 0;
-    m_detail = 0.2f;
-    m_width = 2.0f;
-
-    m_material.Wireframe = true;
-    m_material.Lighting = false;
-    m_material.BackfaceCulling = false;
-
-} // DriveLine
-
-
-// ----------------------------------------------------------------------------
 void DriveLine::refresh()
 {
 
@@ -83,31 +64,4 @@ void DriveLine::refresh()
     for (int i = 0; i < m_mesh.quad_count * 4; i++) m_mesh.indices[i] = i;
 
 } // refresh
-
-// ----------------------------------------------------------------------------
-void DriveLine::OnRegisterSceneNode()
-{
-    if (IsVisible)
-        SceneManager->registerNodeForRendering(this);
-
-    ISceneNode::OnRegisterSceneNode();
-
-} // OnRegisterSceneNode
-
-// ----------------------------------------------------------------------------
-void DriveLine::render()
-{
-    IVideoDriver* driver = SceneManager->getVideoDriver();
-
-    if (m_mesh.vertices == 0) return;
-
-    driver->setMaterial(m_material);
-    driver->setTransform(ETS_WORLD, IdentityMatrix);
-
-    driver->drawVertexPrimitiveList(&m_mesh.vertices[0], m_mesh.vertex_count,
-        &m_mesh.indices[0], m_mesh.quad_count,
-        video::EVT_2TCOORDS, EPT_QUAD_STRIP,
-        video::EIT_16BIT);
-
-} // render
 
