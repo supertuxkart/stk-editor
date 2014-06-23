@@ -87,7 +87,6 @@ private:
     static int              m_last_entity_ID;
 
     State                   m_state;
-    bool                    m_road_editing;
 
     MouseData               m_mouse;
 
@@ -99,8 +98,9 @@ private:
 
     Terrain*                m_terrain;
 
-    DriveLine*              m_road;
-    ISpline*                m_spline;
+    bool                    m_spline_mode;
+
+    DriveLine*              m_driveline;
 
     // command not yet finished
     Command*            m_active_cmd;
@@ -130,7 +130,6 @@ public:
     static Track* getTrack();
     void          init();
     void          setState(State state);
-    void          setRoadEditingMode(bool rem);
     void          setGrid(bool grid_on);
     void          changeGridDensity(int dir);
     void          keyEvent(EKEY_CODE code, bool pressed);
@@ -138,6 +137,7 @@ public:
     void          deleteCmd();
     void          setNewEntity(const stringw path);
     void          animate(long dt);
+    void          setSplineMode(bool b);
 
     void          setNormalCamera(ICameraSceneNode* cam) { m_normal_camera     = cam; }
     void          setFreeCamera(ICameraSceneNode* cam)   { m_free_camera       = cam; }

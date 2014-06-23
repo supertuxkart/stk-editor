@@ -4,6 +4,7 @@
 #include "toolbox/toolbox.hpp"
 #include "toolbox/envpanel.hpp"
 #include "toolbox/terrpanel.hpp"
+#include "toolbox/roadpanel.hpp"
 #include "track.hpp"
 
 #include <iostream>
@@ -53,14 +54,12 @@ bool Editor::buttonClicked(int ID)
         m_track->changeGridDensity(-1);
         return true;
     case ToolBar::TBI_NEW:
-        m_track->setRoadEditingMode(true);
-        return true;
-    case ToolBar::TBI_OPEN:
-        m_track->setRoadEditingMode(false);
+        m_track->setSplineMode(false);
         return true;
     // ToolBox BTN:
     case ToolBox::TWND_ID:
     case ToolBox::EWND_ID:
+    case ToolBox::RWND_ID:
         m_toolbox->setWndw(ID);
         return true;
     // ToolBox / Terrain buttons:
@@ -78,6 +77,12 @@ bool Editor::buttonClicked(int ID)
         TerrPanel::getTerrPanel()->btnDown(ID);
         m_track->setState(Track::TERRAIN_MOD);
         return true;
+    // ToolBox / RoadPanel buttons:
+    case RoadPanel::DL_ADD:
+    case RoadPanel::DL_INSERT:
+        m_track->setSplineMode(true);
+        RoadPanel::getRoadPanel()->btnDown(ID);
+    case RoadPanel::DL_EXIT:
     default:
         break;
     }

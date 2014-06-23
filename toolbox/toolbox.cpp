@@ -2,6 +2,7 @@
 
 #include "toolbox/envpanel.hpp"
 #include "toolbox/terrpanel.hpp"
+#include "toolbox/roadpanel.hpp"
 #include "editor.hpp"
 
 
@@ -19,7 +20,7 @@ void ToolBox::init()
     dimension2du ss = Editor::getEditor()->getScreenSize();
     m_wndw->setRelativePosition(position2di(ss.Width - 250, 50));
 
-    m_terr_wndw = gui_env->addWindow(rect<s32>(), false, L"Env", m_wndw, TWND_ID);
+    m_terr_wndw = gui_env->addWindow(rect<s32>(), false, L"Terrain", m_wndw, TWND_ID);
     m_terr_panel = TerrPanel::getTerrPanel(m_terr_wndw);
     initWndw(m_terr_wndw);
 
@@ -28,8 +29,14 @@ void ToolBox::init()
     initWndw(m_env_wndw);    
     m_env_wndw->setVisible(false);
 
+    m_road_wndw = gui_env->addWindow(rect<s32>(), false, L"Road", m_wndw, RWND_ID);
+    m_road_panel = RoadPanel::getRoadPanel(m_road_wndw);
+    initWndw(m_road_wndw);
+    m_road_wndw->setVisible(false);
+
     gui_env->addButton(rect<s32>(0, 0, 50, 50), m_wndw,   TWND_ID);
     gui_env->addButton(rect<s32>(50, 0, 100, 50), m_wndw, EWND_ID);
+    gui_env->addButton(rect<s32>(100, 0, 150, 50), m_wndw, RWND_ID);
 
 } // init
 
@@ -69,6 +76,7 @@ void ToolBox::setWndw(int ID)
 {
     m_terr_wndw->setVisible(false);
     m_env_wndw->setVisible(false);
+    m_road_wndw->setVisible(false);
     switch(ID)
     {
     case TWND_ID:
@@ -76,6 +84,9 @@ void ToolBox::setWndw(int ID)
         break;
     case EWND_ID:
         m_env_wndw->setVisible(true);
+        break;
+    case RWND_ID:
+        m_road_wndw->setVisible(true);
         break;
     default:
         break;

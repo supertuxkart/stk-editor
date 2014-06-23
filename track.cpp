@@ -80,10 +80,10 @@ void Track::animateEditing()
             m_active_cmd->undo();
             m_active_cmd->update((float)-m_mouse.dx(), 0.0f, (float)m_mouse.dy());
             m_active_cmd->redo();
-            if (m_road_editing)
+            if (m_spline_mode)
             {
-                m_spline->updatePosition();
-                m_road->refresh();
+                m_driveline->getSpline()->updatePosition(); 
+                m_driveline->refresh();
             }
 
         }
@@ -92,10 +92,10 @@ void Track::animateEditing()
             m_active_cmd->undo();
             m_active_cmd->update(0.0f, (float) -m_mouse.dy(), 0.0f);
             m_active_cmd->redo();
-            if (m_road_editing) 
+            if (m_spline_mode)
             {
-                m_spline->updatePosition();
-                m_road->refresh();
+                m_driveline->getSpline()->updatePosition();
+                m_driveline->refresh();
             }
         }
         m_mouse.setStorePoint();
@@ -107,6 +107,8 @@ void Track::animateEditing()
             m_active_cmd->undo();
             delete m_active_cmd;
             m_active_cmd = 0;
+            m_driveline->getSpline()->updatePosition();
+            m_driveline->refresh();
             return;
         }
     }
@@ -150,7 +152,7 @@ void Track::animateSelection()
     {
         if (!m_key_state[CTRL_PRESSED]) m_entity_manager.clearSelection();
 
-        int id = (m_road_editing) ? ANOTHER_MAGIC_NUMBER : MAGIC_NUMBER;
+        int id = (m_spline_mode) ? ANOTHER_MAGIC_NUMBER : MAGIC_NUMBER;
 
         ISceneNode* node;
         node = Editor::getEditor()->getSceneManager()->getSceneCollisionManager()
@@ -180,23 +182,25 @@ void Track::animatePlacing()
 
         if (m_mouse.leftPressed())
         {
-            m_last_entity_ID++;
-            m_new_entity->setID(m_last_entity_ID);
-            m_entity_manager.add(m_new_entity);
-            std::list<ISceneNode*> list;
-            list.push_back(m_new_entity);
-            Command* cmd = new CreateCmd(list);
-            m_command_handler.add(cmd);
-            m_new_entity = m_new_entity->clone();
-        }
-        if (m_mouse.rightPressed())
-        {
-            vector3df p = m_terrain->placeBBtoGround(m_new_entity->getTransformedBoundingBox(), r);
-            p.Y += 3.0;
-            m_spline->addControlPoint(p);
-            m_road->refresh();
-        }
-
+            if (m_spline_mode)
+            {
+                vector3df p = m_terrain->placeBBtoGround(m_new_entity->getTransformedBoundingBox(), r);
+                p.Y += 3.0;
+                m_driveline->getSpline()->addControlPoint(p);
+                m_driveline->refresh();
+            }
+            else
+            {
+                m_last_entity_ID++;
+                m_new_entity->setID(m_last_entity_ID);
+                m_entity_manager.add(m_new_entity);
+                std::list<ISceneNode*> list;
+                list.push_back(m_new_entity);
+                Command* cmd = new CreateCmd(list);
+                m_command_handler.add(cmd);
+                m_new_entity = m_new_entity->clone();
+            } // m_spline_mode - else
+        } // m_mouse.leftPressed()
     }
 } // animatePlacing
 
@@ -274,7 +278,7 @@ void Track::init()
 {
     m_active_cmd = 0;
     m_state = SELECT;
-    m_road_editing = false;
+    m_spline_mode = false;
     m_new_entity = 0;
     m_grid_on = true;
     for (int i = 0; i < m_key_num; i++) m_key_state[i] = false;
@@ -283,8 +287,8 @@ void Track::init()
 
     m_terrain = new Terrain(sm->getRootSceneNode(), sm, 1, 50, 50, 100, 100);
 
-    m_spline = new Bezier(sm->getRootSceneNode(), sm, 0);
-    m_road   = new DriveLine(sm->getRootSceneNode(), sm, 0, m_spline);
+    ISpline* spline = new Bezier(sm->getRootSceneNode(), sm, 0);
+    m_driveline = new DriveLine(sm->getRootSceneNode(), sm, 0, spline);
 
 } // init
 
@@ -312,15 +316,6 @@ void Track::setState(State state)
     m_state = state;
 
 } // setState
-
-// ----------------------------------------------------------------------------
-void Track::setRoadEditingMode(bool rem)
-{
-    m_spline->setNodeVisibility(rem);
-    if (rem != m_road_editing)
-        m_entity_manager.clearSelection();
-    m_road_editing = rem;
-} // setRoadEditingMode
 
 // ----------------------------------------------------------------------------
 void Track::setGrid(bool grid_on)
@@ -475,6 +470,15 @@ void Track::animate(long dt)
     }
 
 } // animate
+
+// ----------------------------------------------------------------------------
+void Track::setSplineMode(bool b)
+{
+    if (b != m_spline_mode)
+        m_entity_manager.clearSelection();
+    m_spline_mode = b;
+    m_driveline->getSpline()->setNodeVisibility(m_spline_mode);
+} // setSplineMode
 
 
 // ----------------------------------------------------------------------------
