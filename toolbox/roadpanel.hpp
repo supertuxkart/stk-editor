@@ -19,31 +19,46 @@ public:
     {
         DL_ADD = FGEI,
         DL_INSERT,
-        DL_EXIT
+        DL_EXIT,
+        DL_SELECT,
+        DL_CREATE,
+        DL_WIDTH,
+        DL_DETAIL
     };
 
 private:
 
     // private variables:
 
-    static RoadPanel*       m_road_panel;
+    static RoadPanel*            m_road_panel;
+                                 
+    IGUIWindow*                  m_wndw;
+                                 
+    IGUIComboBox*                m_cb;
+    IGUIComboBox*                m_spline_type_cb;
+    IGUIEditBox*                 m_text_field;
 
-    IGUIWindow*             m_wndw;
+    IGUIScrollBar*               m_width_sb;
+    IGUIScrollBar*               m_detail_sb;
+                                 
+    unsigned int                 m_next_road_mesh_ID;
+    bool                         m_insert;
 
-    bool                    m_insert;
-
-    map<stringw, IRoad*>    m_roads;
+    map<unsigned int, IRoad*>    m_roads;
 
     // private functions:
 
     RoadPanel() {};
 
-    void init();
+    void                  init();
+    void                  create();
 
 public:
     static RoadPanel*     getRoadPanel(IGUIWindow* wndw = 0);
     void                  btnDown(int btn);
     bool                  isInsertMode() { return m_insert; }
+    void                  select();
+    void                  scrollBarChanged();
 };
 
 #endif

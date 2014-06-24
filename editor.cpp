@@ -72,6 +72,9 @@ bool Editor::buttonClicked(int ID)
         m_track->setState(Track::TERRAIN_MOD);
         return true;
     // ToolBox / RoadPanel buttons:
+    case RoadPanel::DL_CREATE:
+        RoadPanel::getRoadPanel()->btnDown(ID);
+        break;
     case RoadPanel::DL_ADD:
     case RoadPanel::DL_INSERT:
         m_track->setSplineMode(true);
@@ -245,6 +248,9 @@ bool Editor::OnEvent(const SEvent& event)
                 EnvPanel::getEnvPanel()->resetIndex();
                 EnvPanel::getEnvPanel()->refreshBtnTable();
                 return true;
+            case RoadPanel::DL_SELECT:
+                RoadPanel::getRoadPanel()->select();
+                break;
             default:
                 break;
             }
@@ -269,6 +275,10 @@ bool Editor::OnEvent(const SEvent& event)
             case TerrPanel::RADIUS:
                 TerrPanel::getTerrPanel()->refreshTerrModData();
                 m_track->setState(Track::TERRAIN_MOD);
+                return true;
+            case RoadPanel::DL_DETAIL:
+            case RoadPanel::DL_WIDTH:
+                RoadPanel::getRoadPanel()->scrollBarChanged();
                 return true;
             default:
                 break;

@@ -13,7 +13,7 @@ IRoad::IRoad(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s)
     m_mesh.vertex_count = 0;
     m_mesh.quad_count   = 0;
     m_detail            = 0.25f;
-    m_width             = 10.0f;
+    m_width             = 4.0f;
     m_width_vert_num    = 12;
 
     m_material.Wireframe       = true;

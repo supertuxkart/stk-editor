@@ -74,6 +74,9 @@ void Track::animateNormalCamera(long dt)
 void Track::animateEditing()
 {
 
+    if (m_spline_mode && m_entity_manager.getSelection().size() == 0)
+        m_entity_manager.selectNode(m_active_road->getSpline());
+
     if (m_active_cmd)
     {
         if (m_mouse.left_btn_down)
@@ -503,8 +506,12 @@ void Track::setSplineMode(bool b)
 
 void Track::setActiveRoad(IRoad* r)
 {
-    if (m_active_road) m_active_road->setVisible(false);
+    if (m_active_road)
+    {
+        m_active_road->getSpline()->setNodeVisibility(false);
+    }
     m_active_road = r;
+    r->getSpline()->setNodeVisibility(true);
     if (!m_spline_mode)
         setSplineMode(true);
 } // setActiveRoad

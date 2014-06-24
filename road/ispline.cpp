@@ -51,7 +51,7 @@ ControlPoint ISpline::newControlPoint(vector3df p)
     cp.normal = vector3df(0.0f, 1.0f, 0.0f);
     cp.width  = 1.0f;
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
-    cp.node = sm->addSphereSceneNode(0.2, 16, 0,
+    cp.node = sm->addSphereSceneNode(0.2, 16,this,
         ANOTHER_MAGIC_NUMBER + 3 * m_cp_num, p);
     cp.node->getMaterial(0).DiffuseColor = SColor(255, 255, 0, 0);
     cp.node->getMaterial(0).AmbientColor = SColor(255, 255, 0, 0);
@@ -180,7 +180,7 @@ void ISpline::updatePosition()
             v.normalize();
             it->normal_node->setPosition(v);
         }
-        it->pos = it->node->getPosition();
+        it->pos = it->node->getPosition() + getPosition();
         it->normal = it->normal_node->getPosition();
         it->normal.normalize();
 
