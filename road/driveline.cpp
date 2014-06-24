@@ -65,3 +65,20 @@ void DriveLine::refresh()
 
 } // refresh
 
+// ----------------------------------------------------------------------------
+void DriveLine::render()
+{
+    IVideoDriver* driver = SceneManager->getVideoDriver();
+
+    if (m_mesh.vertices == 0) return;
+
+    driver->setMaterial(m_material);
+    driver->setTransform(ETS_WORLD, IdentityMatrix);
+
+    driver->drawVertexPrimitiveList(&m_mesh.vertices[0], m_mesh.vertex_count,
+        &m_mesh.indices[0], m_mesh.quad_count, video::EVT_2TCOORDS, EPT_QUAD_STRIP,
+        video::EIT_16BIT);
+
+} // render
+
+

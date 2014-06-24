@@ -29,6 +29,7 @@ public:
         ROTATE,
         SCALE,
         PLACE,
+        SPLINE,
         TERRAIN_MOD,
         FREECAM
     };
@@ -100,7 +101,7 @@ private:
 
     bool                    m_spline_mode;
 
-    DriveLine*              m_driveline;
+    IRoad*                  m_active_road;
 
     // command not yet finished
     Command*            m_active_cmd;
@@ -112,7 +113,6 @@ private:
     ICameraSceneNode*   m_free_camera;
 
     bool                m_key_state[m_key_num];
-    bool                m_grid_on;
 
     static const long   TERRAIN_WAIT_TIME = 50;
 
@@ -122,6 +122,7 @@ private:
     void                animateEditing();
     void                animateSelection();
     void                animatePlacing();
+    void                animateSplineEditing();
     void                animateTerrainMod(long dt);
 
     void                leaveState();
@@ -130,21 +131,20 @@ public:
     static Track* getTrack();
     void          init();
     void          setState(State state);
-    void          setGrid(bool grid_on);
-    void          changeGridDensity(int dir);
     void          keyEvent(EKEY_CODE code, bool pressed);
     void          mouseEvent(const SEvent& event);
     void          deleteCmd();
     void          setNewEntity(const stringw path);
     void          animate(long dt);
     void          setSplineMode(bool b);
+    void          setActiveRoad(IRoad* r);
 
     void          setNormalCamera(ICameraSceneNode* cam) { m_normal_camera     = cam; }
     void          setFreeCamera(ICameraSceneNode* cam)   { m_free_camera       = cam; }
     void          undo()                                 { m_command_handler.undo();  }
     void          redo()                                 { m_command_handler.redo();  }
-
-    bool          isGridOn()                             { return m_grid_on; }
+    
+    bool          getSplineMode()                        { return m_spline_mode;      }
     
     ~Track();
 

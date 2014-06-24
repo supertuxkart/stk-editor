@@ -10,7 +10,9 @@ public:
     DriveLine(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s)
         :IRoad(parent, mgr, id, s) {};
 
-    void        refresh();
+    void    refresh();
+
+    void    render();
 };
 
 #endif

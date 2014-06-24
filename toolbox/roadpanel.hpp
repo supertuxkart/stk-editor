@@ -3,10 +3,11 @@
 
 #include <irrlicht.h>
 
-
 using namespace irr;
 using namespace gui;
 using namespace core;
+
+class IRoad;
 
 class RoadPanel
 {
@@ -29,7 +30,9 @@ private:
 
     IGUIWindow*             m_wndw;
 
-    bool                    m_insert = false;
+    bool                    m_insert;
+
+    map<stringw, IRoad*>    m_roads;
 
     // private functions:
 

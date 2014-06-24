@@ -1,6 +1,10 @@
 #include "toolbox/roadpanel.hpp"
 #include "editor.hpp"
 
+#include "track.hpp"
+#include "road/driveline.hpp"
+#include "road/bezier.hpp"
+
 RoadPanel* RoadPanel::m_road_panel = 0;
 
 // ----------------------------------------------------------------------------
@@ -24,6 +28,16 @@ void RoadPanel::init()
     gui_env->addButton(rect<s32>(160, 50, 210, 100), m_wndw, DL_EXIT)
         ->setImage(Editor::loadImg("img/dl_ready.png"));
     
+
+    ISceneManager* sm = Editor::getEditor()->getSceneManager();
+    ISpline* spline = new Bezier(sm->getRootSceneNode(), sm, 0);
+    IRoad* dl = new DriveLine(sm->getRootSceneNode(), sm, 0, spline);
+
+    m_roads.insert(L"DriveLine", dl);
+    Track::getTrack()->setActiveRoad(dl);
+    Track::getTrack()->setSplineMode(false);
+
+    m_insert = false;
 
 } // init
 

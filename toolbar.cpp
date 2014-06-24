@@ -23,12 +23,10 @@ void ToolBar::init()
     buttonInit(9,  TBI_SCALE,       "img/scale.png",    L"Scale");
     buttonInit(10, TBI_DELETE,      "img/delete.png",   L"Delete");
     buttonInit(11, TBI_CAM,         "img/cam1.png",     L"Free Camera Mode");
-    buttonInit(12, TBI_GRID_ON_OFF, "img/grid.png",     L"Grid On / Off");
-    buttonInit(13, TBI_GRID_INC,    "img/gridinc.png",  L"Increase grid density");
-    buttonInit(14, TBI_GRID_DEC,    "img/griddec.png",  L"Decrease grid density");
-    buttonInit(15, TBI_TRY,         "img/try.png",      L"Try your track");
-    buttonInit(16, TBI_SETTINGS,    "img/settings.png", L"Settings");
-    buttonInit(17, TBI_EXIT,        "img/exit.png",     L"Quit");
+    buttonInit(12, TBI_SPLINE,      "img/spline.png",   L"Spline mode on/off");
+    buttonInit(13, TBI_TRY,         "img/try.png",      L"Try your track");
+    buttonInit(14, TBI_SETTINGS,    "img/settings.png", L"Settings");
+    buttonInit(15, TBI_EXIT,        "img/exit.png",     L"Quit");
 
     reallocate();
 
@@ -88,16 +86,15 @@ void ToolBar::reallocate()
     block_begin += space_between_blocks;
     m_buttons[11]->setRelativePosition(position2di(block_begin + 11 * 50, 5));
 
-    // Sixth block: 3 icon - grid, grid+, grid-
+    // Sixth block: spline mode
     block_begin += space_between_blocks;
-    for (int i = 12; i < 15; i++)
-        m_buttons[i]->setRelativePosition(position2di(block_begin + i * 50, 5));
+    m_buttons[12]->setRelativePosition(position2di(block_begin + 12 * 50, 5));
 
     // test
     block_begin += space_between_blocks;
-    m_buttons[15]->setRelativePosition(position2di(block_begin + 15 * 50, 5));
+    m_buttons[13]->setRelativePosition(position2di(block_begin + 13 * 50, 5));
 
     // last block: 2 icon - settings, quit
-    m_buttons[16]->setRelativePosition(position2di(screen_x - 100, 5));
-    m_buttons[17]->setRelativePosition(position2di(screen_x - 50, 5));
+    m_buttons[14]->setRelativePosition(position2di(screen_x - 100, 5));
+    m_buttons[15]->setRelativePosition(position2di(screen_x - 50, 5));
 } // reallocate

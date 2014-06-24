@@ -50,6 +50,7 @@ void TerrPanel::init()
 
     m_active_edge_frame = gui_env->addImage(rect<s32>(200, 95, 240, 135), m_wndw);
     m_active_edge_frame->setImage(Editor::loadImg("img/frame.png"));
+    m_active_edge_frame->setUseAlphaChannel(true);
     // edge end
 
     IGUIButton* b4 = gui_env->addButton(rect<s32>(10,  150, 60,  200), m_wndw, M_T1);

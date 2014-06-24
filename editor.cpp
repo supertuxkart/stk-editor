@@ -44,14 +44,8 @@ bool Editor::buttonClicked(int ID)
     case ToolBar::TBI_CAM:
         m_track->setState(Track::FREECAM);
         return true;
-    case ToolBar::TBI_GRID_ON_OFF:
-        m_track->setGrid(!m_track->isGridOn());
-        return true;
-    case ToolBar::TBI_GRID_INC:
-        m_track->changeGridDensity(1);
-        return true;
-    case ToolBar::TBI_GRID_DEC:
-        m_track->changeGridDensity(-1);
+    case ToolBar::TBI_SPLINE:
+        m_track->setSplineMode(!m_track->getSplineMode());
         return true;
     case ToolBar::TBI_NEW:
         m_track->setSplineMode(false);
@@ -81,8 +75,12 @@ bool Editor::buttonClicked(int ID)
     case RoadPanel::DL_ADD:
     case RoadPanel::DL_INSERT:
         m_track->setSplineMode(true);
+        m_track->setState(Track::SPLINE);
         RoadPanel::getRoadPanel()->btnDown(ID);
+        break;
     case RoadPanel::DL_EXIT:
+        m_track->setState(Track::SELECT);
+        return true;
     default:
         break;
     }
@@ -93,6 +91,7 @@ bool Editor::buttonClicked(int ID)
         ID < ep->FIRST_BTN_ID + ep->getBtnNum())
     {
         // element is picked from env panel
+        m_track->setSplineMode(false);
         m_track->setNewEntity(EnvPanel::getEnvPanel()->getModelPathFromBtnId(ID));
         return true;
     }

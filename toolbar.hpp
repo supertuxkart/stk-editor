@@ -28,9 +28,7 @@ public:
         TBI_ROTATE,
         TBI_SCALE,
         TBI_DELETE,
-        TBI_GRID_ON_OFF,
-        TBI_GRID_INC,
-        TBI_GRID_DEC,
+        TBI_SPLINE,
         TBI_TRY,
         TBI_SETTINGS,
         TBI_EXIT
@@ -42,7 +40,7 @@ private:
     static ToolBar* m_toolbar;
 
     IGUIToolBar*    m_bar;
-    IGUIButton*     m_buttons[18];
+    IGUIButton*     m_buttons[16];
 
     // private functions:
 

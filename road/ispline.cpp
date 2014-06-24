@@ -18,6 +18,8 @@ vector3df ISpline::calculateVelInPoint(vector3df pm, vector3df p0, vector3df pp,
 // ----------------------------------------------------------------------------
 void ISpline::calculateVelocity()
 {
+    if (m_cp_num < 2) return;
+
     list<ControlPoint>::Iterator it = m_control_points.begin();
     it->vel = vector3df(0.0f, 0.0f, 0.0f);
 
@@ -139,6 +141,32 @@ void ISpline::insertControlPoint(vector3df p)
 } // insertControlPoint
 
 // ----------------------------------------------------------------------------
+void ISpline::removeLastControlPoint(bool eraseNodes)
+{
+    if (m_cp_num == 0) return;
+
+    if (eraseNodes)
+    {
+        ControlPoint cp = *m_control_points.getLast();
+        cp.normal_node->remove();
+        cp.width_node->remove();
+        cp.node->remove();
+    }
+
+    m_cp_num--;
+    m_control_points.erase(m_control_points.getLast());    
+    calculateVelocity();
+
+} // removeLastControlPoint
+
+// ----------------------------------------------------------------------------
+ISceneNode* ISpline::getLastNode()
+{
+    if (m_cp_num>0) return m_control_points.getLast()->node;
+    else return 0;
+} // getLastCPNodes
+
+// ----------------------------------------------------------------------------
 void ISpline::updatePosition()
 {
     list<ControlPoint>::Iterator it;
@@ -146,8 +174,11 @@ void ISpline::updatePosition()
     for (it = m_control_points.begin(); it != m_control_points.end(); it++)
     {
         v = it->normal_node->getPosition();
-        v.normalize();
-        it->normal_node->setPosition(v);
+        if (v.getLength() > 1.0) 
+        {
+            v.normalize();
+            it->normal_node->setPosition(v);
+        }
         it->pos = it->node->getPosition();
         it->normal = it->normal_node->getPosition();
         it->normal.normalize();
