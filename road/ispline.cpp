@@ -33,7 +33,7 @@ void ISpline::calculateVelocity()
     vector3df pm, p0, pp;
     for (it = m_control_points.begin() + 1; (it + 1) != m_control_points.end(); it++)
     {
-        p0 = it->pos;      
+        p0 = it->pos;
         pm = (it - 1)->pos;
         pp = (it + 1)->pos;
         it->vel = calculateVelInPoint(pm, p0, pp, it);
@@ -51,17 +51,17 @@ ControlPoint ISpline::newControlPoint(vector3df p)
     cp.normal = vector3df(0.0f, 1.0f, 0.0f);
     cp.width  = 1.0f;
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
-    cp.node = sm->addSphereSceneNode(0.2, 16, 0, 
+    cp.node = sm->addSphereSceneNode(0.2, 16, 0,
         ANOTHER_MAGIC_NUMBER + 3 * m_cp_num, p);
     cp.node->getMaterial(0).DiffuseColor = SColor(255, 255, 0, 0);
     cp.node->getMaterial(0).AmbientColor = SColor(255, 255, 0, 0);
 
-    cp.normal_node = sm->addSphereSceneNode(0.1, 16, cp.node, 
+    cp.normal_node = sm->addSphereSceneNode(0.1, 16, cp.node,
         ANOTHER_MAGIC_NUMBER + 3 * m_cp_num + 1,vector3df(0,1,0));
     cp.normal_node->getMaterial(0).DiffuseColor = SColor(255, 0, 255, 0);
     cp.normal_node->getMaterial(0).AmbientColor = SColor(255, 0, 255, 0);
-        
-    cp.width_node = sm->addSphereSceneNode(0.1, 16, cp.node, 
+
+    cp.width_node = sm->addSphereSceneNode(0.1, 16, cp.node,
         ANOTHER_MAGIC_NUMBER + 3 * m_cp_num + 2, vector3df(1, 0, 0));
     cp.width_node->getMaterial(0).DiffuseColor = SColor(255, 0, 0, 255);
     cp.width_node->getMaterial(0).AmbientColor = SColor(255, 0, 0, 255);
@@ -71,7 +71,7 @@ ControlPoint ISpline::newControlPoint(vector3df p)
 } // newControlPoint
 
 // ----------------------------------------------------------------------------
-ISpline::ISpline(ISceneNode* parent, ISceneManager* mgr, s32 id) 
+ISpline::ISpline(ISceneNode* parent, ISceneManager* mgr, s32 id)
                                                     :ISceneNode(parent, mgr, id)
 {
     m_cp_num = 0;
@@ -132,10 +132,10 @@ void ISpline::insertControlPoint(vector3df p)
     {
         insert_before = true;
     } else insert_before = false;
-    
+
     if (insert_before) m_control_points.insert_before(it, newControlPoint(p));
     else               m_control_points.insert_after(it, newControlPoint(p));
-    
+
     calculateVelocity();
 
 } // insertControlPoint
@@ -154,7 +154,8 @@ void ISpline::removeLastControlPoint(bool eraseNodes)
     }
 
     m_cp_num--;
-    m_control_points.erase(m_control_points.getLast());    
+    list<ControlPoint>::Iterator it = m_control_points.getLast();
+    m_control_points.erase(it);
     calculateVelocity();
 
 } // removeLastControlPoint
@@ -174,7 +175,7 @@ void ISpline::updatePosition()
     for (it = m_control_points.begin(); it != m_control_points.end(); it++)
     {
         v = it->normal_node->getPosition();
-        if (v.getLength() > 1.0) 
+        if (v.getLength() > 1.0)
         {
             v.normalize();
             it->normal_node->setPosition(v);
@@ -182,7 +183,7 @@ void ISpline::updatePosition()
         it->pos = it->node->getPosition();
         it->normal = it->normal_node->getPosition();
         it->normal.normalize();
-        
+
         v = it->width_node->getPosition();
         it->width = v.X;
         it->width_node->setPosition(vector3df(v.X, 0.0f, 0.0f));
@@ -216,7 +217,7 @@ void ISpline::render()
 
     driver->setMaterial(material);
     driver->setTransform(ETS_WORLD, IdentityMatrix);
-   
+
 
     float dt = 0.005;
     for (float t = dt; t <= 1.0; t += dt)
