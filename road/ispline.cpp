@@ -170,6 +170,7 @@ ISceneNode* ISpline::getLastNode()
 // ----------------------------------------------------------------------------
 void ISpline::updatePosition()
 {
+    if (m_cp_num < 1) return;
     list<ControlPoint>::Iterator it;
     vector3df v;
     for (it = m_control_points.begin(); it != m_control_points.end(); it++)
