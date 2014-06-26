@@ -2,6 +2,8 @@
 
 #include "editor.hpp"
 
+#include "commands/itcommand.hpp"
+
 #include <algorithm>
 #include <assert.h>
 
@@ -88,6 +90,7 @@ void Terrain::vertexHighlight(const TerrainMod& tm, int ix, int iz, int i, int j
 // ----------------------------------------------------------------------------
 void Terrain::vertexHeight(const TerrainMod& tm, int ix, int iz, int i, int j)
 {
+    float old_value;
     float h;
     // edge type and the distance from the intersection point will define
     // the intensity
@@ -99,6 +102,7 @@ void Terrain::vertexHeight(const TerrainMod& tm, int ix, int iz, int i, int j)
     }
     // new height
     f32* y = &(m_mesh.vertices[(iz + j) * m_nx + ix + i].Pos.Y);
+    old_value = *y;
     *y += h;
 
     // check if max / min value is ok
@@ -106,6 +110,12 @@ void Terrain::vertexHeight(const TerrainMod& tm, int ix, int iz, int i, int j)
                         if (tm.max && *y > tm.max_v) *y = tm.max_v;
                         if (tm.min && *y < tm.min_v) *y = tm.min_v;
                     }
+    
+    TerrainChange tc;
+    tc.x  = ix+i;
+    tc.z  = iz+j;
+    tc.dh = *y - old_value;
+    tm.cmd->addVertex(m_mesh.vertices[(iz + j) * m_nx + ix + i], &tc);
 } // vertexHeight
 
 
@@ -330,8 +340,9 @@ void Terrain::pixelBrigBrush(u8* img, int ix, double e)
 // ----------------------------------------------------------------------------
 Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id,
                  float x, float z, int nx, int nz)
-    :ISceneNode(parent, mgr, id)
+    :ISceneNode(parent, mgr, id), m_nx(nx), m_nz(nz)
 {
+
     m_bounding_box = aabbox3d<f32>(0, 0, 0, x, 0, z);
 
     m_tile_num_x = 10;
@@ -355,8 +366,8 @@ Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id,
 
     createIndexList(m_mesh.indices, nx, nz);
 
-    m_x = x; m_nx = nx;
-    m_z = z; m_nz = nz;
+    m_x = x;
+    m_z = z;
 
     recalculateNormals();
 
@@ -391,8 +402,6 @@ void Terrain::modify(TerrainMod* tm)
     if (tm->type == HEIGHT_MOD)
     {
         if (!tm->left_click) tm->dh *= -1;
-
-        draw(*tm);
 
         m_fp_h = &Terrain::vertexHeight;
         callOnVertices(tm);

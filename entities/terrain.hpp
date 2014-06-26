@@ -20,8 +20,6 @@ private:
 
     // terrain size
     f32                 m_x, m_z;
-    // vertex count in a single row/column
-    int                 m_nx, m_nz;
 
     aabbox3d<f32>       m_bounding_box;
 
@@ -42,6 +40,11 @@ private:
     u16                 m_tile_num_z;
 
     void (Terrain::*m_fp_b) (u8*,int,SColor);
+
+// ----------------------------------------------------------------------------
+public:
+    // vertex count in a single row/column
+    const int                 m_nx, m_nz;
 
 // ----------------------------------------------------------------------------
     // private functions - geometry

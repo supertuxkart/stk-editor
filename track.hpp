@@ -1,7 +1,10 @@
 #ifndef TRACK_HPP
 #define TRACK_HPP
 
-#include "command.hpp"
+#include "commands/commandhandler.hpp"
+#include "commands/iocommand.hpp"
+#include "commands/itcommand.hpp"
+
 #include "entities/entitymanager.hpp"
 #include "entities/terrain.hpp"
 #include "road/bezier.hpp"
@@ -12,7 +15,6 @@
 #include <irrlicht.h>
 
 class Entity;
-class Command;
 
 using namespace irr;
 using namespace scene;
@@ -104,7 +106,8 @@ private:
     IRoad*                  m_active_road;
 
     // command not yet finished
-    Command*            m_active_cmd;
+    IOCommand*              m_active_obj_cmd;
+    ITCommand*              m_active_terr_cmd;
 
     // camera used for editing
     // position has to be uploaded manually

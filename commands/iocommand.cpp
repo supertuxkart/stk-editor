@@ -1,9 +1,9 @@
-#include "command.hpp"
+#include "commands/iocommand.hpp"
 
 // ----------------------------------------------------------------------------
-// Command  -------------------------------------------------------------------
+// IOCommand  -------------------------------------------------------------------
 // ----------------------------------------------------------------------------
-void Command::redo()
+void IOCommand::redo()
 {
     std::list<ISceneNode*>::iterator it;
     for (it = m_elements.begin(); it != m_elements.end(); it++)
@@ -11,7 +11,7 @@ void Command::redo()
 } // redo
 
 // ----------------------------------------------------------------------------
-void Command::undo()
+void IOCommand::undo()
 {
     std::list<ISceneNode*>::iterator it;
     for (it = m_elements.begin(); it != m_elements.end(); it++)
@@ -21,7 +21,7 @@ void Command::undo()
 
 // ----------------------------------------------------------------------------
 // This function will set the two variable with smaller absolout value to 0
-void Command::limit(float& a, float& b, float& c)
+void IOCommand::limit(float& a, float& b, float& c)
 {
     if (a*a > b*b && a*a > c*c)
     {
@@ -35,47 +35,6 @@ void Command::limit(float& a, float& b, float& c)
         else b = 0;
     }
 }
-
-// ----------------------------------------------------------------------------
-// CommandHandler  ------------------------------------------------------------
-// ----------------------------------------------------------------------------
-CommandHandler::CommandHandler()
-{
-    m_it = m_cmd_stack.begin();
-}
-
-// ----------------------------------------------------------------------------
-void CommandHandler::add(Command* cmd)
-{
-    std::list<Command*>::iterator it;
-    
-    for (it = m_it; it != m_cmd_stack.end(); it++) delete (*it);
-    m_it = m_cmd_stack.erase(m_it, it);
-    
-    m_it = m_cmd_stack.insert(m_it, cmd);
-    m_it++;
-
-} // add
-
-// ----------------------------------------------------------------------------
-void CommandHandler::redo()
-{
-    if (m_it != m_cmd_stack.end())
-    {
-        (*m_it)->redo();
-        m_it++;
-    }
-} // redo
-
-// ----------------------------------------------------------------------------
-void CommandHandler::undo()
-{
-    if (m_it != m_cmd_stack.begin())
-    {
-        m_it--;
-        (*m_it)->undo();
-    }
-} // undo
 
 
 // ----------------------------------------------------------------------------
@@ -113,7 +72,7 @@ CreateCmd::~CreateCmd()
 // MoveCmd  -------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
-MoveCmd::MoveCmd(std::list<ISceneNode*> e, bool limited) :Command(e) 
+MoveCmd::MoveCmd(std::list<ISceneNode*> e, bool limited) :IOCommand(e)
 {
     m_dx = 0; m_dy = 0; m_dz = 0;
     m_limited = limited;
@@ -141,7 +100,7 @@ void MoveCmd::undo(ISceneNode *node)
 // RotateCmd  -----------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
-RotateCmd::RotateCmd(std::list<ISceneNode*> e, bool limited) :Command(e) 
+RotateCmd::RotateCmd(std::list<ISceneNode*> e, bool limited) :IOCommand(e)
 {
     m_dx = 0; m_dy = 0; m_dz = 0;
     m_limited = limited;
@@ -170,7 +129,7 @@ void RotateCmd::undo(ISceneNode *node)
 // ScaleCmd  -----------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
-ScaleCmd::ScaleCmd(std::list<ISceneNode*> e, bool limited) :Command(e)
+ScaleCmd::ScaleCmd(std::list<ISceneNode*> e, bool limited) :IOCommand(e)
 {
     m_dx = 0; m_dy = 0; m_dz = 0;
     m_limited = limited;

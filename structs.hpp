@@ -8,6 +8,8 @@ using namespace scene;
 using namespace core;
 using namespace video;
 
+class ITCommand;
+
 enum
 {
     HEIGHT_MOD,
@@ -18,21 +20,29 @@ enum
 
 struct TerrainMod
 {
-    bool    left_click;
-    line3df ray;
-    bool    in_terrain;
-    int     edge_type;
-    float   radius;
-    float   dh;
-    long    countdown;
-    bool    max;
-    float   max_v;
-    bool    min;
-    float   min_v;
-    int     index;
-    float   dist;
-    SColor  col_mask;
-    int     type;
+    bool        left_click;
+    line3df     ray;
+    bool        in_terrain;
+    int         edge_type;
+    float       radius;
+    float       dh;
+    long        countdown;
+    bool        max;
+    float       max_v;
+    bool        min;
+    float       min_v;
+    int         index;
+    float       dist;
+    SColor      col_mask;
+    int         type;
+    ITCommand*  cmd;
+};
+
+struct TerrainChange
+{
+    float dh;
+    s8 da, dr, dg, db;
+    u32 x, z;
 };
 
 struct Mesh
