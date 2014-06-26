@@ -72,7 +72,7 @@ void HeightModCmd::finish()
 // ----------------------------------------------------------------------------
 void HeightModCmd::undo()
 {
-    std::list<std::pair<float*, float>>::iterator it;
+    std::list<std::pair<float*, float> >::iterator it;
     for (it = m_list.begin(); it != m_list.end(); it++)
         *(it->first) -= it->second;
     m_terrain->recalculateNormals();
@@ -81,7 +81,7 @@ void HeightModCmd::undo()
 // ----------------------------------------------------------------------------
 void HeightModCmd::redo()
 {
-    std::list<std::pair<float*, float>>::iterator it;
+    std::list<std::pair<float*, float> >::iterator it;
     for (it = m_list.begin(); it != m_list.end(); it++)
         *(it->first) += it->second;
     m_terrain->recalculateNormals();

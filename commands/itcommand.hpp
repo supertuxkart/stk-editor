@@ -38,7 +38,7 @@ class HeightModCmd :ITCommand
 private:
     float* m_tmp_value;
     float** m_tmp_address;
-    std::list<std::pair<float*, float>> m_list;
+    std::list<std::pair<float*, float> > m_list;
 public:
 
     HeightModCmd(Terrain* t, u32 nx, u32 nz);
