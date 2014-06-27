@@ -38,40 +38,64 @@ void Track::animateNormalCamera(long dt)
 {
 
     vector3df pos;
+    vector3df tar;
+
     if (m_key_state[W_PRESSED] ^ m_key_state[S_PRESSED])
     {
         float sgn = (m_key_state[S_PRESSED]) ? 1.0f : -1.0f;
         pos = m_normal_camera->getPosition();
-        pos.Z += sgn * dt / 25.0f;
-        m_normal_camera->setPosition(pos);
+        tar = m_normal_camera->getTarget();
 
-        pos = m_normal_camera->getTarget();
-        pos.Z += sgn * dt / 25.0f;
-        m_normal_camera->setTarget(pos);
+        vector3df transformed_z_dir = vector3df(pos.X - tar.X, 0, pos.Z - tar.Z);
+        transformed_z_dir.normalize();
+
+        pos += transformed_z_dir * sgn * dt / 20.0f;
+        m_normal_camera->setPosition(pos);
+        
+        tar += transformed_z_dir * sgn * dt / 20.0f;
+        m_normal_camera->setTarget(tar);
     };
 
     if (m_key_state[A_PRESSED] ^ m_key_state[D_PRESSED])
     {
-        float sgn = (m_key_state[A_PRESSED]) ? 1.0f : -1.0f;
+
+        float sgn = (m_key_state[D_PRESSED]) ? 1.0f : -1.0f;
         pos = m_normal_camera->getPosition();
-        pos.X += sgn * dt / 25.0f;
+        tar = m_normal_camera->getTarget();
+
+        vector3df transformed_z_dir = vector3df(pos.X - tar.X, 0, pos.Z - tar.Z);
+        transformed_z_dir.rotateXZBy(90);
+        transformed_z_dir.normalize();
+
+        pos += transformed_z_dir * sgn * dt / 20.0f;
         m_normal_camera->setPosition(pos);
 
-        pos = m_normal_camera->getTarget();
-        pos.X += sgn * dt / 25.0f;
-        m_normal_camera->setTarget(pos);
+        tar += transformed_z_dir * sgn * dt / 20.0f;
+        m_normal_camera->setTarget(tar);
     };
 
+    if (m_key_state[Q_PRESSED] ^ m_key_state[E_PRESSED])
+    {
+        float sgn = (m_key_state[Q_PRESSED]) ? 1.0f : -1.0f;
 
+        pos = m_normal_camera->getTarget();
+        
+        pos.rotateXZBy(sgn * dt / 10.0f, m_normal_camera->getPosition());
+        m_normal_camera->setTarget(pos);
+    };
+    
+    
     if (m_mouse.wheel != 0)
     {
-        pos = m_normal_camera->getPosition();
-        pos.Y += -dt * m_mouse.wheel / 5.0f;
-        if (pos.Y < 10) pos.Y = 10;
-        m_normal_camera->setPosition(pos);
+        dimension2du ss = Editor::getEditor()->getScreenSize();
+        m_normal_cd -= m_mouse.wheel * 10.0f;
+        if (m_normal_cd < 5) m_normal_cd = 5;
+        matrix4 mat;
+        mat.buildProjectionMatrixOrthoLH(m_normal_cd, m_normal_cd * ss.Height / ss.Width,
+            m_normal_camera->getNearValue(), m_normal_camera->getFarValue());
+        m_normal_camera->setProjectionMatrix(mat, true);        
         m_mouse.wheel = 0;
     }
-
 } // animateCamera
 
 // ----------------------------------------------------------------------------
@@ -319,19 +343,20 @@ void Track::leaveState()
 } // leaveState
 
 // ----------------------------------------------------------------------------
-Track* Track::getTrack()
+Track* Track::getTrack(ICameraSceneNode* cam)
 {
     if (m_track != 0) return m_track;
 
     m_track = new Track();
-    m_track->init();
+    m_track->init(cam);
     return m_track;
 } // getTrack
 
 
 // ----------------------------------------------------------------------------
-void Track::init()
+void Track::init(ICameraSceneNode* cam)
 {
+    m_normal_camera   = cam;
     m_active_obj_cmd  = 0;
     m_active_terr_cmd = 0;
     m_active_road     = 0;
@@ -343,6 +368,14 @@ void Track::init()
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
 
     m_terrain = new Terrain(sm->getRootSceneNode(), sm, 1, 50, 50, 100, 100);
+
+    dimension2du ss = Editor::getEditor()->getScreenSize();
+    matrix4 mat;
+
+    m_normal_cd = 100.0f;
+    mat.buildProjectionMatrixOrthoLH(m_normal_cd, m_normal_cd * ss.Height / ss.Width,
+        m_normal_camera->getNearValue(), m_normal_camera->getFarValue());
+    m_normal_camera->setProjectionMatrix(mat,true);
 
 } // init
 
@@ -395,6 +428,12 @@ void Track::keyEvent(EKEY_CODE code, bool pressed)
     case KEY_KEY_D:
         m_key_state[D_PRESSED] = pressed;
         break;
+    case KEY_KEY_Q:
+        m_key_state[Q_PRESSED] = pressed;
+        break;
+    case KEY_KEY_E:
+        m_key_state[E_PRESSED] = pressed;
+        break;
     case KEY_SHIFT:
     case KEY_LSHIFT:
         m_key_state[SHIFT_PRESSED] = pressed;
@@ -429,7 +468,7 @@ void Track::mouseEvent(const SEvent& e)
     switch (e.MouseInput.Event)
     {
     case EMIE_MOUSE_WHEEL:
-        m_mouse.wheel = e.MouseInput.Wheel;
+        m_mouse.wheel += e.MouseInput.Wheel;
         break;
     case EMIE_LMOUSE_PRESSED_DOWN:
         m_mouse.left_btn_down = true;

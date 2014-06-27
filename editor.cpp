@@ -148,31 +148,26 @@ bool Editor::init()
         skin->setColor((EGUI_DEFAULT_COLOR)i, col);
     }
 
-    m_track = Track::getTrack();
 
-    ICameraSceneNode* cam = m_scene_manager->addCameraSceneNodeMaya();
+    ICameraSceneNode* norm_cam;
+    norm_cam = m_scene_manager->addCameraSceneNode(0, vector3df(25, 50, 30),
+                                                 vector3df(25, -30, -15));
+    norm_cam->setID(2);
+
+    m_track = Track::getTrack(norm_cam);
+    
+    ICameraSceneNode* cam;
+    cam = m_scene_manager->addCameraSceneNodeMaya();
     cam->setID(1);
     cam->setFarValue(20000.f);
     cam->setTarget(vector3df(0, 0, 0));
     cam->setInputReceiverEnabled(false);
     m_track->setFreeCamera(cam);
 
-    cam = m_scene_manager->addCameraSceneNode(0, vector3df(25, 50, 25),
-                                                 vector3df(25, -30, -15));
-    matrix4 mat;
-    mat.buildProjectionMatrixOrthoLH(m_screen_size.Width / 10.0f, m_screen_size.Height/10.0f,
-                                     cam->getNearValue(), cam->getFarValue());
-    
-    //cam->setProjectionMatrix(mat);
-
-
-    cam->setID(2);
-    m_scene_manager->setActiveCamera(cam);
-    m_track->setNormalCamera(cam);
-
     m_toolbar = ToolBar::getToolBar();
     m_toolbox = ToolBox::getToolBox();
 
+    m_scene_manager->setActiveCamera(norm_cam);
     m_device->setEventReceiver(this);
 
     return true;

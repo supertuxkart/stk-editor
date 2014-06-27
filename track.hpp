@@ -41,8 +41,10 @@ public:
         A_PRESSED,
         S_PRESSED,
         D_PRESSED,
+        Q_PRESSED,
+        E_PRESSED,
         CTRL_PRESSED,
-        SHIFT_PRESSED
+        SHIFT_PRESSED //it has to be the last and the first has to have id 0
     };
 
     struct MouseData
@@ -85,7 +87,7 @@ public:
 
 private:
     static Track*           m_track;
-    static const int        m_key_num = 6;
+    static const int        m_key_num = SHIFT_PRESSED + 1;
     
     static int              m_last_entity_ID;
 
@@ -112,6 +114,7 @@ private:
     // camera used for editing
     // position has to be uploaded manually
     ICameraSceneNode*   m_normal_camera;
+    float               m_normal_cd;
 
     ICameraSceneNode*   m_free_camera;
 
@@ -131,8 +134,8 @@ private:
     void                leaveState();
 
 public:
-    static Track* getTrack();
-    void          init();
+    static Track* getTrack(ICameraSceneNode* cam = 0);
+    void          init(ICameraSceneNode* cam);
     void          setState(State state);
     void          keyEvent(EKEY_CODE code, bool pressed);
     void          mouseEvent(const SEvent& event);
@@ -142,7 +145,6 @@ public:
     void          setSplineMode(bool b);
     void          setActiveRoad(IRoad* r);
 
-    void          setNormalCamera(ICameraSceneNode* cam) { m_normal_camera     = cam; }
     void          setFreeCamera(ICameraSceneNode* cam)   { m_free_camera       = cam; }
     void          undo()                                 { m_command_handler.undo();  }
     void          redo()                                 { m_command_handler.redo();  }
