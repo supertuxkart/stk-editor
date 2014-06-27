@@ -34,12 +34,12 @@ void DriveLine::refresh()
 
     w *= m_spline->getWidth(0);
 
-    m_mesh.vertices[0].Pos = point - w * (m_width / 2.0);
+    m_mesh.vertices[0].Pos = point - w * (m_width / 2.0f);
     m_mesh.vertices[0].Color = SColor(255, 255, 0, 0);
-    m_mesh.vertices[1].Pos = point + w * (m_width / 2.0);
+    m_mesh.vertices[1].Pos = point + w * (m_width / 2.0f);
     m_mesh.vertices[1].Color = SColor(255, 255, 0, 0);
 
-    int j = 1;
+    u32 j = 1;
     for (float t = dt; j <= m_mesh.quad_count; t += dt)
     {
         point = m_spline->p(t);
@@ -52,16 +52,16 @@ void DriveLine::refresh()
 
         w *= m_spline->getWidth(t);
 
-        m_mesh.vertices[2*j].Pos     = point - w * (m_width / 2.0);
+        m_mesh.vertices[2*j].Pos     = point - w * (m_width / 2.0f);
         m_mesh.vertices[2*j].Color   = SColor(255, 255, 0, 0);
-        m_mesh.vertices[2*j+1].Pos   = point + w * (m_width / 2.0);
+        m_mesh.vertices[2*j+1].Pos   = point + w * (m_width / 2.0f);
         m_mesh.vertices[2*j+1].Color = SColor(255, 255, 0, 0);
 
         last_point = point;
         j++;
     }
 
-    for (int i = 0; i < m_mesh.quad_count * 4; i++) m_mesh.indices[i] = i;
+    for (u32 i = 0; i < m_mesh.quad_count * 4; i++) m_mesh.indices[i] = i;
 
 } // refresh
 

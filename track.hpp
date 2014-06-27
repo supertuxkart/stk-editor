@@ -122,7 +122,7 @@ private:
     static const long   TERRAIN_WAIT_TIME = 50;
 
     Track() {};
-    void                animateNormalCamera(long dt);
+    void                animateNormalCamera(float dt);
 
     void                animateEditing();
     void                animateSelection();

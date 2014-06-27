@@ -7,8 +7,8 @@
 #include <algorithm>
 #include <assert.h>
 
-const int Terrain::SPIMG_X = 512;
-const int Terrain::SPIMG_Y = 512;
+const u32 Terrain::SPIMG_X = 512;
+const u32 Terrain::SPIMG_Y = 512;
 
 // ----------------------------------------------------------------------------
 /**  Always set m_fp before calling this function!!!
@@ -110,7 +110,7 @@ void Terrain::vertexHeight(const TerrainMod& tm, int ix, int iz, int i, int j)
                         if (tm.max && *y > tm.max_v) *y = tm.max_v;
                         if (tm.min && *y < tm.min_v) *y = tm.min_v;
                     }
-    
+
     TerrainChange tc;
     tc.x  = ix+i;
     tc.z  = iz+j;
@@ -200,7 +200,7 @@ void Terrain::refreshBB()
     f32 max = -10000;
     f32 min =  10000;
     float tmp;
-    for (int i = 0; i < m_mesh.vertex_count; i++)
+    for (u32 i = 0; i < m_mesh.vertex_count; i++)
     {
         tmp = m_mesh.vertices[i].Pos.Y;
         if (tmp > max) max = tmp;
@@ -279,7 +279,7 @@ void Terrain::draw(const TerrainMod& tm)
         for (int j = tc.Y - r; j < tc.Y + r; j++)
         {
         if ((i - tc.X)*(i - tc.X) + (j - tc.Y)*(j - tc.Y) < r*r)
-            if ((i > 0 && i < SPIMG_X && j > 0 && j < SPIMG_Y))
+            if ((i > 0 && i < (s32)SPIMG_X && j > 0 && j < (s32)SPIMG_Y))
             {
             TerrainChange tc;
             tc.x = i;
@@ -306,7 +306,7 @@ void Terrain::draw(const TerrainMod& tm)
             tc.img = img;
             tm.cmd->addVertex(&tc);
             }
-            
+
         }
     m_material.getTexture(0)->unlock();
 
@@ -323,7 +323,7 @@ void Terrain::pixelHardBrush(u8* img, int ix, SColor col, bool erase)
         if (col.getRed() > 0)   { img[ix + 2] = 0; return; }
                                   img[ix + 3] = 0; return;
     }
-    
+
     img[ix + 3] = col.getAlpha();
     img[ix + 2] = col.getRed();
     img[ix + 1] = col.getGreen();
@@ -336,21 +336,21 @@ void Terrain::pixelSoftBrush(u8* img, int ix, SColor col, double e)
 {
     if (e > 0)
     {
-        img[ix + 3] = std::max(std::min(img[ix + 3] + e * col.getAlpha()
+        img[ix + 3] = (u8) std::max(std::min(img[ix + 3] + e * col.getAlpha()
             - e * col.getRed() - e * col.getGreen() - e * col.getBlue(), 255.0), 0.0);
-        img[ix + 2] = std::max(std::min(img[ix + 2] + e * col.getRed()
+        img[ix + 2] = (u8) std::max(std::min(img[ix + 2] + e * col.getRed()
             - e * col.getAlpha() - e * col.getGreen() - e * col.getBlue(), 255.0), 0.0);
-        img[ix + 1] = std::max(std::min(img[ix + 1] + e * col.getGreen()
+        img[ix + 1] = (u8) std::max(std::min(img[ix + 1] + e * col.getGreen()
             - e * col.getRed() - e * col.getAlpha() - e * col.getBlue(), 255.0), 0.0);
-        img[ix + 0] = std::max(std::min(img[ix + 0] + e * col.getBlue()
+        img[ix + 0] = (u8) std::max(std::min(img[ix + 0] + e * col.getBlue()
             - e * col.getRed() - e * col.getGreen() - e * col.getAlpha(), 255.0), 0.0);
     }
     else
     {
-        img[ix + 3] = std::max(img[ix + 3] + e * col.getAlpha(), 0.0);
-        img[ix + 2] = std::max(img[ix + 2] + e * col.getRed(), 0.0);
-        img[ix + 1] = std::max(img[ix + 1] + e * col.getGreen(), 0.0);
-        img[ix + 0] = std::max(img[ix + 0] + e * col.getBlue(), 0.0);
+        img[ix + 3] = (u8) std::max(img[ix + 3] + e * col.getAlpha(), 0.0);
+        img[ix + 2] = (u8) std::max(img[ix + 2] + e * col.getRed(), 0.0);
+        img[ix + 1] = (u8) std::max(img[ix + 1] + e * col.getGreen(), 0.0);
+        img[ix + 0] = (u8) std::max(img[ix + 0] + e * col.getBlue(), 0.0);
     }
 
 } // vertexSoftBrush
@@ -359,8 +359,8 @@ void Terrain::pixelSoftBrush(u8* img, int ix, SColor col, double e)
 void Terrain::pixelBrigBrush(u8* img, int ix, double e)
 {
     for (int i = 0; i < 4; i++)
-    if (img[ix + i] > 0) 
-        img[ix + i] = std::max(std::min(img[ix + i] + e, 255.0), 1.0);
+    if (img[ix + i] > 0)
+        img[ix + i] = (u8) std::max(std::min(img[ix + i] + e, 255.0), 1.0);
 } // vertexBrigBrush
 
 // ----------------------------------------------------------------------------
@@ -376,7 +376,7 @@ Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id,
 
     m_mesh.vertex_count = nx * nz;
     m_mesh.vertices = new S3DVertex2TCoords[m_mesh.vertex_count];
-    
+
     m_mesh.quad_count = (nx - 1) * (nz - 1);
     m_mesh.indices = new u16[m_mesh.quad_count * 6];
 
@@ -385,7 +385,7 @@ Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id,
     {
         m_mesh.vertices[j * nx + i].Pos = vector3df(x / nx * i, 0, z / nz *j);
         m_mesh.vertices[j * nx + i].Color = SColor(255, 0, 200, 100);
-        m_mesh.vertices[j * nx + i].TCoords  = 
+        m_mesh.vertices[j * nx + i].TCoords  =
             vector2df(i / (float)nx * m_tile_num_x, j / (float)nz * m_tile_num_z);
         m_mesh.vertices[j * nx + i].TCoords2 = vector2df(i / (float)nx, j / (float)nz);
     }

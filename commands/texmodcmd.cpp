@@ -15,9 +15,9 @@ TexModCmd::TexModCmd(Terrain* t) :ITCommand(t)
     m_tmp_values  = new u8[Terrain::SPIMG_X * Terrain::SPIMG_Y * 4];
     m_tmp_dirty   = new bool[Terrain::SPIMG_X * Terrain::SPIMG_Y * 4];
 
-    for (int j = 0; j < Terrain::SPIMG_Y; j++)
-        for (int i = 0; i < Terrain::SPIMG_X; i++)
-            for (int k = 0; k < 4; k++)
+    for (u32 j = 0; j < Terrain::SPIMG_Y; j++)
+        for (u32 i = 0; i < Terrain::SPIMG_X; i++)
+            for (u32 k = 0; k < 4; k++)
             {
                 m_tmp_values[4 * j*Terrain::SPIMG_X + 4 * i + k] = 0;
                 m_tmp_dirty[4 * j*Terrain::SPIMG_X + 4 * i + k]  = false;
@@ -47,7 +47,7 @@ void TexModCmd::addVertex(TerrainChange* tc)
             m_mod_count++;
         }
 
-    m_tmp_address[Terrain::SPIMG_X*tc->z + tc->x] = 
+    m_tmp_address[Terrain::SPIMG_X*tc->z + tc->x] =
         &tc->img[Terrain::SPIMG_X*tc->z*4  + tc->x *4];
 }  // addVertex
 
@@ -57,13 +57,13 @@ void TexModCmd::finish()
     assert(!m_finished);
 
     ITexture* tex = m_terrain->getMaterial(0).getTexture(0);
-    u8* img = (u8*)tex->lock(ETLM_READ_WRITE);
+    tex->lock(ETLM_READ_WRITE);
 
     m_mod = new std::pair<u8*, u8>[m_mod_count];
-    int ix = 0;
-    for (int j = 0; j < Terrain::SPIMG_Y; j++)
-        for (int i = 0; i < Terrain::SPIMG_X; i++)
-            for (int k = 0; k < 4; k++)
+    u32 ix = 0;
+    for (u32 j = 0; j < Terrain::SPIMG_Y; j++)
+        for (u32 i = 0; i < Terrain::SPIMG_X; i++)
+            for (u32 k = 0; k < 4; k++)
             if (m_tmp_dirty[Terrain::SPIMG_X*j*4 + 4*i + k])
             {
                 u8* u = m_tmp_address[Terrain::SPIMG_X*j + i] + k;
@@ -89,10 +89,10 @@ void TexModCmd::finish()
 void TexModCmd::undo()
 {
     ITexture* tex = m_terrain->getMaterial(0).getTexture(0);
-    u8* img = (u8*)tex->lock(ETLM_READ_WRITE);
+    tex->lock(ETLM_READ_WRITE);
 
     u8 tmp;
-    for (int i = 0; i < m_mod_count; i++)
+    for (u32 i = 0; i < m_mod_count; i++)
     {
         tmp = *m_mod[i].first;
         *m_mod[i].first = m_mod[i].second;

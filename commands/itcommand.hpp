@@ -11,7 +11,7 @@ using namespace scene;
 using namespace core;
 using namespace video;
 
-class TerrainChange;
+struct TerrainChange;
 class Terrain;
 
 // ----------------------------------------------------------------------------
@@ -23,7 +23,7 @@ protected:
     bool        m_finished;
 
 public:
-    ITCommand(Terrain* t) :m_finished(false), m_terrain(t){};
+    ITCommand(Terrain* t) :m_terrain(t), m_finished(false){};
     virtual ~ITCommand() {};
 
     virtual void addVertex(TerrainChange* tm) = 0;

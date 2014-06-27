@@ -14,8 +14,8 @@ HeightModCmd::HeightModCmd(Terrain* t, u32 nx, u32 nz) :ITCommand(t)
 
     m_tmp_value   = new float [nx*nz];
 
-    for (int j = 0; j < nz; j++)
-        for (int i = 0; i < nx; i++)
+    for (u32 j = 0; j < nz; j++)
+        for (u32 i = 0; i < nx; i++)
             m_tmp_value[j*nx + i] = 0;
 
     m_tmp_address = new float*[nx*nz];
@@ -41,8 +41,8 @@ void HeightModCmd::finish()
 {
     assert(!m_finished);
 
-    for (int j = 0; j < m_nz; j++)
-        for (int i = 0; i < m_nx; i++)
+    for (u32 j = 0; j < m_nz; j++)
+        for (u32 i = 0; i < m_nx; i++)
             if (m_tmp_value[m_nx*j + i] != 0)
             {
                 m_list.push_back(std::pair<float*, float>(

@@ -9,14 +9,14 @@ void Road::calcVertexRow(vector3df p, vector3df n, vector3df w, int offset, floa
     w *= m_width / m_width_vert_num * wx;
     for (int i = 0; i < m_width_vert_num / 2; i++)
     {
-        m_mesh.vertices[offset + i].Pos = p + w * (i - m_width_vert_num / 4 + 0.5);
+        m_mesh.vertices[offset + i].Pos = p + w * (i - m_width_vert_num / 4 + 0.5f);
 
         m_mesh.vertices[offset + m_width_vert_num / 2 + i].Color = SColor(255, 0, 0, 255);
     }
     
     for (int i = 0; i < m_width_vert_num / 2; i++)
     {
-        vector3df vec = m_mesh.vertices[offset + m_width_vert_num / 2 - i - 1].Pos - 0.3 * n;
+        vector3df vec = m_mesh.vertices[offset + m_width_vert_num / 2 - i - 1].Pos - 0.3f * n;
         m_mesh.vertices[offset + m_width_vert_num / 2 + i].Pos = vec;
         m_mesh.vertices[offset + m_width_vert_num / 2 - i - 1].Color = SColor(255, 0, 0, 255);
     }

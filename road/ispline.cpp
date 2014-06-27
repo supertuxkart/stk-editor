@@ -51,17 +51,17 @@ ControlPoint ISpline::newControlPoint(vector3df p)
     cp.normal = vector3df(0.0f, 1.0f, 0.0f);
     cp.width  = 1.0f;
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
-    cp.node = sm->addSphereSceneNode(0.2, 16,this,
+    cp.node = sm->addSphereSceneNode(0.2f, 16,this,
         ANOTHER_MAGIC_NUMBER + 3 * m_cp_num, p);
     cp.node->getMaterial(0).DiffuseColor = SColor(255, 255, 0, 0);
     cp.node->getMaterial(0).AmbientColor = SColor(255, 255, 0, 0);
 
-    cp.normal_node = sm->addSphereSceneNode(0.1, 16, cp.node,
+    cp.normal_node = sm->addSphereSceneNode(0.1f, 16, cp.node,
         ANOTHER_MAGIC_NUMBER + 3 * m_cp_num + 1,vector3df(0,1,0));
     cp.normal_node->getMaterial(0).DiffuseColor = SColor(255, 0, 255, 0);
     cp.normal_node->getMaterial(0).AmbientColor = SColor(255, 0, 255, 0);
 
-    cp.width_node = sm->addSphereSceneNode(0.1, 16, cp.node,
+    cp.width_node = sm->addSphereSceneNode(0.1f, 16, cp.node,
         ANOTHER_MAGIC_NUMBER + 3 * m_cp_num + 2, vector3df(1, 0, 0));
     cp.width_node->getMaterial(0).DiffuseColor = SColor(255, 0, 0, 255);
     cp.width_node->getMaterial(0).AmbientColor = SColor(255, 0, 0, 255);
@@ -220,7 +220,7 @@ void ISpline::render()
     driver->setTransform(ETS_WORLD, IdentityMatrix);
 
 
-    float dt = 0.005;
+    float dt = 0.005f;
     for (float t = dt; t <= 1.0; t += dt)
     {
         driver->draw3DLine(p(t - dt), p(t), SColor(255, 255, 0, 0));

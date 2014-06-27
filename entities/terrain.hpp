@@ -26,7 +26,7 @@ private:
     bool                m_highlight_visible;
 
     void (Terrain::*m_fp_h) (const TerrainMod&, int, int, int, int);
-    
+
 // ----------------------------------------------------------------------------
     // private variables - material
     SMaterial           m_material;
@@ -43,12 +43,12 @@ private:
 public:
     // vertex count in a single row/column
     const int                 m_nx, m_nz;
-    static const int          SPIMG_X;
-    static const int          SPIMG_Y;
+    static const u32          SPIMG_X;
+    static const u32          SPIMG_Y;
 
 // ----------------------------------------------------------------------------
     // private functions - geometry
-    void    callOnVertices(TerrainMod* tmod, bool call_outside = false, 
+    void    callOnVertices(TerrainMod* tmod, bool call_outside = false,
                                              bool call_in_square = false);
 
     void    vertexHighlight(const TerrainMod& tm, int ix, int iz, int i, int j);
@@ -64,7 +64,7 @@ public:
 
 // ----------------------------------------------------------------------------
     // private functions - material
-    
+
     void        initMaterials();
     ITexture*   createSplattingImg();
     void        draw(const TerrainMod& tm);
@@ -72,7 +72,7 @@ public:
     void        pixelHardBrush(u8* img, int ix, SColor col, bool erase);
     void        pixelSoftBrush(u8* img, int ix, SColor col, double e);
     void        pixelBrigBrush(u8* img, int ix, double e);
-    
+
 // ----------------------------------------------------------------------------
 public:
     Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id,

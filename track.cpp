@@ -34,7 +34,7 @@ Track::MouseData::MouseData()
 } // MouseData
 
 // ----------------------------------------------------------------------------
-void Track::animateNormalCamera(long dt)
+void Track::animateNormalCamera(f32 dt)
 {    
     if (m_key_state[W_PRESSED] ^ m_key_state[S_PRESSED])
     {
@@ -96,7 +96,7 @@ void Track::animateNormalCamera(long dt)
             vector3df tar = m_normal_camera->getTarget();
             vector3df transformed_z_dir = vector3df(pos.X - tar.X, 0, pos.Z - tar.Z);
             transformed_z_dir.normalize();
-            tar += transformed_z_dir * m_mouse.dy();
+            tar += transformed_z_dir * (f32) m_mouse.dy();
             m_normal_camera->setTarget(tar);
         }
 
@@ -460,7 +460,7 @@ void Track::mouseEvent(const SEvent& e)
     dimension2du ss = Editor::getEditor()->getScreenSize();
 
     // check if mouse is outside of the viewport's domain
-    if (e.MouseInput.Y < 50 || e.MouseInput.X > ss.Width - 250)
+    if (e.MouseInput.Y < 50 || e.MouseInput.X > (s32) ss.Width - 250)
     {
         if (m_new_entity && m_new_entity->isVisible())
             m_new_entity->setVisible(false);
@@ -539,7 +539,7 @@ void Track::animate(long dt)
 {
     if (m_state != FREECAM)
     {
-        animateNormalCamera(dt);
+        animateNormalCamera((f32)dt);
         switch (m_state)
         {
         case MOVE:
