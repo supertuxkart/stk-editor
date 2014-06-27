@@ -195,6 +195,21 @@ void Terrain::recalculateNormals()
 } // recalculateNormals
 
 // ----------------------------------------------------------------------------
+void Terrain::refreshBB()
+{
+    f32 max = -10000;
+    f32 min =  10000;
+    float tmp;
+    for (int i = 0; i < m_mesh.vertex_count; i++)
+    {
+        tmp = m_mesh.vertices[i].Pos.Y;
+        if (tmp > max) max = tmp;
+        if (tmp < min) min = tmp;
+    }
+    m_bounding_box = aabbox3d<f32>(0, min, 0, m_x, max, m_z);
+}
+
+// ----------------------------------------------------------------------------
 void Terrain::initMaterials()
 {
     IVideoDriver* vd = Editor::getEditor()->getVideoDriver();
@@ -274,9 +289,6 @@ void Terrain::draw(const TerrainMod& tm)
 
             switch (tm.type)
                 {
-                case HEIGHT_MOD:
-                    pixelHardBrush(img, j * SPIMG_X * 4 + i * 4, tm.col_mask, false);
-                    break;
                 case HARD_BRUSH:
                     pixelHardBrush(img, j * SPIMG_X * 4 + i * 4, tm.col_mask, !tm.left_click);
                     break;
@@ -422,6 +434,7 @@ void Terrain::modify(TerrainMod* tm)
         if (!tm->left_click) tm->dh *= -1;
         recalculateNormals();
         highlight(tm);
+        refreshBB();
         return;
     }
     else

@@ -35,16 +35,12 @@ Track::MouseData::MouseData()
 
 // ----------------------------------------------------------------------------
 void Track::animateNormalCamera(long dt)
-{
-
-    vector3df pos;
-    vector3df tar;
-
+{    
     if (m_key_state[W_PRESSED] ^ m_key_state[S_PRESSED])
     {
         float sgn = (m_key_state[S_PRESSED]) ? 1.0f : -1.0f;
-        pos = m_normal_camera->getPosition();
-        tar = m_normal_camera->getTarget();
+        vector3df pos = m_normal_camera->getPosition();
+        vector3df tar = m_normal_camera->getTarget();
 
         vector3df transformed_z_dir = vector3df(pos.X - tar.X, 0, pos.Z - tar.Z);
         transformed_z_dir.normalize();
@@ -58,10 +54,9 @@ void Track::animateNormalCamera(long dt)
 
     if (m_key_state[A_PRESSED] ^ m_key_state[D_PRESSED])
     {
-
         float sgn = (m_key_state[D_PRESSED]) ? 1.0f : -1.0f;
-        pos = m_normal_camera->getPosition();
-        tar = m_normal_camera->getTarget();
+        vector3df pos = m_normal_camera->getPosition();
+        vector3df tar = m_normal_camera->getTarget();
 
         vector3df transformed_z_dir = vector3df(pos.X - tar.X, 0, pos.Z - tar.Z);
         transformed_z_dir.rotateXZBy(90);
@@ -73,17 +68,6 @@ void Track::animateNormalCamera(long dt)
         tar += transformed_z_dir * sgn * dt / 20.0f;
         m_normal_camera->setTarget(tar);
     };
-
-    if (m_key_state[Q_PRESSED] ^ m_key_state[E_PRESSED])
-    {
-        float sgn = (m_key_state[Q_PRESSED]) ? 1.0f : -1.0f;
-
-        pos = m_normal_camera->getTarget();
-        
-        pos.rotateXZBy(sgn * dt / 10.0f, m_normal_camera->getPosition());
-        m_normal_camera->setTarget(pos);
-    };
-    
     
     if (m_mouse.wheel != 0)
     {
@@ -96,6 +80,29 @@ void Track::animateNormalCamera(long dt)
         m_normal_camera->setProjectionMatrix(mat, true);        
         m_mouse.wheel = 0;
     }
+
+    if (m_key_state[SPACE_PRESSED] && m_active_obj_cmd==0)
+    {
+        if (m_mouse.left_btn_down)
+        {
+            vector3df tar = m_normal_camera->getTarget();
+            tar.rotateXZBy(m_mouse.dx() / 5.0f, m_normal_camera->getPosition());
+            m_normal_camera->setTarget(tar);
+        }
+
+        if (m_mouse.right_btn_down)
+        {
+            vector3df pos = m_normal_camera->getPosition();
+            vector3df tar = m_normal_camera->getTarget();
+            vector3df transformed_z_dir = vector3df(pos.X - tar.X, 0, pos.Z - tar.Z);
+            transformed_z_dir.normalize();
+            tar += transformed_z_dir * m_mouse.dy();
+            m_normal_camera->setTarget(tar);
+        }
+
+        m_mouse.setStorePoint();
+    }
+
 } // animateCamera
 
 // ----------------------------------------------------------------------------
@@ -152,7 +159,7 @@ void Track::animateEditing()
         m_active_obj_cmd = 0;
     }
 
-    if (m_mouse.leftPressed() || m_mouse.rightPressed())
+    if ((m_mouse.leftPressed() || m_mouse.rightPressed()) && !m_key_state[SPACE_PRESSED])
     {
         // new operation start
         switch (m_state)
@@ -210,7 +217,7 @@ void Track::animatePlacing()
         m_new_entity->updateAbsolutePosition();
         m_new_entity->setPosition(m_terrain->placeBBtoGround(m_new_entity->getTransformedBoundingBox(), r));
 
-        if (m_mouse.leftPressed())
+        if (m_mouse.leftPressed() && !m_key_state[SPACE_PRESSED])
         {
             m_last_entity_ID++;
             m_new_entity->setID(m_last_entity_ID);
@@ -246,7 +253,7 @@ void Track::animateSplineEditing()
         m_active_road->getSpline()->updatePosition();
         m_active_road->refresh();
     }
-    if (m_mouse.leftPressed())
+    if (m_mouse.leftPressed() && !m_key_state[SPACE_PRESSED])
     {
         m_active_road->getSpline()->addControlPoint(p);
         m_new_entity = m_active_road->getSpline()->getLastNode();
@@ -270,17 +277,19 @@ void Track::animateTerrainMod(long dt)
     m_terrain->highlight(tm);
 
 
-    if (m_mouse.leftPressed() || m_mouse.rightPressed())
+    if (!m_key_state[SPACE_PRESSED] && 
+        (m_mouse.leftPressed() || m_mouse.rightPressed()))
     {
         // new operation start
         switch (tm->type)
         {
         case HEIGHT_MOD:
-            m_active_terr_cmd = (ITCommand*) new HeightModCmd(m_terrain,m_terrain->m_nx, m_terrain->m_nz);
+            m_active_terr_cmd = 
+                new HeightModCmd(m_terrain,m_terrain->m_nx, m_terrain->m_nz);
             tm->cmd = m_active_terr_cmd;
             break;
         default:
-            m_active_terr_cmd = (ITCommand*) new TexModCmd(m_terrain);
+            m_active_terr_cmd = new TexModCmd(m_terrain);
             tm->cmd = m_active_terr_cmd;
             break;
         }
@@ -368,6 +377,7 @@ void Track::init(ICameraSceneNode* cam)
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
 
     m_terrain = new Terrain(sm->getRootSceneNode(), sm, 1, 50, 50, 100, 100);
+    
 
     dimension2du ss = Editor::getEditor()->getScreenSize();
     matrix4 mat;
@@ -428,11 +438,8 @@ void Track::keyEvent(EKEY_CODE code, bool pressed)
     case KEY_KEY_D:
         m_key_state[D_PRESSED] = pressed;
         break;
-    case KEY_KEY_Q:
-        m_key_state[Q_PRESSED] = pressed;
-        break;
-    case KEY_KEY_E:
-        m_key_state[E_PRESSED] = pressed;
+    case KEY_SPACE:
+        m_key_state[SPACE_PRESSED] = pressed;
         break;
     case KEY_SHIFT:
     case KEY_LSHIFT:

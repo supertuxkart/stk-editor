@@ -41,8 +41,7 @@ public:
         A_PRESSED,
         S_PRESSED,
         D_PRESSED,
-        Q_PRESSED,
-        E_PRESSED,
+        SPACE_PRESSED,
         CTRL_PRESSED,
         SHIFT_PRESSED //it has to be the last and the first has to have id 0
     };

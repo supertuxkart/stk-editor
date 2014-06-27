@@ -60,6 +60,7 @@ public:
 
     void    createIndexList(u16* indices, int x, int z);
     void    recalculateNormals();
+    void    refreshBB();
 
 // ----------------------------------------------------------------------------
     // private functions - material
