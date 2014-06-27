@@ -1,6 +1,6 @@
 NAME = stk-editor
 
-SRC = $(wildcard *.cpp toolbox/*.cpp entities/*.cpp road/*.cpp)
+SRC = $(wildcard *.cpp toolbox/*.cpp entities/*.cpp road/*.cpp commands/*.cpp)
 OBJ = $(SRC:.cpp=.o)
 HDR = $(wildcard *.hpp)
 
