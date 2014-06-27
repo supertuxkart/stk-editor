@@ -1,28 +1,17 @@
-#include "commands/itcommand.hpp"
+#include "commands/heightmodcmd.hpp"
 
 #include "entities/terrain.hpp"
 #include "structs.hpp"
 
 #include <assert.h>
 
-// ----------------------------------------------------------------------------
-// ITCommand-------------------------------------------------------------------
-// ----------------------------------------------------------------------------
-ITCommand::ITCommand(Terrain* t, u32 nx, u32 nz)
-{
-    m_finished = false;
-    m_terrain  = t;
 
+// ----------------------------------------------------------------------------
+HeightModCmd::HeightModCmd(Terrain* t, u32 nx, u32 nz) :ITCommand(t)
+{
     m_nx = nx;
     m_nz = nz;
 
-} // ITCommand
-
-// ----------------------------------------------------------------------------
-// HeightModCmd ---------------------------------------------------------------
-// ----------------------------------------------------------------------------
-HeightModCmd::HeightModCmd(Terrain* t, u32 nx, u32 nz) :ITCommand(t, nx, nz)
-{
     m_tmp_value   = new float [nx*nz];
 
     for (int j = 0; j < nz; j++)
@@ -40,11 +29,11 @@ HeightModCmd::~HeightModCmd()
 } // ~HeightModCmd
 
 // ----------------------------------------------------------------------------
-void HeightModCmd::addVertex(S3DVertex2TCoords &v, TerrainChange* tc)
+void HeightModCmd::addVertex(TerrainChange* tc)
 {
     assert(!m_finished);
     m_tmp_value[m_nx*tc->z + tc->x]   += tc->dh;
-    m_tmp_address[m_nx*tc->z + tc->x]  = &v.Pos.Y;
+    m_tmp_address[m_nx*tc->z + tc->x]  = &(tc->v->Pos.Y);
 }  // addVertex
 
 // ----------------------------------------------------------------------------
@@ -86,3 +75,4 @@ void HeightModCmd::redo()
         *(it->first) += it->second;
     m_terrain->recalculateNormals();
 } // redo
+

@@ -159,6 +159,13 @@ bool Editor::init()
 
     cam = m_scene_manager->addCameraSceneNode(0, vector3df(25, 50, 25),
                                                  vector3df(25, -30, -15));
+    matrix4 mat;
+    mat.buildProjectionMatrixOrthoLH(m_screen_size.Width / 10.0f, m_screen_size.Height/10.0f,
+                                     cam->getNearValue(), cam->getFarValue());
+    
+    //cam->setProjectionMatrix(mat);
+
+
     cam->setID(2);
     m_scene_manager->setActiveCamera(cam);
     m_track->setNormalCamera(cam);

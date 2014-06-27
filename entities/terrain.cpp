@@ -115,7 +115,8 @@ void Terrain::vertexHeight(const TerrainMod& tm, int ix, int iz, int i, int j)
     tc.x  = ix+i;
     tc.z  = iz+j;
     tc.dh = *y - old_value;
-    tm.cmd->addVertex(m_mesh.vertices[(iz + j) * m_nx + ix + i], &tc);
+    tc.v  = &m_mesh.vertices[(iz + j) * m_nx + ix + i];
+    tm.cmd->addVertex(&tc);
 } // vertexHeight
 
 
@@ -265,6 +266,13 @@ void Terrain::draw(const TerrainMod& tm)
         if ((i - tc.X)*(i - tc.X) + (j - tc.Y)*(j - tc.Y) < r*r)
             if ((i > 0 && i < SPIMG_X && j > 0 && j < SPIMG_Y))
             {
+            TerrainChange tc;
+            tc.x = i;
+            tc.z = j;
+            tc.db = -img[j * SPIMG_X * 4 + i * 4];
+            tc.dg = -img[j * SPIMG_X * 4 + i * 4 + 1];
+            tc.dr = -img[j * SPIMG_X * 4 + i * 4 + 2];
+            tc.da = -img[j * SPIMG_X * 4 + i * 4 + 3];
             switch (tm.type)
                 {
                 case HEIGHT_MOD:
@@ -280,7 +288,14 @@ void Terrain::draw(const TerrainMod& tm)
                     pixelBrigBrush(img, j * SPIMG_X * 4 + i * 4, e * 255);
                     break;
                 }
+            tc.db += img[j * SPIMG_X * 4 + i * 4];
+            tc.dg += img[j * SPIMG_X * 4 + i * 4 + 1];
+            tc.dr += img[j * SPIMG_X * 4 + i * 4 + 2];
+            tc.da += img[j * SPIMG_X * 4 + i * 4 + 3];
+            tc.img = img;
+            tm.cmd->addVertex(&tc);
             }
+            
         }
     m_material.getTexture(0)->unlock();
 

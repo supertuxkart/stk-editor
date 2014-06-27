@@ -3,6 +3,9 @@
 
 #include "toolbox/terrpanel.hpp"
 
+#include "commands/heightmodcmd.hpp"
+#include "commands/texmodcmd.hpp"
+
 #include <assert.h>
 #include <iostream>
 
@@ -87,7 +90,7 @@ void Track::animateEditing()
             m_active_obj_cmd->redo();
             if (m_spline_mode)
             {
-                m_active_road->getSpline()->updatePosition(); 
+                m_active_road->getSpline()->updatePosition();
                 m_active_road->refresh();
             }
 
@@ -163,7 +166,7 @@ void Track::animateSelection()
         node = Editor::getEditor()->getSceneManager()->getSceneCollisionManager()
             ->getSceneNodeFromScreenCoordinatesBB(
                 vector2d<s32>(m_mouse.x, m_mouse.y), id);
-        
+
 
         if (node)
             m_entity_manager.selectNode(node);
@@ -184,7 +187,7 @@ void Track::animatePlacing()
         m_new_entity->setPosition(m_terrain->placeBBtoGround(m_new_entity->getTransformedBoundingBox(), r));
 
         if (m_mouse.leftPressed())
-        {            
+        {
             m_last_entity_ID++;
             m_new_entity->setID(m_last_entity_ID);
             m_entity_manager.add(m_new_entity);
@@ -201,7 +204,7 @@ void Track::animatePlacing()
 void Track::animateSplineEditing()
 {
     assert(m_new_entity);
-    
+
     ISceneCollisionManager* cm = Editor::getEditor()->getSceneManager()
         ->getSceneCollisionManager();
     line3d<f32> r = cm->getRayFromScreenCoordinates(vector2d<s32>(m_mouse.x, m_mouse.y));
@@ -225,7 +228,7 @@ void Track::animateSplineEditing()
         m_new_entity = m_active_road->getSpline()->getLastNode();
         m_active_road->refresh();
     } // m_mouse.leftPressed()
-    
+
 } // animatePlacing
 
 // ----------------------------------------------------------------------------
@@ -253,9 +256,11 @@ void Track::animateTerrainMod(long dt)
             tm->cmd = m_active_terr_cmd;
             break;
         default:
+            m_active_terr_cmd = (ITCommand*) new TexModCmd(m_terrain);
+            tm->cmd = m_active_terr_cmd;
             break;
         }
-    }  
+    }
 
     if (m_mouse.leftReleased() || m_mouse.rightReleased())
     {
@@ -272,7 +277,7 @@ void Track::animateTerrainMod(long dt)
     tm->countdown -= dt;
     if (tm->countdown > 0) return;
 
-    if (m_active_terr_cmd && m_mouse.left_btn_down || m_mouse.right_btn_down)
+    if (m_active_terr_cmd && (m_mouse.left_btn_down || m_mouse.right_btn_down))
     {
         tm->countdown = TERRAIN_WAIT_TIME;
         if (m_mouse.right_btn_down) tm->left_click = false;
@@ -281,7 +286,7 @@ void Track::animateTerrainMod(long dt)
     }
 
     return;
-    
+
 } // animateTerrainMod
 
 // ----------------------------------------------------------------------------
@@ -368,7 +373,7 @@ void Track::setState(State state)
         m_free_camera->setInputReceiverEnabled(true);
         sm->setActiveCamera(m_free_camera);
     }
-    
+
     m_state = state;
 
 } // setState

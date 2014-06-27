@@ -40,9 +40,12 @@ struct TerrainMod
 
 struct TerrainChange
 {
-    float dh;
-    s8 da, dr, dg, db;
-    u32 x, z;
+    float              dh;
+    s16                da, dr, dg, db;
+    u32                x;
+    u32                z;
+    S3DVertex2TCoords* v;
+    u8*                img;
 };
 
 struct Mesh

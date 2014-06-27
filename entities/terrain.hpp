@@ -32,8 +32,6 @@ private:
     SMaterial           m_material;
     SMaterial           m_highlight_material;
 
-    static const int    SPIMG_X;
-    static const int    SPIMG_Y;
     IImage*             m_splattingImg;
 
     u16                 m_tile_num_x;
@@ -45,6 +43,8 @@ private:
 public:
     // vertex count in a single row/column
     const int                 m_nx, m_nz;
+    static const int          SPIMG_X;
+    static const int          SPIMG_Y;
 
 // ----------------------------------------------------------------------------
     // private functions - geometry
