@@ -41,7 +41,8 @@ struct TerrainMod
 struct TerrainChange
 {
     float              dh;
-    s16                da, dr, dg, db;
+    u8                 old_v[4];
+    bool               vchanged[4];
     u32                x;
     u32                z;
     S3DVertex2TCoords* v;

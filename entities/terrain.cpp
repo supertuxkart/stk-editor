@@ -269,10 +269,9 @@ void Terrain::draw(const TerrainMod& tm)
             TerrainChange tc;
             tc.x = i;
             tc.z = j;
-            tc.db = -img[j * SPIMG_X * 4 + i * 4];
-            tc.dg = -img[j * SPIMG_X * 4 + i * 4 + 1];
-            tc.dr = -img[j * SPIMG_X * 4 + i * 4 + 2];
-            tc.da = -img[j * SPIMG_X * 4 + i * 4 + 3];
+            for (int k = 0; k < 4; k++)
+                tc.old_v[k] = img[j * SPIMG_X * 4 + i * 4 + k];
+
             switch (tm.type)
                 {
                 case HEIGHT_MOD:
@@ -288,10 +287,10 @@ void Terrain::draw(const TerrainMod& tm)
                     pixelBrigBrush(img, j * SPIMG_X * 4 + i * 4, e * 255);
                     break;
                 }
-            tc.db += img[j * SPIMG_X * 4 + i * 4];
-            tc.dg += img[j * SPIMG_X * 4 + i * 4 + 1];
-            tc.dr += img[j * SPIMG_X * 4 + i * 4 + 2];
-            tc.da += img[j * SPIMG_X * 4 + i * 4 + 3];
+
+            for (int k = 0; k < 4; k++)
+                tc.vchanged[k] = (tc.old_v[k] != img[j * SPIMG_X * 4 + i * 4 + k]);
+
             tc.img = img;
             tm.cmd->addVertex(&tc);
             }
