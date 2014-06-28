@@ -2,9 +2,11 @@
 #include "editor.hpp"
 
 #include "toolbox/terrpanel.hpp"
+#include "toolbox/roadpanel.hpp"
 
 #include "commands/heightmodcmd.hpp"
 #include "commands/texmodcmd.hpp"
+#include "commands/roadcommand.hpp"
 
 #include <assert.h>
 #include <iostream>
@@ -215,7 +217,6 @@ void Track::animatePlacing()
 // ----------------------------------------------------------------------------
 void Track::animateSplineEditing()
 {
-    assert(m_new_entity);
 
     ISceneCollisionManager* cm = Editor::getEditor()->getSceneManager()
         ->getSceneCollisionManager();
@@ -226,14 +227,29 @@ void Track::animateSplineEditing()
     vector3df p = m_terrain->placeBBtoGround(m_junk_node->getTransformedBoundingBox(), r);
     p.Y += 1.0;
 
+    if (m_active_cmd)
+    {
+        dynamic_cast<RoadCommand*>(m_active_cmd)->updatePos(p);
+    }
     
 
-    if (m_mouse.leftPressed() && !m_key_state[SPACE_PRESSED])
+    if (!m_active_cmd||(m_mouse.leftPressed() && !m_key_state[SPACE_PRESSED]))
     {
-        m_active_road->getSpline()->addControlPoint(p);
-        m_new_entity = m_active_road->getSpline()->getLastNode();
-        m_active_road->refresh();
+        if (m_active_cmd)
+            m_command_handler.add(m_active_cmd);
+        RoadCommand* rc = new RoadCommand(m_active_road, RoadPanel::getRoadPanel()->isInsertMode());
+        rc->updatePos(p);
+        m_active_cmd = rc;
     } // m_mouse.leftPressed()
+
+    if (m_mouse.rightPressed())
+    {
+        if (m_active_cmd) m_active_cmd->undo();
+        delete m_active_cmd;
+        m_active_cmd = 0;
+        setState(SELECT);
+    }
+
 
 } // animateSplineEditing
 
@@ -376,13 +392,6 @@ void Track::setState(State state)
     if (state == TERRAIN_MOD)
     {
         m_terrain->setHighlightVisibility(true);
-    }
-
-    if (state == SPLINE)
-    {
-        if (m_new_entity) m_new_entity->remove();
-        m_active_road->getSpline()->addControlPoint(vector3df(0, 0, 0));
-        m_new_entity = m_active_road->getSpline()->getLastNode();
     }
 
     if (state == FREECAM)
@@ -541,5 +550,4 @@ Track::~Track()
     if (m_active_cmd) delete m_active_cmd;
     if (m_terrain)    delete m_terrain;
 }
-
 

@@ -4,13 +4,21 @@
 // ----------------------------------------------------------------------------
 void DriveLine::refresh()
 {
+    if (m_mesh.vertices)
+    {
+        delete[] m_mesh.vertices;
+        m_mesh.vertices = 0;
+    }
+    if (m_mesh.indices)
+    {
+        delete[] m_mesh.indices;
+        m_mesh.indices = 0;
+    }
 
-    int spn = m_spline->getPointNum() - 1;
-
+    int a = m_spline->getPointNum();
     if (!m_spline->hasEnoughPoints()) return;
 
-    if (m_mesh.vertices) delete[] m_mesh.vertices;
-    if (m_mesh.indices)  delete[] m_mesh.indices;
+    int spn = m_spline->getPointNum() - 1;
 
     m_mesh.vertex_count = (int)(1.0f / m_detail * spn + 1) * 2;
     m_mesh.quad_count = (int)(1.0f / m_detail * spn);

@@ -38,10 +38,10 @@ public:
     virtual vector3df   getNormal(float t) = 0;
     virtual float       getWidth(float t) = 0;
     void                setNodeVisibility(bool visible);
-    void                addControlPoint(vector3df p);
-    void                insertControlPoint(vector3df p);
-    void                removeLastControlPoint(bool eraseNodes = false);
-    ISceneNode*         getLastNode();
+    u32                 addControlPoint(vector3df p);
+    u32                 insertControlPoint(vector3df p);
+    void                removeControlPoint(u32 ix);
+    ISceneNode*         getNode(u32 ix);
     void                updatePosition();
     bool                hasEnoughPoints()   { return m_cp_num > 1; }
     int                 getPointNum()       { return m_cp_num;     }

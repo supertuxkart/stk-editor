@@ -80,7 +80,7 @@ bool Editor::buttonClicked(int ID)
         m_track->setSplineMode(true);
         m_track->setState(Track::SPLINE);
         RoadPanel::getRoadPanel()->btnDown(ID);
-        break;
+        return true;
     case RoadPanel::DL_EXIT:
         m_track->setState(Track::SELECT);
         return true;

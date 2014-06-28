@@ -87,15 +87,20 @@ void ISpline::setNodeVisibility(bool visible)
 
 
 // ----------------------------------------------------------------------------
-void ISpline::addControlPoint(vector3df p)
+u32 ISpline::addControlPoint(vector3df p)
 {
     m_control_points.push_back(newControlPoint(p));
     calculateVelocity();
+
+    return m_cp_num - 1;
+
 } // addControlPoint
 
 // ----------------------------------------------------------------------------
-void ISpline::insertControlPoint(vector3df p)
+u32 ISpline::insertControlPoint(vector3df p)
 {
+    u32 ix = 0;
+    u32 fix = 0;
 
     list<ControlPoint>::Iterator it;
     list<ControlPoint>::Iterator min_index = m_control_points.begin();
@@ -108,7 +113,9 @@ void ISpline::insertControlPoint(vector3df p)
         {
             min_value = it->pos.getDistanceFrom(p);
             min_index = it;
+            fix = ix;
         }
+        ix++;
     }
 
     bool insert_before;
@@ -134,38 +141,44 @@ void ISpline::insertControlPoint(vector3df p)
     } else insert_before = false;
 
     if (insert_before) m_control_points.insert_before(it, newControlPoint(p));
-    else               m_control_points.insert_after(it, newControlPoint(p));
+    else
+    {
+        m_control_points.insert_after(it, newControlPoint(p));
+        fix++;
+    }
 
     calculateVelocity();
-
+    return fix;
 } // insertControlPoint
 
 // ----------------------------------------------------------------------------
-void ISpline::removeLastControlPoint(bool eraseNodes)
+void ISpline::removeControlPoint(u32 ix)
 {
     if (m_cp_num == 0) return;
 
-    if (eraseNodes)
-    {
-        ControlPoint cp = *m_control_points.getLast();
-        cp.normal_node->remove();
-        cp.width_node->remove();
-        cp.node->remove();
-    }
+    list<ControlPoint>::Iterator it = m_control_points.begin();
 
-    m_cp_num--;
-    list<ControlPoint>::Iterator it = m_control_points.getLast();
+    for (int i = 0; i < ix; i++, it++);
+    
+    ControlPoint cp = *it;
+    cp.normal_node->remove();
+    cp.width_node->remove();
+    cp.node->remove();
+
     m_control_points.erase(it);
+    m_cp_num--;
     calculateVelocity();
 
 } // removeLastControlPoint
 
 // ----------------------------------------------------------------------------
-ISceneNode* ISpline::getLastNode()
+ISceneNode* ISpline::getNode(u32 ix)
 {
-    if (m_cp_num>0) return m_control_points.getLast()->node;
-    else return 0;
-} // getLastCPNodes
+    list<ControlPoint>::Iterator it = m_control_points.begin();
+    for (int i = 0; i < ix; i++, it++);
+    return it->node;
+
+} // getNode
 
 // ----------------------------------------------------------------------------
 void ISpline::updatePosition()
