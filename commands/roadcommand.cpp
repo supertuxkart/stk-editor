@@ -8,6 +8,7 @@ RoadCommand::RoadCommand(IRoad* road, bool insert) :m_road(road), m_insert(inser
 {
     m_created = false;
     m_spline  = m_road->getSpline(); 
+    m_cp.node = 0;
 }; // RoadCommand
 
 // ----------------------------------------------------------------------------
@@ -38,8 +39,14 @@ void RoadCommand::updatePos(vector3df pos)
 // ----------------------------------------------------------------------------
 void RoadCommand::redo()
 {
-    if (m_insert) m_spline->insertControlPoint(m_pos);
-    else m_spline->addControlPoint(m_pos);
+    if (m_insert)
+    {
+        m_spline->addControlPoint(m_cp, m_ix);
+    }
+    else
+    {
+        m_spline->addControlPoint(m_cp);
+    }
     m_road->refresh();
     m_created = true;
 }
@@ -47,7 +54,7 @@ void RoadCommand::redo()
 // ----------------------------------------------------------------------------
 void RoadCommand::undo()
 {
-    m_spline->removeControlPoint(m_ix);
+    m_cp = m_spline->removeControlPoint(m_ix);
     m_road->refresh();
     m_created = false;
 }

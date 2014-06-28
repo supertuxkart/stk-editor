@@ -110,11 +110,10 @@ public:
     void          animate(long dt);
     void          setSplineMode(bool b);
     void          setActiveRoad(IRoad* r);
+    void          undo();
+    void          redo();  
 
-    void          setFreeCamera(ICameraSceneNode* cam)   { m_free_camera       = cam; }
-    void          undo()                                 { m_command_handler.undo();  }
-    void          redo()                                 { m_command_handler.redo();  }
-    
+    void          setFreeCamera(ICameraSceneNode* cam)   { m_free_camera       = cam; }      
     bool          getSplineMode()                        { return m_spline_mode;      }
     
     ~Track();

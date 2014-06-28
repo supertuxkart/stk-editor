@@ -40,7 +40,9 @@ public:
     void                setNodeVisibility(bool visible);
     u32                 addControlPoint(vector3df p);
     u32                 insertControlPoint(vector3df p);
-    void                removeControlPoint(u32 ix);
+    void                addControlPoint(ControlPoint cp);
+    void                addControlPoint(ControlPoint cp, u32 pos);
+    ControlPoint        removeControlPoint(u32 ix);
     ISceneNode*         getNode(u32 ix);
     void                updatePosition();
     bool                hasEnoughPoints()   { return m_cp_num > 1; }

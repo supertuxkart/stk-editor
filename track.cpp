@@ -543,6 +543,28 @@ void Track::setActiveRoad(IRoad* r)
         setSplineMode(true);
 } // setActiveRoad
 
+// ----------------------------------------------------------------------------
+void Track::undo()
+{
+    m_command_handler.undo();
+    if (m_spline_mode)
+    {
+        m_active_road->getSpline()->updatePosition();
+        m_active_road->refresh();
+    }
+}
+
+// ----------------------------------------------------------------------------
+
+void Track::redo()
+{
+    m_command_handler.redo();
+    if (m_spline_mode)
+    {
+        m_active_road->getSpline()->updatePosition();
+        m_active_road->refresh();
+    }
+}
 
 // ----------------------------------------------------------------------------
 Track::~Track()

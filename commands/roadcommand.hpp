@@ -2,7 +2,7 @@
 #define ROADCOMMAND_HPP
 
 #include "commands/icommand.hpp"
-
+#include "structs.hpp"
 
 #include <irrlicht.h>
 
@@ -24,6 +24,7 @@ private:
     bool            m_insert;
     bool            m_created;
     u32             m_ix;
+    ControlPoint    m_cp;
 public:
     RoadCommand(IRoad* road, bool insert);
     virtual ~RoadCommand() {};
