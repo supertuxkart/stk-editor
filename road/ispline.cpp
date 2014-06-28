@@ -99,6 +99,14 @@ u32 ISpline::addControlPoint(vector3df p)
 // ----------------------------------------------------------------------------
 u32 ISpline::insertControlPoint(vector3df p)
 {
+
+    if (m_control_points.empty())
+    {
+        m_control_points.push_back(newControlPoint(p));
+        return 0;
+    }
+
+
     u32 ix = 0;
     u32 fix = 0;
 
@@ -124,7 +132,8 @@ u32 ISpline::insertControlPoint(vector3df p)
     if (it == m_control_points.begin())
     {
         // before or after the first point
-        if ((it + 1)->pos.getDistanceFrom(p) > (it)->pos.getDistanceFrom(p))
+        if (m_control_points.size() > 1 
+            && (it + 1)->pos.getDistanceFrom(p) > (it)->pos.getDistanceFrom(p))
             insert_before = true;
         else insert_before = false;
     }
@@ -167,7 +176,7 @@ void ISpline::addControlPoint(ControlPoint cp, u32 pos)
     cp.width_node->setVisible(true);
 
     list<ControlPoint>::Iterator it = m_control_points.begin();
-    for (int i = 0; i < pos; i++, it++);
+    for (u32 i = 0; i < pos; i++, it++);
     m_control_points.insert_before(it,cp);
     m_cp_num++;
 } // addControlPoint
@@ -176,7 +185,7 @@ void ISpline::addControlPoint(ControlPoint cp, u32 pos)
 ControlPoint ISpline::removeControlPoint(u32 ix)
 {
     list<ControlPoint>::Iterator it = m_control_points.begin();
-    for (int i = 0; i < ix; i++, it++);
+    for (u32 i = 0; i < ix; i++, it++);
     
     ControlPoint cp = *it;
     cp.normal_node->setVisible(false);
@@ -195,7 +204,7 @@ ControlPoint ISpline::removeControlPoint(u32 ix)
 ISceneNode* ISpline::getNode(u32 ix)
 {
     list<ControlPoint>::Iterator it = m_control_points.begin();
-    for (int i = 0; i < ix; i++, it++);
+    for (u32 i = 0; i < ix; i++, it++);
     return it->node;
 
 } // getNode

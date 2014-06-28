@@ -54,6 +54,8 @@ private:
     void                  create();
 
 public:
+    void                  removeLastRoad();
+    void                  restoreRoad(IRoad* road, stringw name);
     static RoadPanel*     getRoadPanel(IGUIWindow* wndw = 0);
     void                  btnDown(int btn);
     bool                  isInsertMode() { return m_insert; }

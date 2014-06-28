@@ -39,13 +39,13 @@ public:
     };
     enum Key
     {
-        W_PRESSED,
+        W_PRESSED, // the first has to have id 0
         A_PRESSED,
         S_PRESSED,
         D_PRESSED,
         SPACE_PRESSED,
         CTRL_PRESSED,
-        SHIFT_PRESSED //it has to be the last and the first has to have id 0
+        SHIFT_PRESSED //it has to be the last the first has to have id 0
     };
 
 
@@ -110,10 +110,11 @@ public:
     void          animate(long dt);
     void          setSplineMode(bool b);
     void          setActiveRoad(IRoad* r);
+    void          roadBorn(IRoad* road, stringw name);
     void          undo();
     void          redo();  
 
-    void          setFreeCamera(ICameraSceneNode* cam)   { m_free_camera       = cam; }      
+    void          setFreeCamera(ICameraSceneNode* cam)   { m_free_camera       = cam; }
     bool          getSplineMode()                        { return m_spline_mode;      }
     
     ~Track();

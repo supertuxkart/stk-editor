@@ -10,7 +10,7 @@ RoadPanel* RoadPanel::m_road_panel = 0;
 // ----------------------------------------------------------------------------
 void RoadPanel::init()
 {
-    m_next_road_mesh_ID = 0;
+    m_next_road_mesh_ID = 1;
 
     IGUIEnvironment* gui_env = Editor::getEditor()->getGUIEnv();
     IGUIFont* font = gui_env->getFont(L"font/font1.png");
@@ -45,7 +45,7 @@ void RoadPanel::init()
     m_spline_type_cb->addItem(L"Bezier", 0);
     m_spline_type_cb->addItem(L"Catmull-Rom", 1);
 
-    m_text_field = gui_env->addEditBox(L"RoadMesh_0",rect<s32>(30, 225, 150, 245),true,m_wndw);
+    m_text_field = gui_env->addEditBox(L"RoadMesh_1",rect<s32>(30, 225, 150, 245),true,m_wndw);
 
     gui_env->addButton(rect<s32>(160, 200, 210, 245), m_wndw, DL_CREATE);
 
@@ -83,16 +83,47 @@ void RoadPanel::create()
     m_cb->addItem(m_text_field->getText(),m_next_road_mesh_ID);
     m_cb->setSelected(m_next_road_mesh_ID);
 
-    Track::getTrack()->setActiveRoad(rm);
-    Track::getTrack()->setState(Track::SPLINE);
+    Track::getTrack()->roadBorn(rm, m_text_field->getText());
 
     m_next_road_mesh_ID++;
     stringw s = stringw(m_next_road_mesh_ID);
     m_text_field->setText((stringw("RoadMesh_") + s).c_str());
 
-    m_roads.insert(m_next_road_mesh_ID, rm);
-
+    m_roads.insert(m_next_road_mesh_ID-1, rm);
 } // create
+
+// ----------------------------------------------------------------------------
+void RoadPanel::removeLastRoad()
+{
+    m_cb->removeItem(m_cb->getItemCount() - 1);
+    m_next_road_mesh_ID--;
+    m_roads.remove(m_next_road_mesh_ID);
+    stringw s = stringw(m_next_road_mesh_ID);
+    m_text_field->setText((stringw("RoadMesh_") + s).c_str());
+
+    IRoad* r = m_roads.find(m_next_road_mesh_ID - 1)->getValue();
+    Track::getTrack()->setActiveRoad(r);
+    Track::getTrack()->setState(Track::SPLINE);
+
+    m_cb->setSelected(m_next_road_mesh_ID-1);
+
+} // removeLastRoad
+
+// ----------------------------------------------------------------------------
+void RoadPanel::restoreRoad(IRoad* road, stringw name)
+{
+    m_cb->addItem(name.c_str(), m_next_road_mesh_ID);
+    m_cb->setSelected(m_next_road_mesh_ID);
+
+    m_roads.insert(m_next_road_mesh_ID, road);
+
+    Track::getTrack()->setActiveRoad(road);
+    Track::getTrack()->setState(Track::SPLINE);
+
+    m_next_road_mesh_ID++;
+    stringw s = stringw(m_next_road_mesh_ID);
+    m_text_field->setText((stringw("RoadMesh_") + s).c_str());
+}  // restoreRoad
 
 // ----------------------------------------------------------------------------
 RoadPanel* RoadPanel::getRoadPanel(IGUIWindow* wndw)

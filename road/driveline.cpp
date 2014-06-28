@@ -15,7 +15,6 @@ void DriveLine::refresh()
         m_mesh.indices = 0;
     }
 
-    int a = m_spline->getPointNum();
     if (!m_spline->hasEnoughPoints()) return;
 
     int spn = m_spline->getPointNum() - 1;

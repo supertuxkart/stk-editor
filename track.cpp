@@ -7,6 +7,7 @@
 #include "commands/heightmodcmd.hpp"
 #include "commands/texmodcmd.hpp"
 #include "commands/roadcommand.hpp"
+#include "commands/rccommand.hpp"
 
 #include <assert.h>
 #include <iostream>
@@ -244,9 +245,12 @@ void Track::animateSplineEditing()
 
     if (m_mouse.rightPressed())
     {
-        if (m_active_cmd) m_active_cmd->undo();
-        delete m_active_cmd;
-        m_active_cmd = 0;
+        if (m_active_cmd)
+        {
+            m_active_cmd->undo();
+            delete m_active_cmd;
+            m_active_cmd = 0;
+        }
         setState(SELECT);
     }
 
@@ -544,6 +548,20 @@ void Track::setActiveRoad(IRoad* r)
 } // setActiveRoad
 
 // ----------------------------------------------------------------------------
+void Track::roadBorn(IRoad* road, stringw name)
+{
+    if (m_active_cmd)
+    {
+        m_active_cmd->undo();
+        delete m_active_cmd;
+        m_active_cmd = 0;
+    }
+    m_command_handler.add(new RCCommand(road, name));
+    m_active_road = road;
+    setState(SPLINE);
+} // roadBorn
+
+// ----------------------------------------------------------------------------
 void Track::undo()
 {
     m_command_handler.undo();
@@ -552,7 +570,7 @@ void Track::undo()
         m_active_road->getSpline()->updatePosition();
         m_active_road->refresh();
     }
-}
+} // undo
 
 // ----------------------------------------------------------------------------
 
@@ -564,7 +582,7 @@ void Track::redo()
         m_active_road->getSpline()->updatePosition();
         m_active_road->refresh();
     }
-}
+} // redo
 
 // ----------------------------------------------------------------------------
 Track::~Track()
