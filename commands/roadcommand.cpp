@@ -38,7 +38,8 @@ void RoadCommand::updatePos(vector3df pos)
 // ----------------------------------------------------------------------------
 void RoadCommand::redo()
 {
-    m_spline->addControlPoint(m_pos);
+    if (m_insert) m_spline->insertControlPoint(m_pos);
+    else m_spline->addControlPoint(m_pos);
     m_road->refresh();
     m_created = true;
 }
