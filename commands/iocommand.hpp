@@ -11,7 +11,7 @@ using namespace scene;
 using namespace core;
 
 // ----------------------------------------------------------------------------
-class IOCommand :ICommand
+class IOCommand :public ICommand
 {
 protected:
     std::list<ISceneNode*> m_elements;

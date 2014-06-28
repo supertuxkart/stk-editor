@@ -12,6 +12,8 @@
 #include "road/road.hpp"
 #include "road/driveline.hpp"
 
+#include "mouse.hpp"
+
 #include <irrlicht.h>
 
 class Entity;
@@ -46,43 +48,6 @@ public:
         SHIFT_PRESSED //it has to be the last and the first has to have id 0
     };
 
-    struct MouseData
-    {
-        bool                    in_view;
-        f32                     wheel;
-        bool                    left_btn_down;
-        bool                    right_btn_down;
-
-        bool                    left_pressed;
-        bool                    right_pressed;
-
-        bool                    left_released;
-        bool                    right_released;
-
-        s32                     x;
-        s32                     y;
-        s32                     prev_x;
-        s32                     prev_y;
-
-        MouseData();
-
-        void setStorePoint()    { prev_x = x; prev_y = y;                                       }
-        s32 dx()                { return x - prev_x; }
-        s32 dy()                { return y - prev_y; }
-
-        // return value is true if left mouse button was pressed down after the last call
-        bool leftPressed()        { bool b = left_pressed;    left_pressed = false; return b;   }
-
-        // return value is true if right mouse button was pressed down after the last call
-        bool rightPressed()       { bool b = right_pressed;   right_pressed = false; return b;  }
-
-        // return value is true if left mouse button was released after the last call
-        bool leftReleased()       { bool b = left_released;  left_released = false; return b;  }
-
-        // return value is true if right mouse button was released after the last call
-        bool rightReleased()      { bool b = right_released; right_released = false; return b; }
-
-    };
 
 private:
     static Track*           m_track;
@@ -105,15 +70,17 @@ private:
     bool                    m_spline_mode;
 
     IRoad*                  m_active_road;
+    ISceneNode*             m_junk_node;
+
 
     // command not yet finished
-    IOCommand*              m_active_obj_cmd;
-    ITCommand*              m_active_terr_cmd;
+    ICommand*               m_active_cmd;
 
     // camera used for editing
     // position has to be uploaded manually
     ICameraSceneNode*   m_normal_camera;
     float               m_normal_cd;
+    ISceneNode*         m_indi;
 
     ICameraSceneNode*   m_free_camera;
 

@@ -15,7 +15,7 @@ struct TerrainChange;
 class Terrain;
 
 // ----------------------------------------------------------------------------
-class ITCommand :ICommand
+class ITCommand :public ICommand
 {
 protected:
 

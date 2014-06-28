@@ -13,27 +13,6 @@ Track* Track::m_track          = 0;
 int    Track::m_last_entity_ID = MAGIC_NUMBER;
 
 // ----------------------------------------------------------------------------
-Track::MouseData::MouseData()
-{
-    in_view = false;
-
-    wheel = 0;
-    left_btn_down = false;
-    right_btn_down = false;
-
-    left_pressed = false;
-    right_pressed = false;
-
-    left_released = false;
-    right_released = false;
-
-    x = 0;
-    y = 0;
-    prev_x = 0;
-    prev_y = 0;
-} // MouseData
-
-// ----------------------------------------------------------------------------
 void Track::animateNormalCamera(f32 dt)
 {    
     if (m_key_state[W_PRESSED] ^ m_key_state[S_PRESSED])
@@ -81,7 +60,7 @@ void Track::animateNormalCamera(f32 dt)
         m_mouse.wheel = 0;
     }
 
-    if (m_key_state[SPACE_PRESSED] && m_active_obj_cmd==0)
+    if (m_key_state[SPACE_PRESSED] && m_active_cmd==0)
     {
         if (m_mouse.left_btn_down)
         {
@@ -112,8 +91,10 @@ void Track::animateEditing()
     if (m_spline_mode && m_entity_manager.getSelection().size() == 0)
         m_entity_manager.selectNode(m_active_road->getSpline());
 
-    if (m_active_obj_cmd)
+    if (m_active_cmd)
     {
+        IOCommand* m_active_obj_cmd = dynamic_cast<IOCommand*>(m_active_cmd);
+
         if (m_mouse.left_btn_down)
         {
             m_active_obj_cmd->undo();
@@ -155,8 +136,8 @@ void Track::animateEditing()
     if (m_mouse.leftReleased() || m_mouse.rightReleased())
     {
         // operation finished - if there was any
-        if (m_active_obj_cmd != 0) m_command_handler.add((ICommand*)m_active_obj_cmd);
-        m_active_obj_cmd = 0;
+        if (m_active_cmd != 0) m_command_handler.add(m_active_cmd);
+        m_active_cmd = 0;
     }
 
     if ((m_mouse.leftPressed() || m_mouse.rightPressed()) && !m_key_state[SPACE_PRESSED])
@@ -165,15 +146,15 @@ void Track::animateEditing()
         switch (m_state)
         {
         case MOVE:
-            m_active_obj_cmd = new MoveCmd(m_entity_manager.getSelection(),
+            m_active_cmd = new MoveCmd(m_entity_manager.getSelection(),
                                        m_key_state[SHIFT_PRESSED]);
             break;
         case ROTATE:
-            m_active_obj_cmd = new RotateCmd(m_entity_manager.getSelection(),
+            m_active_cmd = new RotateCmd(m_entity_manager.getSelection(),
                                          m_key_state[SHIFT_PRESSED]);
             break;
         case SCALE:
-            m_active_obj_cmd = new ScaleCmd(m_entity_manager.getSelection(),
+            m_active_cmd = new ScaleCmd(m_entity_manager.getSelection(),
                                         m_key_state[SHIFT_PRESSED]);
             break;
         default:
@@ -240,19 +221,13 @@ void Track::animateSplineEditing()
         ->getSceneCollisionManager();
     line3d<f32> r = cm->getRayFromScreenCoordinates(vector2d<s32>(m_mouse.x, m_mouse.y));
 
-    m_new_entity->setPosition(vector3df(0, 0, 0));
-    m_new_entity->updateAbsolutePosition();
-    vector3df p = m_terrain->placeBBtoGround(m_new_entity->getTransformedBoundingBox(), r);
+    m_junk_node->setPosition(vector3df(0, 0, 0));
+    m_junk_node->updateAbsolutePosition();
+    vector3df p = m_terrain->placeBBtoGround(m_junk_node->getTransformedBoundingBox(), r);
     p.Y += 1.0;
 
-    ISceneNode* is = m_active_road->getSpline()->getLastNode();
-    if (is)
-    {
-        is->setPosition(p);
-        is->updateAbsolutePosition();
-        m_active_road->getSpline()->updatePosition();
-        m_active_road->refresh();
-    }
+    
+
     if (m_mouse.leftPressed() && !m_key_state[SPACE_PRESSED])
     {
         m_active_road->getSpline()->addControlPoint(p);
@@ -260,7 +235,7 @@ void Track::animateSplineEditing()
         m_active_road->refresh();
     } // m_mouse.leftPressed()
 
-} // animatePlacing
+} // animateSplineEditing
 
 // ----------------------------------------------------------------------------
 void Track::animateTerrainMod(long dt)
@@ -284,13 +259,12 @@ void Track::animateTerrainMod(long dt)
         switch (tm->type)
         {
         case HEIGHT_MOD:
-            m_active_terr_cmd = 
-                new HeightModCmd(m_terrain,m_terrain->m_nx, m_terrain->m_nz);
-            tm->cmd = m_active_terr_cmd;
+            tm->cmd = new HeightModCmd(m_terrain,m_terrain->m_nx, m_terrain->m_nz);
+            m_active_cmd = tm->cmd;
             break;
         default:
-            m_active_terr_cmd = new TexModCmd(m_terrain);
-            tm->cmd = m_active_terr_cmd;
+            tm->cmd = new TexModCmd(m_terrain);
+            m_active_cmd = tm->cmd;
             break;
         }
     }
@@ -299,18 +273,18 @@ void Track::animateTerrainMod(long dt)
     {
         tm->countdown = -1;
         // operation finished - if there was any
-        if (m_active_terr_cmd != 0)
+        if (m_active_cmd != 0)
         {
-            m_active_terr_cmd->finish();
-            m_command_handler.add((ICommand*)m_active_terr_cmd);
+            (dynamic_cast<ITCommand*>(m_active_cmd))->finish();
+            m_command_handler.add(m_active_cmd);
         }
-        m_active_terr_cmd = 0;
+        m_active_cmd = 0;
     }
 
     tm->countdown -= dt;
     if (tm->countdown > 0) return;
 
-    if (m_active_terr_cmd && (m_mouse.left_btn_down || m_mouse.right_btn_down))
+    if (m_active_cmd && (m_mouse.left_btn_down || m_mouse.right_btn_down))
     {
         tm->countdown = TERRAIN_WAIT_TIME;
         if (m_mouse.right_btn_down) tm->left_click = false;
@@ -333,9 +307,6 @@ void Track::leaveState()
         m_new_entity = 0;
         return;
     case SPLINE:
-        m_active_road->getSpline()->removeLastControlPoint(true);
-        m_new_entity = 0;
-        m_active_road->refresh();
         return;
     case FREECAM:
         m_free_camera->setInputReceiverEnabled(false);
@@ -366,8 +337,7 @@ Track* Track::getTrack(ICameraSceneNode* cam)
 void Track::init(ICameraSceneNode* cam)
 {
     m_normal_camera   = cam;
-    m_active_obj_cmd  = 0;
-    m_active_terr_cmd = 0;
+    m_active_cmd  = 0;
     m_active_road     = 0;
     m_state           = SELECT;
     m_spline_mode     = false;
@@ -378,14 +348,18 @@ void Track::init(ICameraSceneNode* cam)
 
     m_terrain = new Terrain(sm->getRootSceneNode(), sm, 1, 50, 50, 100, 100);
     
+    m_junk_node = sm->addSphereSceneNode(3);
+    m_junk_node->setVisible(false);
 
     dimension2du ss = Editor::getEditor()->getScreenSize();
     matrix4 mat;
 
-    m_normal_cd = 100.0f;
+    m_normal_cd = 50.0f;
     mat.buildProjectionMatrixOrthoLH(m_normal_cd, m_normal_cd * ss.Height / ss.Width,
         m_normal_camera->getNearValue(), m_normal_camera->getFarValue());
     m_normal_camera->setProjectionMatrix(mat,true);
+
+    m_indi = sm->addAnimatedMeshSceneNode(sm->getMesh(L"libraries/env/model/horse.b3d"),m_normal_camera);
 
 } // init
 
@@ -472,38 +446,7 @@ void Track::mouseEvent(const SEvent& e)
     if (m_new_entity && !m_new_entity->isVisible())
         m_new_entity->setVisible(true);
 
-    switch (e.MouseInput.Event)
-    {
-    case EMIE_MOUSE_WHEEL:
-        m_mouse.wheel += e.MouseInput.Wheel;
-        break;
-    case EMIE_LMOUSE_PRESSED_DOWN:
-        m_mouse.left_btn_down = true;
-        m_mouse.left_pressed = true;
-        m_mouse.left_released = false;
-        break;
-    case EMIE_LMOUSE_LEFT_UP:
-        m_mouse.left_btn_down = false;
-        m_mouse.left_pressed = false;
-        m_mouse.left_released = true;
-        break;
-    case EMIE_RMOUSE_PRESSED_DOWN:
-        m_mouse.right_btn_down = true;
-        m_mouse.right_pressed = true;
-        m_mouse.right_released = false;
-        break;
-    case EMIE_RMOUSE_LEFT_UP:
-        m_mouse.right_btn_down = false;
-        m_mouse.right_pressed = false;
-        m_mouse.right_released = true;
-        break;
-    case EMIE_MOUSE_MOVED:
-        m_mouse.x = e.MouseInput.X;
-        m_mouse.y = e.MouseInput.Y;
-        break;
-    default:
-        break;
-    }
+    m_mouse.refresh(e);
 
 } // mouseEvent
 
@@ -595,6 +538,8 @@ void Track::setActiveRoad(IRoad* r)
 // ----------------------------------------------------------------------------
 Track::~Track()
 {
-    if (m_active_obj_cmd) delete m_active_obj_cmd;
+    if (m_active_cmd) delete m_active_cmd;
     if (m_terrain)    delete m_terrain;
 }
+
+
