@@ -7,6 +7,22 @@ HDR = $(wildcard *.hpp)
 # Irr paths will depend on your system.
 IRR_INCLUDE ?= /opt/irr2/include/irrlicht
 IRR_LIB ?= /opt/irr2/lib/libIrrlicht.a
+
+ifeq (,$(wildcard $(IRR_INCLUDE)))
+	IRR_INCLUDE = /usr/local/include/irrlicht
+endif
+ifeq (,$(wildcard $(IRR_INCLUDE)))
+	IRR_INCLUDE = /usr/include/irrlicht
+endif
+ifeq (,$(wildcard $(IRR_INCLUDE)))
+$(error Irr includes not found. Set the IRR_INCLUDE env var correctly)
+endif
+
+ifeq (,$(wildcard $(IRR_LIB)))
+	IRR_LIB = -lIrrlicht
+$(warning Attempting to link irrlicht dynamically)
+endif
+
 CXXFLAGS += -isystem $(IRR_INCLUDE) -I.
 LDFLAGS += $(IRR_LIB)
 
