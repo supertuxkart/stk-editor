@@ -92,7 +92,7 @@ void TexModCmd::undo()
     u8 tmp;
     for (u32 i = 0; i < m_mod_count; i++)
     {
-        tmp = *((u8*)((int)m_mod[i].first + img));
+        tmp = *((u8*)((intptr_t)m_mod[i].first + img));
         *((u8*)((int)m_mod[i].first + img)) = m_mod[i].second;
         m_mod[i].second = tmp;
     }
