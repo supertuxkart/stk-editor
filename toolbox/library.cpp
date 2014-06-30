@@ -24,7 +24,7 @@ Library::Library(stringw name, unsigned int buffer_size)
         std::cerr << "The data library could not be found. "
                       "Later it will be included in STK media repo, "
                       "but for now you need to download it separately. "
-                      "Did you read the README ?\n";
+                      "Did you read the README?\n";
         exit(-1);
     }
 
