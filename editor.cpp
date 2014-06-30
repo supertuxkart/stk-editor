@@ -9,6 +9,7 @@
 #include "toolbox/terrpanel.hpp"
 #include "toolbox/roadpanel.hpp"
 
+#include <sstream>
 #include <iostream>
 
 Editor* Editor::m_editor = 0;
@@ -340,3 +341,21 @@ ITexture* Editor::loadImg(const stringw& file_path)
 {
     return m_editor->m_video_driver->getTexture(file_path);
 } // loadImg
+
+// ----------------------------------------------------------------------------
+stringw Editor::strwFromVec(vector3df v)
+{
+    std::ostringstream ss;
+    ss << v.X << " " << v.Y << " " << v.Z;
+    stringw sw = ss.str().c_str();
+    return sw;
+} // strwFromVec
+
+// ----------------------------------------------------------------------------
+stringw Editor::strwFromU32(u32 u)
+{
+    std::ostringstream ss;
+    ss << u;
+    stringw sw = ss.str().c_str();
+    return sw;
+} // strwFromVec

@@ -45,6 +45,8 @@ public:
 	virtual bool      OnEvent(const SEvent& event);
 
     static ITexture*  loadImg(const stringw& file_path);
+    static stringw    strwFromVec(vector3df v);
+    static stringw    strwFromU32(u32 u);
 
     IrrlichtDevice*   getDevice()       { return m_device;        }
     IVideoDriver*     getVideoDriver()  { return m_video_driver;  }
