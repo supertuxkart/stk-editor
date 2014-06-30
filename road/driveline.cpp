@@ -80,7 +80,7 @@ void DriveLine::refresh()
 // ----------------------------------------------------------------------------
 void DriveLine::exprt()
 {
-    if (m_spline->getPointNum() > 10) return;
+    if (m_spline->getPointNum() < 10) return;
 
     IrrlichtDevice* device = Editor::getEditor()->getDevice();
     IXMLWriter* xwriter;
@@ -150,12 +150,27 @@ void DriveLine::exprt()
         last_point = point;
         j++;
     }
-
-
     xwriter->writeClosingTag(L"quad");
     xwriter->writeLineBreak();
-
     xwriter->drop();
+
+    xwriter = device->getFileSystem()->createXMLWriter(path("export/graph.xml"));
+
+    //graph.xml
+
+    xwriter->writeElement(L"graph");
+    xwriter->writeLineBreak();
+
+    xwriter->writeElement(L"node-list", true, L"from-quad", L"0", L"to-quad", 
+                          Editor::strwFromU32(m_mesh.quad_count-1).c_str());
+    xwriter->writeLineBreak();
+    xwriter->writeElement(L"edge-loop", true, L"from", L"0", L"to",
+                          Editor::strwFromU32(m_mesh.quad_count-1).c_str());
+
+    xwriter->writeLineBreak();
+    xwriter->writeClosingTag(L"graph");
+    xwriter->drop();
+
 }
 
 // ----------------------------------------------------------------------------
