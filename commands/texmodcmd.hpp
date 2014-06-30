@@ -16,9 +16,9 @@ class TexModCmd :public ITCommand
 private:
     u32                     m_mod_count;
     u8*                     m_tmp_values;
-    u8**                    m_tmp_address;
+    u32*                    m_tmp_address;
     bool*                   m_tmp_dirty;
-    std::pair<u8*,u8>*      m_mod;
+    std::pair<u32,u8>*      m_mod;
 public:
 
     TexModCmd(Terrain* t);

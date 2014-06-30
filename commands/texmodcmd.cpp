@@ -11,7 +11,7 @@ TexModCmd::TexModCmd(Terrain* t) :ITCommand(t)
 {
     m_mod_count   = 0;
     m_mod         = 0;
-    m_tmp_address = new u8*[Terrain::SPIMG_X * Terrain::SPIMG_Y];
+    m_tmp_address = new u32[Terrain::SPIMG_X * Terrain::SPIMG_Y];
     m_tmp_values  = new u8[Terrain::SPIMG_X * Terrain::SPIMG_Y * 4];
     m_tmp_dirty   = new bool[Terrain::SPIMG_X * Terrain::SPIMG_Y * 4];
 
@@ -47,8 +47,8 @@ void TexModCmd::addVertex(TerrainChange* tc)
             m_mod_count++;
         }
 
-    m_tmp_address[Terrain::SPIMG_X*tc->z + tc->x] = (u8*)
-        (&tc->img[Terrain::SPIMG_X*tc->z*4  + tc->x *4] - tc->img);
+    m_tmp_address[Terrain::SPIMG_X*tc->z + tc->x] =
+        ((u64)&tc->img[Terrain::SPIMG_X*tc->z * 4 + tc->x * 4] - (u64)tc->img);
 }  // addVertex
 
 // ----------------------------------------------------------------------------
@@ -56,16 +56,16 @@ void TexModCmd::finish()
 {
     assert(!m_finished);
 
-    m_mod = new std::pair<u8*, u8>[m_mod_count];
+    m_mod = new std::pair<u32, u8>[m_mod_count];
     u32 ix = 0;
     for (u32 j = 0; j < Terrain::SPIMG_Y; j++)
         for (u32 i = 0; i < Terrain::SPIMG_X; i++)
             for (u32 k = 0; k < 4; k++)
             if (m_tmp_dirty[Terrain::SPIMG_X*j*4 + 4*i + k])
             {
-                u8* u = m_tmp_address[Terrain::SPIMG_X*j + i] + k;
+                u32 u = m_tmp_address[Terrain::SPIMG_X*j + i] + k * sizeof(u8);
                 u8 s = m_tmp_values[Terrain::SPIMG_X * j * 4 + i * 4 + k];
-                m_mod[ix] = std::pair<u8*, u8>(u, s);
+                m_mod[ix] = std::pair<u32, u8>(u, s);
                 ix++;
             }
 
@@ -90,8 +90,8 @@ void TexModCmd::undo()
     u8 tmp;
     for (u32 i = 0; i < m_mod_count; i++)
     {
-        tmp = *((u8*)((intptr_t)m_mod[i].first + img));
-        *((u8*)((intptr_t)m_mod[i].first + img)) = m_mod[i].second;
+        tmp = *((u8*)(m_mod[i].first + (u64)img));
+        *((u8*)(m_mod[i].first + (u64)img)) = m_mod[i].second;
         m_mod[i].second = tmp;
     }
 
