@@ -11,6 +11,7 @@ public:
         :IRoad(parent, mgr, id, s) {};
 
     void    refresh();
+    void    exprt();
 
     void    render();
 };
