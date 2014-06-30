@@ -32,6 +32,8 @@ void Track::animateNormalCamera(f32 dt)
         
         tar += transformed_z_dir * sgn * dt / 20.0f;
         m_normal_camera->setTarget(tar);
+        
+        m_indicator->updatePos(pos, tar);
     };
 
     if (m_key_state[A_PRESSED] ^ m_key_state[D_PRESSED])
@@ -49,6 +51,8 @@ void Track::animateNormalCamera(f32 dt)
 
         tar += transformed_z_dir * sgn * dt / 20.0f;
         m_normal_camera->setTarget(tar);
+
+        m_indicator->updatePos(pos, tar);
     };
     
     if (m_mouse.wheel != 0)
@@ -57,10 +61,16 @@ void Track::animateNormalCamera(f32 dt)
         m_normal_cd -= m_mouse.wheel * 10.0f;
         if (m_normal_cd < 5) m_normal_cd = 5;
         matrix4 mat;
-        mat.buildProjectionMatrixOrthoLH(m_normal_cd, m_normal_cd * ss.Height / ss.Width,
-            m_normal_camera->getNearValue(), m_normal_camera->getFarValue());
+
+        f32 nv   = m_normal_camera->getNearValue();
+        f32 fv   = m_normal_camera->getFarValue();
+        f32 hVol = m_normal_cd * ss.Height / ss.Width;
+
+        mat.buildProjectionMatrixOrthoLH(m_normal_cd, hVol, nv, fv);
         m_normal_camera->setProjectionMatrix(mat, true);        
         m_mouse.wheel = 0;
+
+        m_indicator->setProjMat(m_normal_cd, hVol, nv, fv);
     }
 
     if (m_key_state[SPACE_PRESSED] && m_active_cmd==0)
@@ -70,6 +80,7 @@ void Track::animateNormalCamera(f32 dt)
             vector3df tar = m_normal_camera->getTarget();
             tar.rotateXZBy(m_mouse.dx() / 5.0f, m_normal_camera->getPosition());
             m_normal_camera->setTarget(tar);
+            m_indicator->updateTar(tar);
         }
 
         if (m_mouse.right_btn_down)
@@ -80,6 +91,7 @@ void Track::animateNormalCamera(f32 dt)
             transformed_z_dir.normalize();
             tar += transformed_z_dir * (f32) m_mouse.dy();
             m_normal_camera->setTarget(tar);
+            m_indicator->updateTar(tar);
         }
 
         m_mouse.setStorePoint();
@@ -373,13 +385,19 @@ void Track::init(ICameraSceneNode* cam)
 
     dimension2du ss = Editor::getEditor()->getScreenSize();
     matrix4 mat;
-
     m_normal_cd = 50.0f;
-    mat.buildProjectionMatrixOrthoLH(m_normal_cd, m_normal_cd * ss.Height / ss.Width,
-        m_normal_camera->getNearValue(), m_normal_camera->getFarValue());
+
+    f32 nv = m_normal_camera->getNearValue();
+    f32 fv = m_normal_camera->getFarValue();
+    f32 hVol = m_normal_cd * ss.Height / ss.Width;
+
+    mat.buildProjectionMatrixOrthoLH(m_normal_cd, hVol,nv,fv);
+
     m_normal_camera->setProjectionMatrix(mat,true);
 
-    m_indi = sm->addAnimatedMeshSceneNode(sm->getMesh(L"libraries/env/model/horse.b3d"),m_normal_camera);
+    m_indicator = new Indicator(m_normal_camera->getPosition(), 
+                                m_normal_camera->getTarget(),
+                                m_normal_cd, hVol, nv, fv);
 
 } // init
 

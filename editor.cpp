@@ -1,11 +1,13 @@
 #include "editor.hpp"
 
+#include "track.hpp"
+#include "indicator.hpp"
 #include "toolbar.hpp"
+
 #include "toolbox/toolbox.hpp"
 #include "toolbox/envpanel.hpp"
 #include "toolbox/terrpanel.hpp"
 #include "toolbox/roadpanel.hpp"
-#include "track.hpp"
 
 #include <iostream>
 
@@ -170,6 +172,8 @@ bool Editor::init()
     m_scene_manager->setActiveCamera(norm_cam);
     m_device->setEventReceiver(this);
 
+    m_indicator = m_track->getIndicator();
+
     return true;
 } // init
 
@@ -204,8 +208,15 @@ bool Editor::run()
 		// drawing
 		m_video_driver->beginScene(true, true, SColor(255, 80, 0, 170));
 
+        m_indicator->render();
+
 		m_scene_manager->drawAll();
 		m_gui_env->drawAll();
+
+        m_video_driver->draw2DImage(m_indicator->getTexture(), 
+            position2d<s32>(0, m_screen_size.Height - 300), rect<s32>(0, 0, 300, 300), (rect<s32>*)0,
+            SColor(255, 255, 255, 255),true);
+
 
 		m_video_driver->endScene();
 

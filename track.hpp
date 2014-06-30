@@ -1,12 +1,15 @@
 #ifndef TRACK_HPP
 #define TRACK_HPP
 
+#include "indicator.hpp"
+
 #include "commands/commandhandler.hpp"
 #include "commands/iocommand.hpp"
 #include "commands/itcommand.hpp"
 
 #include "entities/entitymanager.hpp"
 #include "entities/terrain.hpp"
+
 #include "road/bezier.hpp"
 #include "road/tcr.hpp"
 #include "road/road.hpp"
@@ -76,28 +79,31 @@ private:
     // command not yet finished
     ICommand*               m_active_cmd;
 
+
+    Indicator*              m_indicator;
+
     // camera used for editing
     // position has to be uploaded manually
-    ICameraSceneNode*   m_normal_camera;
-    float               m_normal_cd;
-    ISceneNode*         m_indi;
+    ICameraSceneNode*       m_normal_camera;
 
-    ICameraSceneNode*   m_free_camera;
+    float                   m_normal_cd;
 
-    bool                m_key_state[m_key_num];
+    ICameraSceneNode*       m_free_camera;
 
-    static const long   TERRAIN_WAIT_TIME = 50;
+    bool                    m_key_state[m_key_num];
+
+    static const long       TERRAIN_WAIT_TIME = 50;
 
     Track() {};
-    void                animateNormalCamera(float dt);
+    void                    animateNormalCamera(float dt);
 
-    void                animateEditing();
-    void                animateSelection();
-    void                animatePlacing();
-    void                animateSplineEditing();
-    void                animateTerrainMod(long dt);
+    void                    animateEditing();
+    void                    animateSelection();
+    void                    animatePlacing();
+    void                    animateSplineEditing();
+    void                    animateTerrainMod(long dt);
 
-    void                leaveState();
+    void                    leaveState();
 
 public:
     static Track* getTrack(ICameraSceneNode* cam = 0);
@@ -116,6 +122,8 @@ public:
 
     void          setFreeCamera(ICameraSceneNode* cam)   { m_free_camera       = cam; }
     bool          getSplineMode()                        { return m_spline_mode;      }
+
+    Indicator*    getIndicator()                         { return m_indicator;        }
     
     ~Track();
 
