@@ -105,6 +105,9 @@ private:
 
     void                    leaveState();
 
+    vector3df               getTransformedXdir();
+    vector3df               getTransformedZdir();
+
 public:
     static Track* getTrack(ICameraSceneNode* cam = 0);
     void          init(ICameraSceneNode* cam);

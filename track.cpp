@@ -23,9 +23,7 @@ void Track::animateNormalCamera(f32 dt)
         float sgn = (m_key_state[S_PRESSED]) ? 1.0f : -1.0f;
         vector3df pos = m_normal_camera->getPosition();
         vector3df tar = m_normal_camera->getTarget();
-
-        vector3df transformed_z_dir = vector3df(pos.X - tar.X, 0, pos.Z - tar.Z);
-        transformed_z_dir.normalize();
+        vector3df transformed_z_dir = getTransformedZdir();
 
         pos += transformed_z_dir * sgn * dt / 20.0f;
         m_normal_camera->setPosition(pos);
@@ -41,15 +39,12 @@ void Track::animateNormalCamera(f32 dt)
         float sgn = (m_key_state[D_PRESSED]) ? 1.0f : -1.0f;
         vector3df pos = m_normal_camera->getPosition();
         vector3df tar = m_normal_camera->getTarget();
+        vector3df transformed_x_dir = getTransformedXdir();
 
-        vector3df transformed_z_dir = vector3df(pos.X - tar.X, 0, pos.Z - tar.Z);
-        transformed_z_dir.rotateXZBy(90);
-        transformed_z_dir.normalize();
-
-        pos += transformed_z_dir * sgn * dt / 20.0f;
+        pos += transformed_x_dir * sgn * dt / 20.0f;
         m_normal_camera->setPosition(pos);
 
-        tar += transformed_z_dir * sgn * dt / 20.0f;
+        tar += transformed_x_dir * sgn * dt / 20.0f;
         m_normal_camera->setTarget(tar);
 
         m_indicator->updatePos(pos, tar);
@@ -59,7 +54,7 @@ void Track::animateNormalCamera(f32 dt)
     {
         dimension2du ss = Editor::getEditor()->getScreenSize();
         m_normal_cd -= m_mouse.wheel * 10.0f;
-        if (m_normal_cd < 5) m_normal_cd = 5;
+        if (m_normal_cd < 8) m_normal_cd = 10;
         matrix4 mat;
 
         f32 nv   = m_normal_camera->getNearValue();
@@ -113,7 +108,9 @@ void Track::animateEditing()
         if (m_mouse.left_btn_down)
         {
             m_active_obj_cmd->undo();
-            m_active_obj_cmd->update((float)-m_mouse.dx(), 0.0f, (float)m_mouse.dy());
+            vector3df v = getTransformedXdir() * m_mouse.dx() + 
+                          getTransformedZdir() * m_mouse.dy();
+            m_active_obj_cmd->update(v.X,v.Y,v.Z);
             m_active_obj_cmd->redo();
             if (m_spline_mode)
             {
@@ -141,7 +138,7 @@ void Track::animateEditing()
             // cancel operation
             m_active_obj_cmd->undo();
             delete m_active_obj_cmd;
-            m_active_obj_cmd = 0;
+            m_active_cmd = 0;
             m_active_road->getSpline()->updatePosition();
             m_active_road->refresh();
             return;
@@ -353,6 +350,26 @@ void Track::leaveState()
 
 
 } // leaveState
+
+// ----------------------------------------------------------------------------
+vector3df Track::getTransformedXdir()
+{
+    vector3df transformed_z_dir = getTransformedZdir();
+    transformed_z_dir.rotateXZBy(90);
+
+    return transformed_z_dir;
+
+} // getTransformedXdir
+
+// ----------------------------------------------------------------------------
+vector3df Track::getTransformedZdir()
+{
+    vector3df pos = m_normal_camera->getPosition();
+    vector3df tar = m_normal_camera->getTarget();
+    vector3df transformed_z_dir = vector3df(pos.X - tar.X, 0, pos.Z - tar.Z);
+    transformed_z_dir.normalize();
+    return transformed_z_dir;
+} // getTransformedZdir
 
 // ----------------------------------------------------------------------------
 Track* Track::getTrack(ICameraSceneNode* cam)
