@@ -20,6 +20,8 @@ IRoad::IRoad(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s)
     m_material.Lighting        = false;
     m_material.BackfaceCulling = false;
 
+    setAutomaticCulling(EAC_OFF);
+
 } // Road
 
 // ----------------------------------------------------------------------------

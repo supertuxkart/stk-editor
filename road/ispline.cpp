@@ -74,6 +74,7 @@ ControlPoint ISpline::newControlPoint(vector3df p)
 ISpline::ISpline(ISceneNode* parent, ISceneManager* mgr, s32 id)
                                                     :ISceneNode(parent, mgr, id)
 {
+    setAutomaticCulling(EAC_OFF);
     m_cp_num = 0;
 } // ISpline
 
