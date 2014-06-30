@@ -47,8 +47,8 @@ void TexModCmd::addVertex(TerrainChange* tc)
             m_mod_count++;
         }
 
-    m_tmp_address[Terrain::SPIMG_X*tc->z + tc->x] =
-        &tc->img[Terrain::SPIMG_X*tc->z*4  + tc->x *4];
+    m_tmp_address[Terrain::SPIMG_X*tc->z + tc->x] = (u8*)
+        (&tc->img[Terrain::SPIMG_X*tc->z*4  + tc->x *4] - tc->img);
 }  // addVertex
 
 // ----------------------------------------------------------------------------
@@ -57,7 +57,6 @@ void TexModCmd::finish()
     assert(!m_finished);
 
     ITexture* tex = m_terrain->getMaterial(0).getTexture(0);
-    tex->lock(ETLM_READ_WRITE);
 
     m_mod = new std::pair<u8*, u8>[m_mod_count];
     u32 ix = 0;
@@ -79,8 +78,6 @@ void TexModCmd::finish()
     delete[] m_tmp_dirty;
     m_tmp_dirty = 0;
 
-    tex->unlock();
-
     m_finished = true;
 }  // finish
 
@@ -89,19 +86,18 @@ void TexModCmd::finish()
 void TexModCmd::undo()
 {
     ITexture* tex = m_terrain->getMaterial(0).getTexture(0);
-    tex->lock(ETLM_READ_WRITE);
+    u8* img;
+    img = (u8*) tex->lock(ETLM_READ_WRITE);
 
     u8 tmp;
     for (u32 i = 0; i < m_mod_count; i++)
     {
-        tmp = *m_mod[i].first;
-        *m_mod[i].first = m_mod[i].second;
+        tmp = *((u8*)((int)m_mod[i].first + img));
+        *((u8*)((int)m_mod[i].first + img)) = m_mod[i].second;
         m_mod[i].second = tmp;
     }
 
     tex->unlock();
-
-
 } // undo
 
 // ----------------------------------------------------------------------------
