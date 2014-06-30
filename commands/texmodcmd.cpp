@@ -56,8 +56,6 @@ void TexModCmd::finish()
 {
     assert(!m_finished);
 
-    ITexture* tex = m_terrain->getMaterial(0).getTexture(0);
-
     m_mod = new std::pair<u8*, u8>[m_mod_count];
     u32 ix = 0;
     for (u32 j = 0; j < Terrain::SPIMG_Y; j++)

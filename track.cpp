@@ -54,7 +54,7 @@ void Track::animateNormalCamera(f32 dt)
     {
         dimension2du ss = Editor::getEditor()->getScreenSize();
         m_normal_cd -= m_mouse.wheel * 10.0f;
-        if (m_normal_cd < 8) m_normal_cd = 10;
+        if (m_normal_cd < 8) m_normal_cd = 8;
         matrix4 mat;
 
         f32 nv   = m_normal_camera->getNearValue();

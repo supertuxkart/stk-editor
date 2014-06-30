@@ -213,8 +213,11 @@ bool Editor::run()
 		m_scene_manager->drawAll();
 		m_gui_env->drawAll();
 
+        rect<s32> indiFrame(m_screen_size.Width / 2 - 110, m_screen_size.Height / 2 - 110,
+                            m_screen_size.Width / 2 + 110, m_screen_size.Height / 2 + 110);
+
         m_video_driver->draw2DImage(m_indicator->getTexture(), 
-            position2d<s32>(0, m_screen_size.Height - 300), rect<s32>(0, 0, 300, 300), (rect<s32>*)0,
+            position2d<s32>(0, m_screen_size.Height - 220), indiFrame, (rect<s32>*)0,
             SColor(255, 255, 255, 255),true);
 
 
