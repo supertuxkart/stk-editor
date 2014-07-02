@@ -5,7 +5,7 @@
 // ----------------------------------------------------------------------------
 void IOCommand::redo()
 {
-    std::list<ISceneNode*>::iterator it;
+    list<ISceneNode*>::Iterator it;
     for (it = m_elements.begin(); it != m_elements.end(); it++)
         redo((*it));
 } // redo
@@ -13,7 +13,7 @@ void IOCommand::redo()
 // ----------------------------------------------------------------------------
 void IOCommand::undo()
 {
-    std::list<ISceneNode*>::iterator it;
+    list<ISceneNode*>::Iterator it;
     for (it = m_elements.begin(); it != m_elements.end(); it++)
         undo((*it));
 } // undo
@@ -44,7 +44,7 @@ DelCmd::~DelCmd()
 {
     if (m_rdy)
     {
-        std::list<ISceneNode*>::iterator it;
+        list<ISceneNode*>::Iterator it;
         for (it = m_elements.begin(); it != m_elements.end(); it++)
         {
             (*it)->remove();
@@ -59,7 +59,7 @@ CreateCmd::~CreateCmd()
 {
     if (!m_rdy)
     {
-        std::list<ISceneNode*>::iterator it;
+        list<ISceneNode*>::Iterator it;
         for (it = m_elements.begin(); it != m_elements.end(); it++)
         {
             (*it)->remove();
@@ -72,7 +72,7 @@ CreateCmd::~CreateCmd()
 // MoveCmd  -------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
-MoveCmd::MoveCmd(std::list<ISceneNode*> e, bool limited) :IOCommand(e)
+MoveCmd::MoveCmd(list<ISceneNode*> e, bool limited) :IOCommand(e)
 {
     m_dx = 0; m_dy = 0; m_dz = 0;
     m_limited = limited;
@@ -100,7 +100,7 @@ void MoveCmd::undo(ISceneNode *node)
 // RotateCmd  -----------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
-RotateCmd::RotateCmd(std::list<ISceneNode*> e, bool limited) :IOCommand(e)
+RotateCmd::RotateCmd(list<ISceneNode*> e, bool limited) :IOCommand(e)
 {
     m_dx = 0; m_dy = 0; m_dz = 0;
     m_limited = limited;
@@ -129,7 +129,7 @@ void RotateCmd::undo(ISceneNode *node)
 // ScaleCmd  -----------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
-ScaleCmd::ScaleCmd(std::list<ISceneNode*> e, bool limited) :IOCommand(e)
+ScaleCmd::ScaleCmd(list<ISceneNode*> e, bool limited) :IOCommand(e)
 {
     m_dx = 0; m_dy = 0; m_dz = 0;
     m_limited = limited;
