@@ -1,0 +1,4 @@
+TODO list:
+
+1. huge code refactoring  
+2. more stuffs to the list
