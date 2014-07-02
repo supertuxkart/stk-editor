@@ -9,6 +9,7 @@ using namespace irr;
 using namespace scene;
 using namespace video;
 using namespace core;
+using namespace io;
 
 class Terrain :public ISceneNode, public IShaderConstantSetCallBack
 {
@@ -88,6 +89,7 @@ public:
 
     void        setHighlightVisibility(bool b) { m_highlight_visible = b; }
 
+    void        exprt();
 
 // ----------------------------------------------------------------------------
     // inherited functions - ISceneNode

@@ -502,6 +502,37 @@ vector3df Terrain::placeBBtoGround(const aabbox3d<f32>& box, line3d<float> ray)
 
 } // placeBBtoGround
 
+// ----------------------------------------------------------------------------
+void Terrain::exprt()
+{
+    IrrlichtDevice* device = Editor::getEditor()->getDevice();
+
+    SMesh smesh;
+    
+    CMeshBuffer<S3DVertex2TCoords> mb;
+
+    for (int i = 0; i < m_mesh.vertex_count; i++)
+        mb.Vertices.push_back(m_mesh.vertices[i]);
+    for (int i = 0; i < m_mesh.quad_count * 6; i++)
+        mb.Indices.push_back(m_mesh.indices[i]);
+    
+    mb.recalculateBoundingBox();
+    mb.Material = m_material;
+    smesh.addMeshBuffer(&mb);
+
+    IMeshWriter* mw;
+    mw = device->getSceneManager()->createMeshWriter(EMWT_OBJ);
+
+    IWriteFile *file;
+    file = device->getFileSystem()->createAndWriteFile("export/track.obj");
+
+    mw->writeMesh(file, &smesh);
+
+    file->drop();
+    mw->drop();
+
+} // exprt
+
 
 // ----------------------------------------------------------------------------
 void Terrain::OnRegisterSceneNode()
