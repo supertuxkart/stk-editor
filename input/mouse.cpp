@@ -1,4 +1,4 @@
-#include "mouse.hpp"
+#include "input/mouse.hpp"
 
 
 MouseData::MouseData()

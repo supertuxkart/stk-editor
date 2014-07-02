@@ -8,8 +8,6 @@ using namespace scene;
 using namespace core;
 using namespace video;
 
-
-
 struct MouseData
 {
     bool                    in_view;
@@ -50,6 +48,5 @@ struct MouseData
     bool rightReleased()      { bool b = right_released; right_released = false; return b; }
 
 };
-
 
 #endif
