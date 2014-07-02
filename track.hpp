@@ -15,7 +15,8 @@
 #include "road/road.hpp"
 #include "road/driveline.hpp"
 
-#include "mouse.hpp"
+#include "input/mouse.hpp"
+#include "input/keys.hpp"
 
 #include <irrlicht.h>
 
@@ -40,27 +41,16 @@ public:
         TERRAIN_MOD,
         FREECAM
     };
-    enum Key
-    {
-        W_PRESSED, // the first has to have id 0
-        A_PRESSED,
-        S_PRESSED,
-        D_PRESSED,
-        SPACE_PRESSED,
-        CTRL_PRESSED,
-        SHIFT_PRESSED //it has to be the last the first has to have id 0
-    };
-
 
 private:
     static Track*           m_track;
-    static const int        m_key_num = SHIFT_PRESSED + 1;
     
     static int              m_last_entity_ID;
 
     State                   m_state;
 
     MouseData               m_mouse;
+    Keys                    m_keys;
 
     SelectionHandler        m_selection_handler;
 
@@ -89,8 +79,6 @@ private:
     float                   m_normal_cd;
 
     ICameraSceneNode*       m_free_camera;
-
-    bool                    m_key_state[m_key_num];
 
     static const long       TERRAIN_WAIT_TIME = 50;
 

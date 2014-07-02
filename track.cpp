@@ -18,9 +18,9 @@ int    Track::m_last_entity_ID = MAGIC_NUMBER;
 // ----------------------------------------------------------------------------
 void Track::animateNormalCamera(f32 dt)
 {    
-    if (m_key_state[W_PRESSED] ^ m_key_state[S_PRESSED])
+    if (m_keys.state(W_PRESSED) ^ m_keys.state(S_PRESSED))
     {
-        float sgn = (m_key_state[S_PRESSED]) ? 1.0f : -1.0f;
+        float sgn = m_keys.state(S_PRESSED) ? 1.0f : -1.0f;
         vector3df pos = m_normal_camera->getPosition();
         vector3df tar = m_normal_camera->getTarget();
         vector3df transformed_z_dir = getTransformedZdir();
@@ -34,9 +34,9 @@ void Track::animateNormalCamera(f32 dt)
         m_indicator->updatePos(pos, tar);
     };
 
-    if (m_key_state[A_PRESSED] ^ m_key_state[D_PRESSED])
+    if (m_keys.state(A_PRESSED) ^ m_keys.state(D_PRESSED))
     {
-        float sgn = (m_key_state[D_PRESSED]) ? 1.0f : -1.0f;
+        float sgn = m_keys.state(D_PRESSED) ? 1.0f : -1.0f;
         vector3df pos = m_normal_camera->getPosition();
         vector3df tar = m_normal_camera->getTarget();
         vector3df transformed_x_dir = getTransformedXdir();
@@ -68,7 +68,7 @@ void Track::animateNormalCamera(f32 dt)
         m_indicator->setProjMat(m_normal_cd, hVol, nv, fv);
     }
 
-    if (m_key_state[SPACE_PRESSED] && m_active_cmd==0)
+    if (m_keys.state(SPACE_PRESSED) && m_active_cmd == 0)
     {
         if (m_mouse.left_btn_down)
         {
@@ -152,22 +152,22 @@ void Track::animateEditing()
         m_active_cmd = 0;
     }
 
-    if ((m_mouse.leftPressed() || m_mouse.rightPressed()) && !m_key_state[SPACE_PRESSED])
+    if ((m_mouse.leftPressed() || m_mouse.rightPressed()) && !m_keys.state(SPACE_PRESSED))
     {
         // new operation start
         switch (m_state)
         {
         case MOVE:
             m_active_cmd = new MoveCmd(m_selection_handler.getSelection(),
-                                       m_key_state[SHIFT_PRESSED]);
+                                       m_keys.state(SHIFT_PRESSED));
             break;
         case ROTATE:
             m_active_cmd = new RotateCmd(m_selection_handler.getSelection(),
-                                         m_key_state[SHIFT_PRESSED]);
+                                         m_keys.state(SHIFT_PRESSED));
             break;
         case SCALE:
             m_active_cmd = new ScaleCmd(m_selection_handler.getSelection(),
-                                        m_key_state[SHIFT_PRESSED]);
+                                        m_keys.state(SHIFT_PRESSED));
             break;
         default:
             break;
@@ -182,16 +182,13 @@ void Track::animateSelection()
 {
     if (m_mouse.leftPressed())
     {
-        if (!m_key_state[CTRL_PRESSED]) m_selection_handler.clearSelection();
-
+        if (!m_keys.state(CTRL_PRESSED)) m_selection_handler.clearSelection();
         int id = (m_spline_mode) ? ANOTHER_MAGIC_NUMBER : MAGIC_NUMBER;
 
         ISceneNode* node;
         node = Editor::getEditor()->getSceneManager()->getSceneCollisionManager()
             ->getSceneNodeFromScreenCoordinatesBB(
                 vector2d<s32>(m_mouse.x, m_mouse.y), id);
-
-
         if (node)
             m_selection_handler.selectNode(node);
     }
@@ -210,7 +207,7 @@ void Track::animatePlacing()
         m_new_entity->updateAbsolutePosition();
         m_new_entity->setPosition(m_terrain->placeBBtoGround(m_new_entity->getTransformedBoundingBox(), r));
 
-        if (m_mouse.leftPressed() && !m_key_state[SPACE_PRESSED])
+        if (m_mouse.leftPressed() && !m_keys.state(SPACE_PRESSED))
         {
             m_last_entity_ID++;
             m_new_entity->setID(m_last_entity_ID);
@@ -243,7 +240,7 @@ void Track::animateSplineEditing()
     }
     
 
-    if (!m_active_cmd||(m_mouse.leftPressed() && !m_key_state[SPACE_PRESSED]))
+    if (!m_active_cmd||(m_mouse.leftPressed() && !m_keys.state(SPACE_PRESSED)))
     {
         if (m_active_cmd)
             m_command_handler.add(m_active_cmd);
@@ -281,7 +278,7 @@ void Track::animateTerrainMod(long dt)
     m_terrain->highlight(tm);
 
 
-    if (!m_key_state[SPACE_PRESSED] && 
+    if (!m_keys.state(SPACE_PRESSED) &&
         (m_mouse.leftPressed() || m_mouse.rightPressed()))
     {
         // new operation start
@@ -391,7 +388,6 @@ void Track::init(ICameraSceneNode* cam)
     m_state           = SELECT;
     m_spline_mode     = false;
     m_new_entity      = 0;
-    for (int i = 0; i < m_key_num; i++) m_key_state[i] = false;
 
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
 
@@ -446,34 +442,7 @@ void Track::setState(State state)
 // ----------------------------------------------------------------------------
 void Track::keyEvent(EKEY_CODE code, bool pressed)
 {
-    switch (code)
-    {
-    case KEY_KEY_W:
-        m_key_state[W_PRESSED] = pressed;
-        break;
-    case KEY_KEY_A:
-        m_key_state[A_PRESSED] = pressed;
-        break;
-    case KEY_KEY_S:
-        m_key_state[S_PRESSED] = pressed;
-        break;
-    case KEY_KEY_D:
-        m_key_state[D_PRESSED] = pressed;
-        break;
-    case KEY_SPACE:
-        m_key_state[SPACE_PRESSED] = pressed;
-        break;
-    case KEY_SHIFT:
-    case KEY_LSHIFT:
-        m_key_state[SHIFT_PRESSED] = pressed;
-        break;
-    case KEY_CONTROL:
-    case KEY_LCONTROL:
-        m_key_state[CTRL_PRESSED] = pressed;
-        break;
-    default:
-        break;
-    }
+    m_keys.keyEvent(code, pressed);
 } // keyEvent
 
 // ----------------------------------------------------------------------------
@@ -537,7 +506,7 @@ void Track::animate(long dt)
         case ROTATE:
         case SCALE:
             // holding ctrl down will let you select elements in move/rotate state
-            if (m_key_state[CTRL_PRESSED]) animateSelection();
+            if (m_keys.state(CTRL_PRESSED)) animateSelection();
             else animateEditing();
             return;
 
