@@ -48,7 +48,7 @@ void TexModCmd::addVertex(TerrainChange* tc)
         }
 
     m_tmp_address[Terrain::SPIMG_X*tc->z + tc->x] =
-        ((u64)&tc->img[Terrain::SPIMG_X*tc->z * 4 + tc->x * 4] - (u64)tc->img);
+        &tc->img[Terrain::SPIMG_X*tc->z * 4 + tc->x * 4] - tc->img;
 }  // addVertex
 
 // ----------------------------------------------------------------------------
@@ -90,8 +90,8 @@ void TexModCmd::undo()
     u8 tmp;
     for (u32 i = 0; i < m_mod_count; i++)
     {
-        tmp = *((u8*)(m_mod[i].first + (u64)img));
-        *((u8*)(m_mod[i].first + (u64)img)) = m_mod[i].second;
+        tmp = *((u8*)(m_mod[i].first + img));
+        *((u8*)(m_mod[i].first + img)) = m_mod[i].second;
         m_mod[i].second = tmp;
     }
 
