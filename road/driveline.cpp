@@ -2,7 +2,8 @@
 
 #include "editor.hpp"
 
-using namespace io;
+#include <fstream>
+#include <iostream>
 
 // ----------------------------------------------------------------------------
 void DriveLine::refresh()
@@ -73,21 +74,14 @@ void DriveLine::refresh()
 
     for (u32 i = 0; i < m_mesh.quad_count * 4; i++) m_mesh.indices[i] = i;
 
-
-    exprt();
 } // refresh
 
 // ----------------------------------------------------------------------------
 void DriveLine::exprt()
 {
-    if (m_spline->getPointNum() < 10) return;
-
-    IrrlichtDevice* device = Editor::getEditor()->getDevice();
-    IXMLWriter* xwriter;
-    xwriter = device->getFileSystem()->createXMLWriter(path("export/quads.xml"));
-
-    xwriter->writeElement(L"quads");
-    xwriter->writeLineBreak();
+    std::ofstream quads;
+    quads.open("export/quads.xml");
+    quads << "<quads>\n";
 
     int spn = m_spline->getPointNum() - 1;
     vector3df last_point = m_spline->p(0);
@@ -95,7 +89,7 @@ void DriveLine::exprt()
     vector3df n, v, w;
     float dt = m_detail / spn;
 
-    // first two point
+    // first two pointb
     point = m_spline->p(0);
     n = (m_spline->getNormal(dt) + m_spline->getNormal(0)) / 2.0f;
     v = m_spline->p(dt) - m_spline->p(0);
@@ -115,16 +109,15 @@ void DriveLine::exprt()
     w.normalize();
     w *= m_spline->getWidth(0);
 
-    xwriter->writeElement(L"quad", true, L"p0", Editor::strwFromVec(v1).c_str(),
-        L"p1", Editor::strwFromVec(v2).c_str(),
-        L"p2", Editor::strwFromVec(point + w * (m_width / 2.0f)).c_str(),
-        L"p2", Editor::strwFromVec(point - w * (m_width / 2.0f)).c_str());
-    xwriter->writeLineBreak();
+    quads << "  <quad  p0=\"" << v1.X << " " << v1.Y << " " << v1.Z << "\" ";
+    quads << "p1=\"" << v2.X << " " << v2.Y << " " << v2.Z << "\" ";
+    v1 = point + w * (m_width / 2.0f);
+    v2 = point - w * (m_width / 2.0f);
+    quads << "p2=\"" << v1.X << " " << v1.Y << " " << v1.Z;
+    quads << "\" p3=\"" << v2.X << " " << v2.Y << " " << v2.Z << "\"/>\n";
 
     last_point = m_spline->p(dt);
 
-    stringw sw1;
-    stringw sw2;
     u32 j = 1;
     for (float t = dt*2; j < m_mesh.quad_count; t += dt)
     {
@@ -139,38 +132,28 @@ void DriveLine::exprt()
         v1 = point - w * (m_width / 2.0f);
         v2 = point + w * (m_width / 2.0f);
 
-        sw1 = Editor::strwFromU32(j - 1) + ":3";
-        sw2 = Editor::strwFromU32(j - 1) + ":2";
-
-        xwriter->writeElement(L"quad", true, L"p0", sw1.c_str(), L"p1", sw2.c_str(),
-            L"p2", Editor::strwFromVec(v2).c_str(),
-            L"p2", Editor::strwFromVec(v1).c_str());
-        xwriter->writeLineBreak();
+        quads << "  <quad  p0=\"" << j - 1 << ":3\" p1=\"" << j - 1 << ":2\" ";
+        quads << "p2=\"" << v1.X << " " << v1.Y << " " << v1.Z;
+        quads << "\" p3=\"" << v2.X << " " << v2.Y << " " << v2.Z << "\"/>\n";
 
         last_point = point;
         j++;
     }
-    xwriter->writeClosingTag(L"quad");
-    xwriter->writeLineBreak();
-    xwriter->drop();
+    
+    quads << "</quads>\n";
 
-    xwriter = device->getFileSystem()->createXMLWriter(path("export/graph.xml"));
+    std::ofstream  graph;
+    graph.open("export/graph.xml");
 
-    //graph.xml
+    graph << "<graph>\n";
 
-    xwriter->writeElement(L"graph");
-    xwriter->writeLineBreak();
+    graph << "  <node-list from-quad=\"0\" to-quad=\"";
+    graph << m_mesh.quad_count - 1 << "\"/>\n";
 
-    xwriter->writeElement(L"node-list", true, L"from-quad", L"0", L"to-quad", 
-                          Editor::strwFromU32(m_mesh.quad_count-1).c_str());
-    xwriter->writeLineBreak();
-    xwriter->writeElement(L"edge-loop", true, L"from", L"0", L"to",
-                          Editor::strwFromU32(m_mesh.quad_count-1).c_str());
+    graph << "  <edge-loop from=\"0\" to=\"" << m_mesh.quad_count - 1 << "\"/>\n";
+    graph << "</graph>\n";
 
-    xwriter->writeLineBreak();
-    xwriter->writeClosingTag(L"graph");
-    xwriter->drop();
-
+    graph.close();
 }
 
 // ----------------------------------------------------------------------------

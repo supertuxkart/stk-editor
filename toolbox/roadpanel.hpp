@@ -8,6 +8,7 @@ using namespace gui;
 using namespace core;
 
 class IRoad;
+class DriveLine;
 
 class RoadPanel
 {
@@ -61,6 +62,7 @@ public:
     bool                  isInsertMode() { return m_insert; }
     void                  select();
     void                  scrollBarChanged();
+    DriveLine*            getDriveLine();
 };
 
 #endif

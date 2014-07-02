@@ -51,7 +51,8 @@ bool Editor::buttonClicked(int ID)
         m_track->setSplineMode(!m_track->getSplineMode());
         return true;
     case ToolBar::TBI_NEW:
-        m_track->setSplineMode(false);
+        m_track->exprtTerrain();
+        RoadPanel::getRoadPanel()->getDriveLine()->exprt();
         return true;
     // ToolBox BTN:
     case ToolBox::TWND_ID:
@@ -331,7 +332,6 @@ bool Editor::OnEvent(const SEvent& event)
     {
         m_track->mouseEvent(event);
     }
-
 	return false;
 
 } // OnEvent
@@ -342,20 +342,3 @@ ITexture* Editor::loadImg(const stringw& file_path)
     return m_editor->m_video_driver->getTexture(file_path);
 } // loadImg
 
-// ----------------------------------------------------------------------------
-stringw Editor::strwFromVec(vector3df v)
-{
-    std::ostringstream ss;
-    ss << v.X << " " << v.Y << " " << v.Z;
-    stringw sw = ss.str().c_str();
-    return sw;
-} // strwFromVec
-
-// ----------------------------------------------------------------------------
-stringw Editor::strwFromU32(u32 u)
-{
-    std::ostringstream ss;
-    ss << u;
-    stringw sw = ss.str().c_str();
-    return sw;
-} // strwFromVec

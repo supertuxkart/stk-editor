@@ -173,3 +173,9 @@ void RoadPanel::scrollBarChanged()
     r->refresh();
 
 } // scrollBarChanged
+
+// ----------------------------------------------------------------------------
+DriveLine* RoadPanel::getDriveLine()
+{
+    return dynamic_cast<DriveLine*>(m_roads.find(0)->getValue());
+} // getDriveLine

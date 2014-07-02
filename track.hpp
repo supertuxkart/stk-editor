@@ -127,6 +127,7 @@ public:
     bool          getSplineMode()                        { return m_spline_mode;      }
 
     Indicator*    getIndicator()                         { return m_indicator;        }
+    void          exprtTerrain()                         { m_terrain->exprt(); }
     
     ~Track();
 
