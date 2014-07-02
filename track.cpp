@@ -98,8 +98,8 @@ void Track::animateNormalCamera(f32 dt)
 void Track::animateEditing()
 {
 
-    if (m_spline_mode && m_entity_manager.getSelection().size() == 0)
-        m_entity_manager.selectNode(m_active_road->getSpline());
+    if (m_spline_mode && m_selection_handler.getSelection().size() == 0)
+        m_selection_handler.selectNode(m_active_road->getSpline());
 
     if (m_active_cmd)
     {
@@ -158,15 +158,15 @@ void Track::animateEditing()
         switch (m_state)
         {
         case MOVE:
-            m_active_cmd = new MoveCmd(m_entity_manager.getSelection(),
+            m_active_cmd = new MoveCmd(m_selection_handler.getSelection(),
                                        m_key_state[SHIFT_PRESSED]);
             break;
         case ROTATE:
-            m_active_cmd = new RotateCmd(m_entity_manager.getSelection(),
+            m_active_cmd = new RotateCmd(m_selection_handler.getSelection(),
                                          m_key_state[SHIFT_PRESSED]);
             break;
         case SCALE:
-            m_active_cmd = new ScaleCmd(m_entity_manager.getSelection(),
+            m_active_cmd = new ScaleCmd(m_selection_handler.getSelection(),
                                         m_key_state[SHIFT_PRESSED]);
             break;
         default:
@@ -182,7 +182,7 @@ void Track::animateSelection()
 {
     if (m_mouse.leftPressed())
     {
-        if (!m_key_state[CTRL_PRESSED]) m_entity_manager.clearSelection();
+        if (!m_key_state[CTRL_PRESSED]) m_selection_handler.clearSelection();
 
         int id = (m_spline_mode) ? ANOTHER_MAGIC_NUMBER : MAGIC_NUMBER;
 
@@ -193,7 +193,7 @@ void Track::animateSelection()
 
 
         if (node)
-            m_entity_manager.selectNode(node);
+            m_selection_handler.selectNode(node);
     }
 } // animateSelection
 
@@ -214,8 +214,8 @@ void Track::animatePlacing()
         {
             m_last_entity_ID++;
             m_new_entity->setID(m_last_entity_ID);
-            m_entity_manager.add(m_new_entity);
-            std::list<ISceneNode*> list;
+            m_selection_handler.add(m_new_entity);
+            list<ISceneNode*> list;
             list.push_back(m_new_entity);
             IOCommand* cmd = new CreateCmd(list);
             m_command_handler.add((ICommand*)cmd);
@@ -501,9 +501,9 @@ void Track::mouseEvent(const SEvent& e)
 // ----------------------------------------------------------------------------
 void Track::deleteCmd()
 {
-    IOCommand* dcmd = new DelCmd(m_entity_manager.getSelection());
+    IOCommand* dcmd = new DelCmd(m_selection_handler.getSelection());
 
-    m_entity_manager.clearSelection();
+    m_selection_handler.clearSelection();
     dcmd->redo();
     m_command_handler.add((ICommand*)dcmd);
 
@@ -564,7 +564,7 @@ void Track::animate(long dt)
 void Track::setSplineMode(bool b)
 {
     if (b != m_spline_mode)
-        m_entity_manager.clearSelection();
+        m_selection_handler.clearSelection();
     m_spline_mode = b;
     m_active_road->getSpline()->setNodeVisibility(m_spline_mode);
 } // setSplineMode

@@ -1,12 +1,10 @@
-#include "entitymanager.hpp"
-
-#include <iostream>
+#include "viewport/selection_handler.hpp"
 
 
 
-void EntityManager::clearSelection()
+void SelectionHandler::clearSelection()
 {
-    std::list<ISceneNode*>::iterator it;
+    list<ISceneNode*>::Iterator it;
     for (it = m_selected_elements.begin(); it != m_selected_elements.end(); it++)
         (*it)->setDebugDataVisible(0);
     m_selected_elements.clear();
@@ -18,10 +16,10 @@ void EntityManager::clearSelection()
 *  If it is already selected, it is released
 *  \param node The node the user clicked on
 */
-void EntityManager::selectNode(ISceneNode* node)
+void SelectionHandler::selectNode(ISceneNode* node)
 {
     // we check if it is selected already
-    std::list<ISceneNode*>::iterator it;
+    list<ISceneNode*>::Iterator it;
     for (it = m_selected_elements.begin(); it != m_selected_elements.end(); it++)
     {
         // if it is selected, it will be released

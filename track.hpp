@@ -7,7 +7,7 @@
 #include "commands/iocommand.hpp"
 #include "commands/itcommand.hpp"
 
-#include "entities/entitymanager.hpp"
+#include "viewport/selection_handler.hpp"
 #include "entities/terrain.hpp"
 
 #include "road/bezier.hpp"
@@ -62,7 +62,7 @@ private:
 
     MouseData               m_mouse;
 
-    EntityManager           m_entity_manager;
+    SelectionHandler        m_selection_handler;
 
     ISceneNode*             m_new_entity;
 
