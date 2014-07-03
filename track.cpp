@@ -16,85 +16,6 @@ Track* Track::m_track          = 0;
 int    Track::m_last_entity_ID = MAGIC_NUMBER;
 
 // ----------------------------------------------------------------------------
-void Track::animateNormalCamera(f32 dt)
-{    
-    if (m_keys.state(W_PRESSED) ^ m_keys.state(S_PRESSED))
-    {
-        float sgn = m_keys.state(S_PRESSED) ? 1.0f : -1.0f;
-        vector3df pos = m_normal_camera->getPosition();
-        vector3df tar = m_normal_camera->getTarget();
-        vector3df transformed_z_dir = getTransformedZdir();
-
-        pos += transformed_z_dir * sgn * dt / 20.0f;
-        m_normal_camera->setPosition(pos);
-        
-        tar += transformed_z_dir * sgn * dt / 20.0f;
-        m_normal_camera->setTarget(tar);
-        
-        m_indicator->updatePos(pos, tar);
-    };
-
-    if (m_keys.state(A_PRESSED) ^ m_keys.state(D_PRESSED))
-    {
-        float sgn = m_keys.state(D_PRESSED) ? 1.0f : -1.0f;
-        vector3df pos = m_normal_camera->getPosition();
-        vector3df tar = m_normal_camera->getTarget();
-        vector3df transformed_x_dir = getTransformedXdir();
-
-        pos += transformed_x_dir * sgn * dt / 20.0f;
-        m_normal_camera->setPosition(pos);
-
-        tar += transformed_x_dir * sgn * dt / 20.0f;
-        m_normal_camera->setTarget(tar);
-
-        m_indicator->updatePos(pos, tar);
-    };
-    
-    if (m_mouse.wheel != 0)
-    {
-        dimension2du ss = Editor::getEditor()->getScreenSize();
-        m_normal_cd -= m_mouse.wheel * 10.0f;
-        if (m_normal_cd < 8) m_normal_cd = 8;
-        matrix4 mat;
-
-        f32 nv   = m_normal_camera->getNearValue();
-        f32 fv   = m_normal_camera->getFarValue();
-        f32 hVol = m_normal_cd * ss.Height / ss.Width;
-
-        mat.buildProjectionMatrixOrthoLH(m_normal_cd, hVol, nv, fv);
-        m_normal_camera->setProjectionMatrix(mat, true);        
-        m_mouse.wheel = 0;
-
-        m_indicator->setProjMat(m_normal_cd, hVol, nv, fv);
-    }
-
-    if (m_keys.state(SPACE_PRESSED) && m_active_cmd == 0)
-    {
-        if (m_mouse.left_btn_down)
-        {
-            vector3df tar = m_normal_camera->getTarget();
-            tar.rotateXZBy(m_mouse.dx() / 5.0f, m_normal_camera->getPosition());
-            m_normal_camera->setTarget(tar);
-            m_indicator->updateTar(tar);
-        }
-
-        if (m_mouse.right_btn_down)
-        {
-            vector3df pos = m_normal_camera->getPosition();
-            vector3df tar = m_normal_camera->getTarget();
-            vector3df transformed_z_dir = vector3df(pos.X - tar.X, 0, pos.Z - tar.Z);
-            transformed_z_dir.normalize();
-            tar += transformed_z_dir * (f32) m_mouse.dy();
-            m_normal_camera->setTarget(tar);
-            m_indicator->updateTar(tar);
-        }
-
-        m_mouse.setStorePoint();
-    }
-
-} // animateCamera
-
-// ----------------------------------------------------------------------------
 void Track::animateEditing()
 {
 
@@ -108,8 +29,8 @@ void Track::animateEditing()
         if (m_mouse.left_btn_down)
         {
             m_active_obj_cmd->undo();
-            vector3df v = getTransformedXdir() * m_mouse.dx() + 
-                          getTransformedZdir() * m_mouse.dy();
+            vector3df v = m_aztec_cam->getTransformedXdir() * m_mouse.dx() +
+                          m_aztec_cam->getTransformedZdir() * m_mouse.dy();
             m_active_obj_cmd->update(v.X,v.Y,v.Z);
             m_active_obj_cmd->redo();
             if (m_spline_mode)
@@ -336,7 +257,7 @@ void Track::leaveState()
         return;
     case FREECAM:
         m_free_camera->setInputReceiverEnabled(false);
-        sm->setActiveCamera(m_normal_camera);
+        sm->setActiveCamera(m_aztec_cam->Cam());
         return;
     case TERRAIN_MOD:
         m_terrain->setHighlightVisibility(false);
@@ -347,26 +268,6 @@ void Track::leaveState()
 
 
 } // leaveState
-
-// ----------------------------------------------------------------------------
-vector3df Track::getTransformedXdir()
-{
-    vector3df transformed_z_dir = getTransformedZdir();
-    transformed_z_dir.rotateXZBy(90);
-
-    return transformed_z_dir;
-
-} // getTransformedXdir
-
-// ----------------------------------------------------------------------------
-vector3df Track::getTransformedZdir()
-{
-    vector3df pos = m_normal_camera->getPosition();
-    vector3df tar = m_normal_camera->getTarget();
-    vector3df transformed_z_dir = vector3df(pos.X - tar.X, 0, pos.Z - tar.Z);
-    transformed_z_dir.normalize();
-    return transformed_z_dir;
-} // getTransformedZdir
 
 // ----------------------------------------------------------------------------
 Track* Track::getTrack(ICameraSceneNode* cam)
@@ -382,7 +283,6 @@ Track* Track::getTrack(ICameraSceneNode* cam)
 // ----------------------------------------------------------------------------
 void Track::init(ICameraSceneNode* cam)
 {
-    m_normal_camera   = cam;
     m_active_cmd  = 0;
     m_active_road     = 0;
     m_state           = SELECT;
@@ -396,21 +296,7 @@ void Track::init(ICameraSceneNode* cam)
     m_junk_node = sm->addSphereSceneNode(3);
     m_junk_node->setVisible(false);
 
-    dimension2du ss = Editor::getEditor()->getScreenSize();
-    matrix4 mat;
-    m_normal_cd = 50.0f;
-
-    f32 nv = m_normal_camera->getNearValue();
-    f32 fv = m_normal_camera->getFarValue();
-    f32 hVol = m_normal_cd * ss.Height / ss.Width;
-
-    mat.buildProjectionMatrixOrthoLH(m_normal_cd, hVol,nv,fv);
-
-    m_normal_camera->setProjectionMatrix(mat,true);
-
-    m_indicator = new Indicator(m_normal_camera->getPosition(), 
-                                m_normal_camera->getTarget(),
-                                m_normal_cd, hVol, nv, fv);
+    m_aztec_cam = new AztecCamera(cam, &m_mouse, &m_keys, m_indicator);
 
 } // init
 
@@ -499,7 +385,7 @@ void Track::animate(long dt)
 {
     if (m_state != FREECAM)
     {
-        animateNormalCamera((f32)dt);
+        m_aztec_cam->animate((f32)dt);
         switch (m_state)
         {
         case MOVE:

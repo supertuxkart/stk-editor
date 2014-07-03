@@ -1,7 +1,7 @@
 #include "editor.hpp"
 
 #include "track.hpp"
-#include "indicator.hpp"
+#include "viewport/indicator.hpp"
 #include "toolbar.hpp"
 
 #include "toolbox/toolbox.hpp"

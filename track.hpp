@@ -1,22 +1,23 @@
 #ifndef TRACK_HPP
 #define TRACK_HPP
 
-#include "indicator.hpp"
-
 #include "commands/commandhandler.hpp"
 #include "commands/iocommand.hpp"
 #include "commands/itcommand.hpp"
 
+#include "viewport/indicator.hpp"
 #include "viewport/selection_handler.hpp"
+#include "viewport/aztec_camera.hpp"
+
+#include "input/mouse.hpp"
+#include "input/keys.hpp"
+
 #include "entities/terrain.hpp"
 
 #include "road/bezier.hpp"
 #include "road/tcr.hpp"
 #include "road/road.hpp"
 #include "road/driveline.hpp"
-
-#include "input/mouse.hpp"
-#include "input/keys.hpp"
 
 #include <irrlicht.h>
 
@@ -49,7 +50,7 @@ private:
 
     State                   m_state;
 
-    MouseData               m_mouse;
+    Mouse                   m_mouse;
     Keys                    m_keys;
 
     SelectionHandler        m_selection_handler;
@@ -69,21 +70,15 @@ private:
     // command not yet finished
     ICommand*               m_active_cmd;
 
-
     Indicator*              m_indicator;
 
-    // camera used for editing
-    // position has to be uploaded manually
-    ICameraSceneNode*       m_normal_camera;
-
-    float                   m_normal_cd;
+    AztecCamera*            m_aztec_cam;
 
     ICameraSceneNode*       m_free_camera;
 
     static const long       TERRAIN_WAIT_TIME = 50;
 
     Track() {};
-    void                    animateNormalCamera(float dt);
 
     void                    animateEditing();
     void                    animateSelection();
@@ -92,9 +87,6 @@ private:
     void                    animateTerrainMod(long dt);
 
     void                    leaveState();
-
-    vector3df               getTransformedXdir();
-    vector3df               getTransformedZdir();
 
 public:
     static Track* getTrack(ICameraSceneNode* cam = 0);
