@@ -3,10 +3,7 @@ TODO list:
 1. get some sleep
 2. huge code refactoring:
 	-> update makefile!!!
-	-> track into two separated file (viewport(logic) & track(data))
-	-> animateSelection function into selection_handler class
-	-> class for the normal camera
-	-> editor should instantiates the variables for mouse and key events
-	-> RoadHandler class
+	-> track into two separated file (viewport(logic, done) & track(data))
+	-> RoadHandler class ???
 	-> delete spline controlpoint if its node was removed
 3. more stuffs to the list
