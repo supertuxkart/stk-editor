@@ -1,7 +1,7 @@
 #include "input/mouse.hpp"
 
 
-MouseData::MouseData()
+Mouse::Mouse()
 {
     in_view = false;
 
@@ -21,7 +21,7 @@ MouseData::MouseData()
     prev_y = 0;
 } // MouseData
 
-void MouseData::refresh(const SEvent& e)
+void Mouse::refresh(const SEvent& e)
 {
     switch (e.MouseInput.Event)
     {

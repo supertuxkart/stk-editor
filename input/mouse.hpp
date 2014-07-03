@@ -8,7 +8,7 @@ using namespace scene;
 using namespace core;
 using namespace video;
 
-struct MouseData
+struct Mouse
 {
     bool                    in_view;
     f32                     wheel;
@@ -27,7 +27,7 @@ struct MouseData
     s32                     prev_y;
 
 // ----------------------------------------------------------------------------
-    MouseData();
+    Mouse();
     void refresh(const SEvent& e);
 
 
