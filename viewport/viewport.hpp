@@ -17,7 +17,7 @@ using namespace irr;
 using namespace scene;
 using namespace core;
 
-class Track
+class Viewport
 {
 public:
     enum State
@@ -33,9 +33,7 @@ public:
     };
 
 private:
-    static Track*           m_track;
-    
-    static int              m_last_entity_ID;
+    static Viewport*        m_self;
 
     State                   m_state;
 
@@ -43,12 +41,10 @@ private:
     Keys*                   m_keys;
 
     SelectionHandler*       m_selection_handler;
-
-    ISceneNode*             m_new_entity;
-
     CommandHandler          m_command_handler;
 
-    Terrain*                m_terrain;
+    ISceneNode*             m_new_entity;
+    static int              m_last_entity_ID;
 
     bool                    m_spline_mode;
 
@@ -59,15 +55,12 @@ private:
     // command not yet finished
     ICommand*               m_active_cmd;
 
-    Indicator*              m_indicator;
-
     AztecCamera*            m_aztec_cam;
-
     ICameraSceneNode*       m_free_camera;
 
     static const long       TERRAIN_WAIT_TIME = 50;
 
-    Track() {};
+    Viewport() {};
 
     void                    animateEditing();
     void                    animatePlacing();
@@ -77,26 +70,25 @@ private:
     void                    leaveState();
 
 public:
-    static Track* getTrack(ICameraSceneNode* cam = 0);
-    void          init(ICameraSceneNode* cam);
-    void          setState(State state);
-    void          keyEvent(EKEY_CODE code, bool pressed);
-    void          mouseEvent(const SEvent& event);
-    void          deleteCmd();
-    void          setNewEntity(const stringw path);
-    void          animate(long dt);
-    void          setSplineMode(bool b);
-    void          setActiveRoad(IRoad* r);
-    void          roadBorn(IRoad* road, stringw name);
-    void          undo();
-    void          redo();  
+    static Viewport*    get(ICameraSceneNode* cam = 0, Mouse* m = 0, Keys* k = 0);
+    void                init(ICameraSceneNode* cam, Mouse* m, Keys* k);
+    void                setState(State state);
+    void                deleteCmd();
+    void                setNewEntity(const stringw path);
+    void                animate(long dt);
+    void                setSplineMode(bool b);
+    void                setActiveRoad(IRoad* r);
+    void                roadBorn(IRoad* road, stringw name);
+    void                undo();
+    void                redo();
+    void                looseFocus();
+    void                gainFocus();
 
-    void          setFreeCamera(ICameraSceneNode* cam)   { m_free_camera       = cam; }
-    bool          getSplineMode()                        { return m_spline_mode;      }
+    void        setFreeCamera(ICameraSceneNode* cam) { m_free_camera = cam;  }
+    bool        getSplineMode()                      { return m_spline_mode; }
+    Indicator*  getIndicator();
 
-    Indicator*    getIndicator()                         { return m_indicator;        }
-    
-    ~Track();
+    ~Viewport();
 
 };
 

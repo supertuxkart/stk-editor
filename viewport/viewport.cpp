@@ -1,4 +1,4 @@
-#include "track.hpp"
+#include "viewport/viewport.hpp"
 #include "editor.hpp"
 
 #include "toolbox/terrpanel.hpp"
@@ -21,11 +21,11 @@
 #include <assert.h>
 #include <iostream>
 
-Track* Track::m_track          = 0;
-int    Track::m_last_entity_ID = MAGIC_NUMBER;
+Viewport* Viewport::m_self = 0;
+int       Viewport::m_last_entity_ID = MAGIC_NUMBER;
 
 // ----------------------------------------------------------------------------
-void Track::animateEditing()
+void Viewport::animateEditing()
 {
 
     if (m_spline_mode && m_selection_handler->getSelection().size() == 0)
@@ -38,8 +38,8 @@ void Track::animateEditing()
         if (m_mouse->left_btn_down)
         {
             m_active_obj_cmd->undo();
-            vector3df v = m_aztec_cam->getTransformedXdir() * m_mouse->dx() +
-                          m_aztec_cam->getTransformedZdir() * m_mouse->dy();
+            vector3df v = m_aztec_cam->getTransformedXdir() * (f32)m_mouse->dx() +
+                          m_aztec_cam->getTransformedZdir() * (f32)m_mouse->dy();
             m_active_obj_cmd->update(v.X,v.Y,v.Z);
             m_active_obj_cmd->redo();
             if (m_spline_mode)
@@ -108,7 +108,7 @@ void Track::animateEditing()
 } // animateEditing
 
 // ----------------------------------------------------------------------------
-void Track::animatePlacing()
+void Viewport::animatePlacing()
 {
     if (m_new_entity)
     {
@@ -118,7 +118,7 @@ void Track::animatePlacing()
 
         m_new_entity->setPosition(vector3df(0, 0, 0));
         m_new_entity->updateAbsolutePosition();
-        m_new_entity->setPosition(m_terrain->placeBBtoGround(m_new_entity->getTransformedBoundingBox(), r));
+        //m_new_entity->setPosition(m_terrain->placeBBtoGround(m_new_entity->getTransformedBoundingBox(), r));
 
         if (m_mouse->leftPressed() && !m_keys->state(SPACE_PRESSED))
         {
@@ -135,7 +135,7 @@ void Track::animatePlacing()
 } // animatePlacing
 
 // ----------------------------------------------------------------------------
-void Track::animateSplineEditing()
+void Viewport::animateSplineEditing()
 {
 
     ISceneCollisionManager* cm = Editor::getEditor()->getSceneManager()
@@ -144,14 +144,14 @@ void Track::animateSplineEditing()
 
     m_junk_node->setPosition(vector3df(0, 0, 0));
     m_junk_node->updateAbsolutePosition();
-    vector3df p = m_terrain->placeBBtoGround(m_junk_node->getTransformedBoundingBox(), r);
+    vector3df p;// = m_terrain->placeBBtoGround(m_junk_node->getTransformedBoundingBox(), r);
     p.Y += 1.0;
 
     if (m_active_cmd)
     {
         dynamic_cast<RoadCommand*>(m_active_cmd)->updatePos(p);
     }
-    
+
 
     if (!m_active_cmd||(m_mouse->leftPressed() && !m_keys->state(SPACE_PRESSED)))
     {
@@ -177,8 +177,9 @@ void Track::animateSplineEditing()
 } // animateSplineEditing
 
 // ----------------------------------------------------------------------------
-void Track::animateTerrainMod(long dt)
+void Viewport::animateTerrainMod(long dt)
 {
+    /*
     if (!m_mouse->in_view) return;
 
     ISceneCollisionManager* cm;
@@ -230,13 +231,12 @@ void Track::animateTerrainMod(long dt)
         else tm->left_click = true;
         m_terrain->modify(tm);
     }
-
-    return;
+    */
 
 } // animateTerrainMod
 
 // ----------------------------------------------------------------------------
-void Track::leaveState()
+void Viewport::leaveState()
 {
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
     switch (m_state)
@@ -252,7 +252,7 @@ void Track::leaveState()
         sm->setActiveCamera(m_aztec_cam->Cam());
         return;
     case TERRAIN_MOD:
-        m_terrain->setHighlightVisibility(false);
+        //m_terrain->setHighlightVisibility(false);
         return;
     default:
         break;
@@ -262,38 +262,37 @@ void Track::leaveState()
 } // leaveState
 
 // ----------------------------------------------------------------------------
-Track* Track::getTrack(ICameraSceneNode* cam)
+Viewport* Viewport::get(ICameraSceneNode* cam, Mouse* m, Keys* k)
 {
-    if (m_track != 0) return m_track;
+    if (m_self != 0) return m_self;
 
-    m_track = new Track();
-    m_track->init(cam);
-    return m_track;
+    m_self = new Viewport();
+    m_self->init(cam,m,k);
+    return m_self;
 } // getTrack
 
 
 // ----------------------------------------------------------------------------
-void Track::init(ICameraSceneNode* cam)
+void Viewport::init(ICameraSceneNode* cam = 0, Mouse* m = 0, Keys* k = 0)
 {
-    m_active_cmd  = 0;
-    m_active_road     = 0;
-    m_state           = SELECT;
-    m_spline_mode     = false;
-    m_new_entity      = 0;
+    m_aztec_cam         = new AztecCamera(cam,m,k);
+    m_mouse             = m;
+    m_keys              = k;
+    m_state             = SELECT;
+    m_spline_mode       = false;
+    m_active_cmd        = 0;
+    m_active_road       = 0;
+    m_new_entity        = 0;
+    m_new_entity        = 0;
 
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
-
-    m_terrain = new Terrain(sm->getRootSceneNode(), sm, 1, 50, 50, 100, 100);
-    
     m_junk_node = sm->addSphereSceneNode(3);
     m_junk_node->setVisible(false);
-
-    m_aztec_cam = new AztecCamera(cam, m_mouse, m_keys, m_indicator);
 
 } // init
 
 // ----------------------------------------------------------------------------
-void Track::setState(State state)
+void Viewport::setState(State state)
 {
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
 
@@ -304,7 +303,7 @@ void Track::setState(State state)
 
     if (state == TERRAIN_MOD)
     {
-        m_terrain->setHighlightVisibility(true);
+        //m_terrain->setHighlightVisibility(true);
     }
 
     if (state == FREECAM)
@@ -318,35 +317,7 @@ void Track::setState(State state)
 } // setState
 
 // ----------------------------------------------------------------------------
-void Track::keyEvent(EKEY_CODE code, bool pressed)
-{
-    m_keys->keyEvent(code, pressed);
-} // keyEvent
-
-// ----------------------------------------------------------------------------
-void Track::mouseEvent(const SEvent& e)
-{
-    dimension2du ss = Editor::getEditor()->getScreenSize();
-
-    // check if mouse is outside of the viewport's domain
-    if (e.MouseInput.Y < 50 || e.MouseInput.X > (s32) ss.Width - 250)
-    {
-        if (m_new_entity && m_new_entity->isVisible())
-            m_new_entity->setVisible(false);
-        m_mouse->in_view = false;
-        return;
-    }
-
-    m_mouse->in_view = true;
-    if (m_new_entity && !m_new_entity->isVisible())
-        m_new_entity->setVisible(true);
-
-    m_mouse->refresh(e);
-
-} // mouseEvent
-
-// ----------------------------------------------------------------------------
-void Track::deleteCmd()
+void Viewport::deleteCmd()
 {
     IOCommand* dcmd = new DelCmd(m_selection_handler->getSelection());
 
@@ -357,7 +328,7 @@ void Track::deleteCmd()
 } //deleteCmd
 
 // ----------------------------------------------------------------------------
-void Track::setNewEntity(const stringw path)
+void Viewport::setNewEntity(const stringw path)
 {
     if (m_state != PLACE)
         setState(PLACE);
@@ -373,7 +344,7 @@ void Track::setNewEntity(const stringw path)
 } // setNewEntity
 
 // ----------------------------------------------------------------------------
-void Track::animate(long dt)
+void Viewport::animate(long dt)
 {
     if (m_state != FREECAM)
     {
@@ -384,14 +355,14 @@ void Track::animate(long dt)
         case ROTATE:
         case SCALE:
             // holding ctrl down will let you select elements in move/rotate state
-            if (m_keys->state(CTRL_PRESSED)) 
+            if (m_keys->state(CTRL_PRESSED))
                 m_selection_handler->animate(m_spline_mode ? ANOTHER_MAGIC_NUMBER
                                                            : MAGIC_NUMBER);
             else animateEditing();
             return;
 
         case SELECT:
-            m_selection_handler->animate(m_spline_mode ? ANOTHER_MAGIC_NUMBER 
+            m_selection_handler->animate(m_spline_mode ? ANOTHER_MAGIC_NUMBER
                                                        : MAGIC_NUMBER);
             return;
         case PLACE:
@@ -411,7 +382,7 @@ void Track::animate(long dt)
 } // animate
 
 // ----------------------------------------------------------------------------
-void Track::setSplineMode(bool b)
+void Viewport::setSplineMode(bool b)
 {
     if (b != m_spline_mode)
         m_selection_handler->clearSelection();
@@ -420,7 +391,7 @@ void Track::setSplineMode(bool b)
 } // setSplineMode
 
 
-void Track::setActiveRoad(IRoad* r)
+void Viewport::setActiveRoad(IRoad* r)
 {
     if (m_active_road)
     {
@@ -433,7 +404,7 @@ void Track::setActiveRoad(IRoad* r)
 } // setActiveRoad
 
 // ----------------------------------------------------------------------------
-void Track::roadBorn(IRoad* road, stringw name)
+void Viewport::roadBorn(IRoad* road, stringw name)
 {
     if (m_active_cmd)
     {
@@ -447,7 +418,7 @@ void Track::roadBorn(IRoad* road, stringw name)
 } // roadBorn
 
 // ----------------------------------------------------------------------------
-void Track::undo()
+void Viewport::undo()
 {
     m_command_handler.undo();
     if (m_spline_mode)
@@ -459,7 +430,7 @@ void Track::undo()
 
 // ----------------------------------------------------------------------------
 
-void Track::redo()
+void Viewport::redo()
 {
     m_command_handler.redo();
     if (m_spline_mode)
@@ -470,9 +441,27 @@ void Track::redo()
 } // redo
 
 // ----------------------------------------------------------------------------
-Track::~Track()
+void Viewport::looseFocus()
+{
+    if (m_new_entity) m_new_entity->setVisible(false);
+}
+
+// ----------------------------------------------------------------------------
+void Viewport::gainFocus()
+{
+    if (m_new_entity) m_new_entity->setVisible(true);
+}
+
+// ----------------------------------------------------------------------------
+Indicator*  Viewport::getIndicator()
+{
+    return m_aztec_cam->getIndicator();
+} // Indicator
+
+
+// ----------------------------------------------------------------------------
+Viewport::~Viewport()
 {
     if (m_active_cmd) delete m_active_cmd;
-    if (m_terrain)    delete m_terrain;
 }
 
