@@ -1,9 +1,10 @@
 #include "editor.hpp"
+#include "track.hpp"
 
 #include "viewport/viewport.hpp"
 #include "viewport/indicator.hpp"
-#include "gui/toolbar.hpp"
 
+#include "gui/toolbar.hpp"
 #include "gui/toolbox.hpp"
 #include "gui/env_panel.hpp"
 #include "gui/terr_panel.hpp"
@@ -11,7 +12,6 @@
 
 #include "mesh/driveline.hpp"
 
-#include <sstream>
 #include <iostream>
 
 Editor* Editor::m_editor = 0;
@@ -158,7 +158,6 @@ bool Editor::init()
     cam->setFarValue(20000.f);
     cam->setTarget(vector3df(0, 0, 0));
     cam->setInputReceiverEnabled(false);
-    m_viewport->setFreeCamera(cam);
 
     // viewport init
     ICameraSceneNode* norm_cam;
@@ -166,8 +165,18 @@ bool Editor::init()
         vector3df(25, -30, -15));
     norm_cam->setID(2);
     m_viewport = Viewport::get(norm_cam, &m_mouse, &m_keys);
+    m_viewport->setFreeCamera(cam);
     m_indicator = m_viewport->getIndicator();
     m_scene_manager->setActiveCamera(norm_cam);
+
+
+    // track init - temporary!!!
+
+    Track* t = new Track();
+    t->create(50, 50);
+    m_viewport->setTrack(t);
+    // track init 
+
 
     m_toolbar = ToolBar::getToolBar();
     m_toolbox = ToolBox::getToolBox();
@@ -204,10 +213,12 @@ bool Editor::run()
 		// drawing
 		m_video_driver->beginScene(true, true, SColor(255, 80, 0, 170));
 
+        m_indicator->renderToTexture();
+
         m_scene_manager->drawAll();
 		m_gui_env->drawAll();
 
-        m_indicator->render();
+        m_indicator->drawToScreen();
 
 		m_video_driver->endScene();
 

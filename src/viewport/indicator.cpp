@@ -48,7 +48,7 @@ void Indicator::setProjMat(f32 wVol, f32 hWol, f32 zNear, f32 zFar)
 } // setProjMat
 
 // ----------------------------------------------------------------------------
-void Indicator::render()
+void Indicator::renderToTexture()
 {
     m_vd->setRenderTarget(m_rtt, true, true);
     
@@ -60,10 +60,13 @@ void Indicator::render()
     m_vd->setRenderTarget(0, true, true, SColor(255, 80, 0, 170));
     m_sm->setActiveCamera(cam);
 
-    rect<s32> indiFrame(m_ss.Width / 2 - 110, m_ss.Height / 2 - 110,
-                        m_ss.Width / 2 + 110, m_ss.Height / 2 + 110);
-    m_vd->draw2DImage(m_rtt, position2d<s32>(0, m_ss.Height - 220), indiFrame, 
-                      (rect<s32>*)0, SColor(255, 255, 255, 255), true);
-
 } // render
+
+void Indicator::drawToScreen()
+{
+    rect<s32> indiFrame(m_ss.Width / 2 - 110, m_ss.Height / 2 - 110,
+        m_ss.Width / 2 + 110, m_ss.Height / 2 + 110);
+    m_vd->draw2DImage(m_rtt, position2d<s32>(0, m_ss.Height - 220), indiFrame,
+        (rect<s32>*)0, SColor(255, 255, 255, 255), true);
+}
 

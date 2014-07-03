@@ -24,7 +24,8 @@ public:
 
     void        updatePos(vector3df pos, vector3df tar);
     void        setProjMat(f32 wVol, f32 hWol, f32 zNear, f32 zFar);
-    void        render();
+    void        renderToTexture();
+    void        drawToScreen();
 
     
     void        updateTar(vector3df tar) { tar.X += m_offset; m_cam->setTarget(tar); }

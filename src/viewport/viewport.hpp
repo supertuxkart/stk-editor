@@ -1,10 +1,11 @@
-#ifndef TRACK_HPP
-#define TRACK_HPP
+#ifndef VIEWPORT_HPP
+#define VIEWPORT_HPP
 
 #include "commands/command_handler.hpp"
 
 #include <irrlicht.h>
 
+class  Track;
 class  Terrain;
 class  IRoad;
 class  SelectionHandler;
@@ -37,6 +38,8 @@ private:
 
     State                   m_state;
 
+    Track*                  m_track;
+
     Mouse*                  m_mouse;
     Keys*                   m_keys;
 
@@ -58,6 +61,7 @@ private:
     AztecCamera*            m_aztec_cam;
     ICameraSceneNode*       m_free_camera;
 
+    Terrain*                m_terrain;
     static const long       TERRAIN_WAIT_TIME = 50;
 
     Viewport() {};
@@ -83,10 +87,12 @@ public:
     void                redo();
     void                looseFocus();
     void                gainFocus();
+    void                setTrack(Track* t);
 
-    void        setFreeCamera(ICameraSceneNode* cam) { m_free_camera = cam;  }
-    bool        getSplineMode()                      { return m_spline_mode; }
-    Indicator*  getIndicator();
+    Indicator*          getIndicator();
+
+    void                setFreeCamera(ICameraSceneNode* cam) { m_free_camera = cam;  }
+    bool                getSplineMode()                      { return m_spline_mode; }
 
     ~Viewport();
 

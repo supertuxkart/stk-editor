@@ -1,5 +1,6 @@
 #include "viewport/viewport.hpp"
 #include "editor.hpp"
+#include "track.hpp"
 
 #include "gui/terr_panel.hpp"
 #include "gui/road_panel.hpp"
@@ -20,7 +21,6 @@
 #include "mesh/terrain.hpp"
 
 #include <assert.h>
-#include <iostream>
 
 Viewport* Viewport::m_self = 0;
 int       Viewport::m_last_entity_ID = MAGIC_NUMBER;
@@ -191,7 +191,6 @@ void Viewport::animateTerrainMod(long dt)
 
     m_terrain->highlight(tm);
 
-
     if (!m_keys->state(SPACE_PRESSED) &&
         (m_mouse->leftPressed() || m_mouse->rightPressed()))
     {
@@ -283,6 +282,10 @@ void Viewport::init(ICameraSceneNode* cam = 0, Mouse* m = 0, Keys* k = 0)
     m_active_road       = 0;
     m_new_entity        = 0;
     m_new_entity        = 0;
+    m_terrain           = 0;
+    m_track             = 0;
+
+    m_selection_handler = new SelectionHandler(m_mouse, m_keys);
 
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
     m_junk_node = sm->addSphereSceneNode(3);
@@ -345,6 +348,7 @@ void Viewport::setNewEntity(const stringw path)
 // ----------------------------------------------------------------------------
 void Viewport::animate(long dt)
 {
+    assert(m_terrain);
     if (m_state != FREECAM)
     {
         m_aztec_cam->animate((f32)dt);
@@ -450,6 +454,13 @@ void Viewport::gainFocus()
 {
     if (m_new_entity) m_new_entity->setVisible(true);
 }
+
+// ----------------------------------------------------------------------------
+void Viewport::setTrack(Track* t)
+{
+    m_track = t;
+    m_terrain = m_track->getTerrain();
+} // setTrack
 
 // ----------------------------------------------------------------------------
 Indicator*  Viewport::getIndicator()
