@@ -1,6 +1,9 @@
 #ifndef EDITOR_HPP
 #define EDITOR_HPP
 
+#include "input/keys.hpp"
+#include "input/mouse.hpp"
+
 #include <irrlicht.h>
 
 #define MAGIC_NUMBER            8192
@@ -12,10 +15,12 @@ using namespace scene;
 using namespace video;
 using namespace gui;
 
-class ToolBar;
-class ToolBox;
-class Track;
-class Indicator;
+class  ToolBar;
+class  ToolBox;
+class  Track;
+class  Indicator;
+struct Mouse;
+struct Keys;
 
 class Editor :public IEventReceiver
 {
@@ -32,6 +37,8 @@ private:
     Track*                      m_track;
     dimension2du                m_screen_size;
 
+    Mouse                       m_mouse;
+    Keys                        m_keys;
     Indicator*                  m_indicator;
 
 	bool init();

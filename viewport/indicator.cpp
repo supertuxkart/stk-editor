@@ -16,7 +16,8 @@ Indicator::Indicator(vector3df p, vector3df t, f32 wVol, f32 hWol, f32 zNear, f3
     m_model = sm->addAnimatedMeshSceneNode(
         sm->getMesh(L"img/indicator.b3d"), m_cam);
 
-    m_rtt = vd->addRenderTargetTexture(vd->getScreenSize(),"RTT1",ECF_A8R8G8B8);
+    m_ss = vd->getScreenSize();
+    m_rtt = vd->addRenderTargetTexture(m_ss,"RTT1",ECF_A8R8G8B8);
     m_vd = vd;
     m_sm = sm;
 } // Indicator
@@ -58,6 +59,11 @@ void Indicator::render()
 
     m_vd->setRenderTarget(0, true, true, SColor(255, 80, 0, 170));
     m_sm->setActiveCamera(cam);
+
+    rect<s32> indiFrame(m_ss.Width / 2 - 110, m_ss.Height / 2 - 110,
+                        m_ss.Width / 2 + 110, m_ss.Height / 2 + 110);
+    m_vd->draw2DImage(m_rtt, position2d<s32>(0, m_ss.Height - 220), indiFrame, 
+                      (rect<s32>*)0, SColor(255, 255, 255, 255), true);
 
 } // render
 

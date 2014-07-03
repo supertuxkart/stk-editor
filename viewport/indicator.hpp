@@ -17,6 +17,7 @@ private:
     ITexture*           m_rtt;
     ISceneNode*         m_model;
     u32 static const    m_offset = 3333;
+    dimension2du        m_ss;
 public:
     Indicator(vector3df p, vector3df t, f32 wVol, f32 hWol, f32 zNear, f32 zFar);
     ~Indicator();

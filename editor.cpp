@@ -9,6 +9,8 @@
 #include "toolbox/terrpanel.hpp"
 #include "toolbox/roadpanel.hpp"
 
+#include "road/driveline.hpp"
+
 #include <sstream>
 #include <iostream>
 
@@ -51,7 +53,6 @@ bool Editor::buttonClicked(int ID)
         m_track->setSplineMode(!m_track->getSplineMode());
         return true;
     case ToolBar::TBI_NEW:
-        m_track->exprtTerrain();
         RoadPanel::getRoadPanel()->getDriveLine()->exprt();
         return true;
     // ToolBox BTN:
@@ -127,7 +128,6 @@ bool Editor::init()
 	if (!m_device) return false;
 
 	m_device->setResizable(true);
-
 	m_device->setWindowCaption(L"SuperTuxKart Track Editor");
 
 	m_video_driver  = m_device->getVideoDriver();
@@ -136,8 +136,7 @@ bool Editor::init()
 
     IGUISkin* skin = m_gui_env->getSkin();
     IGUIFont* font = m_gui_env->getFont(L"font/font2.png");
-    skin->setFont(font);
-    
+    skin->setFont(font);    
     
     m_scene_manager->setAmbientLight(SColorf(0.3f, 0.3f, 0.3f, 1.0f));
     ILightSceneNode* l = m_scene_manager->addLightSceneNode(0, vector3df(0, 1, 0), 
@@ -155,7 +154,7 @@ bool Editor::init()
 
     ICameraSceneNode* norm_cam;
     norm_cam = m_scene_manager->addCameraSceneNode(0, vector3df(25, 50, 30),
-                                                 vector3df(25, -30, -15));
+                                                      vector3df(25, -30, -15));
     norm_cam->setID(2);
 
     m_track = Track::getTrack(norm_cam);
@@ -209,19 +208,11 @@ bool Editor::run()
 
 		// drawing
 		m_video_driver->beginScene(true, true, SColor(255, 80, 0, 170));
-
-        m_indicator->render();
-
-		m_scene_manager->drawAll();
+		
+        m_scene_manager->drawAll();
 		m_gui_env->drawAll();
 
-        rect<s32> indiFrame(m_screen_size.Width / 2 - 110, m_screen_size.Height / 2 - 110,
-                            m_screen_size.Width / 2 + 110, m_screen_size.Height / 2 + 110);
-
-        m_video_driver->draw2DImage(m_indicator->getTexture(), 
-            position2d<s32>(0, m_screen_size.Height - 220), indiFrame, (rect<s32>*)0,
-            SColor(255, 255, 255, 255),true);
-
+        m_indicator->render();
 
 		m_video_driver->endScene();
 
