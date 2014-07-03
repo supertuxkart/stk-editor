@@ -1,10 +1,11 @@
 #include "viewport/aztec_camera.hpp"
 
-#include "editor.hpp"
-#include "input/mouse.hpp"
-#include "input/keys.hpp"
 #include "viewport/indicator.hpp"
 
+#include "input/mouse.hpp"
+#include "input/keys.hpp"
+
+#include "editor.hpp"
 #include <irrlicht.h>
 
 using namespace irr;
@@ -12,18 +13,16 @@ using namespace core;
 using namespace scene;
 
 // ----------------------------------------------------------------------------
-AztecCamera::AztecCamera(ICameraSceneNode* c, Mouse* m, Keys* k, Indicator* i)
+AztecCamera::AztecCamera(ICameraSceneNode* c, Mouse* m, Keys* k)
 {
     m_cam       = c;
     m_mouse     = m;
     m_keys      = k;
-    m_indicator = i;
 
     m_normal_cd = 50.0f;
 
     dimension2du ss = Editor::getEditor()->getScreenSize();
     matrix4 mat;
-
     f32 nv = m_cam->getNearValue();
     f32 fv = m_cam->getFarValue();
     f32 hVol = m_normal_cd * ss.Height / ss.Width;

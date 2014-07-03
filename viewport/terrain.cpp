@@ -511,9 +511,9 @@ void Terrain::exprt()
     
     CMeshBuffer<S3DVertex2TCoords> mb;
 
-    for (int i = 0; i < m_mesh.vertex_count; i++)
+    for (u32 i = 0; i < m_mesh.vertex_count; i++)
         mb.Vertices.push_back(m_mesh.vertices[i]);
-    for (int i = 0; i < m_mesh.quad_count * 6; i++)
+    for (u32 i = 0; i < m_mesh.quad_count * 6; i++)
         mb.Indices.push_back(m_mesh.indices[i]);
     
     mb.recalculateBoundingBox();

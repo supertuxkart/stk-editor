@@ -1,6 +1,6 @@
 #include "editor.hpp"
 
-#include "track.hpp"
+#include "viewport/viewport.hpp"
 #include "viewport/indicator.hpp"
 #include "toolbar.hpp"
 
@@ -26,31 +26,31 @@ bool Editor::buttonClicked(int ID)
         m_device->closeDevice();
         return true;
     case ToolBar::TBI_UNDO:
-        m_track->undo();
+        m_viewport->undo();
         return true;
     case ToolBar::TBI_REDO:
-        m_track->redo();
+        m_viewport->redo();
         return true;
     case ToolBar::TBI_SELECT:
-        m_track->setState(Track::SELECT);
+        m_viewport->setState(Viewport::SELECT);
         return true;
     case ToolBar::TBI_MOVE:
-        m_track->setState(Track::MOVE);
+        m_viewport->setState(Viewport::MOVE);
         return true;
     case ToolBar::TBI_ROTATE:
-        m_track->setState(Track::ROTATE);
+        m_viewport->setState(Viewport::ROTATE);
         return true;
     case ToolBar::TBI_SCALE:
-        m_track->setState(Track::SCALE);
+        m_viewport->setState(Viewport::SCALE);
         return true;
     case ToolBar::TBI_DELETE:
-        m_track->deleteCmd();
+        m_viewport->deleteCmd();
         return true;
     case ToolBar::TBI_CAM:
-        m_track->setState(Track::FREECAM);
+        m_viewport->setState(Viewport::FREECAM);
         return true;
     case ToolBar::TBI_SPLINE:
-        m_track->setSplineMode(!m_track->getSplineMode());
+        m_viewport->setSplineMode(!m_viewport->getSplineMode());
         return true;
     case ToolBar::TBI_NEW:
         RoadPanel::getRoadPanel()->getDriveLine()->exprt();
@@ -74,7 +74,7 @@ bool Editor::buttonClicked(int ID)
     case TerrPanel::T_HARD_BTN:
     case TerrPanel::T_BRIGHTNESS_BTN:
         TerrPanel::getTerrPanel()->btnDown(ID);
-        m_track->setState(Track::TERRAIN_MOD);
+        m_viewport->setState(Viewport::TERRAIN_MOD);
         return true;
     // ToolBox / RoadPanel buttons:
     case RoadPanel::DL_CREATE:
@@ -82,12 +82,12 @@ bool Editor::buttonClicked(int ID)
         break;
     case RoadPanel::DL_ADD:
     case RoadPanel::DL_INSERT:
-        m_track->setSplineMode(true);
-        m_track->setState(Track::SPLINE);
+        m_viewport->setSplineMode(true);
+        m_viewport->setState(Viewport::SPLINE);
         RoadPanel::getRoadPanel()->btnDown(ID);
         return true;
     case RoadPanel::DL_EXIT:
-        m_track->setState(Track::SELECT);
+        m_viewport->setState(Viewport::SELECT);
         return true;
     default:
         break;
@@ -99,8 +99,8 @@ bool Editor::buttonClicked(int ID)
         ID < ep->FIRST_BTN_ID + ep->getBtnNum())
     {
         // element is picked from env panel
-        m_track->setSplineMode(false);
-        m_track->setNewEntity(EnvPanel::getEnvPanel()->getModelPathFromBtnId(ID));
+        m_viewport->setSplineMode(false);
+        m_viewport->setNewEntity(EnvPanel::getEnvPanel()->getModelPathFromBtnId(ID));
         return true;
     }
     if (ID == ep->FIRST_BTN_ID + ep->getBtnNum())
@@ -113,18 +113,15 @@ bool Editor::buttonClicked(int ID)
         ep->switchPage(1);
         return true;
     }
-    
+
     std::cerr << "Button click isn't handled!" << std::endl;
-    return false;    
+    return false;
 }
 
 // ----------------------------------------------------------------------------
 bool Editor::init()
 {
-	m_device = createDevice(EDT_OPENGL,
-            m_screen_size, 16,
-		    false, false, true);
-
+	m_device = createDevice(EDT_OPENGL, m_screen_size, 16, false, false, true);
 	if (!m_device) return false;
 
 	m_device->setResizable(true);
@@ -134,16 +131,12 @@ bool Editor::init()
 	m_scene_manager = m_device->getSceneManager();
 	m_gui_env       = m_device->getGUIEnvironment();
 
+    // fonts
     IGUISkin* skin = m_gui_env->getSkin();
     IGUIFont* font = m_gui_env->getFont(L"font/font2.png");
-    skin->setFont(font);    
-    
-    m_scene_manager->setAmbientLight(SColorf(0.3f, 0.3f, 0.3f, 1.0f));
-    ILightSceneNode* l = m_scene_manager->addLightSceneNode(0, vector3df(0, 1, 0), 
-                                              SColorf(1.0f, 1.0f, 1.0f), 500, -1);
-    l->setLightType(ELT_DIRECTIONAL);
-    l->setPosition(vector3df(0, 1, 0));
+    skin->setFont(font);
 
+    // removing gui transparency
     for (s32 i = 0; i<EGDC_COUNT; ++i)
     {
         video::SColor col = skin->getColor((EGUI_DEFAULT_COLOR)i);
@@ -151,30 +144,35 @@ bool Editor::init()
         skin->setColor((EGUI_DEFAULT_COLOR)i, col);
     }
 
+    // lights
+    m_scene_manager->setAmbientLight(SColorf(0.3f, 0.3f, 0.3f, 1.0f));
+    ILightSceneNode* l = m_scene_manager->addLightSceneNode(0, vector3df(0, 1, 0),
+                                              SColorf(1.0f, 1.0f, 1.0f), 500, -1);
+    l->setLightType(ELT_DIRECTIONAL);
+    l->setPosition(vector3df(0, 1, 0));
 
-    ICameraSceneNode* norm_cam;
-    norm_cam = m_scene_manager->addCameraSceneNode(0, vector3df(25, 50, 30),
-                                                      vector3df(25, -30, -15));
-    norm_cam->setID(2);
-
-    m_track = Track::getTrack(norm_cam);
-    
+    // free camera
     ICameraSceneNode* cam;
     cam = m_scene_manager->addCameraSceneNodeMaya();
     cam->setID(1);
     cam->setFarValue(20000.f);
     cam->setTarget(vector3df(0, 0, 0));
     cam->setInputReceiverEnabled(false);
-    m_track->setFreeCamera(cam);
+    m_viewport->setFreeCamera(cam);
+
+    // viewport init
+    ICameraSceneNode* norm_cam;
+    norm_cam = m_scene_manager->addCameraSceneNode(0, vector3df(25, 50, 30),
+        vector3df(25, -30, -15));
+    norm_cam->setID(2);
+    m_viewport = Viewport::get(norm_cam, &m_mouse, &m_keys);
+    m_indicator = m_viewport->getIndicator();
+    m_scene_manager->setActiveCamera(norm_cam);
 
     m_toolbar = ToolBar::getToolBar();
     m_toolbox = ToolBox::getToolBox();
 
-    m_scene_manager->setActiveCamera(norm_cam);
     m_device->setEventReceiver(this);
-
-    m_indicator = m_track->getIndicator();
-
     return true;
 } // init
 
@@ -195,20 +193,17 @@ bool Editor::run()
 {
 	if (!m_device) return 0;
 
-
     long current_time = m_device->getTimer()->getTime();
     long last_time    = current_time;
 
-
 	while (m_device->run())
     {
-
         current_time = m_device->getTimer()->getTime();
-        m_track->animate(current_time - last_time);
+        m_viewport->animate(current_time - last_time);
 
 		// drawing
 		m_video_driver->beginScene(true, true, SColor(255, 80, 0, 170));
-		
+
         m_scene_manager->drawAll();
 		m_gui_env->drawAll();
 
@@ -222,15 +217,14 @@ bool Editor::run()
             m_toolbar->reallocate();
             m_toolbox->reallocate();
         }
-
         last_time = current_time;
     }
 
-    delete m_track;
+    delete m_viewport;
     delete m_toolbox;
     delete m_toolbar;
 
-    // crash ??? 
+    // crash ???
     // m_device->drop();
 
 	return 1;
@@ -283,7 +277,7 @@ bool Editor::OnEvent(const SEvent& event)
             case TerrPanel::INTENSITY:
             case TerrPanel::RADIUS:
                 TerrPanel::getTerrPanel()->refreshTerrModData();
-                m_track->setState(Track::TERRAIN_MOD);
+                m_viewport->setState(Viewport::TERRAIN_MOD);
                 return true;
             case RoadPanel::DL_DETAIL:
             case RoadPanel::DL_WIDTH:
@@ -300,7 +294,7 @@ bool Editor::OnEvent(const SEvent& event)
             case TerrPanel::H_MAX_CHECK_BOX:
             case TerrPanel::H_MIN_CHECK_BOX:
                 TerrPanel::getTerrPanel()->refreshTerrModData();
-                m_track->setState(Track::TERRAIN_MOD);
+                m_viewport->setState(Viewport::TERRAIN_MOD);
                 return true;
             default:
                 break;
@@ -314,14 +308,24 @@ bool Editor::OnEvent(const SEvent& event)
     // keyboard event
     if (event.EventType == EET_KEY_INPUT_EVENT)
     {
-        m_track->keyEvent(event.KeyInput.Key, event.KeyInput.PressedDown);
+        m_keys.keyEvent(event.KeyInput.Key, event.KeyInput.PressedDown);
         return true;
     }
 
     // mouse event
     if (event.EventType == EET_MOUSE_INPUT_EVENT)
     {
-        m_track->mouseEvent(event);
+        // check if mouse is outside of the viewport's domain
+        if (event.MouseInput.Y < 50 ||
+            event.MouseInput.X >(s32) m_screen_size.Width - 250)
+        {
+            m_viewport->looseFocus();
+            m_mouse.in_view = false;
+            return false;
+        }
+        m_mouse.in_view = true;
+        m_viewport->gainFocus();
+        m_mouse.refresh(event);
     }
 	return false;
 

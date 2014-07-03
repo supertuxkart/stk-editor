@@ -1,7 +1,7 @@
 #include "toolbox/roadpanel.hpp"
 #include "editor.hpp"
 
-#include "track.hpp"
+#include "viewport/viewport.hpp"
 #include "road/driveline.hpp"
 #include "road/bezier.hpp"
 #include "road/tcr.hpp"
@@ -56,8 +56,8 @@ void RoadPanel::init()
     IRoad* dl = new DriveLine(sm->getRootSceneNode(), sm, 0, spline);
 
     m_roads.insert(0, dl);
-    Track::getTrack()->setActiveRoad(dl);
-    Track::getTrack()->setSplineMode(false);
+    Viewport::get()->setActiveRoad(dl);
+    Viewport::get()->setSplineMode(false);
 
     m_insert = false;
 
@@ -67,7 +67,7 @@ void RoadPanel::init()
 // ----------------------------------------------------------------------------
 void RoadPanel::create()
 {
-    Track::getTrack()->setState(Track::SELECT);
+    Viewport::get()->setState(Viewport::SELECT);
     stringw type = m_spline_type_cb->getItem(m_spline_type_cb->getSelected());
     IRoad* rm;
 
@@ -85,7 +85,7 @@ void RoadPanel::create()
     m_cb->addItem(m_text_field->getText(),m_next_road_mesh_ID);
     m_cb->setSelected(m_next_road_mesh_ID);
 
-    Track::getTrack()->roadBorn(rm, m_text_field->getText());
+    Viewport::get()->roadBorn(rm, m_text_field->getText());
 
     m_next_road_mesh_ID++;
     stringw s = stringw(m_next_road_mesh_ID);
@@ -104,8 +104,8 @@ void RoadPanel::removeLastRoad()
     m_text_field->setText((stringw("RoadMesh_") + s).c_str());
 
     IRoad* r = m_roads.find(m_next_road_mesh_ID - 1)->getValue();
-    Track::getTrack()->setActiveRoad(r);
-    Track::getTrack()->setState(Track::SPLINE);
+    Viewport::get()->setActiveRoad(r);
+    Viewport::get()->setState(Viewport::SPLINE);
 
     m_cb->setSelected(m_next_road_mesh_ID-1);
 
@@ -119,8 +119,8 @@ void RoadPanel::restoreRoad(IRoad* road, stringw name)
 
     m_roads.insert(m_next_road_mesh_ID, road);
 
-    Track::getTrack()->setActiveRoad(road);
-    Track::getTrack()->setState(Track::SPLINE);
+    Viewport::get()->setActiveRoad(road);
+    Viewport::get()->setState(Viewport::SPLINE);
 
     m_next_road_mesh_ID++;
     stringw s = stringw(m_next_road_mesh_ID);
@@ -162,7 +162,7 @@ void RoadPanel::btnDown(int btn)
 void RoadPanel::select()
 {
     IRoad* r = m_roads.find(m_cb->getSelected())->getValue();
-    Track::getTrack()->setActiveRoad(r);
+    Viewport::get()->setActiveRoad(r);
 
 } // select
 

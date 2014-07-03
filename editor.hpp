@@ -15,10 +15,10 @@ using namespace scene;
 using namespace video;
 using namespace gui;
 
+class Indicator;
 class  ToolBar;
 class  ToolBox;
-class  Track;
-class  Indicator;
+class  Viewport;
 struct Mouse;
 struct Keys;
 
@@ -34,7 +34,8 @@ private:
 
     ToolBar*                    m_toolbar;
     ToolBox*                    m_toolbox;
-    Track*                      m_track;
+    Viewport*                   m_viewport;
+
     dimension2du                m_screen_size;
 
     Mouse                       m_mouse;
