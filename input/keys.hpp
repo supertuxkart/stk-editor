@@ -1,6 +1,10 @@
 #ifndef KEYS_HPP
 #define KEYS_HPP
 
+#include <irrlicht.h>
+
+using namespace irr;
+
 enum Key
 {
     W_PRESSED, // the first has to have id 0

@@ -4,6 +4,8 @@
 #include "track.hpp"
 #include "road/driveline.hpp"
 #include "road/bezier.hpp"
+#include "road/tcr.hpp"
+#include "road/road.hpp"
 
 RoadPanel* RoadPanel::m_road_panel = 0;
 
