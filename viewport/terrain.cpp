@@ -1,4 +1,4 @@
-#include "entities/terrain.hpp"
+#include "viewport/terrain.hpp"
 
 #include "editor.hpp"
 

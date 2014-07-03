@@ -1,6 +1,6 @@
 #include "commands/heightmodcmd.hpp"
 
-#include "entities/terrain.hpp"
+#include "viewport/terrain.hpp"
 #include "structs.hpp"
 
 #include <assert.h>

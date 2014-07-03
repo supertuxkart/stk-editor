@@ -3,7 +3,7 @@
 
 #include <irrlicht.h>
 
-#include "entities/terrain.hpp"
+#include "viewport/terrain.hpp"
 
 using namespace irr;
 using namespace gui;
