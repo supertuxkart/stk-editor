@@ -8,6 +8,15 @@
 #include "commands/texmodcmd.hpp"
 #include "commands/roadcommand.hpp"
 #include "commands/rccommand.hpp"
+#include "commands/iocommand.hpp"
+
+#include "input/mouse.hpp"
+#include "input/keys.hpp"
+
+#include "viewport/selection_handler.hpp"
+#include "viewport/aztec_camera.hpp"
+#include "viewport/indicator.hpp"
+#include "viewport/terrain.hpp"
 
 #include <assert.h>
 #include <iostream>
@@ -19,18 +28,18 @@ int    Track::m_last_entity_ID = MAGIC_NUMBER;
 void Track::animateEditing()
 {
 
-    if (m_spline_mode && m_selection_handler.getSelection().size() == 0)
-        m_selection_handler.selectNode(m_active_road->getSpline());
+    if (m_spline_mode && m_selection_handler->getSelection().size() == 0)
+        m_selection_handler->selectNode(m_active_road->getSpline());
 
     if (m_active_cmd)
     {
         IOCommand* m_active_obj_cmd = dynamic_cast<IOCommand*>(m_active_cmd);
 
-        if (m_mouse.left_btn_down)
+        if (m_mouse->left_btn_down)
         {
             m_active_obj_cmd->undo();
-            vector3df v = m_aztec_cam->getTransformedXdir() * m_mouse.dx() +
-                          m_aztec_cam->getTransformedZdir() * m_mouse.dy();
+            vector3df v = m_aztec_cam->getTransformedXdir() * m_mouse->dx() +
+                          m_aztec_cam->getTransformedZdir() * m_mouse->dy();
             m_active_obj_cmd->update(v.X,v.Y,v.Z);
             m_active_obj_cmd->redo();
             if (m_spline_mode)
@@ -40,10 +49,10 @@ void Track::animateEditing()
             }
 
         }
-        if (m_mouse.right_btn_down)
+        if (m_mouse->right_btn_down)
         {
             m_active_obj_cmd->undo();
-            m_active_obj_cmd->update(0.0f, (float)-m_mouse.dy(), 0.0f);
+            m_active_obj_cmd->update(0.0f, (float)-m_mouse->dy(), 0.0f);
             m_active_obj_cmd->redo();
             if (m_spline_mode)
             {
@@ -51,10 +60,10 @@ void Track::animateEditing()
                 m_active_road->refresh();
             }
         }
-        m_mouse.setStorePoint();
+        m_mouse->setStorePoint();
 
-        if ((m_mouse.rightPressed() && m_mouse.left_btn_down) ||
-            (m_mouse.leftPressed() && m_mouse.right_btn_down))
+        if ((m_mouse->rightPressed() && m_mouse->left_btn_down) ||
+            (m_mouse->leftPressed() && m_mouse->right_btn_down))
         {
             // cancel operation
             m_active_obj_cmd->undo();
@@ -66,54 +75,37 @@ void Track::animateEditing()
         }
     }
 
-    if (m_mouse.leftReleased() || m_mouse.rightReleased())
+    if (m_mouse->leftReleased() || m_mouse->rightReleased())
     {
         // operation finished - if there was any
         if (m_active_cmd != 0) m_command_handler.add(m_active_cmd);
         m_active_cmd = 0;
     }
 
-    if ((m_mouse.leftPressed() || m_mouse.rightPressed()) && !m_keys.state(SPACE_PRESSED))
+    if ((m_mouse->leftPressed() || m_mouse->rightPressed()) && !m_keys->state(SPACE_PRESSED))
     {
         // new operation start
         switch (m_state)
         {
         case MOVE:
-            m_active_cmd = new MoveCmd(m_selection_handler.getSelection(),
-                                       m_keys.state(SHIFT_PRESSED));
+            m_active_cmd = new MoveCmd(m_selection_handler->getSelection(),
+                                       m_keys->state(SHIFT_PRESSED));
             break;
         case ROTATE:
-            m_active_cmd = new RotateCmd(m_selection_handler.getSelection(),
-                                         m_keys.state(SHIFT_PRESSED));
+            m_active_cmd = new RotateCmd(m_selection_handler->getSelection(),
+                                         m_keys->state(SHIFT_PRESSED));
             break;
         case SCALE:
-            m_active_cmd = new ScaleCmd(m_selection_handler.getSelection(),
-                                        m_keys.state(SHIFT_PRESSED));
+            m_active_cmd = new ScaleCmd(m_selection_handler->getSelection(),
+                                        m_keys->state(SHIFT_PRESSED));
             break;
         default:
             break;
         }
-        m_mouse.setStorePoint();
+        m_mouse->setStorePoint();
     }
 
 } // animateEditing
-
-// ----------------------------------------------------------------------------
-void Track::animateSelection()
-{
-    if (m_mouse.leftPressed())
-    {
-        if (!m_keys.state(CTRL_PRESSED)) m_selection_handler.clearSelection();
-        int id = (m_spline_mode) ? ANOTHER_MAGIC_NUMBER : MAGIC_NUMBER;
-
-        ISceneNode* node;
-        node = Editor::getEditor()->getSceneManager()->getSceneCollisionManager()
-            ->getSceneNodeFromScreenCoordinatesBB(
-                vector2d<s32>(m_mouse.x, m_mouse.y), id);
-        if (node)
-            m_selection_handler.selectNode(node);
-    }
-} // animateSelection
 
 // ----------------------------------------------------------------------------
 void Track::animatePlacing()
@@ -122,23 +114,23 @@ void Track::animatePlacing()
     {
         ISceneCollisionManager* cm = Editor::getEditor()->getSceneManager()
             ->getSceneCollisionManager();
-        line3d<f32> r = cm->getRayFromScreenCoordinates(vector2d<s32>(m_mouse.x, m_mouse.y));
+        line3d<f32> r = cm->getRayFromScreenCoordinates(vector2d<s32>(m_mouse->x, m_mouse->y));
 
         m_new_entity->setPosition(vector3df(0, 0, 0));
         m_new_entity->updateAbsolutePosition();
         m_new_entity->setPosition(m_terrain->placeBBtoGround(m_new_entity->getTransformedBoundingBox(), r));
 
-        if (m_mouse.leftPressed() && !m_keys.state(SPACE_PRESSED))
+        if (m_mouse->leftPressed() && !m_keys->state(SPACE_PRESSED))
         {
             m_last_entity_ID++;
             m_new_entity->setID(m_last_entity_ID);
-            m_selection_handler.add(m_new_entity);
+            m_selection_handler->add(m_new_entity);
             list<ISceneNode*> list;
             list.push_back(m_new_entity);
             IOCommand* cmd = new CreateCmd(list);
             m_command_handler.add((ICommand*)cmd);
             m_new_entity = m_new_entity->clone();
-        } // m_mouse.leftPressed()
+        } // m_mouse->leftPressed()
     }
 } // animatePlacing
 
@@ -148,7 +140,7 @@ void Track::animateSplineEditing()
 
     ISceneCollisionManager* cm = Editor::getEditor()->getSceneManager()
         ->getSceneCollisionManager();
-    line3d<f32> r = cm->getRayFromScreenCoordinates(vector2d<s32>(m_mouse.x, m_mouse.y));
+    line3d<f32> r = cm->getRayFromScreenCoordinates(vector2d<s32>(m_mouse->x, m_mouse->y));
 
     m_junk_node->setPosition(vector3df(0, 0, 0));
     m_junk_node->updateAbsolutePosition();
@@ -161,16 +153,16 @@ void Track::animateSplineEditing()
     }
     
 
-    if (!m_active_cmd||(m_mouse.leftPressed() && !m_keys.state(SPACE_PRESSED)))
+    if (!m_active_cmd||(m_mouse->leftPressed() && !m_keys->state(SPACE_PRESSED)))
     {
         if (m_active_cmd)
             m_command_handler.add(m_active_cmd);
         RoadCommand* rc = new RoadCommand(m_active_road, RoadPanel::getRoadPanel()->isInsertMode());
         rc->updatePos(p);
         m_active_cmd = rc;
-    } // m_mouse.leftPressed()
+    } // m_mouse->leftPressed()
 
-    if (m_mouse.rightPressed())
+    if (m_mouse->rightPressed())
     {
         if (m_active_cmd)
         {
@@ -187,20 +179,20 @@ void Track::animateSplineEditing()
 // ----------------------------------------------------------------------------
 void Track::animateTerrainMod(long dt)
 {
-    if (!m_mouse.in_view) return;
+    if (!m_mouse->in_view) return;
 
     ISceneCollisionManager* cm;
     cm = Editor::getEditor()->getSceneManager()->getSceneCollisionManager();
     line3d<float> ray;
-    ray = cm->getRayFromScreenCoordinates(vector2d<s32>(m_mouse.x, m_mouse.y));
+    ray = cm->getRayFromScreenCoordinates(vector2d<s32>(m_mouse->x, m_mouse->y));
     TerrainMod* tm = TerrPanel::getTerrPanel()->getTerrainModData();
     tm->ray = ray;
 
     m_terrain->highlight(tm);
 
 
-    if (!m_keys.state(SPACE_PRESSED) &&
-        (m_mouse.leftPressed() || m_mouse.rightPressed()))
+    if (!m_keys->state(SPACE_PRESSED) &&
+        (m_mouse->leftPressed() || m_mouse->rightPressed()))
     {
         // new operation start
         switch (tm->type)
@@ -216,7 +208,7 @@ void Track::animateTerrainMod(long dt)
         }
     }
 
-    if (m_mouse.leftReleased() || m_mouse.rightReleased())
+    if (m_mouse->leftReleased() || m_mouse->rightReleased())
     {
         tm->countdown = -1;
         // operation finished - if there was any
@@ -231,10 +223,10 @@ void Track::animateTerrainMod(long dt)
     tm->countdown -= dt;
     if (tm->countdown > 0) return;
 
-    if (m_active_cmd && (m_mouse.left_btn_down || m_mouse.right_btn_down))
+    if (m_active_cmd && (m_mouse->left_btn_down || m_mouse->right_btn_down))
     {
         tm->countdown = TERRAIN_WAIT_TIME;
-        if (m_mouse.right_btn_down) tm->left_click = false;
+        if (m_mouse->right_btn_down) tm->left_click = false;
         else tm->left_click = true;
         m_terrain->modify(tm);
     }
@@ -296,7 +288,7 @@ void Track::init(ICameraSceneNode* cam)
     m_junk_node = sm->addSphereSceneNode(3);
     m_junk_node->setVisible(false);
 
-    m_aztec_cam = new AztecCamera(cam, &m_mouse, &m_keys, m_indicator);
+    m_aztec_cam = new AztecCamera(cam, m_mouse, m_keys, m_indicator);
 
 } // init
 
@@ -328,7 +320,7 @@ void Track::setState(State state)
 // ----------------------------------------------------------------------------
 void Track::keyEvent(EKEY_CODE code, bool pressed)
 {
-    m_keys.keyEvent(code, pressed);
+    m_keys->keyEvent(code, pressed);
 } // keyEvent
 
 // ----------------------------------------------------------------------------
@@ -341,24 +333,24 @@ void Track::mouseEvent(const SEvent& e)
     {
         if (m_new_entity && m_new_entity->isVisible())
             m_new_entity->setVisible(false);
-        m_mouse.in_view = false;
+        m_mouse->in_view = false;
         return;
     }
 
-    m_mouse.in_view = true;
+    m_mouse->in_view = true;
     if (m_new_entity && !m_new_entity->isVisible())
         m_new_entity->setVisible(true);
 
-    m_mouse.refresh(e);
+    m_mouse->refresh(e);
 
 } // mouseEvent
 
 // ----------------------------------------------------------------------------
 void Track::deleteCmd()
 {
-    IOCommand* dcmd = new DelCmd(m_selection_handler.getSelection());
+    IOCommand* dcmd = new DelCmd(m_selection_handler->getSelection());
 
-    m_selection_handler.clearSelection();
+    m_selection_handler->clearSelection();
     dcmd->redo();
     m_command_handler.add((ICommand*)dcmd);
 
@@ -392,12 +384,15 @@ void Track::animate(long dt)
         case ROTATE:
         case SCALE:
             // holding ctrl down will let you select elements in move/rotate state
-            if (m_keys.state(CTRL_PRESSED)) animateSelection();
+            if (m_keys->state(CTRL_PRESSED)) 
+                m_selection_handler->animate(m_spline_mode ? ANOTHER_MAGIC_NUMBER
+                                                           : MAGIC_NUMBER);
             else animateEditing();
             return;
 
         case SELECT:
-            animateSelection();
+            m_selection_handler->animate(m_spline_mode ? ANOTHER_MAGIC_NUMBER 
+                                                       : MAGIC_NUMBER);
             return;
         case PLACE:
             animatePlacing();
@@ -419,7 +414,7 @@ void Track::animate(long dt)
 void Track::setSplineMode(bool b)
 {
     if (b != m_spline_mode)
-        m_selection_handler.clearSelection();
+        m_selection_handler->clearSelection();
     m_spline_mode = b;
     m_active_road->getSpline()->setNodeVisibility(m_spline_mode);
 } // setSplineMode

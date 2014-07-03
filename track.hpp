@@ -2,31 +2,20 @@
 #define TRACK_HPP
 
 #include "commands/commandhandler.hpp"
-#include "commands/iocommand.hpp"
-#include "commands/itcommand.hpp"
-
-#include "viewport/indicator.hpp"
-#include "viewport/selection_handler.hpp"
-#include "viewport/aztec_camera.hpp"
-
-#include "input/mouse.hpp"
-#include "input/keys.hpp"
-
-#include "entities/terrain.hpp"
-
-#include "road/bezier.hpp"
-#include "road/tcr.hpp"
-#include "road/road.hpp"
-#include "road/driveline.hpp"
 
 #include <irrlicht.h>
 
-class Entity;
+class  Terrain;
+class  IRoad;
+class  SelectionHandler;
+class  AztecCamera;
+class  Indicator;
+struct Mouse;
+struct Keys;
 
 using namespace irr;
 using namespace scene;
 using namespace core;
-
 
 class Track
 {
@@ -50,10 +39,10 @@ private:
 
     State                   m_state;
 
-    Mouse                   m_mouse;
-    Keys                    m_keys;
+    Mouse*                  m_mouse;
+    Keys*                   m_keys;
 
-    SelectionHandler        m_selection_handler;
+    SelectionHandler*       m_selection_handler;
 
     ISceneNode*             m_new_entity;
 
@@ -81,7 +70,6 @@ private:
     Track() {};
 
     void                    animateEditing();
-    void                    animateSelection();
     void                    animatePlacing();
     void                    animateSplineEditing();
     void                    animateTerrainMod(long dt);
@@ -107,7 +95,6 @@ public:
     bool          getSplineMode()                        { return m_spline_mode;      }
 
     Indicator*    getIndicator()                         { return m_indicator;        }
-    void          exprtTerrain()                         { m_terrain->exprt(); }
     
     ~Track();
 

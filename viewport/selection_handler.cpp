@@ -1,5 +1,9 @@
 #include "viewport/selection_handler.hpp"
 
+#include "editor.hpp"
+
+#include "input/keys.hpp"
+#include "input/mouse.hpp"
 
 
 void SelectionHandler::clearSelection()
@@ -35,4 +39,20 @@ void SelectionHandler::selectNode(ISceneNode* node)
     m_selected_elements.push_back(node);
     node->setDebugDataVisible(EDS_BBOX);
 }
+
+// ----------------------------------------------------------------------------
+void SelectionHandler::animate(u32 id)
+{
+    if (m_mouse->leftPressed())
+    {
+        if (!m_keys->state(CTRL_PRESSED)) clearSelection();
+
+        ISceneNode* node;
+        node = Editor::getEditor()->getSceneManager()->getSceneCollisionManager()
+            ->getSceneNodeFromScreenCoordinatesBB(
+            vector2d<s32>(m_mouse->x, m_mouse->y), id);
+        if (node)
+            selectNode(node);
+    }
+} // animate
 
