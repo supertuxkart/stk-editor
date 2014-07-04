@@ -23,7 +23,7 @@ ifeq (,$(wildcard $(IRR_LIB)))
 $(warning Attempting to link irrlicht dynamically)
 endif
 
-CXXFLAGS += -isystem $(IRR_INCLUDE) -I.
+CXXFLAGS += -isystem $(IRR_INCLUDE) -I src.
 LDFLAGS += $(IRR_LIB)
 
 CXXFLAGS += -Wall -Wextra -g
