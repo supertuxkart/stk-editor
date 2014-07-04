@@ -6,6 +6,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <stdio.h>
 
 // ----------------------------------------------------------------------------
 Track::~Track()
@@ -24,14 +25,29 @@ void Track::create(u32 tx, u32 tz)
 // ----------------------------------------------------------------------------
 void Track::load(path file)
 {
+    delete m_terrain;
 
-}
+    FILE* pFile;
+    pFile = fopen(file.c_str(), "rb");
+
+    ISceneManager* sm = Editor::getEditor()->getSceneManager();
+    m_terrain = new Terrain(sm->getRootSceneNode(), sm, 1, pFile);
+    fclose(pFile);
+
+} // load
 
 // ----------------------------------------------------------------------------
 void Track::save(path file)
 {
+  FILE* pFile;
 
-}
+  char buffer[] = { 'x' , 'y' , 'z' };
+  pFile = fopen(file.c_str(), "wb");
+  
+  m_terrain->save(pFile);
+
+  fclose(pFile);
+} // save
 
 // ----------------------------------------------------------------------------
 void Track::quit()

@@ -4,6 +4,7 @@
 #include "mesh/mesh_structs.hpp"
 
 #include <irrlicht.h>
+#include <stdio.h>
 
 using namespace irr;
 using namespace scene;
@@ -21,6 +22,7 @@ private:
 
     // terrain size
     f32                 m_x, m_z;
+    u32                 m_nx, m_nz;
 
     aabbox3d<f32>       m_bounding_box;
 
@@ -43,7 +45,6 @@ private:
 // ----------------------------------------------------------------------------
 public:
     // vertex count in a single row/column
-    const int                 m_nx, m_nz;
     static const u32          SPIMG_X;
     static const u32          SPIMG_Y;
 
@@ -79,6 +80,9 @@ public:
     Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id,
                   float x, float z, int nx, int nz);
 
+    Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp);
+                                         
+
     ~Terrain();
 
     void         modify   (TerrainMod* tm);
@@ -87,9 +91,13 @@ public:
 
     vector3df    placeBBtoGround(const aabbox3d<f32>& box, line3d<float> ray);
 
-    void        setHighlightVisibility(bool b) { m_highlight_visible = b; }
+    void         setHighlightVisibility(bool b) { m_highlight_visible = b; }
 
-    void        build();
+    u32          getNX() { return m_nx; }
+    u32          getNZ() { return m_nz; }
+
+    void         build();
+    void         save(FILE* file);
 
 // ----------------------------------------------------------------------------
     // inherited functions - ISceneNode

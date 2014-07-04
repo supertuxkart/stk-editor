@@ -96,6 +96,7 @@ public:
 
     void                setFreeCamera(ICameraSceneNode* cam) { m_free_camera = cam;  }
     bool                getSplineMode()                      { return m_spline_mode; }
+    Track*              getTrack()                           { return m_track;       }
 
     ~Viewport();
 

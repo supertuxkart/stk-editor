@@ -197,7 +197,7 @@ void Viewport::animateTerrainMod(long dt)
         switch (tm->type)
         {
         case HEIGHT_MOD:
-            tm->cmd = new HeightModCmd(m_terrain,m_terrain->m_nx, m_terrain->m_nz);
+            tm->cmd = new HeightModCmd(m_terrain,m_terrain->getNX(), m_terrain->getNZ());
             m_active_cmd = tm->cmd;
             break;
         default:

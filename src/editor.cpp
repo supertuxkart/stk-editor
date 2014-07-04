@@ -57,6 +57,12 @@ bool Editor::buttonClicked(int ID)
         return true;
     case ToolBar::TBI_NEW:
         return true;
+    case ToolBar::TBI_SAVE:
+        m_viewport->getTrack()->save("maps/map.stk");
+        return true;
+    case ToolBar::TBI_OPEN:
+        m_viewport->getTrack()->load("maps/map.stk");
+        return true;
     // ToolBox BTN:
     case ToolBox::TWND_ID:
     case ToolBox::EWND_ID:

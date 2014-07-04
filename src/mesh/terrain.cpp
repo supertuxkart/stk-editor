@@ -8,8 +8,8 @@
 
 #include <algorithm>
 
-const u32 Terrain::SPIMG_X = 512;
-const u32 Terrain::SPIMG_Y = 512;
+const u32 Terrain::SPIMG_X = 1024;
+const u32 Terrain::SPIMG_Y = 1024;
 
 // ----------------------------------------------------------------------------
 /**  Always set m_fp before calling this function!!!
@@ -140,8 +140,8 @@ bool Terrain::intersectionPoint(const line3df& ray, float r,
     float     t = -p1.Y / v.Y;
     vector3df p = vector3df(p1.X + v.X * t, 0, p1.Z + v.Z * t);
 
-    int iix = (int) (p.X / (m_x / m_nx) + 0.5);
-    int iiz = (int) (p.Z / (m_z / m_nz) + 0.5);
+    u32 iix = (int) (p.X / (m_x / m_nx) + 0.5);
+    u32 iiz = (int) (p.Z / (m_z / m_nz) + 0.5);
 
     if (iix < 0 || iiz < 0 || iix >= m_nx || iiz >= m_nz)
     {
@@ -179,8 +179,8 @@ void Terrain::recalculateNormals()
 {
     vector3df a, b, c, d;
     vector3df cp;
-    for (int j = 1; j < m_nz - 1; j++)
-        for (int i = 1; i < m_nx - 1; i++)
+    for (u32 j = 1; j < m_nz - 1; j++)
+        for (u32 i = 1; i < m_nx - 1; i++)
         {
             cp = m_mesh.vertices[j * m_nx + i].Pos;
             a = m_mesh.vertices[(j - 1) * m_nx + i].Pos - cp;
@@ -259,8 +259,8 @@ void Terrain::draw(const TerrainMod& tm)
     float     t = -p1.Y / v.Y;
     vector3df p = vector3df(p1.X + v.X * t, 0, p1.Z + v.Z * t);
 
-    int ix = (int)(p.X / (m_x / m_nx) + 0.5);
-    int iz = (int)(p.Z / (m_z / m_nz) + 0.5);
+    u32 ix = (int)(p.X / (m_x / m_nx) + 0.5);
+    u32 iz = (int)(p.Z / (m_z / m_nz) + 0.5);
 
     if (ix < 0 || iz < 0 || ix >= m_nx || iz >= m_nz) return;
 
@@ -408,6 +408,61 @@ Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id,
 } // Terrain
 
 // ----------------------------------------------------------------------------
+Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
+                                              :ISceneNode(parent, mgr, id)
+{
+    fread(&m_x, sizeof(f32), 1, fp);
+    fread(&m_z, sizeof(f32), 1, fp);
+
+    fread(&m_nx, sizeof(u32), 1, fp);
+    fread(&m_nz, sizeof(u32), 1, fp);
+
+    m_bounding_box = aabbox3d<f32>(0, 0, 0, m_x, 0, m_z);
+
+    m_tile_num_x = 10;
+    m_tile_num_z = 10;
+
+    m_mesh.vertex_count = m_nx * m_nz;
+    m_mesh.vertices = new S3DVertex2TCoords[m_mesh.vertex_count];
+
+    m_mesh.quad_count = (m_nx - 1) * (m_nz - 1);
+    m_mesh.indices = new u16[m_mesh.quad_count * 6];
+
+    for (u32 j = 0; j < m_nz; j++)
+    for (u32 i = 0; i < m_nx; i++)
+    {
+        m_mesh.vertices[j * m_nx + i].Pos = 
+            vector3df(m_x / m_nx * i, 0, m_z / m_nz *j);
+
+        fread(&m_mesh.vertices[j * m_nx + i].Pos.Y, sizeof(f32), 1, fp);
+
+        m_mesh.vertices[j * m_nx + i].Color = SColor(255, 0, 200, 100);
+
+        m_mesh.vertices[j * m_nx + i].TCoords =
+            vector2df(i / (float)m_nx * m_tile_num_x, j / (float)m_nz * m_tile_num_z);
+
+        m_mesh.vertices[j * m_nx + i].TCoords2 = 
+            vector2df(i / (float)m_nx, j / (float)m_nz);
+    }
+
+    createIndexList(m_mesh.indices, m_nx, m_nz);
+
+    recalculateNormals();
+
+    m_highlight_mesh.vertices = 0;
+    m_highlight_mesh.indices = 0;
+
+    initMaterials();
+
+    fread(m_material.getTexture(0)->lock(ETLM_WRITE_ONLY), sizeof(u8),
+                                             4 * SPIMG_X*SPIMG_Y, fp);
+    m_material.getTexture(0)->unlock();
+
+    m_highlight_visible = false;
+
+} // Terrain - fp
+
+// ----------------------------------------------------------------------------
 Terrain::~Terrain()
 {
     if (m_mesh.vertices) delete[] m_mesh.vertices;
@@ -534,6 +589,28 @@ void Terrain::build()
 
 } // build
 
+// ----------------------------------------------------------------------------
+void Terrain::save(FILE* file)
+{
+    fwrite(&m_x, sizeof(f32), 1, file);
+    fwrite(&m_z, sizeof(f32), 1, file);
+
+    fwrite(&m_nx, sizeof(u32), 1, file);
+    fwrite(&m_nz, sizeof(u32), 1, file);
+
+    for (u32 j = 0; j < m_nz; j++)
+        for (u32 i = 0; i < m_nx; i++)
+        {
+            fwrite(&m_mesh.vertices[m_nx*j + i].Pos.Y, sizeof(f32), 1, file);
+        }
+    fwrite(&SPIMG_X, sizeof(u32), 1, file);
+    fwrite(&SPIMG_Y, sizeof(u32), 1, file);
+    fwrite(m_material.getTexture(0)->lock(ETLM_READ_ONLY), 
+                      sizeof(u8), 4*SPIMG_X * SPIMG_Y, file);
+    
+    m_material.getTexture(0)->unlock();
+
+} // save
 
 // ----------------------------------------------------------------------------
 void Terrain::OnRegisterSceneNode()
