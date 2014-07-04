@@ -77,7 +77,7 @@ void DriveLine::refresh()
 } // refresh
 
 // ----------------------------------------------------------------------------
-void DriveLine::exprt()
+void DriveLine::build()
 {
     std::ofstream quads;
     quads.open("export/quads.xml");

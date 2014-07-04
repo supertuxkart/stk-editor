@@ -11,6 +11,7 @@ class  IRoad;
 class  SelectionHandler;
 class  AztecCamera;
 class  Indicator;
+class  DriveLine;
 struct Mouse;
 struct Keys;
 
@@ -78,7 +79,7 @@ public:
     void                init(ICameraSceneNode* cam, Mouse* m, Keys* k);
     void                setState(State state);
     void                deleteCmd();
-    void                setNewEntity(const stringw path);
+    void                setNewEntity(const stringw path, const stringw name);
     void                animate(long dt);
     void                setSplineMode(bool b);
     void                setActiveRoad(IRoad* r);
@@ -88,6 +89,8 @@ public:
     void                looseFocus();
     void                gainFocus();
     void                setTrack(Track* t);
+    void                setDriveLine(DriveLine* dl);
+    void                build();
 
     Indicator*          getIndicator();
 

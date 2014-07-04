@@ -1,5 +1,7 @@
 #include "gui/road_panel.hpp"
+
 #include "editor.hpp"
+#include "track.hpp"
 
 #include "viewport/viewport.hpp"
 #include "mesh/driveline.hpp"
@@ -58,6 +60,7 @@ void RoadPanel::init()
     m_roads.insert(0, dl);
     Viewport::get()->setActiveRoad(dl);
     Viewport::get()->setSplineMode(false);
+    Viewport::get()->setDriveLine((DriveLine*)dl);
 
     m_insert = false;
 

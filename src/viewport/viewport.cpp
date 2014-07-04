@@ -174,7 +174,6 @@ void Viewport::animateSplineEditing()
         setState(SELECT);
     }
 
-
 } // animateSplineEditing
 
 // ----------------------------------------------------------------------------
@@ -290,7 +289,6 @@ void Viewport::init(ICameraSceneNode* cam = 0, Mouse* m = 0, Keys* k = 0)
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
     m_junk_node = sm->addSphereSceneNode(3);
     m_junk_node->setVisible(false);
-
 } // init
 
 // ----------------------------------------------------------------------------
@@ -330,7 +328,7 @@ void Viewport::deleteCmd()
 } //deleteCmd
 
 // ----------------------------------------------------------------------------
-void Viewport::setNewEntity(const stringw path)
+void Viewport::setNewEntity(const stringw path, const stringw name)
 {
     if (m_state != PLACE)
         setState(PLACE);
@@ -342,6 +340,7 @@ void Viewport::setNewEntity(const stringw path)
 
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
     m_new_entity = sm->addAnimatedMeshSceneNode(sm->getMesh(path));
+    m_new_entity->setName(name);
 
 } // setNewEntity
 
@@ -461,6 +460,18 @@ void Viewport::setTrack(Track* t)
     m_track = t;
     m_terrain = m_track->getTerrain();
 } // setTrack
+
+// ----------------------------------------------------------------------------
+void Viewport::setDriveLine(DriveLine* dl)
+{
+    m_track->setDriveLine(dl);
+} // setTrack
+
+// ----------------------------------------------------------------------------
+void Viewport::build()
+{
+    m_track->build();
+} // build
 
 // ----------------------------------------------------------------------------
 Indicator*  Viewport::getIndicator()

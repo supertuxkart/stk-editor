@@ -52,8 +52,10 @@ bool Editor::buttonClicked(int ID)
     case ToolBar::TBI_SPLINE:
         m_viewport->setSplineMode(!m_viewport->getSplineMode());
         return true;
+    case ToolBar::TBI_TRY:
+        m_viewport->build();
+        return true;
     case ToolBar::TBI_NEW:
-        RoadPanel::getRoadPanel()->getDriveLine()->exprt();
         return true;
     // ToolBox BTN:
     case ToolBox::TWND_ID:
@@ -100,7 +102,8 @@ bool Editor::buttonClicked(int ID)
     {
         // element is picked from env panel
         m_viewport->setSplineMode(false);
-        m_viewport->setNewEntity(EnvPanel::getEnvPanel()->getModelPathFromBtnId(ID));
+        m_viewport->setNewEntity(EnvPanel::getEnvPanel()->getModelPathFromBtnId(ID),
+                                 EnvPanel::getEnvPanel()->getModelNameFromBtnId(ID));
         return true;
     }
     if (ID == ep->FIRST_BTN_ID + ep->getBtnNum())

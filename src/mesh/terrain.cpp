@@ -2,6 +2,8 @@
 
 #include "editor.hpp"
 
+#include "mesh/shader.hpp"
+
 #include "commands/iterrain_cmd.hpp"
 
 #include <algorithm>
@@ -215,8 +217,8 @@ void Terrain::initMaterials()
 
     IGPUProgrammingServices* gpu = vd->getGPUProgrammingServices();
     s32 material_type;
-    material_type = gpu->addHighLevelShaderMaterialFromFiles(
-        "terrainshader.vs", "terrainshader.ps", this, EMT_SOLID);
+    material_type = gpu->addHighLevelShaderMaterial(
+        vs, ps, this, EMT_SOLID);
 
     m_material.MaterialType = (E_MATERIAL_TYPE)material_type;
 
@@ -502,7 +504,7 @@ vector3df Terrain::placeBBtoGround(const aabbox3d<f32>& box, line3d<float> ray)
 } // placeBBtoGround
 
 // ----------------------------------------------------------------------------
-void Terrain::exprt()
+void Terrain::build()
 {
     IrrlichtDevice* device = Editor::getEditor()->getDevice();
 
@@ -530,7 +532,7 @@ void Terrain::exprt()
     file->drop();
     mw->drop();
 
-} // exprt
+} // build
 
 
 // ----------------------------------------------------------------------------

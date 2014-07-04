@@ -44,7 +44,8 @@ private:
 
 public:
     static EnvPanel*    getEnvPanel(IGUIWindow* wndw = 0);
-    stringw             getModelPathFromBtnId(int ID);
+    stringw             getModelPathFromBtnId(u32 ID);
+    stringw             getModelNameFromBtnId(u32 ID);
     void                refreshBtnTable();
     void                reallocate(dimension2du ss);
 

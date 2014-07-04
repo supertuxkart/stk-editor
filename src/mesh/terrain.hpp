@@ -89,7 +89,7 @@ public:
 
     void        setHighlightVisibility(bool b) { m_highlight_visible = b; }
 
-    void        exprt();
+    void        build();
 
 // ----------------------------------------------------------------------------
     // inherited functions - ISceneNode

@@ -9,6 +9,7 @@ using namespace core;
 
 class IRoad;
 class DriveLine;
+class Track;
 
 class RoadPanel
 {
@@ -32,6 +33,8 @@ private:
     // private variables:
 
     static RoadPanel*            m_road_panel;
+
+    Track*                       m_track;
                                  
     IGUIWindow*                  m_wndw;
                                  
