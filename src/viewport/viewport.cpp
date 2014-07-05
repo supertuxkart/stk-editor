@@ -347,7 +347,7 @@ void Viewport::setNewEntity(const stringw path, const stringw name)
 // ----------------------------------------------------------------------------
 void Viewport::animate(long dt)
 {
-    assert(m_terrain);
+    if ((!m_track) || (!m_terrain)) return;
     if (m_state != FREECAM)
     {
         m_aztec_cam->animate((f32)dt);
@@ -389,7 +389,8 @@ void Viewport::setSplineMode(bool b)
     if (b != m_spline_mode)
         m_selection_handler->clearSelection();
     m_spline_mode = b;
-    m_active_road->getSpline()->setNodeVisibility(m_spline_mode);
+    if (m_active_road)
+        m_active_road->getSpline()->setNodeVisibility(m_spline_mode);
 } // setSplineMode
 
 
@@ -472,6 +473,21 @@ void Viewport::build()
 {
     m_track->build();
 } // build
+
+void Viewport::clear()
+{
+    m_command_handler.clear();
+    if (m_new_entity) m_new_entity->remove();
+    m_new_entity = 0;
+    m_last_entity_ID = MAGIC_NUMBER;
+    if (m_track)
+    {
+        m_track->quit();
+        delete m_track;
+        m_track = 0;
+    }
+
+} // clear
 
 // ----------------------------------------------------------------------------
 Indicator*  Viewport::getIndicator()

@@ -13,22 +13,26 @@ class DriveLine;
 class Track
 {
 private:
-    stringw     m_name;
-    stringw     m_author;
+    stringw     m_track_name;
+    stringw     m_designer;
+    stringc     m_file_name;
     Terrain*    m_terrain;
     DriveLine*  m_driveline;
 public:
-    Track()     { m_terrain = 0; }
+
+    Track(u32 tx, u32 tz);
+    Track(path file);
+
     ~Track();
 
-    void       create(u32 tx, u32 tz);
-    void       load(path file);
-    void       save(path file);
+    void       save();
     void       quit();
     void       build();
                
-    void       setName(stringw n)           { m_name   = n;     }
-    void       setAuthor(stringw a)         { m_author = a;     }
+    void       setTrackName(stringw n)      { m_track_name   = n; }
+    void       setFileName(stringc n)       { m_file_name = n;    }
+    void       setDesigner(stringw d)       { m_designer     = d; }
+    
     void       setDriveLine(DriveLine* dl)  { m_driveline = dl; }
     Terrain*   getTerrain()                 { return m_terrain; }    
 

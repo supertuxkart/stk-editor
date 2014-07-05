@@ -46,3 +46,11 @@ void CommandHandler::undo()
     }
 } // undo
 
+// ----------------------------------------------------------------------------
+void CommandHandler::clear()
+{
+    std::list<ICmd*>::iterator it;
+    for (it = m_cmd_stack.begin(); it != m_cmd_stack.end(); it++) delete (*it);
+    m_cmd_stack.clear();
+} // undo
+

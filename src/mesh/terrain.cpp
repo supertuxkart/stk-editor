@@ -7,6 +7,7 @@
 #include "commands/iterrain_cmd.hpp"
 
 #include <algorithm>
+#include <assert.h>
 
 const u32 Terrain::SPIMG_X = 1024;
 const u32 Terrain::SPIMG_Y = 1024;
@@ -454,6 +455,12 @@ Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
 
     initMaterials();
 
+    u32 x, y;
+    fread(&x, sizeof(u32), 1, fp);
+    fread(&y, sizeof(u32), 1, fp);
+
+    assert(x == SPIMG_X && y == SPIMG_Y);
+    
     fread(m_material.getTexture(0)->lock(ETLM_WRITE_ONLY), sizeof(u8),
                                              4 * SPIMG_X*SPIMG_Y, fp);
     m_material.getTexture(0)->unlock();
@@ -461,6 +468,7 @@ Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
     m_highlight_visible = false;
 
 } // Terrain - fp
+
 
 // ----------------------------------------------------------------------------
 Terrain::~Terrain()

@@ -14,10 +14,12 @@ using namespace core;
 using namespace scene;
 using namespace video;
 using namespace gui;
+using namespace io;
 
 class Indicator;
 class  ToolBar;
 class  ToolBox;
+class  NewDialogWndw;
 class  Viewport;
 struct Mouse;
 struct Keys;
@@ -34,7 +36,10 @@ private:
 
     ToolBar*                    m_toolbar;
     ToolBox*                    m_toolbox;
+    NewDialogWndw*              m_new_dialog_wndw;
     Viewport*                   m_viewport;
+
+    path                        m_def_wd;
 
     dimension2du                m_screen_size;
 
@@ -51,6 +56,8 @@ public:
     static Editor*    getEditor(dimension2du screen_size = dimension2du(1280, 720));
 	bool		      run();
 	virtual bool      OnEvent(const SEvent& event);
+    void              newTrack();
+    void              closeTrack();
 
     static ITexture*  loadImg(const stringw& file_path);
 

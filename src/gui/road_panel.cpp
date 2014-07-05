@@ -58,10 +58,6 @@ void RoadPanel::init()
     IRoad* dl = new DriveLine(sm->getRootSceneNode(), sm, 0, spline);
 
     m_roads.insert(0, dl);
-    Viewport::get()->setActiveRoad(dl);
-    Viewport::get()->setSplineMode(false);
-    Viewport::get()->setDriveLine((DriveLine*)dl);
-
     m_insert = false;
 
 } // init

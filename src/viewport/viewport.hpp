@@ -91,12 +91,16 @@ public:
     void                setTrack(Track* t);
     void                setDriveLine(DriveLine* dl);
     void                build();
+    void                clear();
 
     Indicator*          getIndicator();
 
-    void                setFreeCamera(ICameraSceneNode* cam) { m_free_camera = cam;  }
-    bool                getSplineMode()                      { return m_spline_mode; }
-    Track*              getTrack()                           { return m_track;       }
+    void                setFreeCamera(ICameraSceneNode* cam) { m_free_camera = cam;    }
+    static void         setLastEntityID(u32 id)              { m_last_entity_ID = id;  }
+    static u32          getLastEntityID()                    { return m_last_entity_ID;}
+    bool                getSplineMode()                      { return m_spline_mode;   }
+    Track*              getTrack()                           { return m_track;         }
+    
 
     ~Viewport();
 

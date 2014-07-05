@@ -4,6 +4,7 @@
 #include "viewport/viewport.hpp"
 #include "viewport/indicator.hpp"
 
+#include "gui/new_dialog_wndw.hpp"
 #include "gui/toolbar.hpp"
 #include "gui/toolbox.hpp"
 #include "gui/env_panel.hpp"
@@ -56,12 +57,18 @@ bool Editor::buttonClicked(int ID)
         m_viewport->build();
         return true;
     case ToolBar::TBI_NEW:
+        m_new_dialog_wndw->show();
         return true;
     case ToolBar::TBI_SAVE:
-        m_viewport->getTrack()->save("maps/map.stk");
+        m_viewport->getTrack()->save();
         return true;
     case ToolBar::TBI_OPEN:
-        m_viewport->getTrack()->load("maps/map.stk");
+        m_gui_env->addFileOpenDialog(L"Open track:", true, 0, -1, false, "maps");
+        return true;
+    // new window
+    case NewDialogWndw::BTN_ID:
+        newTrack();
+        m_new_dialog_wndw->hide();
         return true;
     // ToolBox BTN:
     case ToolBox::TWND_ID:
@@ -140,6 +147,8 @@ bool Editor::init()
 	m_scene_manager = m_device->getSceneManager();
 	m_gui_env       = m_device->getGUIEnvironment();
 
+    m_def_wd        = m_device->getFileSystem()->getWorkingDirectory();
+
     // fonts
     IGUISkin* skin = m_gui_env->getSkin();
     IGUIFont* font = m_gui_env->getFont(L"font/font2.png");
@@ -181,14 +190,14 @@ bool Editor::init()
 
     // track init - temporary!!!
 
-    Track* t = new Track();
-    t->create(50, 50);
-    m_viewport->setTrack(t);
+    // Track* t = new Track(50, 50);
+    // m_viewport->setTrack(t);
     // track init 
 
 
     m_toolbar = ToolBar::getToolBar();
     m_toolbox = ToolBox::getToolBox();
+    m_new_dialog_wndw = NewDialogWndw::get();
 
     m_device->setEventReceiver(this);
     return true;
@@ -256,16 +265,14 @@ bool Editor::OnEvent(const SEvent& event)
     if (event.EventType == EET_GUI_EVENT)
     {
         s32 id = event.GUIEvent.Caller->getID();
-
-        if (event.GUIEvent.EventType == EGET_BUTTON_CLICKED)
+        switch (event.GUIEvent.EventType)
         {
+        case EGET_BUTTON_CLICKED:
             m_gui_env->removeFocus(m_gui_env->getFocus()->getParent());
             return buttonClicked(id);
-        }
-        else
-        if (event.GUIEvent.EventType == EGET_COMBO_BOX_CHANGED)
-        {
-            switch (event.GUIEvent.Caller->getID())
+
+        case EGET_COMBO_BOX_CHANGED:
+            switch (id)
             {
             case EnvPanel::CB_ID:
                 EnvPanel::getEnvPanel()->resetIndex();
@@ -277,10 +284,10 @@ bool Editor::OnEvent(const SEvent& event)
             default:
                 break;
             }
-        } // GUIEvent.EventType == EGET_COMBO_BOX_CHANGED
-        if (event.GUIEvent.EventType == EGET_EDITBOX_CHANGED)
-        {
-            switch (event.GUIEvent.Caller->getID())
+            return false;
+            
+        case EGET_EDITBOX_CHANGED:
+            switch (id)
             {
             case EnvPanel::SF_ID:
                 EnvPanel::getEnvPanel()->resetIndex();
@@ -289,10 +296,10 @@ bool Editor::OnEvent(const SEvent& event)
             default:
                 break;
             }
-        }
-        if (event.GUIEvent.EventType == EGET_SCROLL_BAR_CHANGED)
-        {
-            switch (event.GUIEvent.Caller->getID())
+            return false;
+
+        case EGET_SCROLL_BAR_CHANGED:
+            switch (id)
             {
             case TerrPanel::INTENSITY:
             case TerrPanel::RADIUS:
@@ -306,10 +313,10 @@ bool Editor::OnEvent(const SEvent& event)
             default:
                 break;
             }
-        }
-        if (event.GUIEvent.EventType == EGET_CHECKBOX_CHANGED)
-        {
-            switch (event.GUIEvent.Caller->getID())
+            return false;
+
+        case EGET_CHECKBOX_CHANGED:
+            switch (id)
             {
             case TerrPanel::H_MAX_CHECK_BOX:
             case TerrPanel::H_MIN_CHECK_BOX:
@@ -319,6 +326,16 @@ bool Editor::OnEvent(const SEvent& event)
             default:
                 break;
             }
+            return false;
+
+        case EGET_FILE_SELECTED:
+            IGUIFileOpenDialog* dialog =
+                (IGUIFileOpenDialog*)event.GUIEvent.Caller;
+            closeTrack();
+            m_device->getFileSystem()->changeWorkingDirectoryTo(m_def_wd);
+            Track* t = new Track(path(dialog->getFileName()).c_str());
+            m_viewport->setTrack(t);
+            return true;
         }
     } // EventType == EET_GUI_EVENT
 
@@ -350,6 +367,26 @@ bool Editor::OnEvent(const SEvent& event)
 	return false;
 
 } // OnEvent
+
+// ----------------------------------------------------------------------------
+void Editor::newTrack()
+{
+    closeTrack();
+    u32 size = m_new_dialog_wndw->getSize();
+    Track* t = new Track(size, size);
+
+    t->setFileName(m_new_dialog_wndw->getFileName());
+    t->setTrackName(m_new_dialog_wndw->getTrackName());
+    t->setDesigner(m_new_dialog_wndw->getDesigner());
+
+    m_viewport->setTrack(t);
+} // newTrack
+
+// ----------------------------------------------------------------------------
+void Editor::closeTrack()
+{
+    m_viewport->clear();
+} // closeTrack
 
 // ----------------------------------------------------------------------------
 ITexture* Editor::loadImg(const stringw& file_path)

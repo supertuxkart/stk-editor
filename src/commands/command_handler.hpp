@@ -23,6 +23,7 @@ public:
     void add(ICmd* cmd);
     void redo();
     void undo();
+    void clear();
 };
 
 #endif
