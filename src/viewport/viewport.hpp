@@ -83,13 +83,13 @@ public:
     void                animate(long dt);
     void                setSplineMode(bool b);
     void                setActiveRoad(IRoad* r);
+    void                setActiveRoad(u32 id);
     void                roadBorn(IRoad* road, stringw name);
     void                undo();
     void                redo();
     void                looseFocus();
     void                gainFocus();
     void                setTrack(Track* t);
-    void                setDriveLine(DriveLine* dl);
     void                build();
     void                clear();
 

@@ -48,24 +48,23 @@ private:
     unsigned int                 m_next_road_mesh_ID;
     bool                         m_insert;
 
-    map<unsigned int, IRoad*>    m_roads;
-
     // private functions:
 
     RoadPanel() {};
 
     void                  init();
-    void                  create();
 
 public:
-    void                  removeLastRoad();
-    void                  restoreRoad(IRoad* road, stringw name);
     static RoadPanel*     getRoadPanel(IGUIWindow* wndw = 0);
     void                  btnDown(int btn);
-    bool                  isInsertMode() { return m_insert; }
-    void                  select();
+    bool                  isInsertMode()    { return m_insert; }
+    u32                   getSelectedRoadID();
     void                  scrollBarChanged();
-    DriveLine*            getDriveLine();
+    void                  updateRoadList();
+
+    stringw               getNextRoadType();
+    stringw               getNextRoadName() { return m_text_field->getText();         }
+
 };
 
 #endif

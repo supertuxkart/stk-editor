@@ -7,8 +7,8 @@ class DriveLine :public IRoad
 {
 
 public:
-    DriveLine(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s)
-        :IRoad(parent, mgr, id, s) {};
+    DriveLine(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s, stringw n)
+        :IRoad(parent, mgr, id, s, n) {};
 
     void    refresh();
     void    build();

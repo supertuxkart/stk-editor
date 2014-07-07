@@ -3,9 +3,10 @@
 #include <iostream>
 
 // ----------------------------------------------------------------------------
-IRoad::IRoad(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s)
+IRoad::IRoad(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s, stringw n)
                                 :ISceneNode(parent, mgr, id)
 {
+    setName(n);
     m_spline            = s;
     m_mesh.indices      = 0;
     m_mesh.vertices     = 0;
@@ -32,6 +33,5 @@ void IRoad::OnRegisterSceneNode()
     ISceneNode::OnRegisterSceneNode();
 
 } // OnRegisterSceneNode
-
 
 

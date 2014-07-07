@@ -393,7 +393,7 @@ void Viewport::setSplineMode(bool b)
         m_active_road->getSpline()->setNodeVisibility(m_spline_mode);
 } // setSplineMode
 
-
+// ----------------------------------------------------------------------------
 void Viewport::setActiveRoad(IRoad* r)
 {
     if (m_active_road)
@@ -404,6 +404,12 @@ void Viewport::setActiveRoad(IRoad* r)
     r->getSpline()->setNodeVisibility(true);
     if (!m_spline_mode)
         setSplineMode(true);
+} // setActiveRoad
+
+// ----------------------------------------------------------------------------
+void Viewport::setActiveRoad(u32 id)
+{
+    setActiveRoad(m_track->getRoadByID(id));
 } // setActiveRoad
 
 // ----------------------------------------------------------------------------
@@ -460,12 +466,7 @@ void Viewport::setTrack(Track* t)
 {
     m_track = t;
     m_terrain = m_track->getTerrain();
-} // setTrack
-
-// ----------------------------------------------------------------------------
-void Viewport::setDriveLine(DriveLine* dl)
-{
-    m_track->setDriveLine(dl);
+    m_active_road = t->getRoadByID(0);
 } // setTrack
 
 // ----------------------------------------------------------------------------

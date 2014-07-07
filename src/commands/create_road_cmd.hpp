@@ -16,10 +16,9 @@ class createRoadCmd :public ICmd
 {
 private:
     IRoad*  m_road;
-    stringw m_name;
     bool    m_done;
 public:
-    createRoadCmd(IRoad* r, stringw name) :m_road(r), m_name(name) { m_done = true; };
+    createRoadCmd(IRoad* r, stringw name) :m_road(r) { m_done = true; };
 
     virtual ~createRoadCmd() { if (!m_done) m_road->remove(); }
 
@@ -29,7 +28,8 @@ public:
         m_done = true;
         m_road->setVisible(true);
         m_road->getSpline()->setVisible(true);
-        RoadPanel::getRoadPanel()->restoreRoad(m_road, m_name);
+        Viewport::get()->getTrack()->insertRoad(m_road);
+        RoadPanel::getRoadPanel()->updateRoadList();
     }
 
     // ----------------------------------------------------------------------------
@@ -38,7 +38,8 @@ public:
         m_done = false;
         m_road->setVisible(false);
         m_road->getSpline()->setVisible(false);
-        RoadPanel::getRoadPanel()->removeLastRoad();
+        Viewport::get()->getTrack()->removeLastRoad();
+        RoadPanel::getRoadPanel()->updateRoadList();
     }
 };
 

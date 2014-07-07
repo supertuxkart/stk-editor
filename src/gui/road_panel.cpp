@@ -53,78 +53,9 @@ void RoadPanel::init()
 
     gui_env->addButton(rect<s32>(160, 200, 210, 245), m_wndw, DL_CREATE);
 
-    ISceneManager* sm = Editor::getEditor()->getSceneManager();
-    ISpline* spline = new Bezier(sm->getRootSceneNode(), sm, 0);
-    IRoad* dl = new DriveLine(sm->getRootSceneNode(), sm, 0, spline);
-
-    m_roads.insert(0, dl);
     m_insert = false;
 
 } // init
-
-
-// ----------------------------------------------------------------------------
-void RoadPanel::create()
-{
-    Viewport::get()->setState(Viewport::SELECT);
-    stringw type = m_spline_type_cb->getItem(m_spline_type_cb->getSelected());
-    IRoad* rm;
-
-    ISceneManager* sm = Editor::getEditor()->getSceneManager();
-    ISpline* spline;
-
-    if (type == L"Bezier")
-    {
-        spline = new Bezier(sm->getRootSceneNode(), sm, 0);
-    }
-    else spline = new TCR(sm->getRootSceneNode(), sm, 0);
-
-    rm = new Road(sm->getRootSceneNode(), sm, 0, spline);
-
-    m_cb->addItem(m_text_field->getText(),m_next_road_mesh_ID);
-    m_cb->setSelected(m_next_road_mesh_ID);
-
-    Viewport::get()->roadBorn(rm, m_text_field->getText());
-
-    m_next_road_mesh_ID++;
-    stringw s = stringw(m_next_road_mesh_ID);
-    m_text_field->setText((stringw("RoadMesh_") + s).c_str());
-
-    m_roads.insert(m_next_road_mesh_ID-1, rm);
-} // create
-
-// ----------------------------------------------------------------------------
-void RoadPanel::removeLastRoad()
-{
-    m_cb->removeItem(m_cb->getItemCount() - 1);
-    m_next_road_mesh_ID--;
-    m_roads.remove(m_next_road_mesh_ID);
-    stringw s = stringw(m_next_road_mesh_ID);
-    m_text_field->setText((stringw("RoadMesh_") + s).c_str());
-
-    IRoad* r = m_roads.find(m_next_road_mesh_ID - 1)->getValue();
-    Viewport::get()->setActiveRoad(r);
-    Viewport::get()->setState(Viewport::SPLINE);
-
-    m_cb->setSelected(m_next_road_mesh_ID-1);
-
-} // removeLastRoad
-
-// ----------------------------------------------------------------------------
-void RoadPanel::restoreRoad(IRoad* road, stringw name)
-{
-    m_cb->addItem(name.c_str(), m_next_road_mesh_ID);
-    m_cb->setSelected(m_next_road_mesh_ID);
-
-    m_roads.insert(m_next_road_mesh_ID, road);
-
-    Viewport::get()->setActiveRoad(road);
-    Viewport::get()->setState(Viewport::SPLINE);
-
-    m_next_road_mesh_ID++;
-    stringw s = stringw(m_next_road_mesh_ID);
-    m_text_field->setText((stringw("RoadMesh_") + s).c_str());
-}  // restoreRoad
 
 // ----------------------------------------------------------------------------
 RoadPanel* RoadPanel::getRoadPanel(IGUIWindow* wndw)
@@ -149,34 +80,59 @@ void RoadPanel::btnDown(int btn)
         m_insert = true;
         break;
     case DL_CREATE:
-        create();
-        break;
+        updateRoadList();
     default:
         break;
     }
 } // btnDown
 
 
-// ----------------------------------------------------------------------------
-void RoadPanel::select()
+//----------------------------------------------------------------------------
+u32 RoadPanel::getSelectedRoadID()
 {
-    IRoad* r = m_roads.find(m_cb->getSelected())->getValue();
-    Viewport::get()->setActiveRoad(r);
+    return m_cb->getSelected();
+} // getSelectedRoadID
 
-} // select
 
+//----------------------------------------------------------------------------
 void RoadPanel::scrollBarChanged()
 {
-    IRoad* r = m_roads.find(m_cb->getSelected())->getValue();
-    r->setWidth(m_width_sb->getPos() / 10.0f);
-    r->setDetail(m_detail_sb->getPos() / 100.0f);
-
-    r->refresh();
+    //r->setWidth(m_width_sb->getPos() / 10.0f);
+    //r->setDetail(m_detail_sb->getPos() / 100.0f);
+    //
+    //r->refresh();
 
 } // scrollBarChanged
 
-// ----------------------------------------------------------------------------
-DriveLine* RoadPanel::getDriveLine()
+
+
+//----------------------------------------------------------------------------
+void RoadPanel::updateRoadList()
 {
-    return dynamic_cast<DriveLine*>(m_roads.find(0)->getValue());
-} // getDriveLine
+    Track* t = Viewport::get()->getTrack();
+    if (t)
+    {
+        IRoad* r;
+        map<unsigned int, IRoad*>* road_list = t->getRoadList();
+        m_cb->clear();
+
+        for (int i = 0; i < road_list->size(); i++)
+        {
+            r = (*road_list)[i];
+            stringw name = r->getName();
+            m_cb->addItem(name.c_str(), i);
+        }        
+
+        stringw s = stringw(road_list->size());
+        m_text_field->setText((stringw("RoadMesh_") + s).c_str());
+        m_cb->setSelected(road_list->size()-1);
+    }
+}
+
+
+//----------------------------------------------------------------------------
+stringw RoadPanel::getNextRoadType()
+{
+    return m_spline_type_cb->getItem(m_spline_type_cb->getSelected());
+} // getNextRoadType
+

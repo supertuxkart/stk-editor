@@ -5,6 +5,9 @@
 
 #include "mesh/terrain.hpp"
 #include "mesh/driveline.hpp"
+#include "mesh/road.hpp"
+#include "spline/bezier.hpp"
+#include "spline/tcr.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -16,6 +19,10 @@ Track::Track(u32 tx, u32 tz)
 {
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
     m_terrain = new Terrain(sm->getRootSceneNode(), sm, 1, tx, tz, 2 * tx, 2 * tz);
+
+    ISpline* spline = new Bezier(sm->getRootSceneNode(), sm, 0);
+    m_driveline = new DriveLine(sm->getRootSceneNode(), sm, 0, spline, L"DriveLine");
+    m_roads.insert(0, m_driveline);
 }
 
 // ----------------------------------------------------------------------------
@@ -148,6 +155,19 @@ void Track::build()
     m_driveline->build();
 
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
+
+    std::ofstream track;
+
+    track.open("export/track.xml");
+    track << "<track  name           = \"" << m_track_name.c_str() << "\"\n";
+    track << "        version        = \"5\"\n";
+    track << "        groups         = \"made-by-STK-TE\"\n";
+    track << "        music          = \"Origin.music\"\n";
+    track << "        screenshot     = \"screenshot.jpg\"\n";
+    track << "        smooth-normals = \"true\"\n";
+    track << "        reverse        = \"Y\"\n>\n";
+    track << "</track>\n";
+    track.close();
     
     std::ofstream scene;
     scene.open("export/scene.xml");
@@ -183,3 +203,38 @@ void Track::build()
     scene << "</scene>\n";
     scene.close();
 } // build
+
+// ----------------------------------------------------------------------------
+void Track::insertRoad(IRoad* road)
+{
+    m_roads.insert(m_roads.size(), road);
+} // insertRoad
+
+// ----------------------------------------------------------------------------
+void Track::removeLastRoad()
+{
+    m_roads.remove(m_roads.size()-1);
+} // removeLastRoad
+
+// ----------------------------------------------------------------------------
+void Track::createRoad(stringw type, stringw name)
+{
+    // Viewport::get()->setState(Viewport::SELECT);
+    
+    IRoad* rm;
+
+    ISceneManager* sm = Editor::getEditor()->getSceneManager();
+    ISpline* spline;
+
+    if (type == L"Bezier")
+    {
+        spline = new Bezier(sm->getRootSceneNode(), sm, 0);
+    }
+    else spline = new TCR(sm->getRootSceneNode(), sm, 0);
+
+    rm = new Road(sm->getRootSceneNode(), sm, 0, spline, name);
+
+    Viewport::get()->roadBorn(rm, name);
+
+    m_roads.insert(m_roads.size(), rm);
+} // createRoad

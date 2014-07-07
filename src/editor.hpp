@@ -21,8 +21,6 @@ class  ToolBar;
 class  ToolBox;
 class  NewDialogWndw;
 class  Viewport;
-struct Mouse;
-struct Keys;
 
 class Editor :public IEventReceiver
 {

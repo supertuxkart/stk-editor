@@ -13,8 +13,8 @@ private:
 
 // ----------------------------------------------------------------------------
 public:
-    Road(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s) 
-            :IRoad(parent, mgr, id, s) {};
+    Road(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s, stringw n) 
+            :IRoad(parent, mgr, id, s, n) {};
 
     void    refresh();
     

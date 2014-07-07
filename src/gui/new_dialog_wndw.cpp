@@ -41,7 +41,7 @@ void NewDialogWndw::init()
     m_size_cb = gui_env->addComboBox(frame, m_wndw);
 
     m_size_cb->addItem(L"Small",        50);
-    m_size_cb->addItem(L"Medium",       100);
+    m_size_cb->addItem(L"Medium",       75);
     m_size_cb->addItem(L"Large",        100);
     m_size_cb->addItem(L"Extra Large",  120);
 

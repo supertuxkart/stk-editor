@@ -20,6 +20,7 @@ Editor* Editor::m_editor = 0;
 // ----------------------------------------------------------------------------
 bool Editor::buttonClicked(int ID)
 {
+    RoadPanel* rp;
     switch (ID)
     {
     // ToolBar buttons
@@ -93,8 +94,11 @@ bool Editor::buttonClicked(int ID)
         return true;
     // ToolBox / RoadPanel buttons:
     case RoadPanel::DL_CREATE:
-        RoadPanel::getRoadPanel()->btnDown(ID);
-        break;
+        rp = RoadPanel::getRoadPanel();
+        Viewport::get()->getTrack()->createRoad(rp->getNextRoadType(), 
+                                                rp->getNextRoadName());
+        rp->btnDown(ID);
+        return true;
     case RoadPanel::DL_ADD:
     case RoadPanel::DL_INSERT:
         m_viewport->setSplineMode(true);
@@ -279,7 +283,8 @@ bool Editor::OnEvent(const SEvent& event)
                 EnvPanel::getEnvPanel()->refreshBtnTable();
                 return true;
             case RoadPanel::DL_SELECT:
-                RoadPanel::getRoadPanel()->select();
+                m_viewport->setActiveRoad(RoadPanel::getRoadPanel()
+                                                     ->getSelectedRoadID());
                 break;
             default:
                 break;
