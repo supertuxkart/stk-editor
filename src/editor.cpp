@@ -12,6 +12,7 @@
 #include "gui/road_panel.hpp"
 
 #include "mesh/driveline.hpp"
+#include "mesh/iroad.hpp"
 
 #include <iostream>
 
@@ -268,6 +269,7 @@ bool Editor::OnEvent(const SEvent& event)
 {
     if (event.EventType == EET_GUI_EVENT)
     {
+        RoadPanel* rp;
         s32 id = event.GUIEvent.Caller->getID();
         switch (event.GUIEvent.EventType)
         {
@@ -312,8 +314,14 @@ bool Editor::OnEvent(const SEvent& event)
                 m_viewport->setState(Viewport::TERRAIN_MOD);
                 return true;
             case RoadPanel::DL_DETAIL:
+                rp = RoadPanel::getRoadPanel();
+                m_viewport->getTrack()->getRoadByID(rp->getSelectedRoadID())
+                                                ->setDetail(rp->getDetail());
+                return true;
             case RoadPanel::DL_WIDTH:
-                RoadPanel::getRoadPanel()->scrollBarChanged();
+                rp = RoadPanel::getRoadPanel();
+                m_viewport->getTrack()->getRoadByID(rp->getSelectedRoadID())
+                                                 ->setWidth(rp->getWidth());
                 return true;
             default:
                 break;

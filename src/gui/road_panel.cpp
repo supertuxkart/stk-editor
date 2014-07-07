@@ -95,15 +95,16 @@ u32 RoadPanel::getSelectedRoadID()
 
 
 //----------------------------------------------------------------------------
-void RoadPanel::scrollBarChanged()
+f32 RoadPanel::getWidth()
 {
-    //r->setWidth(m_width_sb->getPos() / 10.0f);
-    //r->setDetail(m_detail_sb->getPos() / 100.0f);
-    //
-    //r->refresh();
+    return m_width_sb->getPos() / 10.0f;
+} // getWidth
 
-} // scrollBarChanged
-
+//----------------------------------------------------------------------------
+f32 RoadPanel::getDetail()
+{
+    return m_detail_sb->getPos() / 100.0f;
+} // getWidth
 
 
 //----------------------------------------------------------------------------

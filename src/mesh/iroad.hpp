@@ -23,8 +23,8 @@ public:
 
     virtual void    refresh() = 0;
 
-    void            setDetail(float d)      { m_detail = d; }
-    void            setWidth(float d)       { m_width =  d; }
+    void            setDetail(float d)      { m_detail = d; refresh(); }
+    void            setWidth(float d)       { m_width =  d; refresh(); }
 
     ISpline*        getSpline()             { return m_spline; }
 

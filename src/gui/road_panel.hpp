@@ -59,7 +59,8 @@ public:
     void                  btnDown(int btn);
     bool                  isInsertMode()    { return m_insert; }
     u32                   getSelectedRoadID();
-    void                  scrollBarChanged();
+    f32                   getWidth();
+    f32                   getDetail();
     void                  updateRoadList();
 
     stringw               getNextRoadType();
