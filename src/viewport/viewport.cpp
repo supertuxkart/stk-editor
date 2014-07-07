@@ -345,6 +345,20 @@ void Viewport::setNewEntity(const stringw path, const stringw name)
 } // setNewEntity
 
 // ----------------------------------------------------------------------------
+void Viewport::setNewEntity(ISceneNode* node)
+{
+    if (m_state != PLACE)
+        setState(PLACE);
+    if (m_new_entity != 0)
+    {
+        m_new_entity->remove();
+        m_new_entity = 0;
+    }
+
+    m_new_entity = node;
+} // setNewEntity
+
+// ----------------------------------------------------------------------------
 void Viewport::animate(long dt)
 {
     if ((!m_track) || (!m_terrain)) return;

@@ -1,9 +1,3 @@
 TODO list:
 
-1. get some sleep
-2. huge code refactoring:
-	-> update makefile!!!
-	-> track into two separated file (viewport(logic, done) & track(data))
-	-> RoadHandler class ???
-	-> delete spline controlpoint if its node was removed
-3. more stuffs to the list
+1. write a todo list

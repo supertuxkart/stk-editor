@@ -6,6 +6,7 @@
 class EnvPanel;
 class TerrPanel;
 class RoadPanel;
+class ExtraPanel;
 
 using namespace irr;
 using namespace gui;
@@ -18,6 +19,7 @@ public:
     static const int TWND_ID     = 101;
     static const int EWND_ID     = 102;
     static const int RWND_ID     = 103;
+    static const int XWND_ID     = 104;
 private:
 
     // private variables:
@@ -27,12 +29,14 @@ private:
     EnvPanel*       m_env_panel;
     TerrPanel*      m_terr_panel;
     RoadPanel*      m_road_panel;
+    ExtraPanel*     m_extra_panel;
 
     IGUIWindow*     m_wndw;
     
     IGUIWindow*     m_terr_wndw;
     IGUIWindow*     m_env_wndw;
     IGUIWindow*     m_road_wndw;
+    IGUIWindow*     m_extr_wndw;
 
     // private functions:
 

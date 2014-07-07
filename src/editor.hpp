@@ -57,6 +57,8 @@ public:
     void              newTrack();
     void              closeTrack();
 
+    void              addItem(u32 id);
+
     static ITexture*  loadImg(const stringw& file_path);
 
     IrrlichtDevice*   getDevice()       { return m_device;        }

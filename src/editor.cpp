@@ -10,6 +10,7 @@
 #include "gui/env_panel.hpp"
 #include "gui/terr_panel.hpp"
 #include "gui/road_panel.hpp"
+#include "gui/extra_panel.hpp"
 
 #include "mesh/driveline.hpp"
 #include "mesh/iroad.hpp"
@@ -77,6 +78,7 @@ bool Editor::buttonClicked(int ID)
     case ToolBox::TWND_ID:
     case ToolBox::EWND_ID:
     case ToolBox::RWND_ID:
+    case ToolBox::XWND_ID:
         m_toolbox->setWndw(ID);
         return true;
     // ToolBox / Terrain buttons:
@@ -109,6 +111,13 @@ bool Editor::buttonClicked(int ID)
         return true;
     case RoadPanel::DL_EXIT:
         m_viewport->setState(Viewport::SELECT);
+        return true;
+    // ToolBox / Extra buttons:
+    case ExtraPanel::BTN_BANANA:
+    case ExtraPanel::BTN_ITEM:
+    case ExtraPanel::BTN_SNITRO:
+    case ExtraPanel::BTN_BNITRO:
+        addItem(ID);
         return true;
     default:
         break;
@@ -406,6 +415,38 @@ void Editor::closeTrack()
 {
     m_viewport->clear();
 } // closeTrack
+
+// ----------------------------------------------------------------------------
+void Editor::addItem(u32 id)
+{
+    ISceneNode* node = 0;
+    switch (id)
+    {
+    case ExtraPanel::BTN_BANANA:
+        node = m_scene_manager->addAnimatedMeshSceneNode(
+            m_scene_manager->getMesh("libraries/models/banana.b3d"));
+        node->setName("banana");
+        break;
+    case ExtraPanel::BTN_ITEM:
+        node = m_scene_manager->addAnimatedMeshSceneNode(
+            m_scene_manager->getMesh("libraries/models/gift-box.b3d"));
+        node->setName("item");
+        break;
+    case ExtraPanel::BTN_SNITRO:
+        node = m_scene_manager->addAnimatedMeshSceneNode(
+            m_scene_manager->getMesh("libraries/models/nitrotank-small.b3d"));
+        node->setName("small-nitro");
+        break;
+    case ExtraPanel::BTN_BNITRO:
+        node = m_scene_manager->addAnimatedMeshSceneNode(
+            m_scene_manager->getMesh("libraries/models/nitrotank-big.b3d"));
+        node->setName("big-nitro");
+        break;
+    default:
+        break;
+    }
+    m_viewport->setNewEntity(node);
+} // addItem
 
 // ----------------------------------------------------------------------------
 ITexture* Editor::loadImg(const stringw& file_path)

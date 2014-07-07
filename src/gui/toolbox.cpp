@@ -3,6 +3,7 @@
 #include "gui/env_panel.hpp"
 #include "gui/terr_panel.hpp"
 #include "gui/road_panel.hpp"
+#include "gui/extra_panel.hpp"
 #include "editor.hpp"
 
 
@@ -34,12 +35,19 @@ void ToolBox::init()
     initWndw(m_road_wndw);
     m_road_wndw->setVisible(false);
 
+    m_extr_wndw = gui_env->addWindow(rect<s32>(), false, L"Extra", m_wndw, XWND_ID);
+    m_extra_panel = ExtraPanel::getExtraPanel(m_extr_wndw);
+    initWndw(m_extr_wndw);
+    m_extr_wndw->setVisible(false);
+
     gui_env->addButton(rect<s32>(0, 0, 50, 50), m_wndw,   TWND_ID)
         ->setImage(Editor::loadImg("img/terrain.png"));
     gui_env->addButton(rect<s32>(50, 0, 100, 50), m_wndw, EWND_ID)
         ->setImage(Editor::loadImg("img/env.png"));
     gui_env->addButton(rect<s32>(100, 0, 150, 50), m_wndw, RWND_ID)
         ->setImage(Editor::loadImg("img/road.png"));
+    gui_env->addButton(rect<s32>(150, 0, 200, 50), m_wndw, XWND_ID)
+        ->setImage(Editor::loadImg("img/extra.png"));
 
 } // init
 
@@ -80,6 +88,7 @@ void ToolBox::setWndw(int ID)
     m_terr_wndw->setVisible(false);
     m_env_wndw->setVisible(false);
     m_road_wndw->setVisible(false);
+    m_extr_wndw->setVisible(false);
     switch(ID)
     {
     case TWND_ID:
@@ -90,6 +99,9 @@ void ToolBox::setWndw(int ID)
         break;
     case RWND_ID:
         m_road_wndw->setVisible(true);
+        break;
+    case XWND_ID:
+        m_extr_wndw->setVisible(true);
         break;
     default:
         break;

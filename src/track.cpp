@@ -220,11 +220,14 @@ void Track::build()
     scene << "  <track model=\"track.obj\" x=\"0\" y=\"0\" z=\"0\">\n";
 
     ISceneNode* node;
+    stringc name;
     int i = 1;
     while ((node = sm->getSceneNodeFromId(MAGIC_NUMBER + i)))
     {
+        name = node->getName();
         vector3df pos, rot, sca;
-        if (node->isVisible())
+        if (node->isVisible() && name != "banana" && name != "item"
+                              && name != "small-nitro" && name != "big-nitro")
         {
             pos   = node->getPosition();
             rot   = node->getRotation();
@@ -236,8 +239,22 @@ void Track::build()
         }
         i++;
     }
-
     scene << "  </track>\n";
+
+    i = 1;
+    while ((node = sm->getSceneNodeFromId(MAGIC_NUMBER + i)))
+    {
+        name = node->getName();
+        vector3df pos;
+        if (node->isVisible() && (name == "banana" || name == "item"
+            || name == "small-nitro" || name == "big-nitro"))
+        {
+            pos = node->getPosition();
+            scene << "  <" << name.c_str() << " x=\"" << pos.X << "\" y=\"" << pos.Y
+                  << "\" z=\"" << pos.Z << "\" />\n";
+        }
+        i++;
+    }
 
     scene << "  <default - start karts - per - row = \"3\"\n";
     scene << "                   forwards-distance =\"1.50\"\n";
@@ -282,3 +299,5 @@ void Track::createRoad(stringw type, stringw name)
 
     m_roads.insert(m_roads.size(), rm);
 } // createRoad
+
+
