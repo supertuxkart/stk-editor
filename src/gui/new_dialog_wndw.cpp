@@ -12,10 +12,10 @@ void NewDialogWndw::init()
     IGUIFont* font = gui_env->getFont(L"font/font1.png");
     dimension2du ss = Editor::getEditor()->getScreenSize();
 
-    rect<s32> frame = rect<s32>(ss.Width  / 2.0f - 150, 
-                                ss.Height / 2.0f - 100,
-                                ss.Width  / 2.0f + 150,
-                                ss.Height / 2.0f + 100);
+    rect<s32> frame = rect<s32>((s32)(ss.Width  / 2.0f - 150), 
+                                (s32)(ss.Height / 2.0f - 100),
+                                (s32)(ss.Width  / 2.0f + 150),
+                                (s32)(ss.Height / 2.0f + 100));
     m_wndw = gui_env->addWindow(frame,false, L"New Track", 0);
 
     gui_env->addStaticText(L"Track name:", rect<s32>(10, 30, 130, 50),

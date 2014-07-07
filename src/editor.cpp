@@ -65,6 +65,7 @@ bool Editor::buttonClicked(int ID)
         m_viewport->getTrack()->save();
         return true;
     case ToolBar::TBI_OPEN:
+        m_new_dialog_wndw->hide();
         m_gui_env->addFileOpenDialog(L"Open track:", true, 0, -1, false, "maps");
         return true;
     // new window
@@ -96,7 +97,7 @@ bool Editor::buttonClicked(int ID)
     // ToolBox / RoadPanel buttons:
     case RoadPanel::DL_CREATE:
         rp = RoadPanel::getRoadPanel();
-        Viewport::get()->getTrack()->createRoad(rp->getNextRoadType(), 
+        Viewport::get()->getTrack()->createRoad(rp->getNextRoadType(),
                                                 rp->getNextRoadName());
         rp->btnDown(ID);
         return true;
@@ -197,7 +198,7 @@ bool Editor::init()
 
     // Track* t = new Track(50, 50);
     // m_viewport->setTrack(t);
-    // track init 
+    // track init
 
 
     m_toolbar = ToolBar::getToolBar();
@@ -218,7 +219,7 @@ Editor* Editor::getEditor(dimension2du screen_size)
     m_editor->m_screen_size = screen_size;
 	if (!m_editor->init()) return 0;
 	return m_editor;
-} // getEditor
+} // getEditorf
 
 // ----------------------------------------------------------------------------
 bool Editor::run()
@@ -292,7 +293,7 @@ bool Editor::OnEvent(const SEvent& event)
                 break;
             }
             return false;
-            
+
         case EGET_EDITBOX_CHANGED:
             switch (id)
             {
@@ -342,13 +343,17 @@ bool Editor::OnEvent(const SEvent& event)
             return false;
 
         case EGET_FILE_SELECTED:
-            IGUIFileOpenDialog* dialog =
-                (IGUIFileOpenDialog*)event.GUIEvent.Caller;
             closeTrack();
             m_device->getFileSystem()->changeWorkingDirectoryTo(m_def_wd);
-            Track* t = new Track(path(dialog->getFileName()).c_str());
-            m_viewport->setTrack(t);
+            m_viewport->setTrack(new Track(path(((IGUIFileOpenDialog*)
+                        event.GUIEvent.Caller)->getFileName()).c_str()));
+            m_viewport->setSplineMode(false);
+            m_viewport->setState(Viewport::SELECT);
+            RoadPanel::getRoadPanel()->updateRoadList();
             return true;
+
+        default:
+            return false;
         }
     } // EventType == EET_GUI_EVENT
 
@@ -385,14 +390,15 @@ bool Editor::OnEvent(const SEvent& event)
 void Editor::newTrack()
 {
     closeTrack();
-    u32 size = m_new_dialog_wndw->getSize();
+    f32 size = (f32)m_new_dialog_wndw->getSize();
     Track* t = new Track(size, size);
-
     t->setFileName(m_new_dialog_wndw->getFileName());
     t->setTrackName(m_new_dialog_wndw->getTrackName());
     t->setDesigner(m_new_dialog_wndw->getDesigner());
-
     m_viewport->setTrack(t);
+
+    RoadPanel::getRoadPanel()->updateRoadList();
+
 } // newTrack
 
 // ----------------------------------------------------------------------------

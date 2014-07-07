@@ -141,8 +141,8 @@ bool Terrain::intersectionPoint(const line3df& ray, float r,
     float     t = -p1.Y / v.Y;
     vector3df p = vector3df(p1.X + v.X * t, 0, p1.Z + v.Z * t);
 
-    u32 iix = (int) (p.X / (m_x / m_nx) + 0.5);
-    u32 iiz = (int) (p.Z / (m_z / m_nz) + 0.5);
+    s32 iix = (int) (p.X / (m_x / m_nx) + 0.5);
+    s32 iiz = (int) (p.Z / (m_z / m_nz) + 0.5);
 
     if (iix < 0 || iiz < 0 || iix >= m_nx || iiz >= m_nz)
     {
@@ -367,7 +367,7 @@ void Terrain::pixelBrigBrush(u8* img, int ix, double e)
 
 // ----------------------------------------------------------------------------
 Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id,
-                 float x, float z, int nx, int nz)
+                 float x, float z, u32 nx, u32 nz)
     :ISceneNode(parent, mgr, id), m_nx(nx), m_nz(nz)
 {
 
@@ -382,8 +382,8 @@ Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id,
     m_mesh.quad_count = (nx - 1) * (nz - 1);
     m_mesh.indices = new u16[m_mesh.quad_count * 6];
 
-    for (int j = 0; j < nz; j++)
-    for (int i = 0; i < nx; i++)
+    for (u32 j = 0; j < nz; j++)
+    for (u32 i = 0; i < nx; i++)
     {
         m_mesh.vertices[j * nx + i].Pos = vector3df(x / nx * i, 0, z / nz *j);
         m_mesh.vertices[j * nx + i].Color = SColor(255, 0, 200, 100);
@@ -432,7 +432,7 @@ Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
     for (u32 j = 0; j < m_nz; j++)
     for (u32 i = 0; i < m_nx; i++)
     {
-        m_mesh.vertices[j * m_nx + i].Pos = 
+        m_mesh.vertices[j * m_nx + i].Pos =
             vector3df(m_x / m_nx * i, 0, m_z / m_nz *j);
 
         fread(&m_mesh.vertices[j * m_nx + i].Pos.Y, sizeof(f32), 1, fp);
@@ -442,7 +442,7 @@ Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
         m_mesh.vertices[j * m_nx + i].TCoords =
             vector2df(i / (float)m_nx * m_tile_num_x, j / (float)m_nz * m_tile_num_z);
 
-        m_mesh.vertices[j * m_nx + i].TCoords2 = 
+        m_mesh.vertices[j * m_nx + i].TCoords2 =
             vector2df(i / (float)m_nx, j / (float)m_nz);
     }
 
@@ -460,7 +460,7 @@ Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
     fread(&y, sizeof(u32), 1, fp);
 
     assert(x == SPIMG_X && y == SPIMG_Y);
-    
+
     fread(m_material.getTexture(0)->lock(ETLM_WRITE_ONLY), sizeof(u8),
                                              4 * SPIMG_X*SPIMG_Y, fp);
     m_material.getTexture(0)->unlock();
@@ -572,14 +572,14 @@ void Terrain::build()
     IrrlichtDevice* device = Editor::getEditor()->getDevice();
 
     SMesh smesh;
-    
+
     CMeshBuffer<S3DVertex2TCoords> mb;
 
     for (u32 i = 0; i < m_mesh.vertex_count; i++)
         mb.Vertices.push_back(m_mesh.vertices[i]);
     for (u32 i = 0; i < m_mesh.quad_count * 6; i++)
         mb.Indices.push_back(m_mesh.indices[i]);
-    
+
     mb.recalculateBoundingBox();
     mb.Material = m_material;
     smesh.addMeshBuffer(&mb);
@@ -613,9 +613,9 @@ void Terrain::save(FILE* file)
         }
     fwrite(&SPIMG_X, sizeof(u32), 1, file);
     fwrite(&SPIMG_Y, sizeof(u32), 1, file);
-    fwrite(m_material.getTexture(0)->lock(ETLM_READ_ONLY), 
+    fwrite(m_material.getTexture(0)->lock(ETLM_READ_ONLY),
                       sizeof(u8), 4*SPIMG_X * SPIMG_Y, file);
-    
+
     m_material.getTexture(0)->unlock();
 
 } // save

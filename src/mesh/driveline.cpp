@@ -119,7 +119,7 @@ void DriveLine::build()
     last_point = m_spline->p(dt);
 
     u32 j = 1;
-    for (float t = dt*2; j < m_mesh.quad_count; t += dt)
+    for (float t = dt * 2; j < m_mesh.quad_count; t += dt)
     {
         point = m_spline->p(t);
         n = (m_spline->getNormal(t) + m_spline->getNormal(t - dt)) / 2.0f;
@@ -139,7 +139,7 @@ void DriveLine::build()
         last_point = point;
         j++;
     }
-    
+
     quads << "</quads>\n";
 
     std::ofstream  graph;

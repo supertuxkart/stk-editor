@@ -7,14 +7,14 @@
 void Road::calcVertexRow(vector3df p, vector3df n, vector3df w, int offset, float wx)
 {
     w *= m_width / m_width_vert_num * wx;
-    for (int i = 0; i < m_width_vert_num / 2; i++)
+    for (u32 i = 0; i < m_width_vert_num / 2; i++)
     {
-        m_mesh.vertices[offset + i].Pos = p + w * (i - m_width_vert_num / 4 + 0.5f);
+        m_mesh.vertices[offset + i].Pos = p + w * ((s32)i - (s32)m_width_vert_num / 4 + 0.5f);
 
         m_mesh.vertices[offset + m_width_vert_num / 2 + i].Color = SColor(255, 0, 0, 255);
     }
-    
-    for (int i = 0; i < m_width_vert_num / 2; i++)
+
+    for (u32 i = 0; i < m_width_vert_num / 2; i++)
     {
         vector3df vec = m_mesh.vertices[offset + m_width_vert_num / 2 - i - 1].Pos - 0.3f * n;
         m_mesh.vertices[offset + m_width_vert_num / 2 + i].Pos = vec;
@@ -33,12 +33,12 @@ void Road::createIndexList(int nj, int ni)
             m_mesh.indices[ix] = i + (j + 1)     * ni;   ix++;
             m_mesh.indices[ix] = i + 1 + (j + 1) * ni;   ix++;
             m_mesh.indices[ix] = i + 1 + j       * ni;   ix++;
-                                                   
+
             m_mesh.indices[ix] = i + 1 + j       * ni;   ix++;
             m_mesh.indices[ix] = i + j           * ni;   ix++;
             m_mesh.indices[ix] = i + (j + 1)     * ni;   ix++;
         }
-        
+
         m_mesh.indices[ix] = ni - 1 + (j + 1)     * ni;   ix++;
         m_mesh.indices[ix] = 0  + (j + 1)         * ni;   ix++;
         m_mesh.indices[ix] = 0  + j               * ni;   ix++;
@@ -46,7 +46,7 @@ void Road::createIndexList(int nj, int ni)
         m_mesh.indices[ix] = 0 + j                * ni;   ix++;
         m_mesh.indices[ix] = ni - 1 + j           * ni;   ix++;
         m_mesh.indices[ix] = ni - 1 + (j + 1)     * ni;   ix++;
-        
+
 
     }
 } // createIndexList
@@ -80,7 +80,6 @@ void Road::refresh()
     vector3df point;
     vector3df n,v,w;
 
-
     float dt = m_detail / spn;
     point = m_spline->p(0);
     n = (m_spline->getNormal(dt) + m_spline->getNormal(0)) / 2.0f;
@@ -97,7 +96,7 @@ void Road::refresh()
         v = point - last_point;
         w = v.crossProduct(n);
 
-        calcVertexRow(point, n.normalize(), w.normalize(), 
+        calcVertexRow(point, n.normalize(), w.normalize(),
                      j * m_width_vert_num, m_spline->getWidth(t));
 
         last_point = point;

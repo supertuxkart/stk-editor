@@ -69,11 +69,55 @@ ControlPoint ISpline::newControlPoint(vector3df p)
 } // newControlPoint
 
 // ----------------------------------------------------------------------------
-ISpline::ISpline(ISceneNode* parent, ISceneManager* mgr, s32 id)
+void ISpline::saveNode(ISceneNode* sn, FILE* fp)
+{
+    fwrite(&sn->getPosition(), sizeof(vector3df), 1, fp);
+    fwrite(&sn->getRotation(), sizeof(vector3df), 1, fp);
+    fwrite(&sn->getScale(),    sizeof(vector3df), 1, fp);
+} // saveNode
+
+// ----------------------------------------------------------------------------
+void ISpline::loadNode(ISceneNode* sn, FILE* fp)
+{
+    vector3df pos, rot, sca;
+    fread(&pos, sizeof(vector3df), 1, fp);
+    fread(&rot, sizeof(vector3df), 1, fp);
+    fread(&sca, sizeof(vector3df), 1, fp);
+
+    sn->setPosition(pos);
+    sn->setRotation(rot);
+    sn->setScale(sca);
+
+} // loadNode
+
+// ----------------------------------------------------------------------------
+ISpline::ISpline(ISceneNode* parent, ISceneManager* mgr, s32 id, stringw type)
                                                     :ISceneNode(parent, mgr, id)
 {
+    m_type = type;
     setAutomaticCulling(EAC_OFF);
     m_cp_num = 0;
+} // ISpline
+
+// ----------------------------------------------------------------------------
+ISpline::ISpline(ISceneNode* parent, ISceneManager* mgr, s32 id, stringw t, FILE* fp)
+                                                         :ISceneNode(parent, mgr, id)
+{
+    u32 size;
+    fread(&size, sizeof(u32), 1, fp);
+    list<ControlPoint>::Iterator it;
+    m_cp_num = 0;
+    for (u32 i = 0; i < size; i++)
+    {
+        m_control_points.push_back(newControlPoint(vector3df(0, 0, 0)));
+        it = m_control_points.getLast();
+        loadNode(it->node, fp);
+        loadNode(it->normal_node, fp);
+        loadNode(it->width_node, fp);
+        fread(&it->t, sizeof(f32), 1, fp);
+    }
+    updatePosition();
+    setAutomaticCulling(EAC_OFF);
 } // ISpline
 
 // ----------------------------------------------------------------------------
@@ -233,6 +277,37 @@ void ISpline::updatePosition()
     calculateVelocity();
 } // updatePosition
 
+// ----------------------------------------------------------------------------
+void ISpline::clear()
+{
+    list<ControlPoint>::Iterator it = m_control_points.begin();
+    for (; it != m_control_points.end(); it++)
+    {
+        it->node->remove();
+        it->normal_node->remove();
+        it->width_node->remove();
+    }
+} // clear
+
+// ----------------------------------------------------------------------------
+void ISpline::save(FILE* fp)
+{
+    u8 size = m_type.size() + 1;
+    fwrite(&size, sizeof(u8), 1, fp);
+    fwrite(m_type.c_str(), sizeof(wchar_t), size, fp);
+    
+    list<ControlPoint>::Iterator it = m_control_points.begin();
+
+    fwrite(&m_cp_num, sizeof(u32), 1, fp);
+    for (u32 i = 0; i < m_cp_num; i++, it++)
+    {
+        saveNode(it->node, fp);
+        saveNode(it->normal_node, fp);
+        saveNode(it->width_node, fp);
+        fwrite(&it->t, sizeof(f32), 1, fp);
+    }
+
+} // save
 
 // ----------------------------------------------------------------------------
 void ISpline::OnRegisterSceneNode()

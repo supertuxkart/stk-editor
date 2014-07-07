@@ -25,7 +25,7 @@ private:
 
 public:
 
-    Track(u32 tx, u32 tz);
+    Track(f32 tx, f32 tz);
     Track(path file);
 
     ~Track();

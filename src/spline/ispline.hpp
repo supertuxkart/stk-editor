@@ -16,8 +16,8 @@ struct ControlPoint
     vector3df        vel;
     vector3df        pos;
     vector3df        normal;
-    float            width;
-    float            t;
+    f32              width;
+    f32              t;
     ISceneNode*      node;
     ISceneNode*      normal_node;
     ISceneNode*      width_node;
@@ -30,9 +30,10 @@ class ISpline :public ISceneNode
 
 private:
     aabbox3d<f32>       m_bounding_box;
+    stringw             m_type;
 protected:
     list<ControlPoint>  m_control_points;
-    int                 m_cp_num;
+    u32                 m_cp_num;
 
 // ----------------------------------------------------------------------------
     // functions
@@ -41,10 +42,13 @@ protected:
                                         list<ControlPoint>::Iterator it);
     void            calculateVelocity();
     ControlPoint    newControlPoint(vector3df p);
+    void            saveNode(ISceneNode* sn, FILE* fp);
+    void            loadNode(ISceneNode* sn, FILE* fp);
 
 // ----------------------------------------------------------------------------
 public:
-    ISpline(ISceneNode* parent, ISceneManager* mgr, s32 id);
+    ISpline(ISceneNode* parent, ISceneManager* mgr, s32 id, stringw type);
+    ISpline(ISceneNode* parent, ISceneManager* mgr, s32 id, stringw t, FILE* fp);
 
     virtual vector3df   p(float t) = 0;
     virtual vector3df   getNormal(float t) = 0;
@@ -57,6 +61,8 @@ public:
     ControlPoint        removeControlPoint(u32 ix);
     ISceneNode*         getNode(u32 ix);
     void                updatePosition();
+    void                clear();
+    void                save(FILE* fp);
     bool                hasEnoughPoints()   { return m_cp_num > 1; }
     int                 getPointNum()       { return m_cp_num;     }
 

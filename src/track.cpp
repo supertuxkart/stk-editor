@@ -15,10 +15,11 @@
 #include <assert.h>
 
 // ----------------------------------------------------------------------------
-Track::Track(u32 tx, u32 tz)
+Track::Track(f32 tx, f32 tz)
 {
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
-    m_terrain = new Terrain(sm->getRootSceneNode(), sm, 1, tx, tz, 2 * tx, 2 * tz);
+    m_terrain = new Terrain(sm->getRootSceneNode(), sm, 1, tx, tz,
+                           (u32) 2 * tx, (u32) 2 * tz);
 
     ISpline* spline = new Bezier(sm->getRootSceneNode(), sm, 0);
     m_driveline = new DriveLine(sm->getRootSceneNode(), sm, 0, spline, L"DriveLine");
@@ -30,7 +31,6 @@ Track::Track(path file)
 {
     FILE* pFile;
     pFile = fopen(file.c_str(), "rb");
-
 
     u8 size;
     wchar_t* c;
@@ -50,17 +50,37 @@ Track::Track(path file)
     fread(&size, sizeof(u8), 1, pFile);
     cc = new c8[size];
     fread(cc, sizeof(c8), size, pFile);
-    m_track_name = cc;
+    m_file_name = cc;
     delete cc;
 
+    // TERRAIN
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
     m_terrain = new Terrain(sm->getRootSceneNode(), sm, 1, pFile);
 
+    // ROADS
+
+    IRoad* r;
+    fread(&size, sizeof(u8), 1, pFile);
+    if (size > 0)
+    {
+        r = new DriveLine(sm->getRootSceneNode(), sm, 0, pFile);
+        m_roads.insert(0, r);
+        r->refresh();
+    }
+    for (u8 i = 1; i < size; i++)
+    {
+        r = new Road(sm->getRootSceneNode(), sm, 0, pFile);
+        r->refresh();
+        m_roads.insert(i, r);
+    }
+
+    // OBJECTS
+
     u32 num;
     fread(&num, sizeof(u32), 1, pFile);
-    Viewport::setLastEntityID(num + MAGIC_NUMBER + 1);
-    
-    for (int i = 0; i < num; i++)
+    Viewport::setLastEntityID(num + MAGIC_NUMBER);
+
+    for (u32 i = 0; i < num; i++)
     {
         vector3df pos, rot, sca;
         fread(&pos, sizeof(vector3df), 1, pFile);
@@ -79,6 +99,7 @@ Track::Track(path file)
         node->setID(MAGIC_NUMBER + i);
         delete name;
     }
+
     fclose(pFile);
 
 } // Track - from file
@@ -90,33 +111,49 @@ Track::~Track(){};
 // ----------------------------------------------------------------------------
 void Track::save()
 {
-  FILE* pFile;
-  
+  FILE* pFile = 0;
+
   path p = "maps/";
   p += m_file_name.c_str();
   pFile = fopen(p.c_str(), "wb");
-  
+
+  assert(pFile);
+
+  // TRACK NAME
   u8 size = m_track_name.size() + 1;
   fwrite(&size, sizeof(u8), 1, pFile);
   fwrite(m_track_name.c_str(), sizeof(wchar_t), size, pFile);
 
+  // DESIGNER NAME
   size = m_designer.size() + 1;
   fwrite(&size, sizeof(u8), 1, pFile);
   fwrite(m_designer.c_str(), sizeof(wchar_t), size, pFile);
 
+  // FILE NAME
   size = m_file_name.size() + 1;
   fwrite(&size, sizeof(u8), 1, pFile);
   fwrite(m_file_name.c_str(), sizeof(c8), size, pFile);
 
+  // TERRAIN
   m_terrain->save(pFile);
 
+  // ROADS
+  size = m_roads.size();
+  fwrite(&size, sizeof(u8), 1, pFile);
+  IRoad* r;
+  for (u8 i = 0; i < size; i++)
+  {
+      r = m_roads[i];
+      r->save(pFile);
+  }
+
+  // OBJECTS
   ISceneManager* sm = Editor::getEditor()->getSceneManager();
   ISceneNode* node;
-
   u32 num = Viewport::getLastEntityID() - MAGIC_NUMBER;
-  fwrite(&num, sizeof(u32), 1, pFile);  
-  
-  for (int i = 0; i < num; i++)
+  fwrite(&num, sizeof(u32), 1, pFile);
+
+  for (u32 i = 0; i < num; i++)
   {
       assert(node = sm->getSceneNodeFromId(MAGIC_NUMBER + i + 1));
       if (node->isVisible())
@@ -141,11 +178,18 @@ void Track::quit()
     int i = 1;
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
     ISceneNode* node;
-    while (node = sm->getSceneNodeFromId(MAGIC_NUMBER + i))
+    while ((node = sm->getSceneNodeFromId(MAGIC_NUMBER + i)))
     {
         node->remove();
         i++;
     }
+    IRoad* r;
+    for (u32 i = 0; i < m_roads.size(); i++)
+    {
+        r = m_roads[i];
+        r->remove();
+    }
+
 } // quit
 
 // ----------------------------------------------------------------------------
@@ -168,7 +212,7 @@ void Track::build()
     track << "        reverse        = \"Y\"\n>\n";
     track << "</track>\n";
     track.close();
-    
+
     std::ofstream scene;
     scene.open("export/scene.xml");
 
@@ -177,7 +221,7 @@ void Track::build()
 
     ISceneNode* node;
     int i = 1;
-    while (node = sm->getSceneNodeFromId(MAGIC_NUMBER + i))
+    while ((node = sm->getSceneNodeFromId(MAGIC_NUMBER + i)))
     {
         vector3df pos, rot, sca;
         if (node->isVisible())
@@ -194,12 +238,12 @@ void Track::build()
     }
 
     scene << "  </track>\n";
-    
+
     scene << "  <default - start karts - per - row = \"3\"\n";
     scene << "                   forwards-distance =\"1.50\"\n";
     scene << "                   sidewards-distance=\"3.00\"\n";
     scene << "                   upwards-distance  =\"0.10\"/>\n";
-    
+
     scene << "</scene>\n";
     scene.close();
 } // build
@@ -220,7 +264,7 @@ void Track::removeLastRoad()
 void Track::createRoad(stringw type, stringw name)
 {
     // Viewport::get()->setState(Viewport::SELECT);
-    
+
     IRoad* rm;
 
     ISceneManager* sm = Editor::getEditor()->getSceneManager();

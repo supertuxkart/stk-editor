@@ -16,8 +16,11 @@ public:
     Road(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s, stringw n) 
             :IRoad(parent, mgr, id, s, n) {};
 
+    Road(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
+        :IRoad(parent, mgr, id, fp) {};
+
     void    refresh();
-    
+
     void    render();
 };
 

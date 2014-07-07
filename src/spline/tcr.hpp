@@ -16,7 +16,10 @@ private:
 
 
 public:
-    TCR(ISceneNode* parent, ISceneManager* mgr, s32 id) :ISpline(parent, mgr, id) {};
+    TCR(ISceneNode* parent, ISceneManager* mgr, s32 id) 
+                   :ISpline(parent, mgr, id, L"TCR") {};
+    TCR(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp) 
+                   :ISpline(parent, mgr, id, L"TCR", fp) {};
     vector3df p(float t);
     vector3df getNormal(float t);
     float getWidth(float t);

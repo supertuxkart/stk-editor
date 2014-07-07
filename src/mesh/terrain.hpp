@@ -78,7 +78,7 @@ public:
 // ----------------------------------------------------------------------------
 public:
     Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id,
-                  float x, float z, int nx, int nz);
+                  float x, float z, u32 nx, u32 nz);
 
     Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp);
                                          

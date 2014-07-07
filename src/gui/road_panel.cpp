@@ -117,12 +117,12 @@ void RoadPanel::updateRoadList()
         map<unsigned int, IRoad*>* road_list = t->getRoadList();
         m_cb->clear();
 
-        for (int i = 0; i < road_list->size(); i++)
+        for (u32 i = 0; i < road_list->size(); i++)
         {
             r = (*road_list)[i];
             stringw name = r->getName();
             m_cb->addItem(name.c_str(), i);
-        }        
+        }
 
         stringw s = stringw(road_list->size());
         m_text_field->setText((stringw("RoadMesh_") + s).c_str());
