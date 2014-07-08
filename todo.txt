@@ -1,3 +1,14 @@
 TODO list:
 
-1. write a todo list
+- skybox/dome
+- checklines
+- fix font
+- nicer icons
+- path to assets (ask + store in config afterwards)
+- first dialog should be new/open
+- monkey testing for crashes (for example: click on save button while the new dialog is open, before a map exists)
+- hotkeys for actions (both use and their visibility in tooltips)
+- move to using the media/assets repo instead of dropbox library
+- create some XMLs for media objects
+- show the last N edited maps in the first dialog for quick re-editing
+- road mesh texture & export
