@@ -8,6 +8,8 @@
 
 #include <irrlicht.h>
 
+#include <iostream>
+
 using namespace irr;
 using namespace core;
 using namespace scene;
@@ -85,30 +87,40 @@ void AztecCamera::animate(f32 dt)
 
         m_indicator->setProjMat(m_normal_cd, hVol, nv, fv);
     }
+    
+    bool ss = false;
 
-    if (m_keys->state(SPACE_PRESSED))
+    if ((m_mouse->left_btn_down && m_keys->state(SPACE_PRESSED))
+                                  || m_mouse->middle_btn_down)
     {
-        if (m_mouse->left_btn_down)
-        {
-            vector3df tar = m_cam->getTarget();
-            tar.rotateXZBy(m_mouse->dx() / 5.0f, m_cam->getPosition());
-            m_cam->setTarget(tar);
-            m_indicator->updateTar(tar);
-        }
-
-        if (m_mouse->right_btn_down)
-        {
-            vector3df pos = m_cam->getPosition();
-            vector3df tar = m_cam->getTarget();
-            vector3df transformed_z_dir = vector3df(pos.X - tar.X, 0, pos.Z - tar.Z);
-            transformed_z_dir.normalize();
-            tar += transformed_z_dir * (f32)m_mouse->dy();
-            m_cam->setTarget(tar);
-            m_indicator->updateTar(tar);
-        }
-
-        m_mouse->setStorePoint();
+        vector3df tar = m_cam->getTarget();
+        tar.rotateXZBy(m_mouse->dx() / 5.0f, m_cam->getPosition());
+        m_cam->setTarget(tar);
+        m_indicator->updateTar(tar);
+        ss = true;
     }
+
+    if ((m_mouse->right_btn_down && m_keys->state(SPACE_PRESSED))
+        || m_mouse->middle_btn_down)
+    {
+        vector3df pos = m_cam->getPosition();
+        vector3df tar = m_cam->getTarget();
+        vector3df transformed_z_dir = vector3df(pos.X - tar.X, 0, pos.Z - tar.Z);
+
+        transformed_z_dir.normalize();
+        tar += transformed_z_dir * (f32)m_mouse->dy();
+
+        vector3df d = m_cam->getPosition() - tar;      
+        f32 f = fabs(d.getLength() / d.dotProduct(vector3df(0, 1, 0)));
+        if (f > 1.05f && f < 3.0f)
+        {
+            m_cam->setTarget(tar);
+            m_indicator->updateTar(tar);
+            ss = true;
+        }
+    }
+
+    if (ss) m_mouse->setStorePoint();
 
 } // animate
 

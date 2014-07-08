@@ -23,6 +23,8 @@ private:
 
     f32                     m_normal_cd;
 
+    vector3df               m_last_valid_z_dir;
+
 public:
     AztecCamera(ICameraSceneNode* c, Mouse* m, Keys* k);
     void animate(f32 dt);
