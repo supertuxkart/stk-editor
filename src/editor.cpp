@@ -11,6 +11,7 @@
 #include "gui/terr_panel.hpp"
 #include "gui/road_panel.hpp"
 #include "gui/extra_panel.hpp"
+#include "gui/tex_sel.hpp"
 
 #include "mesh/driveline.hpp"
 #include "mesh/iroad.hpp"
@@ -145,6 +146,13 @@ bool Editor::buttonClicked(int ID)
         ep->switchPage(1);
         return true;
     }
+    
+    if (ID >= m_tex_sel->FIRST_BTN_ID &&
+        ID < m_tex_sel->FIRST_BTN_ID + m_tex_sel->getBtnNum() + 2)
+    {
+        m_tex_sel->btnClicked(ID);
+        return true;
+    }
 
     std::cerr << "Button click isn't handled!" << std::endl;
     return false;
@@ -214,6 +222,8 @@ bool Editor::init()
     m_toolbar = ToolBar::getToolBar();
     m_toolbox = ToolBox::getToolBox();
     m_new_dialog_wndw = NewDialogWndw::get();
+
+    m_tex_sel = TexSel::getTexSel();
 
     m_device->setEventReceiver(this);
     return true;

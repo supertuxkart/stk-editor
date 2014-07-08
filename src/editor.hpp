@@ -21,6 +21,7 @@ class  ToolBar;
 class  ToolBox;
 class  NewDialogWndw;
 class  Viewport;
+class  TexSel;
 
 class Editor :public IEventReceiver
 {
@@ -36,6 +37,8 @@ private:
     ToolBox*                    m_toolbox;
     NewDialogWndw*              m_new_dialog_wndw;
     Viewport*                   m_viewport;
+
+    TexSel*                     m_tex_sel;
 
     path                        m_def_wd;
 
