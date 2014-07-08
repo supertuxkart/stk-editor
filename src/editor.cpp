@@ -63,7 +63,8 @@ bool Editor::buttonClicked(int ID)
         m_new_dialog_wndw->show();
         return true;
     case ToolBar::TBI_SAVE:
-        m_viewport->getTrack()->save();
+        if (m_viewport->getTrack())
+            m_viewport->getTrack()->save();
         return true;
     case ToolBar::TBI_OPEN:
         m_new_dialog_wndw->hide();
