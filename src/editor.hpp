@@ -16,7 +16,7 @@ using namespace video;
 using namespace gui;
 using namespace io;
 
-class Indicator;
+class  Indicator;
 class  ToolBar;
 class  ToolBox;
 class  NewDialogWndw;
@@ -40,6 +40,8 @@ private:
 
     TexSel*                     m_tex_sel;
 
+    bool                        m_valid_data_dir;
+
     path                        m_def_wd;
 
     dimension2du                m_screen_size;
@@ -48,10 +50,20 @@ private:
     Keys                        m_keys;
     Indicator*                  m_indicator;
 
-	bool init();
+    path                        m_config_loc;
+    IFileArchive*               m_tex_dir;
+    IFileArchive*               m_xml_dir;
+    c8*                         m_maps_path;
+
+	bool                        init();
+    void                        fileInit();
+    bool                        validDataLoc(IXMLReader* xml);
+    bool                        validateDataLoc(path data_loc);
+    void                        dataDirLocDlg();
 
 	Editor() {};
     bool                        buttonClicked(int ID);
+    bool                        importantButtonClicked(int ID);
 
 public:
     static Editor*    getEditor(dimension2du screen_size = dimension2du(1280, 720));
@@ -69,6 +81,9 @@ public:
     ISceneManager*    getSceneManager() { return m_scene_manager; }
     IGUIEnvironment*  getGUIEnv()       { return m_gui_env;       }
     dimension2du      getScreenSize()   { return m_screen_size;   }
+    IFileArchive*     getTexDir()       { return m_tex_dir;       }
+    IFileArchive*     getXMLDir()       { return m_xml_dir;       }
+    path              getMapsPath()     { return m_maps_path;     }
 };
 
 #endif

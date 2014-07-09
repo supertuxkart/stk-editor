@@ -12,23 +12,8 @@ Library::Library(stringw name, unsigned int buffer_size)
     m_buffer_size = buffer_size;
     m_name        = name;
     IFileSystem* file_system = Editor::getEditor()->getDevice()->getFileSystem();
-    path wd = file_system->getWorkingDirectory();
 
-    IFileArchive* dir = 0;
-    stringw dir_path = "/libraries/";
-    dir_path += name;
-    dir_path += "/xml";
-
-    if (!file_system->addFileArchive(wd + dir_path, true, false, EFAT_FOLDER, "", &dir))
-    {
-        std::cerr << "The data library could not be found. "
-                      "Later it will be included in STK media repo, "
-                      "but for now you need to download it separately. "
-                      "Did you read the README?\n";
-        exit(-1);
-    }
-
-    const IFileList* file_list = dir->getFileList();
+    const IFileList* file_list = Editor::getEditor()->getXMLDir()->getFileList();
 
     for (unsigned int i = 0; i < file_list->getFileCount(); i++)
     {

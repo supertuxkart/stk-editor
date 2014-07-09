@@ -113,8 +113,7 @@ void Track::save()
 {
   FILE* pFile = 0;
 
-  path p = "maps/";
-  p += m_file_name.c_str();
+  path p = Editor::getEditor()->getMapsPath() + "/" + m_file_name.c_str();
   pFile = fopen(p.c_str(), "wb");
 
   assert(pFile);

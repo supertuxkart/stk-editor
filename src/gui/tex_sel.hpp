@@ -56,12 +56,13 @@ public:
 
     u32         getBtnNum() { return m_btn_num; }
 
-    void        show()                     { m_wndw->setVisible(true);     }
-    void        hide()                     { m_wndw->setVisible(false);    }
-    bool        isActive()                 { return m_wndw->isVisible();   }
-
-    void        subscribe(IGUIButton* b)   { m_bsubs.push_back(b); show(); }
-    void        subscribe(ISubscriber* s)  { m_subs.push_back(s);  show(); }
+    void        show()                   { m_wndw->setVisible(true);          }
+    void        hide()                   { m_wndw->setVisible(false); clear();}
+    bool        isActive()               { return m_wndw->isVisible();        }
+    void        clear()                  { m_bsubs.clear(); m_subs.clear();   }
+                                                                              
+    void        subscribe(IGUIButton* b) { m_bsubs.push_back(b); show();      }
+    void        subscribe(ISubscriber* s){ m_subs.push_back(s);  show();      }
 
 };
 

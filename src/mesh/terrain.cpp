@@ -224,10 +224,10 @@ void Terrain::initMaterials()
     m_material.MaterialType = (E_MATERIAL_TYPE)material_type;
 
     m_material.setTexture(0, createSplattingImg());
-    m_material.setTexture(1, vd->getTexture(L"libraries/terrain/t1.png"));
-    m_material.setTexture(2, vd->getTexture(L"libraries/terrain/t2.jpg"));
-    m_material.setTexture(3, vd->getTexture(L"libraries/terrain/t3.jpg"));
-    m_material.setTexture(4, vd->getTexture(L"libraries/terrain/t4.jpg"));
+    m_material.setTexture(1, vd->getTexture(L"t1.png"));
+    m_material.setTexture(2, vd->getTexture(L"t2.jpg"));
+    m_material.setTexture(3, vd->getTexture(L"t3.jpg"));
+    m_material.setTexture(4, vd->getTexture(L"t4.jpg"));
 
     m_highlight_material.Lighting = false;
     m_highlight_material.MaterialType = EMT_TRANSPARENT_VERTEX_ALPHA;

@@ -48,6 +48,9 @@ void NewDialogWndw::init()
     frame = rect<s32>(120,160,180,180);
     gui_env->addButton(frame, m_wndw, BTN_ID, L"Create", L"Create");
 
+    m_wndw->setDrawTitlebar(false);
+    m_wndw->getCloseButton()->setVisible(false);
+
 } // init
 
 // ----------------------------------------------------------------------------

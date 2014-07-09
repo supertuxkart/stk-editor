@@ -61,16 +61,7 @@ void TexSel::bindTexturesToButton(u32 page)
 void TexSel::loadTextures()
 {
     IFileSystem* file_system = Editor::getEditor()->getDevice()->getFileSystem();
-    path wd = file_system->getWorkingDirectory();
-    IFileArchive* dir = 0;
-    stringw dir_path = "/libraries/textures";
-    if (!file_system->addFileArchive(wd+dir_path, true, false, EFAT_FOLDER, "", &dir))
-    {
-        std::cerr << "The textures directory could not be found. "
-            "That's sad :( ";
-        exit(-1);
-    }
-
+    IFileArchive* dir = Editor::getEditor()->getTexDir();
     ITexture* t;
     const IFileList* file_list = dir->getFileList();
     for (unsigned int i = 0; i < file_list->getFileCount(); i++)

@@ -16,20 +16,21 @@
 #include "mesh/driveline.hpp"
 #include "mesh/iroad.hpp"
 
+#include <physfs.h>
 #include <iostream>
+#include <fstream>
+#include <assert.h>
 
 Editor* Editor::m_editor = 0;
 
 // ----------------------------------------------------------------------------
 bool Editor::buttonClicked(int ID)
 {
+    char* c = 0;
     RoadPanel* rp;
     switch (ID)
     {
     // ToolBar buttons
-    case ToolBar::TBI_EXIT:
-        m_device->closeDevice();
-        return true;
     case ToolBar::TBI_UNDO:
         m_viewport->undo();
         return true;
@@ -60,21 +61,9 @@ bool Editor::buttonClicked(int ID)
     case ToolBar::TBI_TRY:
         m_viewport->build();
         return true;
-    case ToolBar::TBI_NEW:
-        m_new_dialog_wndw->show();
-        return true;
     case ToolBar::TBI_SAVE:
         if (m_viewport->getTrack())
             m_viewport->getTrack()->save();
-        return true;
-    case ToolBar::TBI_OPEN:
-        m_new_dialog_wndw->hide();
-        m_gui_env->addFileOpenDialog(L"Open track:", true, 0, -1, false, "maps");
-        return true;
-    // new window
-    case NewDialogWndw::BTN_ID:
-        newTrack();
-        m_new_dialog_wndw->hide();
         return true;
     // ToolBox BTN:
     case ToolBox::TWND_ID:
@@ -162,9 +151,35 @@ bool Editor::buttonClicked(int ID)
     return false;
 } // buttonClicked
 
+bool Editor::importantButtonClicked(int ID)
+{
+    switch (ID)
+    {
+        // ToolBar buttons
+    case ToolBar::TBI_EXIT:
+        m_device->closeDevice();
+        return true;
+    case ToolBar::TBI_NEW:
+        m_new_dialog_wndw->show();
+        return true;
+    case ToolBar::TBI_OPEN:
+        m_new_dialog_wndw->hide();
+        m_gui_env->addFileOpenDialog(L"Open track:", true, 0, -1, false, m_maps_path);
+        return true;
+        // new window
+    case NewDialogWndw::BTN_ID:
+        newTrack();
+        m_new_dialog_wndw->hide();
+        return true;
+    }
+    return false;
+} // importantButtonClicked
+
 // ----------------------------------------------------------------------------
 bool Editor::init()
 {
+    m_maps_path = 0;
+    m_valid_data_dir = false;
 	m_device = createDevice(EDT_OPENGL, m_screen_size, 16, false, false, true);
 	if (!m_device) return false;
 
@@ -224,14 +239,127 @@ bool Editor::init()
 
 
     m_toolbar = ToolBar::getToolBar();
-    m_toolbox = ToolBox::getToolBox();
     m_new_dialog_wndw = NewDialogWndw::get();
 
-    m_tex_sel = TexSel::getTexSel();
+    fileInit();
 
     m_device->setEventReceiver(this);
     return true;
 } // init
+
+
+// ----------------------------------------------------------------------------
+void Editor::fileInit()
+{    
+    IFileSystem* file_system = m_device->getFileSystem();
+
+    file_system->addFileArchive(PHYSFS_getBaseDir(), false, false, EFAT_FOLDER);
+    IXMLReader* xml_reader = file_system->createXMLReader("config.xml");
+    if (!xml_reader)
+    {
+        path dir = PHYSFS_getUserDir();
+        m_config_loc = dir + "/.stk-te";
+
+        if (!file_system->addFileArchive(m_config_loc.c_str(), false, false, EFAT_FOLDER))
+        {
+            PHYSFS_setWriteDir(dir.c_str());
+            PHYSFS_mkdir(".stk-te");
+            file_system->addFileArchive(m_config_loc, false, false, EFAT_FOLDER);
+        }
+        
+        xml_reader = file_system->createXMLReader("config.xml");
+
+        if (!xml_reader)
+        {
+            std::ofstream f;
+            f.open("config.xml");
+            f.close();
+            xml_reader = file_system->createXMLReader("config.xml");
+            assert(xml_reader);
+        }
+    }
+    if (!validDataLoc(xml_reader)) dataDirLocDlg();
+    xml_reader->drop();
+} // fileInit
+
+// ----------------------------------------------------------------------------
+bool Editor::validDataLoc(IXMLReader* xml)
+{
+    IFileSystem* file_system = m_device->getFileSystem();
+    path data_dir = "";
+    const stringw element(L"data_dir");
+    while (xml->read())
+    {
+        if (xml->getNodeType() == EXN_ELEMENT)
+        {
+            if (element.equals_ignore_case(xml->getNodeName()))
+            {
+                data_dir = xml->getAttributeValueSafe(L"path");
+            }
+        }
+    }
+    
+    if (file_system->addFileArchive((data_dir + "textures").c_str(), 
+        false, false, EFAT_FOLDER, "", &m_tex_dir))
+    {
+        m_valid_data_dir = true;
+
+        path p = data_dir + "editor/maps";
+        m_maps_path = new c8[p.size()+1];
+        strcpy(m_maps_path, p.c_str());
+
+        file_system->addFileArchive((data_dir + "editor/env/xml").c_str(),
+            false, false, EFAT_FOLDER, "", &m_xml_dir);
+
+        file_system->addFileArchive(data_dir, false, false, EFAT_FOLDER);
+        
+        m_tex_sel = TexSel::getTexSel();
+        m_toolbox = ToolBox::getToolBox();
+
+        file_system->addFileArchive((data_dir + "editor").c_str(),
+            false, false, EFAT_FOLDER);
+
+        return true;
+    }
+    
+    return false;
+} // validDataLoc
+
+// ----------------------------------------------------------------------------
+bool Editor::validateDataLoc(path file)
+{    
+    IFileSystem* file_system = m_device->getFileSystem();
+    if (!file_system->addFileArchive((file + "textures").c_str(), false,
+                                            false, EFAT_FOLDER, "", &m_tex_dir))
+        return false;
+
+    std::ofstream f;
+
+    f.open((m_config_loc + "/config.xml").c_str());
+
+    f << "<config>\n";
+    f << "  <data_dir path=\"" << file.c_str() << "\" />\n";
+    f << "</config>\n";
+
+    path p = file.c_str();
+    p += "editor";
+    m_maps_path = new c8[p.size()+1];
+    strcpy(m_maps_path, p.c_str());
+
+    f.close();
+    
+    return true;
+} // validDataLoc
+
+// ----------------------------------------------------------------------------
+void Editor::dataDirLocDlg()
+{
+    IGUIFileOpenDialog* ofd = m_gui_env->addFileOpenDialog(
+        L"Pls. select data directory (folder containing textures, tracks, etc.):",
+        true, 0, -1, false);
+    ofd->setMinSize(dimension2du(600, 512));
+    ofd->setRelativePosition(position2di(m_screen_size.Width / 2.0 - 300, 100));
+} // dataDirLocDlg
 
 
 // ----------------------------------------------------------------------------
@@ -256,7 +384,8 @@ bool Editor::run()
 	while (m_device->run())
     {
         current_time = m_device->getTimer()->getTime();
-        m_viewport->animate(current_time - last_time);
+        if (m_valid_data_dir)
+            m_viewport->animate(current_time - last_time);
 
 		// drawing
 		m_video_driver->beginScene(true, true, SColor(255, 80, 0, 170));
@@ -279,6 +408,9 @@ bool Editor::run()
         last_time = current_time;
     }
 
+    if (m_maps_path)
+        delete m_maps_path;
+
     delete m_viewport;
     delete m_toolbox;
     delete m_toolbar;
@@ -292,6 +424,52 @@ bool Editor::run()
 // ----------------------------------------------------------------------------
 bool Editor::OnEvent(const SEvent& event)
 {
+
+    if (event.EventType == EET_GUI_EVENT
+        && event.GUIEvent.EventType == EGET_BUTTON_CLICKED)
+            importantButtonClicked(event.GUIEvent.Caller->getID());
+
+    if (!m_valid_data_dir)
+    {
+        if (event.EventType == EET_GUI_EVENT)
+        {
+            if (event.GUIEvent.EventType == EGET_DIRECTORY_SELECTED)
+            {
+                if (validateDataLoc(
+                    ((IGUIFileOpenDialog*)event.GUIEvent.Caller)->getDirectoryName()))
+                {
+                    m_valid_data_dir = true;
+                    m_tex_sel = TexSel::getTexSel();
+                    m_toolbox = ToolBox::getToolBox();
+                    ((IGUIFileOpenDialog*)event.GUIEvent.Caller)->remove();
+                }
+                return true;
+            }
+            if (event.GUIEvent.EventType == EGET_FILE_CHOOSE_DIALOG_CANCELLED)
+            {
+                dataDirLocDlg();
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    if (event.EventType == EET_GUI_EVENT
+        && event.GUIEvent.EventType == EGET_FILE_SELECTED)
+    {
+        closeTrack();
+        m_device->getFileSystem()->changeWorkingDirectoryTo(m_def_wd);
+        m_viewport->setTrack(new Track(path(((IGUIFileOpenDialog*)
+            event.GUIEvent.Caller)->getFileName()).c_str()));
+        m_viewport->setSplineMode(false);
+        m_viewport->setState(Viewport::SELECT);
+        RoadPanel::getRoadPanel()->updateRoadList();
+        return true;
+    }
+
+    if (!m_viewport->getTrack()) return false;
+     
     if (event.EventType == EET_GUI_EVENT)
     {
         RoadPanel* rp;
@@ -364,17 +542,6 @@ bool Editor::OnEvent(const SEvent& event)
             default:
                 break;
             }
-            return false;
-
-        case EGET_FILE_SELECTED:
-            closeTrack();
-            m_device->getFileSystem()->changeWorkingDirectoryTo(m_def_wd);
-            m_viewport->setTrack(new Track(path(((IGUIFileOpenDialog*)
-                        event.GUIEvent.Caller)->getFileName()).c_str()));
-            m_viewport->setSplineMode(false);
-            m_viewport->setState(Viewport::SELECT);
-            RoadPanel::getRoadPanel()->updateRoadList();
-            return true;
 
         default:
             return false;
