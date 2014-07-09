@@ -91,13 +91,17 @@ bool Editor::buttonClicked(int ID)
     case TerrPanel::M_T2:
     case TerrPanel::M_T3:
     case TerrPanel::M_T4:
+    case TerrPanel::M_TC1:
+    case TerrPanel::M_TC2:
+    case TerrPanel::M_TC3:
+    case TerrPanel::M_TC4:
     case TerrPanel::H_BTN:
     case TerrPanel::T_SOFT_BTN:
     case TerrPanel::T_HARD_BTN:
     case TerrPanel::T_BRIGHTNESS_BTN:
-        TerrPanel::getTerrPanel()->btnDown(ID);
-        m_viewport->setState(Viewport::TERRAIN_MOD);
-        return true;
+         TerrPanel::getTerrPanel()->btnDown(ID);
+         m_viewport->setState(Viewport::TERRAIN_MOD);
+         return true;
     // ToolBox / RoadPanel buttons:
     case RoadPanel::DL_CREATE:
         rp = RoadPanel::getRoadPanel();
@@ -156,7 +160,7 @@ bool Editor::buttonClicked(int ID)
 
     std::cerr << "Button click isn't handled!" << std::endl;
     return false;
-}
+} // buttonClicked
 
 // ----------------------------------------------------------------------------
 bool Editor::init()
@@ -379,6 +383,7 @@ bool Editor::OnEvent(const SEvent& event)
 
     // gui active, there is nothing we should do
     if (m_gui_env->getFocus() != NULL) return false;
+    
 
     // keyboard event
     if (event.EventType == EET_KEY_INPUT_EVENT)
@@ -392,7 +397,8 @@ bool Editor::OnEvent(const SEvent& event)
     {
         // check if mouse is outside of the viewport's domain
         if (event.MouseInput.Y < 50 ||
-            event.MouseInput.X >(s32) m_screen_size.Width - 250)
+            event.MouseInput.X >(s32) m_screen_size.Width - 250 ||
+            (event.MouseInput.X >(s32)m_screen_size.Width - 500 && m_tex_sel->isActive()))
         {
             m_viewport->looseFocus();
             m_mouse.in_view = false;

@@ -3,6 +3,8 @@
 
 #include "mesh/mesh_structs.hpp"
 
+#include "gui/isubscriber.hpp"
+
 #include <irrlicht.h>
 #include <stdio.h>
 
@@ -12,7 +14,7 @@ using namespace video;
 using namespace core;
 using namespace io;
 
-class Terrain :public ISceneNode, public IShaderConstantSetCallBack
+class Terrain :public ISceneNode, public IShaderConstantSetCallBack, public ISubscriber
 {
 private:
 // ----------------------------------------------------------------------------
@@ -99,6 +101,12 @@ public:
     void         build();
     void         save(FILE* file);
 
+
+// ----------------------------------------------------------------------------
+    // inherited functions - ISubscriber
+    void notify(ITexture* tex)            { m_material.setTexture(m_id, tex); }
+    void setSubIx(u32 ix)                 { m_id = ix; }
+
 // ----------------------------------------------------------------------------
     // inherited functions - ISceneNode
     void                 OnRegisterSceneNode();
@@ -112,6 +120,7 @@ public:
     SMaterial&           getMaterial(u32 i)       { return m_material; }
 
     void OnSetConstants(video::IMaterialRendererServices* services, s32 userData);
+
 };
 
 #endif

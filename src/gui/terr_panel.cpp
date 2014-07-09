@@ -1,6 +1,11 @@
 #include "gui/terr_panel.hpp"
 #include "editor.hpp"
 
+
+#include "viewport/viewport.hpp"
+#include "mesh/terrain.hpp"
+#include "gui/tex_sel.hpp"
+
 TerrPanel* TerrPanel::m_terr_panel = 0;
 
 // ----------------------------------------------------------------------------
@@ -53,15 +58,20 @@ void TerrPanel::init()
     m_active_edge_frame->setUseAlphaChannel(true);
     // edge end
 
-    IGUIButton* b4 = gui_env->addButton(rect<s32>(10,  150, 60,  200), m_wndw, M_T1);
-    IGUIButton* b5 = gui_env->addButton(rect<s32>(70,  150, 120, 200), m_wndw, M_T2);
-    IGUIButton* b6 = gui_env->addButton(rect<s32>(130, 150, 180, 200), m_wndw, M_T3);
-    IGUIButton* b7 = gui_env->addButton(rect<s32>(190, 150, 240, 200), m_wndw, M_T4);
+    m_tb1 = gui_env->addButton(rect<s32>(10,  150, 60,  200), m_wndw, M_T1);
+    m_tb2 = gui_env->addButton(rect<s32>(70,  150, 120, 200), m_wndw, M_T2);
+    m_tb3 = gui_env->addButton(rect<s32>(130, 150, 180, 200), m_wndw, M_T3);
+    m_tb4 = gui_env->addButton(rect<s32>(190, 150, 240, 200), m_wndw, M_T4);
 
-    b4->setImage(Editor::loadImg(L"libraries/terrain/t1.png"));
-    b5->setImage(Editor::loadImg(L"libraries/terrain/t2.jpg"));
-    b6->setImage(Editor::loadImg(L"libraries/terrain/t3.jpg"));
-    b7->setImage(Editor::loadImg(L"libraries/terrain/t4.jpg"));
+    m_tb1->setImage(Editor::loadImg(L"libraries/terrain/t1.png"));
+    m_tb2->setImage(Editor::loadImg(L"libraries/terrain/t2.jpg"));
+    m_tb3->setImage(Editor::loadImg(L"libraries/terrain/t3.jpg"));
+    m_tb4->setImage(Editor::loadImg(L"libraries/terrain/t4.jpg"));
+
+    gui_env->addButton(rect<s32>(10, 205, 60,   220), m_wndw, M_TC1);
+    gui_env->addButton(rect<s32>(70, 205, 120,  220), m_wndw, M_TC2);
+    gui_env->addButton(rect<s32>(130, 205, 180, 220), m_wndw, M_TC3);
+    gui_env->addButton(rect<s32>(190, 205, 240, 220), m_wndw, M_TC4);
 
     // height modifier begin
     gui_env->addButton(rect<s32>(30, 255, 80, 305), m_wndw,H_BTN)
@@ -99,6 +109,35 @@ void TerrPanel::init()
     refreshTerrModData();
 
 } // init
+
+
+// ----------------------------------------------------------------------------
+void TerrPanel::terrChange(u32 id)
+{
+    Terrain* terr = Viewport::get()->getTerrain();
+    
+    TexSel* ts = TexSel::getTexSel();
+    switch (id)
+    {
+    case M_TC1:
+        ts->subscribe(m_tb1);
+        terr->setSubIx(1);
+        break;
+    case M_TC2:
+        ts->subscribe(m_tb2);
+        terr->setSubIx(2);
+        break;
+    case M_TC3:
+        ts->subscribe(m_tb3);
+        terr->setSubIx(3);
+        break;
+    case M_TC4:
+        ts->subscribe(m_tb4);
+        terr->setSubIx(4);
+        break;
+    }
+    ts->subscribe(terr);
+} // terrChange
 
 // ----------------------------------------------------------------------------
 TerrPanel* TerrPanel::getTerrPanel(IGUIWindow* wndw)
@@ -139,6 +178,12 @@ void TerrPanel::btnDown(int btn)
         break;
     case M_T4:
         m_tmod.col_mask = SColor(0, 0, 0, 255);
+        break;
+    case M_TC1:
+    case M_TC2:
+    case M_TC3:
+    case M_TC4:
+        terrChange(btn);
         break;
     case TerrPanel::H_BTN:
         m_tmod.type = HEIGHT_MOD;

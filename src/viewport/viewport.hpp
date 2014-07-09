@@ -101,6 +101,7 @@ public:
     static u32          getLastEntityID()                    { return m_last_entity_ID;}
     bool                getSplineMode()                      { return m_spline_mode;   }
     Track*              getTrack()                           { return m_track;         }
+    Terrain*            getTerrain()                         { return m_terrain;       }
     
 
     ~Viewport();

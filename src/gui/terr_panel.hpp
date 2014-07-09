@@ -33,7 +33,11 @@ public:
         H_BTN,
         T_SOFT_BTN,
         T_HARD_BTN,
-        T_BRIGHTNESS_BTN
+        T_BRIGHTNESS_BTN,
+        M_TC1,
+        M_TC2,
+        M_TC3,
+        M_TC4
     };
 
 private:
@@ -54,6 +58,11 @@ private:
 
     IGUICheckBox*           m_h_min_cb;
     IGUICheckBox*           m_h_max_cb;
+
+    IGUIButton*             m_tb1; 
+    IGUIButton*             m_tb2; 
+    IGUIButton*             m_tb3; 
+    IGUIButton*             m_tb4; 
     
     TerrainMod              m_tmod;
 
@@ -62,6 +71,7 @@ private:
     TerrPanel() {};
 
     void init();
+    void terrChange(u32 id);
 
 public:
     static TerrPanel*     getTerrPanel(IGUIWindow* wndw = 0);
