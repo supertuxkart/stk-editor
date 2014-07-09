@@ -19,7 +19,7 @@ Track::Track(f32 tx, f32 tz)
 {
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
     m_terrain = new Terrain(sm->getRootSceneNode(), sm, 1, tx, tz,
-                           (u32) 2 * tx, (u32) 2 * tz);
+                           (u32) (2 * tx), (u32) (2 * tz));
 
     ISpline* spline = new Bezier(sm->getRootSceneNode(), sm, 0);
     m_driveline = new DriveLine(sm->getRootSceneNode(), sm, 0, spline, L"DriveLine");
