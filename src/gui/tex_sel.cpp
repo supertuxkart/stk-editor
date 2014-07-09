@@ -1,5 +1,7 @@
 #include "gui/tex_sel.hpp"
 
+#include "gui/isubscriber.hpp"
+
 #include "editor.hpp"
 
 #include <iostream>
@@ -19,14 +21,12 @@ void TexSel::init()
 
     m_search_field = gui_env->addEditBox(L"", rect<s32>(40, 40, 210, 60), 
                                                         true, m_wndw, SEARCH_BOX);
-
-    m_selected_ix   = 0;
-    m_clicked       = false;
     m_selected_page = 0;
 
     loadTextures();
     initButtons();
     bindTexturesToButton(0);
+    hide();
     
 } // init
 
@@ -37,7 +37,7 @@ void TexSel::bindTexturesToButton(u32 page)
 
     it = m_tex_list.begin();
 
-    for (int i = 0; i < page * m_btn_num; i++)
+    for (u32 i = 0; i < page * m_btn_num; i++)
     {
         it++;
         assert(*it!=NULL);
@@ -47,11 +47,12 @@ void TexSel::bindTexturesToButton(u32 page)
     {
         if (it!=m_tex_list.end())
         {
-            m_btn_table[i]->setVisible(true);
-            m_btn_table[i]->setImage(*it);
+            m_btn_table[i].first->setVisible(true);
+            m_btn_table[i].first->setImage(*it);
+            m_btn_table[i].second = *it;
             it++;
         }
-        else m_btn_table[i]->setVisible(false);
+        else m_btn_table[i].first->setVisible(false);
     }
 
 } // bindTexturesToButton
@@ -90,20 +91,20 @@ void TexSel::initButtons()
     IGUIEnvironment* gui_env = Editor::getEditor()->getGUIEnv();
     dimension2du ss = Editor::getEditor()->getScreenSize();
     m_btn_num = (ss.Height - 180) / 60 * 4;
-    m_btn_table = new IGUIButton*[m_btn_num];
+    m_btn_table = new std::pair<IGUIButton*,ITexture*>[m_btn_num];
 
     for (int i = 0; i < m_btn_num / 4; i++)
     {
-        m_btn_table[4 * i] = gui_env->addButton
+        m_btn_table[4 * i].first = gui_env->addButton
             (rect<s32>(10, i * 60 + 80, 60, i * 60 + 130), m_wndw, FIRST_BTN_ID + 4 * i);
 
-        m_btn_table[4 * i + 1] = gui_env->addButton
+        m_btn_table[4 * i + 1].first = gui_env->addButton
             (rect<s32>(70, i * 60 + 80, 120, i * 60 + 130), m_wndw, FIRST_BTN_ID + 4 * i + 1);
 
-        m_btn_table[4 * i + 2] = gui_env->addButton
+        m_btn_table[4 * i + 2].first = gui_env->addButton
             (rect<s32>(130, i * 60 + 80, 180, i * 60 + 130), m_wndw, FIRST_BTN_ID + 4 * i + 2);
 
-        m_btn_table[4 * i + 3] = gui_env->addButton
+        m_btn_table[4 * i + 3].first = gui_env->addButton
             (rect<s32>(190, i * 60 + 80, 240, i * 60 + 130), m_wndw, FIRST_BTN_ID + 4 * i + 3);
     }
 
@@ -134,13 +135,12 @@ void TexSel::btnClicked(u32 id)
 
     if (ix < m_btn_num)
     {
-        m_selected_ix = ix;
-        m_clicked     = true;
+        notify(ix);
+        hide();
     }
     else if (ix == m_btn_num)
     {
-        m_selected_page--;
-        if (m_selected_page < 0) m_selected_page = 0;
+        if (m_selected_page > 0) m_selected_page--;
         bindTexturesToButton(m_selected_page);
     }
     else if (ix == m_btn_num + 1)
@@ -151,3 +151,18 @@ void TexSel::btnClicked(u32 id)
     }
 
 } // btnClicked
+
+// ----------------------------------------------------------------------------
+void TexSel::notify(u32 id)
+{
+    for (list<IGUIButton*>::Iterator it = m_bsubs.begin(); it != m_bsubs.end(); it++)
+        (*it)->setImage(m_btn_table[id].second);
+
+    for (list<ISubscriber*>::Iterator it = m_subs.begin(); it != m_subs.end(); it++)
+        (*it)->notify(m_btn_table[id].second);
+
+    m_bsubs.clear();
+    m_subs.clear();
+
+} // notify
+

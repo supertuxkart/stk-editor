@@ -10,6 +10,8 @@ using namespace gui;
 using namespace core;
 using namespace video;
 
+class ISubscriber;
+
 class TexSel
 {
 public:
@@ -19,21 +21,22 @@ private:
 
     // private variables:
 
-    static TexSel*  m_self;
+    static TexSel*                      m_self;
 
-    IGUIWindow*     m_wndw;
+    IGUIWindow*                         m_wndw;
 
-    IGUIEditBox*    m_search_field;
+    IGUIEditBox*                        m_search_field;
 
-    u8              m_btn_num;
-    list<ITexture*> m_tex_list;
-    IGUIButton**    m_btn_table;
-    s32             m_selected_page;
-    u8              m_selected_ix;
-    bool            m_clicked;
+    u8                                  m_btn_num;
+    list<ITexture*>                     m_tex_list;
+    std::pair<IGUIButton*, ITexture*>*  m_btn_table;
+    u32                                 m_selected_page;
 
-    IGUIButton*     m_next;
-    IGUIButton*     m_prev;
+    IGUIButton*                         m_next;
+    IGUIButton*                         m_prev;
+
+    list<ISubscriber*>                  m_subs;
+    list<IGUIButton*>                   m_bsubs;
 
     // private functions:
 
@@ -49,11 +52,17 @@ public:
     static TexSel*      getTexSel();
 
     void        btnClicked(u32 id);
+    void        notify(u32 id);
 
     u32         getBtnNum() { return m_btn_num; }
 
-    void        show()      { m_wndw->setVisible(true); }
-    void        hide()      { m_wndw->setVisible(false); }
+    void        show()                     { m_wndw->setVisible(true);     }
+    void        hide()                     { m_wndw->setVisible(false);    }
+    bool        isActive()                 { return m_wndw->isVisible();   }
+
+    void        subscribe(IGUIButton* b)   { m_bsubs.push_back(b); show(); }
+    void        subscribe(ISubscriber* s)  { m_subs.push_back(s);  show(); }
+
 };
 
 #endif
