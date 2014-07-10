@@ -626,22 +626,22 @@ void Editor::addItem(u32 id)
     {
     case ExtraPanel::BTN_BANANA:
         node = m_scene_manager->addAnimatedMeshSceneNode(
-            m_scene_manager->getMesh("libraries/models/banana.b3d"));
+            m_scene_manager->getMesh("models/banana.b3d"));
         node->setName("banana");
         break;
     case ExtraPanel::BTN_ITEM:
         node = m_scene_manager->addAnimatedMeshSceneNode(
-            m_scene_manager->getMesh("libraries/models/gift-box.b3d"));
+            m_scene_manager->getMesh("models/gift-box.b3d"));
         node->setName("item");
         break;
     case ExtraPanel::BTN_SNITRO:
         node = m_scene_manager->addAnimatedMeshSceneNode(
-            m_scene_manager->getMesh("libraries/models/nitrotank-small.b3d"));
+            m_scene_manager->getMesh("models/nitrotank-small.b3d"));
         node->setName("small-nitro");
         break;
     case ExtraPanel::BTN_BNITRO:
         node = m_scene_manager->addAnimatedMeshSceneNode(
-            m_scene_manager->getMesh("libraries/models/nitrotank-big.b3d"));
+            m_scene_manager->getMesh("models/nitrotank-big.b3d"));
         node->setName("big-nitro");
         break;
     default:
