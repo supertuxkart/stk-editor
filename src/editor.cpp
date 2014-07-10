@@ -521,6 +521,9 @@ bool Editor::OnEvent(const SEvent& event)
                 EnvPanel::getEnvPanel()->resetIndex();
                 EnvPanel::getEnvPanel()->refreshBtnTable();
                 return true;
+            case TexSel::SEARCH_BOX:
+                TexSel::getTexSel()->searchFieldDirty();
+                return true;
             default:
                 break;
             }

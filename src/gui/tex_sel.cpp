@@ -23,6 +23,8 @@ void TexSel::init()
                                                         true, m_wndw, SEARCH_BOX);
     m_selected_page = 0;
 
+    m_wndw->getCloseButton()->setVisible(false);
+
     loadTextures();
     initButtons();
     bindTexturesToButton(0);
@@ -31,28 +33,49 @@ void TexSel::init()
 } // init
 
 // ----------------------------------------------------------------------------
+bool TexSel::texContainsString(ITexture* tex, stringw str)
+{
+    stringc n = tex->getName();
+    u32 ix;
+    ix = n.findLast('/');
+    n = n.subString(ix + 1, n.size() - ix - 1);
+    if (n.find(str.c_str(), 0) != -1) return true;
+    else return false;
+} // texContainsString
+
+// ----------------------------------------------------------------------------
 void TexSel::bindTexturesToButton(u32 page)
 {
     list<ITexture*>::Iterator it;
-
+    
     it = m_tex_list.begin();
+    stringw s = m_search_field->getText();
 
-    for (u32 i = 0; i < page * m_btn_num; i++)
+    for (u32 i = 0; i < page * m_btn_num;)
     {
         it++;
         assert(*it!=NULL);
+        if (s == "" || texContainsString(*it,s)) i++;
     }
 
-    for (int i = 0; i < m_btn_num; i++)
+    for (int i = 0; i < m_btn_num;)
     {
         if (it!=m_tex_list.end())
         {
-            m_btn_table[i].first->setVisible(true);
-            m_btn_table[i].first->setImage(*it);
-            m_btn_table[i].second = *it;
+            if (s=="" || texContainsString(*it, s))
+            {
+                m_btn_table[i].first->setVisible(true);
+                m_btn_table[i].first->setImage(*it);
+                m_btn_table[i].second = *it;
+                i++;
+            }
             it++;
         }
-        else m_btn_table[i].first->setVisible(false);
+        else 
+        {
+            m_btn_table[i].first->setVisible(false);
+            i++;
+        }
     }
 
 } // bindTexturesToButton
@@ -107,6 +130,21 @@ void TexSel::initButtons()
 
 } // initButtons
 
+// ----------------------------------------------------------------------------
+u32 TexSel::properTexNum()
+{
+    u32 ptnum = 0;
+    stringw s = m_search_field->getText();
+
+    if (s == L"") return m_tex_list.size();
+
+    list<ITexture*>::Iterator it;
+    for (it = m_tex_list.begin(); it != m_tex_list.end(); it++)
+    {
+        if (texContainsString(*it, s)) ptnum++;
+    }
+    return ptnum;
+} // properTexNum
 
 // ----------------------------------------------------------------------------
 TexSel* TexSel::getTexSel()
@@ -137,7 +175,7 @@ void TexSel::btnClicked(u32 id)
     else if (ix == m_btn_num + 1)
     {
         m_selected_page++;
-        if (m_selected_page > m_tex_list.size() / m_btn_num) m_selected_page-=1;
+        if (m_selected_page > properTexNum() / m_btn_num) m_selected_page -= 1;
         bindTexturesToButton(m_selected_page);
     }
 
@@ -156,4 +194,11 @@ void TexSel::notify(u32 id)
     m_subs.clear();
 
 } // notify
+
+// ----------------------------------------------------------------------------
+void TexSel::searchFieldDirty()
+{
+    m_selected_page = 0;
+    bindTexturesToButton(0);
+} // searchFieldDirty
 
