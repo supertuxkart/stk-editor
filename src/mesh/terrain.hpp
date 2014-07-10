@@ -105,7 +105,6 @@ public:
 // ----------------------------------------------------------------------------
     // inherited functions - ISubscriber
     void notify(ITexture* tex)            { m_material.setTexture(m_id, tex); }
-    void setSubIx(u32 ix)                 { m_id = ix; }
 
 // ----------------------------------------------------------------------------
     // inherited functions - ISceneNode
