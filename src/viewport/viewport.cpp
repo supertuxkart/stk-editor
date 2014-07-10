@@ -19,6 +19,7 @@
 #include "viewport/indicator.hpp"
 
 #include "mesh/terrain.hpp"
+#include "mesh/sky.hpp"
 
 #include <assert.h>
 
@@ -247,6 +248,7 @@ void Viewport::leaveState()
     case FREECAM:
         m_free_camera->setInputReceiverEnabled(false);
         sm->setActiveCamera(m_aztec_cam->Cam());
+        if (m_sky) m_sky->hide();
         return;
     case TERRAIN_MOD:
         m_terrain->setHighlightVisibility(false);
@@ -310,6 +312,7 @@ void Viewport::setState(State state)
     {
         m_free_camera->setInputReceiverEnabled(true);
         sm->setActiveCamera(m_free_camera);
+        if (m_sky) m_sky->show();
     }
 
     m_state = state;
@@ -510,6 +513,12 @@ Indicator*  Viewport::getIndicator()
     return m_aztec_cam->getIndicator();
 } // Indicator
 
+// ----------------------------------------------------------------------------
+void Viewport::showSky()
+{
+    if (m_sky && m_state == FREECAM) 
+        m_sky->show();
+} // showSky
 
 // ----------------------------------------------------------------------------
 Viewport::~Viewport()

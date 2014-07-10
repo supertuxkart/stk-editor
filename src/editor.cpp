@@ -80,16 +80,22 @@ bool Editor::buttonClicked(int ID)
     case TerrPanel::M_T2:
     case TerrPanel::M_T3:
     case TerrPanel::M_T4:
-    case TerrPanel::M_TC1:
-    case TerrPanel::M_TC2:
-    case TerrPanel::M_TC3:
-    case TerrPanel::M_TC4:
     case TerrPanel::H_BTN:
     case TerrPanel::T_SOFT_BTN:
     case TerrPanel::T_HARD_BTN:
     case TerrPanel::T_BRIGHTNESS_BTN:
-         TerrPanel::getTerrPanel()->btnDown(ID);
          m_viewport->setState(Viewport::TERRAIN_MOD);
+    case TerrPanel::M_TC1:
+    case TerrPanel::M_TC2:
+    case TerrPanel::M_TC3:
+    case TerrPanel::M_TC4:
+    case TerrPanel::S_T1:
+    case TerrPanel::S_T2:
+    case TerrPanel::S_T3:
+    case TerrPanel::S_T4:
+    case TerrPanel::S_T5:
+    case TerrPanel::S_T6:
+        TerrPanel::getTerrPanel()->btnDown(ID);
          return true;
     // ToolBox / RoadPanel buttons:
     case RoadPanel::DL_CREATE:
@@ -400,12 +406,14 @@ bool Editor::run()
 		// drawing
 		m_video_driver->beginScene(true, true, SColor(255, 80, 0, 170));
 
+        
         m_indicator->renderToTexture();
 
         m_scene_manager->drawAll();
-		m_gui_env->drawAll();
-
-        m_indicator->drawToScreen();
+		m_gui_env->drawAll();        
+        
+        if (m_viewport->getState() != Viewport::FREECAM)
+            m_indicator->drawToScreen();
 
 		m_video_driver->endScene();
 

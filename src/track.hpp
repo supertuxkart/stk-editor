@@ -11,7 +11,6 @@ class Terrain;
 class IRoad;
 class ISpline;
 class DriveLine;
-class Sky;
 
 class Track
 {
@@ -21,7 +20,6 @@ private:
     stringc     m_file_name;
     Terrain*    m_terrain;
     DriveLine*  m_driveline;
-    Sky*        m_sky;
 
     map<unsigned int, IRoad*>    m_roads;
 
@@ -47,8 +45,6 @@ public:
     void       setDesigner(stringw d)        { m_designer     = d; }
 
     Terrain*   getTerrain()                  { return m_terrain;   }
-    Sky*       getSky()                      { return m_sky;       }
-    void       setSky(Sky* sky)              { m_sky = sky;        }
 
     map<unsigned int, IRoad*>* getRoadList() { return &m_roads;    }
 

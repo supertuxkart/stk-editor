@@ -37,7 +37,13 @@ public:
         M_TC1,
         M_TC2,
         M_TC3,
-        M_TC4
+        M_TC4,
+        S_T1,
+        S_T2,
+        S_T3,
+        S_T4,
+        S_T5,
+        S_T6
     };
 
 private:
@@ -63,6 +69,13 @@ private:
     IGUIButton*             m_tb2; 
     IGUIButton*             m_tb3; 
     IGUIButton*             m_tb4; 
+
+    IGUIButton*             m_sb1;
+    IGUIButton*             m_sb2;
+    IGUIButton*             m_sb3;
+    IGUIButton*             m_sb4;
+    IGUIButton*             m_sb5;
+    IGUIButton*             m_sb6;
     
     TerrainMod              m_tmod;
 
@@ -72,6 +85,7 @@ private:
 
     void init();
     void terrChange(u32 id);
+    void skyChange(u32 id);
 
 public:
     static TerrPanel*     getTerrPanel(IGUIWindow* wndw = 0);

@@ -1,3 +1,4 @@
+
 #include "mesh/sky.hpp"
 
 #include "editor.hpp"
@@ -22,6 +23,7 @@ Sky::Sky(ITexture* up, ITexture*    down, ITexture* left,
 // ----------------------------------------------------------------------------
 void Sky::notify(ITexture* t)
 {
+    bool b = m_sky->isVisible();
     switch (m_id)
     {
     case 0:
@@ -45,9 +47,9 @@ void Sky::notify(ITexture* t)
     default:
         break;
     }
-
+    m_sky->remove();
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
     m_sky = sm->addSkyBoxSceneNode(m_up, m_down, m_left, m_right, m_front, m_back);
-
+    m_sky->setVisible(b);
 } // notify
 

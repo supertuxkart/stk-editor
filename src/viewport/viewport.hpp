@@ -1,11 +1,12 @@
 #ifndef VIEWPORT_HPP
 #define VIEWPORT_HPP
 
+#include "track.hpp"
 #include "commands/command_handler.hpp"
+#include "mesh/sky.hpp"
 
 #include <irrlicht.h>
 
-class  Track;
 class  Terrain;
 class  IRoad;
 class  SelectionHandler;
@@ -14,6 +15,7 @@ class  Indicator;
 class  DriveLine;
 struct Mouse;
 struct Keys;
+class  Sky;
 
 using namespace irr;
 using namespace scene;
@@ -62,6 +64,7 @@ private:
     AztecCamera*            m_aztec_cam;
     ICameraSceneNode*       m_free_camera;
 
+    Sky*                    m_sky;
     Terrain*                m_terrain;
     static const long       TERRAIN_WAIT_TIME = 50;
 
@@ -96,16 +99,20 @@ public:
 
     Indicator*          getIndicator();
 
-    void                setFreeCamera(ICameraSceneNode* cam) { m_free_camera = cam;    }
-    static void         setLastEntityID(u32 id)              { m_last_entity_ID = id;  }
-    static u32          getLastEntityID()                    { return m_last_entity_ID;}
-    bool                getSplineMode()                      { return m_spline_mode;   }
-    Track*              getTrack()                           { return m_track;         }
-    Terrain*            getTerrain()                         { return m_terrain;       }
-    
+    void showSky();
+
+    void                setFreeCamera(ICameraSceneNode* cam) { m_free_camera = cam;     }
+    static void         setLastEntityID(u32 id)              { m_last_entity_ID = id;   }
+    static u32          getLastEntityID()                    { return m_last_entity_ID; }
+    bool                getSplineMode()                      { return m_spline_mode;    }
+    Track*              getTrack()                           { return m_track;          }
+    Terrain*            getTerrain()                         { return m_terrain;        }
+    Sky*                getSky()                             { return m_sky;            }
+    void                setSky(Sky* sky)                     { m_sky = sky;             } 
+    void                hideSky()                            { if (m_sky) m_sky->hide();}
+    u32                 getState()                           { return m_state;          }
 
     ~Viewport();
-
 };
 
 #endif

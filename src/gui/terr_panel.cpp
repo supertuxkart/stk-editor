@@ -4,6 +4,7 @@
 
 #include "viewport/viewport.hpp"
 #include "mesh/terrain.hpp"
+#include "mesh/sky.hpp"
 #include "gui/tex_sel.hpp"
 
 TerrPanel* TerrPanel::m_terr_panel = 0;
@@ -91,6 +92,7 @@ void TerrPanel::init()
     m_h_min_value->setText(L"-3");
     // height modifier end
 
+    // BRUSH
     gui_env->addButton(rect<s32>(30, 350, 80, 400), m_wndw,T_SOFT_BTN)
         ->setImage(Editor::loadImg("img/sb.png"));
 
@@ -99,6 +101,33 @@ void TerrPanel::init()
 
     gui_env->addButton(rect<s32>(160, 350, 210, 400), m_wndw, T_BRIGHTNESS_BTN)
         ->setImage(Editor::loadImg("img/bb.png"));
+
+    // SKYBOX
+
+    ITexture* up    = Editor::loadImg("summersky_t.jpg");
+    ITexture* down  = Editor::loadImg("summersky_b.jpg");
+    ITexture* left  = Editor::loadImg("summersky_w.jpg");
+    ITexture* right = Editor::loadImg("summersky_e.jpg");
+    ITexture* front = Editor::loadImg("summersky_n.jpg");
+    ITexture* back  = Editor::loadImg("summersky_s.jpg");
+
+    m_sb1 = gui_env->addButton(rect<s32>(30,  475, 80,  525), m_wndw, S_T1);
+    m_sb2 = gui_env->addButton(rect<s32>(95,  475, 145, 525), m_wndw, S_T2);
+    m_sb3 = gui_env->addButton(rect<s32>(160, 475, 210, 525), m_wndw, S_T3);
+    m_sb4 = gui_env->addButton(rect<s32>(30,  550, 80,  600), m_wndw, S_T4);
+    m_sb5 = gui_env->addButton(rect<s32>(95,  550, 145, 600), m_wndw, S_T5);
+    m_sb6 = gui_env->addButton(rect<s32>(160, 550, 210, 600), m_wndw, S_T6);
+   
+    m_sb1->setImage(up);
+    m_sb2->setImage(down);
+    m_sb3->setImage(left);
+    m_sb4->setImage(right);
+    m_sb5->setImage(front);
+    m_sb6->setImage(back);
+
+    Sky* sky = new Sky(up, down, left, right, front, back);
+    sky->hide();
+    Viewport::get()->setSky(sky);
 
     m_tmod.type      = HEIGHT_MOD;
     m_tmod.countdown = -1;
@@ -138,6 +167,42 @@ void TerrPanel::terrChange(u32 id)
     }
     ts->subscribe(terr);
 } // terrChange
+
+// ----------------------------------------------------------------------------
+void TerrPanel::skyChange(u32 id)
+{
+    Sky* sky = Viewport::get()->getSky();
+
+    TexSel* ts = TexSel::getTexSel();
+    switch (id)
+    {
+    case S_T1:
+        ts->subscribe(m_sb1);
+        sky->setSubIx(1);
+        break;
+    case S_T2:
+        ts->subscribe(m_sb2);
+        sky->setSubIx(2);
+        break;
+    case S_T3:
+        ts->subscribe(m_sb3);
+        sky->setSubIx(3);
+        break;
+    case S_T4:
+        ts->subscribe(m_sb4);
+        sky->setSubIx(4);
+        break;
+    case S_T5:
+        ts->subscribe(m_sb5);
+        sky->setSubIx(5);
+        break;
+    case S_T6:
+        ts->subscribe(m_sb6);
+        sky->setSubIx(6);
+        break;
+    }
+    ts->subscribe(sky);
+} // skyChange
 
 // ----------------------------------------------------------------------------
 TerrPanel* TerrPanel::getTerrPanel(IGUIWindow* wndw)
@@ -196,6 +261,14 @@ void TerrPanel::btnDown(int btn)
         break;
     case TerrPanel::T_BRIGHTNESS_BTN:
         m_tmod.type = BRIGHTNESS_MOD;
+        break;
+    case S_T1:
+    case S_T2:
+    case S_T3:
+    case S_T4:
+    case S_T5:
+    case S_T6:
+        skyChange(btn);
         break;
     default:
         break;

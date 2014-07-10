@@ -6,7 +6,6 @@
 #include "mesh/terrain.hpp"
 #include "mesh/driveline.hpp"
 #include "mesh/road.hpp"
-#include "mesh/sky.hpp"
 #include "spline/bezier.hpp"
 #include "spline/tcr.hpp"
 
@@ -26,8 +25,6 @@ Track::Track(f32 tx, f32 tz)
     ISpline* spline = new Bezier(sm->getRootSceneNode(), sm, 0);
     m_driveline = new DriveLine(sm->getRootSceneNode(), sm, 0, spline, L"DriveLine");
     m_roads.insert(0, m_driveline);
-    
-    m_sky = 0;
 }
 
 // ----------------------------------------------------------------------------
