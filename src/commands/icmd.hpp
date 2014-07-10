@@ -1,11 +1,5 @@
-#ifndef ICOMMAND_HPP
-#define ICOMMAND_HPP
-
-#include <irrlicht.h>
-
-using namespace irr;
-using namespace scene;
-using namespace core;
+#ifndef ICMD_HPP
+#define ICMD_HPP
 
 // ----------------------------------------------------------------------------
 class ICmd
@@ -16,6 +10,5 @@ public:
     virtual void redo() = 0;
     virtual void undo() = 0;
 };
-
 
 #endif

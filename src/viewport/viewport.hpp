@@ -3,6 +3,7 @@
 
 #include "track.hpp"
 #include "commands/command_handler.hpp"
+#include "viewport/checkline_handler.hpp"
 #include "mesh/sky.hpp"
 
 #include <irrlicht.h>
@@ -32,6 +33,7 @@ public:
         SCALE,
         PLACE,
         SPLINE,
+        CHECK_LINE,
         TERRAIN_MOD,
         FREECAM
     };
@@ -48,6 +50,7 @@ private:
 
     SelectionHandler*       m_selection_handler;
     CommandHandler          m_command_handler;
+    CheckLineHandler        m_clh;
 
     ISceneNode*             m_new_entity;
     static int              m_last_entity_ID;
@@ -73,6 +76,7 @@ private:
     void                    animateEditing();
     void                    animatePlacing();
     void                    animateSplineEditing();
+    void                    animateCheckLine();
     void                    animateTerrainMod(long dt);
 
     void                    leaveState();
@@ -96,6 +100,7 @@ public:
     void                setTrack(Track* t);
     void                build();
     void                clear();
+    void                draw();
 
     Indicator*          getIndicator();
 

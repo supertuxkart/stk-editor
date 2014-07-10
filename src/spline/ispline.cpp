@@ -123,11 +123,13 @@ ISpline::ISpline(ISceneNode* parent, ISceneManager* mgr, s32 id, stringw t, FILE
 // ----------------------------------------------------------------------------
 void ISpline::setNodeVisibility(bool visible)
 {
+    setVisible(visible);
+    /*
     list<ControlPoint>::Iterator it;
     for (it = m_control_points.begin(); it != m_control_points.end(); it++)
         it->node->setVisible(visible);
+    */
 } // showNodes
-
 
 // ----------------------------------------------------------------------------
 u32 ISpline::addControlPoint(vector3df p)

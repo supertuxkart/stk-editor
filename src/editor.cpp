@@ -65,6 +65,9 @@ bool Editor::buttonClicked(int ID)
         if (m_viewport->getTrack())
             m_viewport->getTrack()->save();
         return true;
+    case ToolBar::TBI_SAVE_AS:
+        m_viewport->setState(Viewport::CHECK_LINE);
+        return true;
     // ToolBox BTN:
     case ToolBox::TWND_ID:
     case ToolBox::EWND_ID:
@@ -410,7 +413,8 @@ bool Editor::run()
         m_indicator->renderToTexture();
 
         m_scene_manager->drawAll();
-		m_gui_env->drawAll();        
+		m_gui_env->drawAll();
+        m_viewport->draw();
         
         if (m_viewport->getState() != Viewport::FREECAM)
             m_indicator->drawToScreen();

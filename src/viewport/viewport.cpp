@@ -10,6 +10,7 @@
 #include "commands/road_cmd.hpp"
 #include "commands/create_road_cmd.hpp"
 #include "commands/iobject_cmd.hpp"
+#include "commands/cl_cmd.hpp"
 
 #include "input/mouse.hpp"
 #include "input/keys.hpp"
@@ -177,6 +178,44 @@ void Viewport::animateSplineEditing()
 
 } // animateSplineEditing
 
+
+// ----------------------------------------------------------------------------
+void Viewport::animateCheckLine()
+{
+    ISceneCollisionManager* cm = Editor::getEditor()->getSceneManager()
+        ->getSceneCollisionManager();
+    line3d<f32> r = cm->getRayFromScreenCoordinates(vector2d<s32>(m_mouse->x, m_mouse->y));
+
+    m_junk_node->setPosition(vector3df(0, 0, 0));
+    m_junk_node->updateAbsolutePosition();
+    vector3df p = m_terrain->placeBBtoGround(m_junk_node->getTransformedBoundingBox(), r);
+    p.Y += 0.5;
+
+    if (m_new_entity) m_new_entity->setPosition(p);
+
+    if (!m_active_cmd || m_mouse->leftPressed())
+    {
+        if (!m_active_cmd)
+        {
+            m_new_entity = m_clh.startPlacingNew();
+            m_active_cmd = new CLCmd(&m_clh);
+        }
+        else
+        {
+            ISceneNode* node = m_clh.place();
+            if (node)
+            {
+                m_new_entity = node;
+            }
+            else
+            {
+                m_command_handler.add(m_active_cmd);
+                m_active_cmd = 0;
+            }
+        }
+    }    
+} // animateCheckLine
+
 // ----------------------------------------------------------------------------
 void Viewport::animateTerrainMod(long dt)
 {
@@ -253,11 +292,19 @@ void Viewport::leaveState()
     case TERRAIN_MOD:
         m_terrain->setHighlightVisibility(false);
         return;
+    case CHECK_LINE:
+        if (m_active_cmd)
+        {
+            delete m_active_cmd;
+            m_active_cmd = 0;
+        }
+        if (m_new_entity) m_new_entity = 0;
+        m_clh.cancelActive();
+        return;
     default:
         break;
     }
-
-
+ 
 } // leaveState
 
 // ----------------------------------------------------------------------------
@@ -315,6 +362,12 @@ void Viewport::setState(State state)
         if (m_sky) m_sky->show();
     }
 
+    if (state == CHECK_LINE && m_active_cmd)
+    {
+        delete m_active_cmd;
+        m_active_cmd = 0;
+    }
+
     m_state = state;
 
 } // setState
@@ -322,6 +375,8 @@ void Viewport::setState(State state)
 // ----------------------------------------------------------------------------
 void Viewport::deleteCmd()
 {
+    if (m_spline_mode) return;
+
     IObjectCmd* dcmd = new DelCmd(m_selection_handler->getSelection());
 
     m_selection_handler->clearSelection();
@@ -389,6 +444,9 @@ void Viewport::animate(long dt)
             return;
         case SPLINE:
             animateSplineEditing();
+            return;
+        case CHECK_LINE:
+            animateCheckLine();
             return;
         case TERRAIN_MOD:
             animateTerrainMod(dt);
@@ -506,6 +564,12 @@ void Viewport::clear()
     }
 
 } // clear
+
+// ----------------------------------------------------------------------------
+void Viewport::draw()
+{
+    m_clh.draw();
+} // draw
 
 // ----------------------------------------------------------------------------
 Indicator*  Viewport::getIndicator()
