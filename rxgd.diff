@@ -1,0 +1,22 @@
+diff --git a/Makefile b/Makefile
+index 60f62f9..345ae6d 100644
+--- a/Makefile
++++ b/Makefile
+@@ -2,7 +2,7 @@ NAME = stk-editor
+ 
+ SRC = $(wildcard src/*.cpp src/gui/*.cpp src/mesh/*.cpp src/spline/*.cpp src/commands/*.cpp src/viewport/*.cpp src/input/*.cpp)
+ OBJ = $(SRC:.cpp=.o)
+-HDR = $(wildcard *.hpp)
++HDR = $(wildcard *.hpp */*.hpp */*/*.hpp)
+ 
+ # Irr paths will depend on your system.
+ IRR_INCLUDE ?= /opt/irr2/include/irrlicht
+@@ -28,7 +28,7 @@ LDFLAGS += $(IRR_LIB)
+ 
+ CXXFLAGS += -Wall -Wextra -g
+ LDFLAGS += -Wl,-O1
+-LDFLAGS += -lz -lpng -ljpeg -L /usr/X11R7/lib -lGL -lX11 -lXxf86vm
++LDFLAGS += -lz -lpng -ljpeg -L /usr/X11R7/lib -lGL -lX11 -lXxf86vm -lphysfs
+ 
+ .PHONY: all clean
+ 
