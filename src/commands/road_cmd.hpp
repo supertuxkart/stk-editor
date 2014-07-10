@@ -27,7 +27,8 @@ private:
     ControlPoint    m_cp;
 public:
     RoadCmd(IRoad* road, bool insert);
-    virtual ~RoadCmd() { m_spline->remove(); };
+    virtual ~RoadCmd() {};
+
     void updatePos(vector3df pos);
     void redo();
     void undo();

@@ -20,7 +20,15 @@ private:
 public:
     createRoadCmd(IRoad* r, stringw name) :m_road(r) { m_done = true; };
 
-    virtual ~createRoadCmd() { if (!m_done) m_road->remove(); }
+    // ----------------------------------------------------------------------------
+    virtual ~createRoadCmd() 
+    { 
+        if (!m_done)
+        {
+            m_road->getSpline()->remove();
+            m_road->remove();
+        }
+    } // ~createRoadCmd
 
     // ----------------------------------------------------------------------------
     virtual void redo()
