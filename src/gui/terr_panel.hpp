@@ -9,6 +9,8 @@ using namespace irr;
 using namespace gui;
 using namespace core;
 
+class Sky;
+
 class TerrPanel
 {
 public:
@@ -93,6 +95,7 @@ public:
     TerrainMod*           getTerrainModData()         { return &m_tmod; }
     void                  btnDown(int btn);
     void                  refreshTerrModData();
+    void                  refreshSkyButtons(Sky* sky);
 };
 
 #endif

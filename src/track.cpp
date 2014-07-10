@@ -58,6 +58,14 @@ Track::Track(path file)
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
     m_terrain = new Terrain(sm->getRootSceneNode(), sm, 1, pFile);
 
+    // SKY
+
+    Sky* s = Viewport::get()->getSky();
+    delete s;
+    
+    s = new Sky(pFile);
+    Viewport::get()->setSky(s);
+
     // ROADS
 
     IRoad* r;
@@ -136,6 +144,9 @@ void Track::save()
 
   // TERRAIN
   m_terrain->save(pFile);
+
+  // SKY
+  Viewport::get()->getSky()->save(pFile);
 
   // ROADS
   size = m_roads.size();

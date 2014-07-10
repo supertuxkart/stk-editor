@@ -21,15 +21,27 @@ private:
     ITexture* m_right;
     ITexture* m_front;
     ITexture* m_back;
+
+private:
+    stringc getTexStr(ITexture* tex);
+    void    writeStrc(FILE* fp, stringc str);
+    void    readTexSt(FILE* fp, ITexture** tex);
+
 public:
     Sky(ITexture* up,    ITexture* down,  ITexture* left, 
         ITexture* right, ITexture* front, ITexture* back);
+    Sky(FILE* fp);
 
-    void     show()         { m_sky->setVisible(true); }
-    void     hide()         { m_sky->setVisible(false); }
+    ~Sky() { m_sky->remove(); }
 
-    void     notify(ITexture* t);
-    stringc  getXmlString();
+    void        save(FILE *fp);
+    void        notify(ITexture* t);
+    stringc     getXmlString();
+    ITexture*   getTex(u32 id);
+
+
+    void        show()         { m_sky->setVisible(true); }
+    void        hide()         { m_sky->setVisible(false); }
 };
 
 #endif

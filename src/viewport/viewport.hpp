@@ -100,6 +100,7 @@ public:
     Indicator*          getIndicator();
 
     void showSky();
+    void setSky(Sky* sky);
 
     void                setFreeCamera(ICameraSceneNode* cam) { m_free_camera = cam;     }
     static void         setLastEntityID(u32 id)              { m_last_entity_ID = id;   }
@@ -108,7 +109,6 @@ public:
     Track*              getTrack()                           { return m_track;          }
     Terrain*            getTerrain()                         { return m_terrain;        }
     Sky*                getSky()                             { return m_sky;            }
-    void                setSky(Sky* sky)                     { m_sky = sky;             } 
     void                hideSky()                            { if (m_sky) m_sky->hide();}
     u32                 getState()                           { return m_state;          }
 

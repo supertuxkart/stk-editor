@@ -285,4 +285,15 @@ void TerrPanel::refreshTerrModData()
     
     m_tmod.max_v = (float) atof(((stringc)m_h_max_value->getText()).c_str());
     m_tmod.min_v = (float) atof(((stringc)m_h_min_value->getText()).c_str());
-}
+} // refreshTerrModData
+
+// ----------------------------------------------------------------------------
+void TerrPanel::refreshSkyButtons(Sky* sky)
+{
+    m_sb1->setImage(sky->getTex(1));
+    m_sb2->setImage(sky->getTex(2));
+    m_sb3->setImage(sky->getTex(3));
+    m_sb4->setImage(sky->getTex(4));
+    m_sb5->setImage(sky->getTex(5));
+    m_sb6->setImage(sky->getTex(6));
+} // refreshSkyButtons

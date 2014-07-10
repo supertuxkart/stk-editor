@@ -521,6 +521,13 @@ void Viewport::showSky()
 } // showSky
 
 // ----------------------------------------------------------------------------
+void Viewport::setSky(Sky* s)
+{
+    m_sky = s;
+    TerrPanel::getTerrPanel()->refreshSkyButtons(s);
+} // setSky
+
+// ----------------------------------------------------------------------------
 Viewport::~Viewport()
 {
     if (m_active_cmd) delete m_active_cmd;
