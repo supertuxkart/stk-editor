@@ -53,3 +53,27 @@ void Sky::notify(ITexture* t)
     m_sky->setVisible(b);
 } // notify
 
+// ----------------------------------------------------------------------------
+stringc Sky::getXmlString()
+{
+    stringc s = "  <sky-box texture=\"";
+    stringc h;
+    u32 ix;
+
+    h = m_up->getName();    ix = h.findLast('/'); h = h.subString(ix + 1, h.size() - ix - 1);
+    s += h + " ";
+    h = m_down->getName();  ix = h.findLast('/'); h = h.subString(ix + 1, h.size() - ix - 1);
+    s += h + " ";
+    h = m_left->getName();  ix = h.findLast('/'); h = h.subString(ix + 1, h.size() - ix - 1);
+    s += h + " "; 
+    h = m_right->getName(); ix = h.findLast('/'); h = h.subString(ix + 1, h.size() - ix - 1);
+    s += h + " "; 
+    h = m_front->getName(); ix = h.findLast('/'); h = h.subString(ix + 1, h.size() - ix - 1);
+    s += h + " "; 
+    h = m_back->getName();  ix = h.findLast('/'); h = h.subString(ix + 1, h.size() - ix - 1);
+    s += h + "\"/>\n";
+
+    return s;
+
+} // getXmlString
+

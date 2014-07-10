@@ -25,12 +25,11 @@ public:
     Sky(ITexture* up,    ITexture* down,  ITexture* left, 
         ITexture* right, ITexture* front, ITexture* back);
 
-    void show()         { m_sky->setVisible(true); }
-    void hide()         { m_sky->setVisible(false); }
+    void     show()         { m_sky->setVisible(true); }
+    void     hide()         { m_sky->setVisible(false); }
 
-    void notify(ITexture* t);
+    void     notify(ITexture* t);
+    stringc  getXmlString();
 };
 
-
 #endif
-
