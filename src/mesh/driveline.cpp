@@ -77,11 +77,13 @@ void DriveLine::refresh()
 } // refresh
 
 // ----------------------------------------------------------------------------
-void DriveLine::build()
+void DriveLine::build(path p)
 {
     std::ofstream quads;
-    quads.open("export/quads.xml");
+    quads.open((p + "/quads.xml").c_str());
     quads << "<quads>\n";
+
+
 
     int spn = m_spline->getPointNum() - 1;
     vector3df last_point = m_spline->p(0);
@@ -143,7 +145,7 @@ void DriveLine::build()
     quads << "</quads>\n";
 
     std::ofstream  graph;
-    graph.open("export/graph.xml");
+    graph.open((p + "/graph.xml").c_str());    
 
     graph << "<graph>\n";
 

@@ -9,6 +9,7 @@
 #include "spline/bezier.hpp"
 #include "spline/tcr.hpp"
 
+#include <physfs.h>
 #include <fstream>
 #include <iostream>
 #include <stdio.h>
@@ -194,14 +195,20 @@ void Track::quit()
 // ----------------------------------------------------------------------------
 void Track::build()
 {
-    m_terrain->build();
-    m_driveline->build();
+
+    PHYSFS_setWriteDir(Editor::getEditor()->getTrackDir().c_str());
+    PHYSFS_mkdir(m_file_name.c_str());
+
+    path p = Editor::getEditor()->getTrackDir() + m_file_name;
+
+    m_terrain->build(p);
+    m_driveline->build(p);
 
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
 
     std::ofstream track;
 
-    track.open("export/track.xml");
+    track.open((p + "/track.xml").c_str());
     track << "<track  name           = \"" << m_track_name.c_str() << "\"\n";
     track << "        version        = \"5\"\n";
     track << "        groups         = \"made-by-STK-TE\"\n";
@@ -213,8 +220,7 @@ void Track::build()
     track.close();
 
     std::ofstream scene;
-    scene.open("export/scene.xml");
-
+    scene.open((p + "/scene.xml").c_str());
     scene << "<scene>\n";
     scene << "  <track model=\"track.obj\" x=\"0\" y=\"0\" z=\"0\">\n";
 

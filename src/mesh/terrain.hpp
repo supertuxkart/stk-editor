@@ -98,7 +98,7 @@ public:
     u32          getNX() { return m_nx; }
     u32          getNZ() { return m_nz; }
 
-    void         build();
+    void         build(path p);
     void         save(FILE* file);
 
 

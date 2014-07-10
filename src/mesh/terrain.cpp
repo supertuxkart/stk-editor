@@ -567,7 +567,7 @@ vector3df Terrain::placeBBtoGround(const aabbox3d<f32>& box, line3d<float> ray)
 } // placeBBtoGround
 
 // ----------------------------------------------------------------------------
-void Terrain::build()
+void Terrain::build(path p)
 {
     IrrlichtDevice* device = Editor::getEditor()->getDevice();
 
@@ -588,8 +588,7 @@ void Terrain::build()
     mw = device->getSceneManager()->createMeshWriter(EMWT_OBJ);
 
     IWriteFile *file;
-    file = device->getFileSystem()->createAndWriteFile("export/track.obj");
-
+    file = device->getFileSystem()->createAndWriteFile((p + "/track.obj").c_str());
     mw->writeMesh(file, &smesh);
 
     file->drop();

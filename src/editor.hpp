@@ -54,6 +54,7 @@ private:
     IFileArchive*               m_tex_dir;
     IFileArchive*               m_xml_dir;
     c8*                         m_maps_path;
+    path                        m_track_dir;
 
 	bool                        init();
     void                        fileInit();
@@ -84,6 +85,7 @@ public:
     IFileArchive*     getTexDir()       { return m_tex_dir;       }
     IFileArchive*     getXMLDir()       { return m_xml_dir;       }
     path              getMapsPath()     { return m_maps_path;     }
+    path              getTrackDir()     { return m_track_dir;     }
 };
 
 #endif

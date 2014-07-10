@@ -278,6 +278,7 @@ void Editor::fileInit()
             assert(xml_reader);
         }
     }
+    else m_config_loc = PHYSFS_getBaseDir();
     if (!validDataLoc(xml_reader)) dataDirLocDlg();
     xml_reader->drop();
 } // fileInit
@@ -308,6 +309,8 @@ bool Editor::validDataLoc(IXMLReader* xml)
         m_maps_path = new c8[p.size()+1];
         strcpy(m_maps_path, p.c_str());
 
+        m_track_dir = data_dir + "tracks/";
+
         file_system->addFileArchive((data_dir + "editor/env/xml").c_str(),
             false, false, EFAT_FOLDER, "", &m_xml_dir);
 
@@ -333,6 +336,10 @@ bool Editor::validateDataLoc(path file)
                                             false, EFAT_FOLDER, "", &m_tex_dir))
         return false;
 
+
+    file_system->addFileArchive((file + "editor/env/xml").c_str(),
+        false, false, EFAT_FOLDER, "", &m_xml_dir);
+
     std::ofstream f;
 
     f.open((m_config_loc + "/config.xml").c_str());
@@ -345,6 +352,9 @@ bool Editor::validateDataLoc(path file)
     p += "editor";
     m_maps_path = new c8[p.size()+1];
     strcpy(m_maps_path, p.c_str());
+
+    m_track_dir = file.c_str();
+    m_track_dir+= "tracks/";
 
     f.close();
     

@@ -35,7 +35,7 @@ void NewDialogWndw::init()
     m_designer   -> setText(L"TheGreatTux");
     frame        =  rect<s32>(150, 90, 280, 110);
     m_file_name  =  gui_env->addEditBox(L"", frame, true, m_wndw);
-    m_file_name  -> setText(L"file_name.map");
+    m_file_name  -> setText(L"file_name");
 
     frame = rect<s32>(150, 120, 280, 140);
     m_size_cb = gui_env->addComboBox(frame, m_wndw);

@@ -3,6 +3,12 @@
 
 #include "mesh/iroad.hpp"
 
+#include <irrlicht.h>
+
+using namespace irr;
+using namespace core;
+using namespace io;
+
 class DriveLine :public IRoad
 {
 
@@ -13,7 +19,7 @@ public:
         :IRoad(parent, mgr, id, fp) {};
 
     void    refresh();
-    void    build();
+    void    build(path p);
 
     void    render();
 };
