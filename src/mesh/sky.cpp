@@ -26,22 +26,22 @@ void Sky::notify(ITexture* t)
     bool b = m_sky->isVisible();
     switch (m_id)
     {
-    case 0:
+    case 1:
         m_up = t;
         break;
-    case 1:
+    case 2:
         m_down = t;
         break;
-    case 2:
+    case 3:
         m_left = t;
         break;
-    case 3:
+    case 4:
         m_right = t;
         break;
-    case 4:
+    case 5:
         m_front = t;
         break;
-    case 5:
+    case 6:
         m_back = t;
         break;
     default:
