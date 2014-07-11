@@ -75,6 +75,50 @@ void CheckLineHandler::cancelActive()
 } // cancelActive
 
 // ----------------------------------------------------------------------------
+void CheckLineHandler::build(std::ofstream* scene)
+{
+    (*scene) << "  <checks>\n";
+    (*scene) << "    <check-lap kind=\"lap\" same-group=\"0\"";
+    
+    std::list<CheckLine>::iterator it = m_check_lines.begin();
+    u32 i = 0;
+    while (it != m_check_lines.end() && it->active)
+    {
+        i++;
+        it++;
+    }
+
+    if (i>0)
+    {
+       (*scene) << " other-ids = \"1\" />\n";
+        u32 j = 0;
+        vector3df p1, p2;
+        for (it = m_check_lines.begin(); j < i - 1 && it != m_check_lines.end(); j++, it++)
+        {
+            p1 = it->n1->getPosition();
+            p2 = it->n2->getPosition();
+            f32 h = (p1.Y + p2.Y) / 2.0 - 2;
+            (*scene) << "    <check-line kind=\"activate\" other-ids=\"" << j + 2;
+            (*scene) << "\" p1=\"" << p1.X << " " << p1.Y << "\" p2=\"" << p2.X;
+            (*scene) << " " << p2.Y << "\" min-height=\"";
+            (*scene) << h << "\" same-group=\"" << j + 1 << "\"/>\n";
+        }
+
+        p1 = it->n1->getPosition();
+        p2 = it->n2->getPosition();
+        f32 h = (p1.Y + p2.Y) / 2.0 - 1;
+        (*scene) << "    <check-line kind=\"activate\" other-ids=\"" << 0;
+        (*scene) << "\" p1=\"" << p1.X << " " << p1.Y << "\" p2=\"" << p2.X;
+        (*scene) << " " << p2.Y << "\" min-height=\"";
+        (*scene) << h << "\" same-group=\"" << j+1 << "\"/>\n";
+    }
+    else (*scene) << "/>\n";
+
+    (*scene) << "  /<checks>\n";
+
+} // build
+
+// ----------------------------------------------------------------------------
 void CheckLineHandler::draw()
 {
     IVideoDriver* vd = Editor::getEditor()->getVideoDriver();

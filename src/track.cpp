@@ -274,6 +274,8 @@ void Track::build()
 
     scene << Viewport::get()->getSky()->getXmlString().c_str();
 
+    Viewport::get()->printCheckLine(&scene);
+
     scene << "  <default - start karts - per - row = \"3\"\n";
     scene << "                   forwards-distance =\"1.50\"\n";
     scene << "                   sidewards-distance=\"3.00\"\n";

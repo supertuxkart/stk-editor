@@ -116,6 +116,7 @@ public:
     Sky*                getSky()                             { return m_sky;            }
     void                hideSky()                            { if (m_sky) m_sky->hide();}
     u32                 getState()                           { return m_state;          }
+    void                printCheckLine(std::ofstream* f)     { m_clh.build(f);          }
 
     ~Viewport();
 };

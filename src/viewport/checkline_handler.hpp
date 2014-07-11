@@ -4,6 +4,7 @@
 
 #include <irrlicht.h>
 #include <iostream>
+#include <fstream>
 #include <list>
 
 using namespace irr;
@@ -45,6 +46,8 @@ public:
     void undo();
     void redo();
     void cancelActive();
+
+    void build(std::ofstream* scene);
 
     void draw();
 
