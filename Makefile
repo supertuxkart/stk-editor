@@ -1,6 +1,8 @@
 NAME = stk-editor
 
-SRC = $(wildcard src/*.cpp src/gui/*.cpp src/mesh/*.cpp src/spline/*.cpp src/commands/*.cpp src/viewport/*.cpp src/input/*.cpp)
+SRC = $(wildcard src/*.cpp src/gui/*.cpp src/mesh/*.cpp \
+	src/spline/*.cpp src/commands/*.cpp src/viewport/*.cpp \
+	src/input/*.cpp src/b3d/*.cpp)
 OBJ = $(SRC:.cpp=.o)
 HDR = $(wildcard *.hpp */*.hpp */*/*.hpp)
 
