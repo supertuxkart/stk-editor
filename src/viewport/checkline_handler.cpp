@@ -97,24 +97,21 @@ void CheckLineHandler::build(std::ofstream* scene)
         {
             p1 = it->n1->getPosition();
             p2 = it->n2->getPosition();
-            f32 h = (p1.Y + p2.Y) / 2.0 - 2;
             (*scene) << "    <check-line kind=\"activate\" other-ids=\"" << j + 2;
-            (*scene) << "\" p1=\"" << p1.X << " " << p1.Y << "\" p2=\"" << p2.X;
-            (*scene) << " " << p2.Y << "\" min-height=\"";
-            (*scene) << h << "\" same-group=\"" << j + 1 << "\"/>\n";
+            (*scene) << "\" p1=\"" << p1.X << " " << p1.Z << "\" p2=\"" << p2.X;
+            (*scene) << " " << p2.Z << "\" same-group=\"" << j + 1 << "\"/>\n";
         }
 
         p1 = it->n1->getPosition();
         p2 = it->n2->getPosition();
         f32 h = (p1.Y + p2.Y) / 2.0 - 1;
         (*scene) << "    <check-line kind=\"activate\" other-ids=\"" << 0;
-        (*scene) << "\" p1=\"" << p1.X << " " << p1.Y << "\" p2=\"" << p2.X;
-        (*scene) << " " << p2.Y << "\" min-height=\"";
-        (*scene) << h << "\" same-group=\"" << j+1 << "\"/>\n";
+        (*scene) << "\" p1=\"" << p1.X << " " << p1.Y << " " << p1.Z << "\" p2=\"" << p2.X;
+        (*scene) << " " << p2.Y << " " << p2.Z << "\" same-group=\"" << j+1 << "\"/>\n";
     }
     else (*scene) << "/>\n";
 
-    (*scene) << "  /<checks>\n";
+    (*scene) << "  </checks>\n";
 
 } // build
 
