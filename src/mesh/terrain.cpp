@@ -593,6 +593,7 @@ void Terrain::build(path p)
     file = device->getFileSystem()->createAndWriteFile((p + "/track.b3d").c_str());
     writer->writeMesh(file, &smesh);
 
+    file->drop();
     delete writer;
 
 } // build
