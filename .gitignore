@@ -29,4 +29,6 @@ stk-editor
 *.vcxproj.filters
 *.vcxproj.user
 
+config.xml
+
 libraries/
