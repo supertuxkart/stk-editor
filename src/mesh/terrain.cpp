@@ -248,7 +248,7 @@ ITexture* Terrain::createSplattingImg()
             img->setPixel(i, j, SColor(255, 0, 0, 0));
 
     m_splattingImg = img;
-    return vd->addTexture("splatt", img);
+    return vd->addTexture("splatt.jpg", img);
 } // initSplattingImg
 
 // ----------------------------------------------------------------------------
@@ -592,9 +592,22 @@ void Terrain::build(path p)
     IWriteFile *file;
     file = device->getFileSystem()->createAndWriteFile((p + "/track.b3d").c_str());
     writer->writeMesh(file, &smesh);
-
     file->drop();
     delete writer;
+
+    file = device->getFileSystem()->createAndWriteFile((p + "/splatt.jpg").c_str());
+    
+    ITexture* texture = m_material.getTexture(0);
+
+
+    video::IImage* image = device->getVideoDriver()->createImageFromData(
+        texture->getColorFormat(),texture->getSize(),texture->lock(),false);
+    texture->unlock();
+
+    device->getVideoDriver()->writeImageToFile(image, file);
+
+    file->drop();
+    image->drop();
 
 } // build
 
