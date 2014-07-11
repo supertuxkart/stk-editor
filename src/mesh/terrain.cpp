@@ -4,6 +4,8 @@
 
 #include "mesh/shader.hpp"
 
+#include "b3d/B3DMeshWriter.h"
+
 #include "commands/iterrain_cmd.hpp"
 
 #include <algorithm>
@@ -584,15 +586,14 @@ void Terrain::build(path p)
     mb.Material = m_material;
     smesh.addMeshBuffer(&mb);
 
-    IMeshWriter* mw;
-    mw = device->getSceneManager()->createMeshWriter(EMWT_OBJ);
+
+    B3DMeshWriter* writer = new B3DMeshWriter(device->getFileSystem());
 
     IWriteFile *file;
-    file = device->getFileSystem()->createAndWriteFile((p + "/track.obj").c_str());
-    mw->writeMesh(file, &smesh);
+    file = device->getFileSystem()->createAndWriteFile((p + "/track.b3d").c_str());
+    writer->writeMesh(file, &smesh);
 
-    file->drop();
-    mw->drop();
+    delete writer;
 
 } // build
 
