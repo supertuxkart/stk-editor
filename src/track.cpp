@@ -198,6 +198,7 @@ void Track::quit()
     for (u32 i = 0; i < m_roads.size(); i++)
     {
         r = m_roads[i];
+        r->getSpline()->remove();
         r->remove();
     }
 
