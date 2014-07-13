@@ -25,7 +25,7 @@ Track::Track(f32 tx, f32 tz)
     ISpline* spline = new Bezier(sm->getRootSceneNode(), sm, 0);
     m_driveline = new DriveLine(sm->getRootSceneNode(), sm, 0, spline, L"DriveLine");
     m_roads.insert(0, m_driveline);
-}
+} // Track
 
 // ----------------------------------------------------------------------------
 Track::Track(path file)
@@ -178,6 +178,9 @@ void Track::save()
       }
   }
   fclose(pFile);
+
+  Editor::getEditor()->addToRecentlyOpenedList(m_file_name);
+
 } // save
 
 // ----------------------------------------------------------------------------

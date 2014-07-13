@@ -626,6 +626,59 @@ void Editor::closeTrack()
 } // closeTrack
 
 // ----------------------------------------------------------------------------
+void Editor::addToRecentlyOpenedList(stringc name)
+{
+    IFileSystem* file_system = m_device->getFileSystem();
+    std::list<stringc> list;
+    list = readRecentlyOpenedList();
+
+    if (list.size() >= EVIL_NUMBER)
+        list.pop_back();
+    list.push_front(name);
+
+    
+    std::ofstream f;
+    f.open((m_config_loc + "/recent.xml").c_str());
+    
+    f << "<files>/n";
+
+    std::list<stringc>::iterator it = list.begin();
+    for (; it != list.end(); it++)
+    {
+        f << "  <file name=\"" << (*it).c_str() << "\" />/n";
+    }
+
+    f << "</files>/n";
+
+    f.close();
+} // addToRecentlyOpenedList
+
+// ----------------------------------------------------------------------------
+std::list<stringc> Editor::readRecentlyOpenedList()
+{
+    std::list<stringc> list;
+
+    IFileSystem* file_system = m_device->getFileSystem();
+    IXMLReader*  xml_reader = file_system->createXMLReader("recent.xml");
+
+    stringc s;
+    if (xml_reader)
+    {
+        const stringw file(L"file");
+        while (xml_reader->read())
+        {
+            if (xml_reader->getNodeType() == EXN_ELEMENT
+                && file.equals_ignore_case(xml_reader->getNodeName()))
+            {
+                s  = xml_reader->getAttributeValueSafe(L"name");
+                list.push_back(s);
+            }            
+        }
+    }
+    return list;
+} // readRecentlyOpenedList
+
+// ----------------------------------------------------------------------------
 void Editor::addItem(u32 id)
 {
     ISceneNode* node = 0;

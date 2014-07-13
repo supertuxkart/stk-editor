@@ -5,6 +5,7 @@
 #include "input/mouse.hpp"
 
 #include <irrlicht.h>
+#include <list>
 
 #define MAGIC_NUMBER            8192
 #define ANOTHER_MAGIC_NUMBER    16384
@@ -26,6 +27,7 @@ class  TexSel;
 class Editor :public IEventReceiver
 {
 private:
+    const int                   EVIL_NUMBER = 5;
 	static Editor*              m_editor;
 
 	IrrlichtDevice*             m_device;
@@ -67,25 +69,27 @@ private:
     bool                        importantButtonClicked(int ID);
 
 public:
-    static Editor*    getEditor(dimension2du screen_size = dimension2du(1280, 720));
-	bool		      run();
-	virtual bool      OnEvent(const SEvent& event);
-    void              newTrack();
-    void              closeTrack();
+    static Editor*              getEditor(dimension2du screen_size = dimension2du(1280, 720));
+	bool		                run();
+	virtual bool                OnEvent(const SEvent& event);
+    void                        newTrack();
+    void                        closeTrack();
+    void                        addToRecentlyOpenedList(stringc name);
+    std::list<stringc>          readRecentlyOpenedList();
 
-    void              addItem(u32 id);
+    void                        addItem(u32 id);
 
-    static ITexture*  loadImg(const stringw& file_path);
+    static ITexture*            loadImg(const stringw& file_path);
 
-    IrrlichtDevice*   getDevice()       { return m_device;        }
-    IVideoDriver*     getVideoDriver()  { return m_video_driver;  }
-    ISceneManager*    getSceneManager() { return m_scene_manager; }
-    IGUIEnvironment*  getGUIEnv()       { return m_gui_env;       }
-    dimension2du      getScreenSize()   { return m_screen_size;   }
-    IFileArchive*     getTexDir()       { return m_tex_dir;       }
-    IFileArchive*     getXMLDir()       { return m_xml_dir;       }
-    path              getMapsPath()     { return m_maps_path;     }
-    path              getTrackDir()     { return m_track_dir;     }
+    IrrlichtDevice*             getDevice()       { return m_device;        }
+    IVideoDriver*               getVideoDriver()  { return m_video_driver;  }
+    ISceneManager*              getSceneManager() { return m_scene_manager; }
+    IGUIEnvironment*            getGUIEnv()       { return m_gui_env;       }
+    dimension2du                getScreenSize()   { return m_screen_size;   }
+    IFileArchive*               getTexDir()       { return m_tex_dir;       }
+    IFileArchive*               getXMLDir()       { return m_xml_dir;       }
+    path                        getMapsPath()     { return m_maps_path;     }
+    path                        getTrackDir()     { return m_track_dir;     }
 };
 
 #endif
