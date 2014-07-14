@@ -27,7 +27,7 @@ class  TexSel;
 class Editor :public IEventReceiver
 {
 private:
-    const int                   EVIL_NUMBER = 5;
+    static const int            EVIL_NUMBER = 5;
 	static Editor*              m_editor;
 
 	IrrlichtDevice*             m_device;
