@@ -366,8 +366,8 @@ bool Editor::validateDataLoc(path file)
     if (!file_system->addFileArchive((file + "editor/env/xml").c_str(),
         false, false, EFAT_FOLDER, "", &m_xml_dir))
     {
-        std::cerr << "Bad news: i couldn't find the xml directory.";
-        std::cerr << "Maybe the whole editor folder is missing? :(";
+        std::cerr << "Bad news: i couldn't find the xml directory.\n";
+        std::cerr << "Maybe the whole editor folder is missing? :(\n";
         exit(-1);
     }
 
