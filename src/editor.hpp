@@ -21,6 +21,7 @@ class  Indicator;
 class  ToolBar;
 class  ToolBox;
 class  NewDialogWndw;
+class  WelcomeScreen;
 class  Viewport;
 class  TexSel;
 
@@ -38,6 +39,7 @@ private:
     ToolBar*                    m_toolbar;
     ToolBox*                    m_toolbox;
     NewDialogWndw*              m_new_dialog_wndw;
+    WelcomeScreen*              m_welcome_screen;
     Viewport*                   m_viewport;
 
     TexSel*                     m_tex_sel;
