@@ -225,11 +225,12 @@ void Terrain::initMaterials()
 
     m_material.MaterialType = (E_MATERIAL_TYPE)material_type;
 
-    m_material.setTexture(0, createSplattingImg());
-    m_material.setTexture(1, vd->getTexture(L"t1.png"));
-    m_material.setTexture(2, vd->getTexture(L"t2.jpg"));
-    m_material.setTexture(3, vd->getTexture(L"t3.jpg"));
-    m_material.setTexture(4, vd->getTexture(L"t4.jpg"));
+    m_material.setTexture(1, createSplattingImg());
+    m_material.setTexture(2, vd->getTexture(L"t1.png"));
+    m_material.setTexture(3, vd->getTexture(L"t2.jpg"));
+    m_material.setTexture(4, vd->getTexture(L"t3.jpg"));
+    m_material.setTexture(5, vd->getTexture(L"t4.jpg"));
+    m_material.setTexture(0, m_material.getTexture(1));
 
     m_highlight_material.Lighting = false;
     m_highlight_material.MaterialType = EMT_TRANSPARENT_VERTEX_ALPHA;
@@ -268,7 +269,7 @@ void Terrain::draw(const TerrainMod& tm)
     if (ix < 0 || iz < 0 || ix >= m_nx || iz >= m_nz) return;
 
     u8* img;
-    img = (u8*) m_material.getTexture(0)->lock(ETLM_READ_WRITE);
+    img = (u8*) m_material.getTexture(1)->lock(ETLM_READ_WRITE);
 
     vector2df tex = m_mesh.vertices[iz * m_nx + ix].TCoords2;
 
@@ -312,7 +313,7 @@ void Terrain::draw(const TerrainMod& tm)
             }
 
         }
-    m_material.getTexture(0)->unlock();
+    m_material.getTexture(1)->unlock();
 
 } // draw
 
@@ -463,9 +464,9 @@ Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
 
     assert(x == SPIMG_X && y == SPIMG_Y);
 
-    fread(m_material.getTexture(0)->lock(ETLM_WRITE_ONLY), sizeof(u8),
+    fread(m_material.getTexture(1)->lock(ETLM_WRITE_ONLY), sizeof(u8),
                                              4 * SPIMG_X*SPIMG_Y, fp);
-    m_material.getTexture(0)->unlock();
+    m_material.getTexture(1)->unlock();
 
     m_highlight_visible = false;
 
@@ -597,7 +598,7 @@ void Terrain::build(path p)
 
     file = device->getFileSystem()->createAndWriteFile((p + "/splatt.jpg").c_str());
     
-    ITexture* texture = m_material.getTexture(0);
+    ITexture* texture = m_material.getTexture(1);
 
 
     video::IImage* image = device->getVideoDriver()->createImageFromData(
@@ -627,10 +628,10 @@ void Terrain::save(FILE* file)
         }
     fwrite(&SPIMG_X, sizeof(u32), 1, file);
     fwrite(&SPIMG_Y, sizeof(u32), 1, file);
-    fwrite(m_material.getTexture(0)->lock(ETLM_READ_ONLY),
+    fwrite(m_material.getTexture(1)->lock(ETLM_READ_ONLY),
                       sizeof(u8), 4*SPIMG_X * SPIMG_Y, file);
 
-    m_material.getTexture(0)->unlock();
+    m_material.getTexture(1)->unlock();
 
 } // save
 
@@ -675,11 +676,11 @@ void Terrain::render()
 // ----------------------------------------------------------------------------
 void Terrain::OnSetConstants(video::IMaterialRendererServices* services, s32 userData)
 {
-    int tex_0 = 0;
-    int tex_1 = 1;
-    int tex_2 = 2;
-    int tex_3 = 3;
-    int tex_4 = 4;
+    int tex_0 = 1;
+    int tex_1 = 2;
+    int tex_2 = 3;
+    int tex_3 = 4;
+    int tex_4 = 5;
 
     services->setPixelShaderConstant("splatting", &tex_0, 1);
     services->setPixelShaderConstant("terrain_1", &tex_1, 1);

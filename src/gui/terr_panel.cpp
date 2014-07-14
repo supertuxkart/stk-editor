@@ -150,19 +150,19 @@ void TerrPanel::terrChange(u32 id)
     {
     case M_TC1:
         ts->subscribe(m_tb1);
-        terr->setSubIx(1);
+        terr->setSubIx(2);
         break;
     case M_TC2:
         ts->subscribe(m_tb2);
-        terr->setSubIx(2);
+        terr->setSubIx(3);
         break;
     case M_TC3:
         ts->subscribe(m_tb3);
-        terr->setSubIx(3);
+        terr->setSubIx(4);
         break;
     case M_TC4:
         ts->subscribe(m_tb4);
-        terr->setSubIx(4);
+        terr->setSubIx(5);
         break;
     }
     ts->subscribe(terr);

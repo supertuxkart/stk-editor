@@ -83,7 +83,7 @@ void TexModCmd::finish()
 // ----------------------------------------------------------------------------
 void TexModCmd::undo()
 {
-    ITexture* tex = m_terrain->getMaterial(0).getTexture(0);
+    ITexture* tex = m_terrain->getMaterial(0).getTexture(1);
     u8* img;
     img = (u8*) tex->lock(ETLM_READ_WRITE);
 

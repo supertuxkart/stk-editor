@@ -280,7 +280,7 @@ void Track::build()
 
     Viewport::get()->printCheckLine(&scene);
 
-    scene << "  <default - start karts - per - row = \"3\"\n";
+    scene << "  <default-start   karts-per-row = \"3\"\n";
     scene << "                   forwards-distance =\"1.50\"\n";
     scene << "                   sidewards-distance=\"3.00\"\n";
     scene << "                   upwards-distance  =\"0.10\"/>\n";
