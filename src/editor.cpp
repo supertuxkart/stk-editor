@@ -4,6 +4,7 @@
 #include "viewport/viewport.hpp"
 #include "viewport/indicator.hpp"
 
+#include "gui/welcome_screen.hpp"
 #include "gui/new_dialog_wndw.hpp"
 #include "gui/toolbar.hpp"
 #include "gui/toolbox.hpp"
@@ -240,15 +241,11 @@ bool Editor::init()
     m_scene_manager->setActiveCamera(norm_cam);
 
 
-    // track init - temporary!!!
-
-    // Track* t = new Track(50, 50);
-    // m_viewport->setTrack(t);
-    // track init
-
-
     m_toolbar = ToolBar::getToolBar();
     m_new_dialog_wndw = NewDialogWndw::get();
+    m_new_dialog_wndw->hide();
+
+    m_welcome_screen = WelcomeScreen::get();
 
     fileInit();
 
@@ -309,19 +306,24 @@ bool Editor::validDataLoc(IXMLReader* xml)
         }
     }
     
-    if (file_system->addFileArchive((data_dir + "textures").c_str(), 
+    if (file_system->addFileArchive((data_dir + "textures").c_str(),
         false, false, EFAT_FOLDER, "", &m_tex_dir))
     {
         m_valid_data_dir = true;
 
         path p = data_dir + "editor/maps";
-        m_maps_path = new c8[p.size()+1];
+        m_maps_path = new c8[p.size() + 1];
         strcpy(m_maps_path, p.c_str());
 
         m_track_dir = data_dir + "tracks/";
 
-        file_system->addFileArchive((data_dir + "editor/env/xml").c_str(),
-            false, false, EFAT_FOLDER, "", &m_xml_dir);
+        if (!file_system->addFileArchive((data_dir + "editor/env/xml").c_str(),
+            false, false, EFAT_FOLDER, "", &m_xml_dir))
+        {
+            std::cerr << "Bad news: i couldn't find the xml directory.";
+            std::cerr << "Maybe the whole editor folder is missing? :(";
+            exit(-1);
+        }
 
         file_system->addFileArchive(data_dir, false, false, EFAT_FOLDER);
         
