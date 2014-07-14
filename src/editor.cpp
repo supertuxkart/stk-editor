@@ -348,8 +348,13 @@ bool Editor::validateDataLoc(path file)
         return false;
 
 
-    file_system->addFileArchive((file + "editor/env/xml").c_str(),
-        false, false, EFAT_FOLDER, "", &m_xml_dir);
+    if (!file_system->addFileArchive((file + "editor/env/xml").c_str(),
+        false, false, EFAT_FOLDER, "", &m_xml_dir))
+    {
+        std::cerr << "Bad news: i couldn't find the xml directory.";
+        std::cerr << "Maybe the whole editor folder is missing? :(";
+        exit(-1);
+    }
 
     std::ofstream f;
 
@@ -641,15 +646,15 @@ void Editor::addToRecentlyOpenedList(stringc name)
     std::ofstream f;
     f.open((m_config_loc + "/recent.xml").c_str());
     
-    f << "<files>/n";
+    f << "<files>\n";
 
     std::list<stringc>::iterator it = list.begin();
     for (; it != list.end(); it++)
     {
-        f << "  <file name=\"" << (*it).c_str() << "\" />/n";
+        f << "  <file name=\"" << (*it).c_str() << "\" />\n";
     }
 
-    f << "</files>/n";
+    f << "</files>\n";
 
     f.close();
 } // addToRecentlyOpenedList
