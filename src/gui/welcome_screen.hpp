@@ -17,7 +17,7 @@ private:
     static WelcomeScreen*   m_self;
 
     IGUIWindow*             m_wndw;
-
+    IGUIListBox*            m_lb;
 
     // private functions:
 
@@ -31,6 +31,7 @@ protected:
 public:
     static WelcomeScreen*   get();
     u32                     getSize();
+    stringc                 getActiveText();
 
     void                    hide()              { m_wndw->setVisible(false); }
     void                    show()              { m_wndw->setVisible(true);  }

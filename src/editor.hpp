@@ -74,6 +74,7 @@ public:
     static Editor*              getEditor(dimension2du screen_size = dimension2du(1280, 720));
 	bool		                run();
 	virtual bool                OnEvent(const SEvent& event);
+    void                        open(path p);
     void                        newTrack();
     void                        closeTrack();
     void                        addToRecentlyOpenedList(stringc name);

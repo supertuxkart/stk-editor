@@ -163,6 +163,7 @@ bool Editor::buttonClicked(int ID)
 
 bool Editor::importantButtonClicked(int ID)
 {
+    stringc s;
     switch (ID)
     {
         // ToolBar buttons
@@ -172,11 +173,25 @@ bool Editor::importantButtonClicked(int ID)
     case ToolBar::TBI_NEW:
         m_new_dialog_wndw->show();
         return true;
+    case WelcomeScreen::FBTN_ID + 1:
+        m_welcome_screen->hide();
     case ToolBar::TBI_OPEN:
         m_new_dialog_wndw->hide();
         m_gui_env->addFileOpenDialog(L"Open track:", true, 0, -1, false, m_maps_path);
         return true;
-        // new window
+        // WELCOME SCREEN
+    case WelcomeScreen::FBTN_ID:
+        s = m_welcome_screen->getActiveText();
+        if (s != "")
+        {
+            m_welcome_screen->hide();
+            open(path(m_maps_path) + "/" + m_welcome_screen->getActiveText());
+        }
+        return true;
+    case WelcomeScreen::FBTN_ID + 2:
+        m_welcome_screen->hide();
+        m_new_dialog_wndw->show();
+        return true;
     case NewDialogWndw::BTN_ID:
         newTrack();
         m_new_dialog_wndw->hide();
@@ -240,6 +255,7 @@ bool Editor::init()
     m_indicator = m_viewport->getIndicator();
     m_scene_manager->setActiveCamera(norm_cam);
 
+    fileInit();
 
     m_toolbar = ToolBar::getToolBar();
     m_new_dialog_wndw = NewDialogWndw::get();
@@ -247,7 +263,6 @@ bool Editor::init()
 
     m_welcome_screen = WelcomeScreen::get();
 
-    fileInit();
 
     m_device->setEventReceiver(this);
     return true;
@@ -320,8 +335,8 @@ bool Editor::validDataLoc(IXMLReader* xml)
         if (!file_system->addFileArchive((data_dir + "editor/env/xml").c_str(),
             false, false, EFAT_FOLDER, "", &m_xml_dir))
         {
-            std::cerr << "Bad news: i couldn't find the xml directory.";
-            std::cerr << "Maybe the whole editor folder is missing? :(";
+            std::cerr << "Bad news: i couldn't find the xml directory.\n";
+            std::cerr << "Maybe the whole editor folder is missing? :(\n";
             exit(-1);
         }
 
@@ -453,7 +468,6 @@ bool Editor::run()
 // ----------------------------------------------------------------------------
 bool Editor::OnEvent(const SEvent& event)
 {
-
     if (event.EventType == EET_GUI_EVENT
         && event.GUIEvent.EventType == EGET_BUTTON_CLICKED)
             importantButtonClicked(event.GUIEvent.Caller->getID());
@@ -487,13 +501,7 @@ bool Editor::OnEvent(const SEvent& event)
     if (event.EventType == EET_GUI_EVENT
         && event.GUIEvent.EventType == EGET_FILE_SELECTED)
     {
-        closeTrack();
-        m_device->getFileSystem()->changeWorkingDirectoryTo(m_def_wd);
-        m_viewport->setTrack(new Track(path(((IGUIFileOpenDialog*)
-            event.GUIEvent.Caller)->getFileName()).c_str()));
-        m_viewport->setSplineMode(false);
-        m_viewport->setState(Viewport::SELECT);
-        RoadPanel::getRoadPanel()->updateRoadList();
+        open(path(((IGUIFileOpenDialog*) event.GUIEvent.Caller)->getFileName()));
         return true;
     }
 
@@ -612,6 +620,17 @@ bool Editor::OnEvent(const SEvent& event)
 } // OnEvent
 
 // ----------------------------------------------------------------------------
+void Editor::open(path p)
+{
+    closeTrack();
+    m_device->getFileSystem()->changeWorkingDirectoryTo(m_def_wd);
+    m_viewport->setTrack(new Track(p.c_str()));
+    m_viewport->setSplineMode(false);
+    m_viewport->setState(Viewport::SELECT);
+    RoadPanel::getRoadPanel()->updateRoadList();
+} // open
+
+// ----------------------------------------------------------------------------
 void Editor::newTrack()
 {
     closeTrack();
@@ -665,7 +684,8 @@ std::list<stringc> Editor::readRecentlyOpenedList()
     std::list<stringc> list;
 
     IFileSystem* file_system = m_device->getFileSystem();
-    IXMLReader*  xml_reader = file_system->createXMLReader("recent.xml");
+    IXMLReader*  xml_reader = file_system->createXMLReader(m_config_loc + "/recent.xml");
+    IXMLReader*  xml_reader2 = file_system->createXMLReader(m_config_loc + "/config.xml");
 
     stringc s;
     if (xml_reader)
@@ -682,6 +702,8 @@ std::list<stringc> Editor::readRecentlyOpenedList()
         }
     }
     return list;
+
+    xml_reader->drop();
 } // readRecentlyOpenedList
 
 // ----------------------------------------------------------------------------
