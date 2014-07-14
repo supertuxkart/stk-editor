@@ -628,7 +628,6 @@ void Editor::closeTrack()
 // ----------------------------------------------------------------------------
 void Editor::addToRecentlyOpenedList(stringc name)
 {
-    IFileSystem* file_system = m_device->getFileSystem();
     std::list<stringc> list;
     list = readRecentlyOpenedList();
 
