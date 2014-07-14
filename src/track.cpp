@@ -33,6 +33,12 @@ Track::Track(path file)
     FILE* pFile;
     pFile = fopen(file.c_str(), "rb");
 
+    if (!pFile)
+    {
+        std::cerr << "File is removed or corrupted.\n Sorry! Terminating...\n";
+        exit(-1);
+    }
+
     u8 size;
     wchar_t* c;
     fread(&size, sizeof(u8), 1, pFile);
