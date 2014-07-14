@@ -64,10 +64,10 @@ void TerrPanel::init()
     m_tb3 = gui_env->addButton(rect<s32>(130, 150, 180, 200), m_wndw, M_T3);
     m_tb4 = gui_env->addButton(rect<s32>(190, 150, 240, 200), m_wndw, M_T4);
 
-    m_tb1->setImage(Editor::loadImg(L"t1.png"));
-    m_tb2->setImage(Editor::loadImg(L"t2.jpg"));
-    m_tb3->setImage(Editor::loadImg(L"t3.jpg"));
-    m_tb4->setImage(Editor::loadImg(L"t4.jpg"));
+    m_tb1->setImage(Editor::loadImg(L"dirt.jpg"));
+    m_tb2->setImage(Editor::loadImg(L"grass2.jpg"));
+    m_tb3->setImage(Editor::loadImg(L"rock_brown.jpg"));
+    m_tb4->setImage(Editor::loadImg(L"sand2.jpg"));
 
     gui_env->addButton(rect<s32>(10, 205, 60,   220), m_wndw, M_TC1);
     gui_env->addButton(rect<s32>(70, 205, 120,  220), m_wndw, M_TC2);

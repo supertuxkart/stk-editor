@@ -226,10 +226,10 @@ void Terrain::initMaterials()
     m_material.MaterialType = (E_MATERIAL_TYPE)material_type;
 
     m_material.setTexture(1, createSplattingImg());
-    m_material.setTexture(2, vd->getTexture(L"t1.png"));
-    m_material.setTexture(3, vd->getTexture(L"t2.jpg"));
-    m_material.setTexture(4, vd->getTexture(L"t3.jpg"));
-    m_material.setTexture(5, vd->getTexture(L"t4.jpg"));
+    m_material.setTexture(2, vd->getTexture(L"dirt.jpg"));
+    m_material.setTexture(3, vd->getTexture(L"grass2.jpg"));
+    m_material.setTexture(4, vd->getTexture(L"rock_brown.jpg"));
+    m_material.setTexture(5, vd->getTexture(L"sand2.jpg"));
     m_material.setTexture(0, m_material.getTexture(1));
 
     m_highlight_material.Lighting = false;
@@ -596,16 +596,11 @@ void Terrain::build(path p)
     file->drop();
     delete writer;
 
-    file = device->getFileSystem()->createAndWriteFile((p + "/splatt.jpg").c_str());
-    
     ITexture* texture = m_material.getTexture(1);
-
-
-    video::IImage* image = device->getVideoDriver()->createImageFromData(
-        texture->getColorFormat(),texture->getSize(),texture->lock(),false);
-    texture->unlock();
-
-    device->getVideoDriver()->writeImageToFile(image, file);
+    IImage* image = device->getVideoDriver()->createImage(texture, position2di(0, 0),
+        texture->getSize());
+    stringc name = texture->getName().getPath();
+    device->getVideoDriver()->writeImageToFile(image, name.c_str());
 
     file->drop();
     image->drop();
