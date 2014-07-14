@@ -249,7 +249,7 @@ ITexture* Terrain::createSplattingImg()
             img->setPixel(i, j, SColor(255, 0, 0, 0));
 
     m_splattingImg = img;
-    return vd->addTexture("splatt.jpg", img);
+    return vd->addTexture("splatt.png", img);
 } // initSplattingImg
 
 // ----------------------------------------------------------------------------
@@ -599,10 +599,8 @@ void Terrain::build(path p)
     ITexture* texture = m_material.getTexture(1);
     IImage* image = device->getVideoDriver()->createImage(texture, position2di(0, 0),
         texture->getSize());
-    stringc name = texture->getName().getPath();
+    stringc name = p + "/splatt.png";
     device->getVideoDriver()->writeImageToFile(image, name.c_str());
-
-    file->drop();
     image->drop();
 
 } // build
