@@ -13,7 +13,7 @@ void ToolBar::init()
     buttonInit(0,  TBI_NEW,         "img/new.png",      L"New");
     buttonInit(1,  TBI_OPEN,        "img/open.png",     L"Open");
     buttonInit(2,  TBI_SAVE,        "img/save.png",     L"Save");
-    buttonInit(3,  TBI_SAVE_AS,     "img/save_as.png",  L"Save as");
+    buttonInit(3,  TBI_SAVE_AS,     "img/save_as.png",  L"Export");
     buttonInit(4,  TBI_UNDO,        "img/undo.png",     L"Undo");
     buttonInit(5,  TBI_REDO,        "img/redo.png",     L"Redo");
     buttonInit(6,  TBI_SELECT,      "img/select.png",   L"Select");
