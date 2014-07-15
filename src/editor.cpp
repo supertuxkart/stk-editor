@@ -739,6 +739,17 @@ void Editor::addItem(u32 id)
 } // addItem
 
 // ----------------------------------------------------------------------------
+path Editor::toRelative(path p)
+{
+    stringc path = p.c_str();
+    s32 ix = path.findLast('/');
+    if (ix == -1) return p;
+    stringc ret = path.subString(ix+1, path.size() - ix);
+    return ret;
+
+} // toRelative
+
+// ----------------------------------------------------------------------------
 ITexture* Editor::loadImg(const stringw& file_path)
 {
     return m_editor->m_video_driver->getTexture(file_path);

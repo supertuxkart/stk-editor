@@ -4,6 +4,7 @@
 
 #include "IrrCompileConfig.h"
 
+#include "editor.hpp"
 
 #include "B3DMeshWriter.h"
 //#include "os.h"
@@ -66,7 +67,7 @@ bool B3DMeshWriter::writeMesh(io::IWriteFile* file, IMesh* const mesh, s32 flags
 		for (j = 0; j < MATERIAL_MAX_TEXTURES; j++) {
 			if (mat.getTexture(j)) {
 				SB3dTexture t = {
-					mat.getTexture(j)->getName().getPath().c_str(),
+					Editor::toRelative(mat.getTexture(j)->getName().getPath()).c_str(),
 					j == 2 ? 65536 : 1, 2,
 					0, 0, 1, 1, 0 };
 				texs.push_back(t);

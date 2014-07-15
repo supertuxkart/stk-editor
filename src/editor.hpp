@@ -81,6 +81,7 @@ public:
     std::list<stringc>          readRecentlyOpenedList();
 
     void                        addItem(u32 id);
+    static path                 toRelative(path p);
 
     static ITexture*            loadImg(const stringw& file_path);
 
