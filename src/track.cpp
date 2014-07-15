@@ -105,8 +105,7 @@ Track::Track(path file)
         fread(&size, sizeof(u8), 1, pFile);
         c8 *name = new c8[size];
         fread(name, sizeof(c8), size, pFile);
-        path p = "editor/env/model/";
-        p += name;
+        path p =name;
         ISceneNode* node =sm->addAnimatedMeshSceneNode(sm->getMesh(p));
         node->setPosition(pos);
         node->setRotation(rot);

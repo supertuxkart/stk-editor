@@ -109,7 +109,7 @@ void EnvPanel::refreshBtnTable()
 
     std::list<Element*>::iterator it = elements.begin();
 
-    stringw dir = L"editor/env/img/";
+    stringw dir = L"editor/img/";
     int i;
     for (i = 0; i < m_btn_num && it != elements.end(); i++, it++)
     {

@@ -332,7 +332,7 @@ bool Editor::validDataLoc(IXMLReader* xml)
 
         m_track_dir = data_dir + "tracks/";
 
-        if (!file_system->addFileArchive((data_dir + "editor/env/xml").c_str(),
+        if (!file_system->addFileArchive((data_dir + "editor/xml").c_str(),
             false, false, EFAT_FOLDER, "", &m_xml_dir))
         {
             std::cerr << "Bad news: i couldn't find the xml directory.\n";
@@ -363,7 +363,7 @@ bool Editor::validateDataLoc(path file)
         return false;
 
 
-    if (!file_system->addFileArchive((file + "editor/env/xml").c_str(),
+    if (!file_system->addFileArchive((file + "editor/xml").c_str(),
         false, false, EFAT_FOLDER, "", &m_xml_dir))
     {
         std::cerr << "Bad news: i couldn't find the xml directory.\n";
