@@ -233,16 +233,16 @@ void TerrPanel::btnDown(int btn)
         m_active_edge_frame->setRelativePosition(position2di(200, 95));
         break;
     case M_T1:
-        m_tmod.col_mask = SColor(255, 0, 0, 0);
-        break;
-    case M_T2:
         m_tmod.col_mask = SColor(0, 255, 0, 0);
         break;
-    case M_T3:
+    case M_T2:
         m_tmod.col_mask = SColor(0, 0, 255, 0);
         break;
-    case M_T4:
+    case M_T3:
         m_tmod.col_mask = SColor(0, 0, 0, 255);
+        break;
+    case M_T4:
+        m_tmod.col_mask = SColor(255, 0, 0, 0);
         break;
     case M_TC1:
     case M_TC2:

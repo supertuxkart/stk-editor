@@ -326,10 +326,9 @@ void Terrain::pixelHardBrush(u8* img, int ix, SColor col, bool erase)
         if (col.getBlue() > 0)  { img[ix]     = 0; return; }
         if (col.getGreen() > 0) { img[ix + 1] = 0; return; }
         if (col.getRed() > 0)   { img[ix + 2] = 0; return; }
-                                  img[ix + 3] = 0; return;
+        return;
     }
 
-    img[ix + 3] = col.getAlpha();
     img[ix + 2] = col.getRed();
     img[ix + 1] = col.getGreen();
     img[ix + 0] = col.getBlue();
