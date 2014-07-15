@@ -4,7 +4,5 @@ TODO list:
 - nicer icons
 - monkey testing for crashes
 - hotkeys for actions (both use and their visibility in tooltips)
-- move to using the media/assets repo instead of dropbox library
 - create some XMLs for media objects
 - road mesh texture & export
-- splatting map should use rgb(1-rgb)
