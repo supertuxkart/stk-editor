@@ -89,7 +89,7 @@ EnvPanel* EnvPanel::getEnvPanel(IGUIWindow* wndw)
 stringw EnvPanel::getModelPathFromBtnId(u32 ID)
 {
     assert(ID - FIRST_BTN_ID >= 0 && ID - FIRST_BTN_ID < m_btn_num);
-    stringw dir = L"libraries/env/model/";
+    stringw dir = L"library/";
     return dir + m_btn_table[ID - FIRST_BTN_ID].second;
 } // getModelPathFromBtnId
 
@@ -109,11 +109,11 @@ void EnvPanel::refreshBtnTable()
 
     std::list<Element*>::iterator it = elements.begin();
 
-    stringw dir = L"libraries/env/img/";
+    stringw dir = L"editor/env/img/";
     int i;
     for (i = 0; i < m_btn_num && it != elements.end(); i++, it++)
     {
-        ITexture* img = Editor::loadImg(dir + (*it)->getImg());
+        ITexture* img = Editor::loadImg(dir+(*it)->getImg());
         m_btn_table[i].first->setVisible(true);
         m_btn_table[i].first->setImage(img);
         m_btn_table[i].first->setPressedImage(img);
