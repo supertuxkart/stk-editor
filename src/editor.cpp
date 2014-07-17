@@ -572,6 +572,11 @@ bool Editor::OnEvent(const SEvent& event)
                 m_viewport->getTrack()->getRoadByID(rp->getSelectedRoadID())
                                                  ->setWidth(rp->getWidth());
                 return true;
+            case RoadPanel::DL_TEX_CHANGE:
+                rp = RoadPanel::getRoadPanel();
+                m_viewport->getTrack()->getRoadByID(rp->getSelectedRoadID())
+                                                ->setTexWrapCount(rp->getTexWrapCount());
+                return true;
             default:
                 break;
             }

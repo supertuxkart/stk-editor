@@ -26,6 +26,7 @@ public:
         DL_CREATE,
         DL_WIDTH,
         DL_DETAIL,
+        DL_TEXTURE,
         DL_TEX_CHANGE
     };
 
@@ -45,6 +46,7 @@ private:
 
     IGUIScrollBar*               m_width_sb;
     IGUIScrollBar*               m_detail_sb;
+    IGUIScrollBar*               m_texture_sb;
                                  
     unsigned int                 m_next_road_mesh_ID;
     bool                         m_insert;
@@ -64,6 +66,7 @@ public:
     u32                   getSelectedRoadID();
     f32                   getWidth();
     f32                   getDetail();
+    u32                   getTexWrapCount();
     void                  updateRoadList();
 
     stringw               getNextRoadType();

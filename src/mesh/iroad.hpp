@@ -15,6 +15,7 @@ protected:
     u32             m_width_vert_num;
 
     SMaterial       m_material;
+    u32             m_tex_warp_count;
 
     aabbox3d<f32>   m_bounding_box;
 
@@ -26,8 +27,9 @@ public:
     virtual void    refresh() = 0;
     void            clear();
 
-    void            setDetail(float d)      { m_detail = d; refresh(); }
-    void            setWidth(float d)       { m_width =  d; refresh(); }
+    void            setDetail(float d)      { m_detail = d; refresh();         }
+    void            setWidth(float d)       { m_width =  d; refresh();         }
+    void            setTexWrapCount(u32 c)  { m_tex_warp_count = c; refresh(); }
 
     ISpline*        getSpline()             { return m_spline; }
 

@@ -15,7 +15,8 @@ void Road::calcVertexRow(vector3df p, vector3df n, vector3df w, int offset,
         m_mesh.vertices[offset + i].Pos = 
             p + w * ((s32)i - (s32)m_width_vert_num / 4 + 0.5f);
         m_mesh.vertices[offset + i].Color = SColor(255, 255 ,255,255);
-        m_mesh.vertices[offset + i].TCoords = vector2df(i/(f32)m_width_vert_num, t);
+        m_mesh.vertices[offset + i].TCoords = vector2df(i/(f32)m_width_vert_num,
+                                                        t*m_tex_warp_count);
     }
 
     for (u32 i = 0; i < m_width_vert_num / 2; i++)
@@ -26,7 +27,8 @@ void Road::calcVertexRow(vector3df p, vector3df n, vector3df w, int offset,
         m_mesh.vertices[offset + m_width_vert_num / 2 + i].Color = 
             SColor(255, 0, 0, 0);
         m_mesh.vertices[offset + m_width_vert_num / 2 + i].TCoords 
-            = vector2df(0.5 + i / (f32)m_width_vert_num, t);
+            = vector2df(0.5 + i / (f32)m_width_vert_num,
+                                       t*m_tex_warp_count);
     }
 } // calcVertexRow
 
@@ -137,6 +139,7 @@ void Road::render()
 void Road::notify(ITexture* t)
 {
     m_material.setTexture(0,t);
+    m_material.TextureLayer[0].TextureWrapV = ETC_REPEAT;
 } // notify
 
 

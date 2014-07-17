@@ -20,6 +20,7 @@ IRoad::IRoad(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s, stringw
     m_detail            = 0.25f;
     m_width             = 4.0f;
     m_width_vert_num    = 12;
+    m_tex_warp_count    = 10;
 
     m_material.Wireframe       = true;
     m_material.Lighting        = false;
@@ -40,7 +41,6 @@ IRoad::IRoad(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
     fread(cc, sizeof(c8), size, fp);
     setName(cc);
     delete cc;
-
 
     fread(&m_width_vert_num, sizeof(u32), 1, fp);
     fread(&m_detail, sizeof(f32), 1, fp);
