@@ -466,6 +466,15 @@ void Viewport::setSplineMode(bool b)
     m_spline_mode = b;
     if (m_active_road)
         m_active_road->getSpline()->setNodeVisibility(m_spline_mode);
+
+    int i = 1;
+    IRoad* r;
+    while (r = m_track->getRoadByID(i))
+    {
+        ((Road*)r)->setWireFrame(b);
+        i++;
+    }
+
 } // setSplineMode
 
 // ----------------------------------------------------------------------------

@@ -25,7 +25,8 @@ public:
         DL_SELECT,
         DL_CREATE,
         DL_WIDTH,
-        DL_DETAIL
+        DL_DETAIL,
+        DL_TEX_CHANGE
     };
 
 private:
@@ -53,6 +54,8 @@ private:
     RoadPanel() {};
 
     void                  init();
+
+    void                  textureChange();
 
 public:
     static RoadPanel*     getRoadPanel(IGUIWindow* wndw = 0);

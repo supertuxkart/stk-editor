@@ -23,8 +23,10 @@ void RoadPanel::init()
         false, false, m_wndw, -1, false)->setOverrideFont(font);
 
 
-    m_cb = gui_env->addComboBox(rect<s32>(30, 50, 210, 70), m_wndw, DL_SELECT);
+    m_cb = gui_env->addComboBox(rect<s32>(30, 45, 160, 65), m_wndw, DL_SELECT);
     m_cb->addItem(L"DriveLine", 0);
+
+    gui_env->addButton(rect<s32>(165, 45, 210, 65), m_wndw, DL_TEX_CHANGE);
 
     gui_env->addStaticText(L"Width:", rect<s32>(30, 77, 90, 92), false, false, m_wndw);
     m_width_sb = gui_env->addScrollBar(true, rect<s32>(100, 80, 210, 90), m_wndw,DL_WIDTH);
@@ -51,7 +53,8 @@ void RoadPanel::init()
 
     m_text_field = gui_env->addEditBox(L"RoadMesh_1",rect<s32>(30, 225, 150, 245),true,m_wndw);
 
-    gui_env->addButton(rect<s32>(160, 200, 210, 245), m_wndw, DL_CREATE);
+    gui_env->addButton(rect<s32>(160, 200, 210, 245), m_wndw, DL_CREATE)
+        ->setImage(Editor::loadImg("img/road_create.png"));
 
     m_insert = false;
 

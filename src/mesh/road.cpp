@@ -4,21 +4,27 @@
 #include "assert.h"
 
 // ----------------------------------------------------------------------------
-void Road::calcVertexRow(vector3df p, vector3df n, vector3df w, int offset, float wx)
+void Road::calcVertexRow(vector3df p, vector3df n, vector3df w, int offset, 
+                                                      float wx, float t)
 {
     w *= m_width / m_width_vert_num * wx;
     for (u32 i = 0; i < m_width_vert_num / 2; i++)
     {
-        m_mesh.vertices[offset + i].Pos = p + w * ((s32)i - (s32)m_width_vert_num / 4 + 0.5f);
-
-        m_mesh.vertices[offset + m_width_vert_num / 2 + i].Color = SColor(255, 0, 0, 255);
+        m_mesh.vertices[offset + i].Pos = 
+            p + w * ((s32)i - (s32)m_width_vert_num / 4 + 0.5f);
+        m_mesh.vertices[offset + i].Color = SColor(255, 255 ,255,255);
+        m_mesh.vertices[offset + i].TCoords = vector2df(i/(f32)m_width_vert_num, t);
     }
 
     for (u32 i = 0; i < m_width_vert_num / 2; i++)
     {
-        vector3df vec = m_mesh.vertices[offset + m_width_vert_num / 2 - i - 1].Pos - 0.3f * n;
+        vector3df vec = 
+            m_mesh.vertices[offset + m_width_vert_num / 2 - i - 1].Pos - 0.3f * n;
         m_mesh.vertices[offset + m_width_vert_num / 2 + i].Pos = vec;
-        m_mesh.vertices[offset + m_width_vert_num / 2 - i - 1].Color = SColor(255, 0, 0, 255);
+        m_mesh.vertices[offset + m_width_vert_num / 2 + i].Color = 
+            SColor(255, 0, 0, 0);
+        m_mesh.vertices[offset + m_width_vert_num / 2 + i].TCoords 
+            = vector2df(0.5 + i / (f32)m_width_vert_num, t);
     }
 } // calcVertexRow
 
@@ -86,7 +92,7 @@ void Road::refresh()
     v = m_spline->p(dt) - m_spline->p(0);
     w = v.crossProduct(n);
 
-    calcVertexRow(point, n.normalize(), w.normalize(), 0, m_spline->getWidth(0));
+    calcVertexRow(point, n.normalize(), w.normalize(), 0, m_spline->getWidth(0),0);
 
     int j = 1;
     for (float t = dt; j <= (int)(1.0f / m_detail * spn); t += dt)
@@ -97,7 +103,7 @@ void Road::refresh()
         w = v.crossProduct(n);
 
         calcVertexRow(point, n.normalize(), w.normalize(),
-                     j * m_width_vert_num, m_spline->getWidth(t));
+                     j * m_width_vert_num, m_spline->getWidth(t),t);
 
         last_point = point;
         j++;
@@ -124,3 +130,19 @@ void Road::render()
         video::EIT_16BIT);
 
 } // render
+
+
+// ----------------------------------------------------------------------------
+void Road::notify(ITexture* t)
+{
+    m_material.setTexture(0,t);
+} // notify
+
+
+// ----------------------------------------------------------------------------
+void Road::setWireFrame(bool b)
+{
+    m_material.Wireframe = b;
+    m_material.Lighting = !b;
+    m_material.BackfaceCulling = !b;
+} // setWireFrame

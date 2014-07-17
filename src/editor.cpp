@@ -15,7 +15,7 @@
 #include "gui/tex_sel.hpp"
 
 #include "mesh/driveline.hpp"
-#include "mesh/iroad.hpp"
+#include "mesh/road.hpp"
 
 #include <physfs.h>
 #include <iostream>
@@ -116,6 +116,12 @@ bool Editor::buttonClicked(int ID)
         return true;
     case RoadPanel::DL_EXIT:
         m_viewport->setState(Viewport::SELECT);
+        return true;
+    case RoadPanel::DL_TEX_CHANGE:
+        if (int i = RoadPanel::getRoadPanel()->getSelectedRoadID() != 0)
+        {
+            m_tex_sel->subscribe((Road*)m_viewport->getTrack()->getRoadByID(i));
+        }
         return true;
     // ToolBox / Extra buttons:
     case ExtraPanel::BTN_BANANA:

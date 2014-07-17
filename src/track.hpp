@@ -38,7 +38,7 @@ public:
     void       removeLastRoad();
     void       createRoad(stringw type, stringw name);
 
-    IRoad*     getRoadByID(u32 id)           { return m_roads[id]; }
+    IRoad*     getRoadByID(u32 id)           { IRoad* r = 0; return (id < m_roads.size()) ? m_roads[id] : r; }
 
     void       setTrackName(stringw n)       { m_track_name   = n; }
     void       setFileName(stringc n)        { m_file_name    = n; }
