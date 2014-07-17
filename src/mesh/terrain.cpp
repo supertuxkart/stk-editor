@@ -4,8 +4,6 @@
 
 #include "mesh/shader.hpp"
 
-#include "b3d/B3DMeshWriter.h"
-
 #include "commands/iterrain_cmd.hpp"
 
 #include <algorithm>
@@ -578,11 +576,9 @@ vector3df Terrain::placeBBtoGround(const aabbox3d<f32>& box, line3d<float> ray)
 } // placeBBtoGround
 
 // ----------------------------------------------------------------------------
-void Terrain::build(path p)
+CMeshBuffer<S3DVertex2TCoords> Terrain::build(path p)
 {
     IrrlichtDevice* device = Editor::getEditor()->getDevice();
-
-    SMesh smesh;
 
     CMeshBuffer<S3DVertex2TCoords> mb;
 
@@ -593,16 +589,6 @@ void Terrain::build(path p)
 
     mb.recalculateBoundingBox();
     mb.Material = m_material;
-    smesh.addMeshBuffer(&mb);
-
-
-    B3DMeshWriter* writer = new B3DMeshWriter(device->getFileSystem());
-
-    IWriteFile *file;
-    file = device->getFileSystem()->createAndWriteFile((p + "/track.b3d").c_str());
-    writer->writeMesh(file, &smesh);
-    file->drop();
-    delete writer;
 
     ITexture* texture = m_material.getTexture(1);
     IImage* image = device->getVideoDriver()->createImage(texture, position2di(0, 0),
@@ -610,6 +596,8 @@ void Terrain::build(path p)
     stringc name = p + "/splatt.png";
     device->getVideoDriver()->writeImageToFile(image, name.c_str());
     image->drop();
+
+    return mb;
 
 } // build
 

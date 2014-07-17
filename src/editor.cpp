@@ -118,7 +118,7 @@ bool Editor::buttonClicked(int ID)
         m_viewport->setState(Viewport::SELECT);
         return true;
     case RoadPanel::DL_TEX_CHANGE:
-        if (int i = RoadPanel::getRoadPanel()->getSelectedRoadID() != 0)
+        for (int i = RoadPanel::getRoadPanel()->getSelectedRoadID(); i != 0; i = 0)
         {
             m_tex_sel->subscribe((Road*)m_viewport->getTrack()->getRoadByID(i));
         }

@@ -8,6 +8,7 @@
 #include "mesh/road.hpp"
 #include "spline/bezier.hpp"
 #include "spline/tcr.hpp"
+#include "b3d/B3DMeshWriter.h"
 
 #include <physfs.h>
 #include <fstream>
@@ -215,13 +216,37 @@ void Track::quit()
 // ----------------------------------------------------------------------------
 void Track::build()
 {
+    IrrlichtDevice* device = Editor::getEditor()->getDevice();
 
     PHYSFS_setWriteDir(Editor::getEditor()->getTrackDir().c_str());
     PHYSFS_mkdir(m_file_name.c_str());
 
     path p = Editor::getEditor()->getTrackDir() + m_file_name;
 
-    m_terrain->build(p);
+    CMeshBuffer<S3DVertex2TCoords> mb = m_terrain->build(p);
+    SMesh smesh;
+    smesh.addMeshBuffer(&mb);
+
+    CMeshBuffer<S3DVertex2TCoords>* buffers = 0;
+
+    if (m_roads.size() > 1)
+        buffers = new CMeshBuffer<S3DVertex2TCoords>[m_roads.size() - 1];
+
+    for (int i = 1; i < m_roads.size(); i++)
+    {
+        IRoad* r = m_roads[i];
+        buffers[i-1] = ((Road*)r)->getMeshBuffer();
+        smesh.addMeshBuffer(&buffers[i - 1]);
+    }
+
+    B3DMeshWriter* writer = new B3DMeshWriter(device->getFileSystem());
+    IWriteFile *file;
+    file = device->getFileSystem()->createAndWriteFile((p + "/track.b3d").c_str());
+    writer->writeMesh(file, &smesh);
+    file->drop();
+    delete writer;
+
+
     m_driveline->build(p);
 
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
@@ -292,6 +317,9 @@ void Track::build()
 
     scene << "</scene>\n";
     scene.close();
+
+    //if (buffers) delete buffers;
+
 } // build
 
 // ----------------------------------------------------------------------------

@@ -1,5 +1,7 @@
 #include "mesh/road.hpp"
 
+#include "editor.hpp"
+
 #include <iostream>
 #include "assert.h"
 
@@ -36,21 +38,21 @@ void Road::createIndexList(int nj, int ni)
     {
         for (int i = 0; i < ni - 1; i++)
         {
-            m_mesh.indices[ix] = i + (j + 1)     * ni;   ix++;
             m_mesh.indices[ix] = i + 1 + (j + 1) * ni;   ix++;
+            m_mesh.indices[ix] = i + (j + 1)     * ni;   ix++;
             m_mesh.indices[ix] = i + 1 + j       * ni;   ix++;
 
-            m_mesh.indices[ix] = i + 1 + j       * ni;   ix++;
             m_mesh.indices[ix] = i + j           * ni;   ix++;
+            m_mesh.indices[ix] = i + 1 + j       * ni;   ix++;
             m_mesh.indices[ix] = i + (j + 1)     * ni;   ix++;
         }
 
-        m_mesh.indices[ix] = ni - 1 + (j + 1)     * ni;   ix++;
         m_mesh.indices[ix] = 0  + (j + 1)         * ni;   ix++;
+        m_mesh.indices[ix] = ni - 1 + (j + 1)     * ni;   ix++;
         m_mesh.indices[ix] = 0  + j               * ni;   ix++;
 
-        m_mesh.indices[ix] = 0 + j                * ni;   ix++;
         m_mesh.indices[ix] = ni - 1 + j           * ni;   ix++;
+        m_mesh.indices[ix] = 0 + j                * ni;   ix++;
         m_mesh.indices[ix] = ni - 1 + (j + 1)     * ni;   ix++;
 
 
@@ -110,7 +112,6 @@ void Road::refresh()
     }
 
     createIndexList((int)(1.0f / m_detail * spn + 1), m_width_vert_num);
-
 } // refresh
 
 
@@ -146,3 +147,24 @@ void Road::setWireFrame(bool b)
     m_material.Lighting = !b;
     m_material.BackfaceCulling = !b;
 } // setWireFrame
+
+
+// ----------------------------------------------------------------------------
+CMeshBuffer<S3DVertex2TCoords> Road::getMeshBuffer()
+{
+    CMeshBuffer<S3DVertex2TCoords> mb;
+
+    for (u32 i = 0; i < m_mesh.vertex_count; i++)
+        mb.Vertices.push_back(m_mesh.vertices[i]);
+    for (u32 i = 0; i < m_mesh.quad_count * 6; i++)
+        mb.Indices.push_back(m_mesh.indices[i]);
+
+    
+
+    mb.recalculateBoundingBox();
+    mb.Material = m_material;
+
+    Editor::getEditor()->getSceneManager()->getMeshManipulator()->recalculateNormals(&mb, true, true);
+
+    return mb;
+} // getMeshBuffer

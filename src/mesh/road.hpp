@@ -25,6 +25,8 @@ public:
 
     void    notify(ITexture* t);
     void    setWireFrame(bool b);
+
+    CMeshBuffer<S3DVertex2TCoords>  getMeshBuffer();
 };
 
 #endif
