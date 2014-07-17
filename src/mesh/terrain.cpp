@@ -10,6 +10,7 @@
 
 #include <algorithm>
 #include <assert.h>
+#include <iostream>
 
 const u32 Terrain::SPIMG_X = 1024;
 const u32 Terrain::SPIMG_Y = 1024;
@@ -277,8 +278,7 @@ void Terrain::draw(const TerrainMod& tm)
 
     int r = (int)(tm.radius / m_x * SPIMG_X);
 
-    double e = tm.dh / 10.0f;
-    if (!tm.left_click) e *= -1;
+    double e;
 
     for (int i = tc.X - r; i < tc.X + r; i++)
         for (int j = tc.Y - r; j < tc.Y + r; j++)
@@ -286,11 +286,21 @@ void Terrain::draw(const TerrainMod& tm)
         if ((i - tc.X)*(i - tc.X) + (j - tc.Y)*(j - tc.Y) < r*r)
             if ((i > 0 && i < (s32)SPIMG_X && j > 0 && j < (s32)SPIMG_Y))
             {
-            TerrainChange tc;
-            tc.x = i;
-            tc.z = j;
+            TerrainChange terr_ch;
+            terr_ch.x = i;
+            terr_ch.z = j;
+            
+            e = tm.dh / 5.0f;
+            if (!tm.left_click) e *= -1;
+
+            if (tm.edge_type > 1)
+            {
+                e *= (1 - ((i - tc.X)*(i - tc.X) + (j - tc.Y)*(j - tc.Y)) / (f32)(r*r));
+                if (tm.edge_type == 3) e = sqrt(fabs(e)) * e / fabs(e);
+            }
+            
             for (int k = 0; k < 4; k++)
-                tc.old_v[k] = img[j * SPIMG_X * 4 + i * 4 + k];
+                terr_ch.old_v[k] = img[j * SPIMG_X * 4 + i * 4 + k];
 
             switch (tm.type)
                 {
@@ -306,10 +316,10 @@ void Terrain::draw(const TerrainMod& tm)
                 }
 
             for (int k = 0; k < 4; k++)
-                tc.vchanged[k] = (tc.old_v[k] != img[j * SPIMG_X * 4 + i * 4 + k]);
+                terr_ch.vchanged[k] = (terr_ch.old_v[k] != img[j * SPIMG_X * 4 + i * 4 + k]);
 
-            tc.img = img;
-            tm.cmd->addVertex(&tc);
+            terr_ch.img = img;
+            tm.cmd->addVertex(&terr_ch);
             }
 
         }
