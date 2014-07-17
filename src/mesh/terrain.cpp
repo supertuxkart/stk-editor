@@ -10,7 +10,6 @@
 
 #include <algorithm>
 #include <assert.h>
-#include <iostream>
 
 const u32 Terrain::SPIMG_X = 1024;
 const u32 Terrain::SPIMG_Y = 1024;

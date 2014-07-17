@@ -5,4 +5,3 @@ TODO list:
 - monkey testing for crashes
 - hotkeys for actions (both use and their visibility in tooltips)
 - road mesh texture & export
-- soft brush should be affected by edge type
