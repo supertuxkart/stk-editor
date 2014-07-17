@@ -576,19 +576,22 @@ vector3df Terrain::placeBBtoGround(const aabbox3d<f32>& box, line3d<float> ray)
 } // placeBBtoGround
 
 // ----------------------------------------------------------------------------
-CMeshBuffer<S3DVertex2TCoords> Terrain::build(path p)
+CMeshBuffer<S3DVertex2TCoords>* Terrain::build(path p)
 {
     IrrlichtDevice* device = Editor::getEditor()->getDevice();
 
-    CMeshBuffer<S3DVertex2TCoords> mb;
+    CMeshBuffer<S3DVertex2TCoords>* mb = new CMeshBuffer<S3DVertex2TCoords>();
+
+    mb->Vertices.reallocate(m_mesh.vertex_count);
+    mb->Indices.reallocate(m_mesh.quad_count * 6);
 
     for (u32 i = 0; i < m_mesh.vertex_count; i++)
-        mb.Vertices.push_back(m_mesh.vertices[i]);
+        mb->Vertices.push_back(m_mesh.vertices[i]);
     for (u32 i = 0; i < m_mesh.quad_count * 6; i++)
-        mb.Indices.push_back(m_mesh.indices[i]);
+        mb->Indices.push_back(m_mesh.indices[i]);
 
-    mb.recalculateBoundingBox();
-    mb.Material = m_material;
+    mb->recalculateBoundingBox();
+    mb->Material = m_material;
 
     ITexture* texture = m_material.getTexture(1);
     IImage* image = device->getVideoDriver()->createImage(texture, position2di(0, 0),

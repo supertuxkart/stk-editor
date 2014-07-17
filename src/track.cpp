@@ -223,20 +223,20 @@ void Track::build()
 
     path p = Editor::getEditor()->getTrackDir() + m_file_name;
 
-    CMeshBuffer<S3DVertex2TCoords> mb = m_terrain->build(p);
+    CMeshBuffer<S3DVertex2TCoords>* mb = m_terrain->build(p);
     SMesh smesh;
-    smesh.addMeshBuffer(&mb);
+    smesh.addMeshBuffer(mb);
 
-    CMeshBuffer<S3DVertex2TCoords>* buffers = 0;
+    CMeshBuffer<S3DVertex2TCoords>** buffers = 0;
 
     if (m_roads.size() > 1)
-        buffers = new CMeshBuffer<S3DVertex2TCoords>[m_roads.size() - 1];
+        buffers = new CMeshBuffer<S3DVertex2TCoords>*[m_roads.size() - 1];
 
     for (int i = 1; i < m_roads.size(); i++)
     {
         IRoad* r = m_roads[i];
         buffers[i-1] = ((Road*)r)->getMeshBuffer();
-        smesh.addMeshBuffer(&buffers[i - 1]);
+        smesh.addMeshBuffer(buffers[i - 1]);
     }
 
     B3DMeshWriter* writer = new B3DMeshWriter(device->getFileSystem());
@@ -318,7 +318,7 @@ void Track::build()
     scene << "</scene>\n";
     scene.close();
 
-    //if (buffers) delete buffers;
+    if (buffers) delete[] buffers;
 
 } // build
 

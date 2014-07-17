@@ -99,7 +99,7 @@ public:
     u32          getNZ() { return m_nz; }
 
 
-    CMeshBuffer<S3DVertex2TCoords>  build(path p);
+    CMeshBuffer<S3DVertex2TCoords>* build(path p);
     void                            save(FILE* file);
 
 
