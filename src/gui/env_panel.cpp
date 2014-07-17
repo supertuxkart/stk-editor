@@ -38,9 +38,11 @@ void EnvPanel::init()
 
     m_next = gui_env->addButton(rect<s32>(190, ss.Height - 128, 240, ss.Height - 108),
         m_wndw, FIRST_BTN_ID + m_btn_num + 1);
+    m_next->setImage(Editor::loadImg("img/obj_next.png"));
 
     m_prev = gui_env->addButton(rect<s32>(10, ss.Height - 128, 60, ss.Height - 108),
         m_wndw, FIRST_BTN_ID + m_btn_num);
+    m_prev->setImage(Editor::loadImg("img/obj_previous.png"));
 
     refreshBtnTable();
 
