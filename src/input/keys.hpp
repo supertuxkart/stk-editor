@@ -11,6 +11,9 @@ enum Key
     A_PRESSED,
     S_PRESSED,
     D_PRESSED,
+    R_PRESSED,
+    G_PRESSED,
+    DEL_PRESSED,
     SPACE_PRESSED,
     CTRL_PRESSED,
     SHIFT_PRESSED //it has to be the last the first has to have id 0
@@ -44,8 +47,17 @@ struct Keys
         case KEY_KEY_D:
             m_key_state[D_PRESSED] = pressed;
             break;
+        case KEY_KEY_R:
+            m_key_state[R_PRESSED] = pressed;
+            break;
+        case KEY_KEY_G:
+            m_key_state[G_PRESSED] = pressed;
+            break;
         case KEY_SPACE:
             m_key_state[SPACE_PRESSED] = pressed;
+            break;
+        case KEY_DELETE:
+            m_key_state[DEL_PRESSED] = pressed;
             break;
         case KEY_SHIFT:
         case KEY_LSHIFT:

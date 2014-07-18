@@ -167,6 +167,7 @@ bool Editor::buttonClicked(int ID)
     return false;
 } // buttonClicked
 
+// ----------------------------------------------------------------------------
 bool Editor::importantButtonClicked(int ID)
 {
     stringc s;
@@ -205,6 +206,28 @@ bool Editor::importantButtonClicked(int ID)
     }
     return false;
 } // importantButtonClicked
+
+// ----------------------------------------------------------------------------
+void Editor::shiftShortcuts(EKEY_CODE code)
+{
+    switch (code)
+    {
+    case KEY_KEY_A:
+        m_viewport->setState(Viewport::SELECT);
+        break;
+    case KEY_KEY_S:
+        m_viewport->setState(Viewport::SCALE);
+        break;
+    case KEY_KEY_G:
+        m_viewport->setState(Viewport::MOVE);
+        break;
+    case KEY_KEY_R:
+        m_viewport->setState(Viewport::ROTATE);
+        break;
+    default:
+        break;
+    }
+} // ctrlShortcuts
 
 // ----------------------------------------------------------------------------
 bool Editor::init()
@@ -607,6 +630,10 @@ bool Editor::OnEvent(const SEvent& event)
     if (event.EventType == EET_KEY_INPUT_EVENT)
     {
         m_keys.keyEvent(event.KeyInput.Key, event.KeyInput.PressedDown);
+        if (m_keys.state(SHIFT_PRESSED))
+            shiftShortcuts(event.KeyInput.Key);
+        if (m_keys.state(DEL_PRESSED))
+            m_viewport->deleteCmd();
         return true;
     }
 

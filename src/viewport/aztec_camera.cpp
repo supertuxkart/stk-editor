@@ -90,7 +90,7 @@ void AztecCamera::animate(f32 dt)
 
     if (ss) m_mouse->setStorePoint();
 
-    if (m_keys->state(CTRL_PRESSED)) return;
+    if (m_keys->state(CTRL_PRESSED) || m_keys->state(SHIFT_PRESSED)) return;
 
     if (m_keys->state(W_PRESSED) ^ m_keys->state(S_PRESSED))
     {
