@@ -38,38 +38,6 @@ AztecCamera::AztecCamera(ICameraSceneNode* c, Mouse* m, Keys* k)
 // ----------------------------------------------------------------------------
 void AztecCamera::animate(f32 dt)
 {
-    if (m_keys->state(W_PRESSED) ^ m_keys->state(S_PRESSED))
-    {
-        float sgn = m_keys->state(S_PRESSED) ? 1.0f : -1.0f;
-        vector3df pos = m_cam->getPosition();
-        vector3df tar = m_cam->getTarget();
-        vector3df transformed_z_dir = getTransformedZdir();
-
-        pos += transformed_z_dir * sgn * dt / 20.0f;
-        m_cam->setPosition(pos);
-
-        tar += transformed_z_dir * sgn * dt / 20.0f;
-        m_cam->setTarget(tar);
-
-        m_indicator->updatePos(pos, tar);
-    };
-
-    if (m_keys->state(A_PRESSED) ^ m_keys->state(D_PRESSED))
-    {
-        float sgn = m_keys->state(D_PRESSED) ? 1.0f : -1.0f;
-        vector3df pos = m_cam->getPosition();
-        vector3df tar = m_cam->getTarget();
-        vector3df transformed_x_dir = getTransformedXdir();
-
-        pos += transformed_x_dir * sgn * dt / 20.0f;
-        m_cam->setPosition(pos);
-
-        tar += transformed_x_dir * sgn * dt / 20.0f;
-        m_cam->setTarget(tar);
-
-        m_indicator->updatePos(pos, tar);
-    };
-
     if (m_mouse->wheel != 0)
     {
         dimension2du ss = Editor::getEditor()->getScreenSize();
@@ -121,6 +89,40 @@ void AztecCamera::animate(f32 dt)
     }
 
     if (ss) m_mouse->setStorePoint();
+
+    if (m_keys->state(CTRL_PRESSED)) return;
+
+    if (m_keys->state(W_PRESSED) ^ m_keys->state(S_PRESSED))
+    {
+        float sgn = m_keys->state(S_PRESSED) ? 1.0f : -1.0f;
+        vector3df pos = m_cam->getPosition();
+        vector3df tar = m_cam->getTarget();
+        vector3df transformed_z_dir = getTransformedZdir();
+
+        pos += transformed_z_dir * sgn * dt / 20.0f;
+        m_cam->setPosition(pos);
+
+        tar += transformed_z_dir * sgn * dt / 20.0f;
+        m_cam->setTarget(tar);
+
+        m_indicator->updatePos(pos, tar);
+    };
+
+    if (m_keys->state(A_PRESSED) ^ m_keys->state(D_PRESSED))
+    {
+        float sgn = m_keys->state(D_PRESSED) ? 1.0f : -1.0f;
+        vector3df pos = m_cam->getPosition();
+        vector3df tar = m_cam->getTarget();
+        vector3df transformed_x_dir = getTransformedXdir();
+
+        pos += transformed_x_dir * sgn * dt / 20.0f;
+        m_cam->setPosition(pos);
+
+        tar += transformed_x_dir * sgn * dt / 20.0f;
+        m_cam->setTarget(tar);
+
+        m_indicator->updatePos(pos, tar);
+    };
 
 } // animate
 
