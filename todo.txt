@@ -5,3 +5,4 @@ TODO list:
 - monkey testing for crashes
 - hotkeys for actions (both use and their visibility in tooltips)
 - language localization support
+- texture splatting fix

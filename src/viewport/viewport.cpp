@@ -465,16 +465,10 @@ void Viewport::setSplineMode(bool b)
         m_selection_handler->clearSelection();
     m_spline_mode = b;
     if (m_active_road)
-        m_active_road->getSpline()->setNodeVisibility(m_spline_mode);
-
-    int i = 1;
-    IRoad* r;
-    while (r = m_track->getRoadByID(i))
     {
-        ((Road*)r)->setWireFrame(b);
-        i++;
+        m_active_road->getSpline()->setNodeVisibility(m_spline_mode);
+        m_active_road->setWireFrame(b);
     }
-
 } // setSplineMode
 
 // ----------------------------------------------------------------------------
@@ -483,9 +477,11 @@ void Viewport::setActiveRoad(IRoad* r)
     if (m_active_road)
     {
         m_active_road->getSpline()->setNodeVisibility(false);
+        m_active_road->setWireFrame(false);
     }
     m_active_road = r;
     r->getSpline()->setNodeVisibility(true);
+    r->setWireFrame(true);
     if (!m_spline_mode)
         setSplineMode(true);
 } // setActiveRoad
@@ -506,7 +502,7 @@ void Viewport::roadBorn(IRoad* road, stringw name)
         m_active_cmd = 0;
     }
     m_command_handler.add(new createRoadCmd(road, name));
-    m_active_road = road;
+    setActiveRoad(road);
     setState(SPLINE);
 } // roadBorn
 

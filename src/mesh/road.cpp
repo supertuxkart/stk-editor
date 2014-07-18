@@ -138,6 +138,7 @@ void Road::render()
 // ----------------------------------------------------------------------------
 void Road::notify(ITexture* t)
 {
+    setWireFrame(false);
     m_material.setTexture(0,t);
     m_material.TextureLayer[0].TextureWrapV = ETC_REPEAT;
 } // notify
