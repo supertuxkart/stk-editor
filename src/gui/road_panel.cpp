@@ -29,8 +29,8 @@ void RoadPanel::init()
     gui_env->addStaticText(L"Width:", rect<s32>(30, 77, 90, 92), false, false, m_wndw);
     m_width_sb = gui_env->addScrollBar(true, rect<s32>(100, 80, 210, 90), m_wndw,DL_WIDTH);
     m_width_sb->setMin(1);
-    m_width_sb->setMax(100);
-    m_width_sb->setPos(40);
+    m_width_sb->setMax(200);
+    m_width_sb->setPos(80);
 
     gui_env->addStaticText(L"Detail:", rect<s32>(30, 92, 90, 117), false, false, m_wndw);
     m_detail_sb = gui_env->addScrollBar(true, rect<s32>(100, 95, 210, 105), m_wndw, DL_DETAIL);
@@ -105,7 +105,7 @@ u32 RoadPanel::getSelectedRoadID()
 //----------------------------------------------------------------------------
 f32 RoadPanel::getWidth()
 {
-    return m_width_sb->getPos() / 10.0f;
+    return m_width_sb->getPos() / 5.0f;
 } // getWidth
 
 //----------------------------------------------------------------------------

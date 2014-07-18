@@ -23,7 +23,7 @@ Track::Track(f32 tx, f32 tz)
     m_terrain = new Terrain(sm->getRootSceneNode(), sm, 1, tx, tz,
                            (u32) (2 * tx), (u32) (2 * tz));
 
-    ISpline* spline = new Bezier(sm->getRootSceneNode(), sm, 0);
+    ISpline* spline = new TCR(sm->getRootSceneNode(), sm, 0);
     m_driveline = new DriveLine(sm->getRootSceneNode(), sm, 0, spline, L"DriveLine");
     m_roads.insert(0, m_driveline);
 } // Track

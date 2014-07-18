@@ -103,6 +103,7 @@ ISpline::ISpline(ISceneNode* parent, ISceneManager* mgr, s32 id, stringw type)
 ISpline::ISpline(ISceneNode* parent, ISceneManager* mgr, s32 id, stringw t, FILE* fp)
                                                          :ISceneNode(parent, mgr, id)
 {
+    m_type = t;
     u32 size;
     fread(&size, sizeof(u32), 1, fp);
     list<ControlPoint>::Iterator it;
