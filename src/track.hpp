@@ -21,6 +21,7 @@ private:
     Terrain*    m_terrain;
     DriveLine*  m_driveline;
 
+    // m_roads[0] is the driveline
     map<unsigned int, IRoad*>    m_roads;
 
 public:
