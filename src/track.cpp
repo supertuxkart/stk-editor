@@ -79,9 +79,9 @@ Track::Track(path file)
     fread(&size, sizeof(u8), 1, pFile);
     if (size > 0)
     {
-        r = new DriveLine(sm->getRootSceneNode(), sm, 0, pFile);
-        m_roads.insert(0, r);
-        r->refresh();
+        m_driveline = new DriveLine(sm->getRootSceneNode(), sm, 0, pFile);
+        m_roads.insert(0, m_driveline);
+        m_driveline->refresh();
     }
     for (u8 i = 1; i < size; i++)
     {
