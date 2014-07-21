@@ -1,9 +1,9 @@
 TODO list:
 
-- fix font
-- nicer icons
 - monkey testing for crashes
 - hotkeys for actions (both use and their visibility in tooltips)
 - language localization support
-- music
-- screen resolution
+- screen resolution should be stored on exit
+- export without driveline
+- road/cp delete
+- driveline - vertex order
