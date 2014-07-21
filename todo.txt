@@ -2,8 +2,6 @@ TODO list:
 
 - monkey testing for crashes
 - hotkeys for actions (both use and their visibility in tooltips)
-- language localization support
-- screen resolution should be stored on exit
-- export without driveline
+- export without driveline crash
 - road/cp delete
 - driveline - vertex order
