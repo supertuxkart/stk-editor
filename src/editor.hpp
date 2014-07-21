@@ -70,6 +70,7 @@ private:
     bool                        buttonClicked(int ID);
     bool                        importantButtonClicked(int ID);
     void                        shiftShortcuts(EKEY_CODE code);
+    void                        ctrlShortcuts(EKEY_CODE code);
 
 public:
     static Editor*              getEditor(dimension2du screen_size = dimension2du(1280, 720));

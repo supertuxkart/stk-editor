@@ -60,14 +60,13 @@ bool Editor::buttonClicked(int ID)
         m_viewport->setSplineMode(!m_viewport->getSplineMode());
         return true;
     case ToolBar::TBI_TRY:
-        m_viewport->build();
         return true;
     case ToolBar::TBI_SAVE:
         if (m_viewport->getTrack())
             m_viewport->getTrack()->save();
         return true;
     case ToolBar::TBI_SAVE_AS:
-        m_viewport->setState(Viewport::CHECK_LINE);
+        m_viewport->build();
         return true;
     // ToolBox BTN:
     case ToolBox::TWND_ID:
@@ -177,11 +176,11 @@ bool Editor::importantButtonClicked(int ID)
     case ToolBar::TBI_EXIT:
         m_device->closeDevice();
         return true;
+    case WelcomeScreen::FBTN_ID + 1:
+        m_welcome_screen->hide();
     case ToolBar::TBI_NEW:
         m_new_dialog_wndw->show();
         return true;
-    case WelcomeScreen::FBTN_ID + 1:
-        m_welcome_screen->hide();
     case ToolBar::TBI_OPEN:
         m_new_dialog_wndw->hide();
         m_gui_env->addFileOpenDialog(L"Open track:", true, 0, -1, false, m_maps_path);
@@ -223,6 +222,33 @@ void Editor::shiftShortcuts(EKEY_CODE code)
         break;
     case KEY_KEY_R:
         m_viewport->setState(Viewport::ROTATE);
+        break;
+    default:
+        break;
+    }
+} // ctrlShortcuts
+
+// ----------------------------------------------------------------------------
+void Editor::ctrlShortcuts(EKEY_CODE code)
+{
+    switch (code)
+    {
+    case KEY_KEY_S:
+        if (m_viewport->getTrack())
+            m_viewport->getTrack()->save();
+        break;
+    case KEY_KEY_Z:
+        m_viewport->undo();
+        break;
+    case KEY_KEY_Y:
+        m_viewport->redo();
+        break;
+    case KEY_KEY_N:
+        m_new_dialog_wndw->show();
+        break;
+    case KEY_KEY_O:
+        m_new_dialog_wndw->hide();
+        m_gui_env->addFileOpenDialog(L"Open track:", true, 0, -1, false, m_maps_path);
         break;
     default:
         break;
@@ -488,8 +514,7 @@ bool Editor::run()
     delete m_toolbox;
     delete m_toolbar;
 
-    // crash ???
-    // m_device->drop();
+    m_device->drop();
 
 	return 1;
 } // run
@@ -630,10 +655,19 @@ bool Editor::OnEvent(const SEvent& event)
     if (event.EventType == EET_KEY_INPUT_EVENT)
     {
         m_keys.keyEvent(event.KeyInput.Key, event.KeyInput.PressedDown);
-        if (m_keys.state(SHIFT_PRESSED))
-            shiftShortcuts(event.KeyInput.Key);
-        if (m_keys.state(DEL_PRESSED))
-            m_viewport->deleteCmd();
+
+        if (event.KeyInput.PressedDown)
+        if (m_keys.state(SHIFT_PRESSED) && m_keys.state(CTRL_PRESSED))
+        {
+            if (m_keys.state(S_PRESSED))     m_viewport->build();
+        }
+        else
+        {
+            if (m_keys.state(SHIFT_PRESSED)) shiftShortcuts(event.KeyInput.Key);
+            if (m_keys.state(CTRL_PRESSED))  ctrlShortcuts(event.KeyInput.Key);
+            if (m_keys.state(DEL_PRESSED))   m_viewport->deleteCmd();
+            if (m_keys.state(ESC_PRESSED))   m_device->closeDevice();
+        }
         return true;
     }
 

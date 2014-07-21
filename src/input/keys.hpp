@@ -13,10 +13,11 @@ enum Key
     D_PRESSED,
     R_PRESSED,
     G_PRESSED,
+    ESC_PRESSED,
     DEL_PRESSED,
     SPACE_PRESSED,
     CTRL_PRESSED,
-    SHIFT_PRESSED //it has to be the last the first has to have id 0
+    SHIFT_PRESSED //it has to be the last
 };
 
 struct Keys
