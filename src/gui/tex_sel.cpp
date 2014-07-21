@@ -17,7 +17,7 @@ void TexSel::init()
     dimension2du ss = Editor::getEditor()->getScreenSize();
 
     m_wndw = gui_env->addWindow(rect<s32>(ss.Width-500, 50, ss.Width-250, ss.Height),
-                                false, L"Textures", 0, 0);
+                                false, _(L"Textures"), 0, 0);
 
     m_search_field = gui_env->addEditBox(L"", rect<s32>(40, 40, 210, 60), 
                                                         true, m_wndw, SEARCH_BOX);

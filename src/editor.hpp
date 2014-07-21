@@ -7,6 +7,7 @@
 #include <irrlicht.h>
 #include <list>
 
+#define _(a) a
 #define MAGIC_NUMBER            8192
 #define ANOTHER_MAGIC_NUMBER    16384
 

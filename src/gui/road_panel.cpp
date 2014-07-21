@@ -19,26 +19,26 @@ void RoadPanel::init()
     IGUIEnvironment* gui_env = Editor::getEditor()->getGUIEnv();
     IGUIFont* font = gui_env->getFont(L"font/font.xml");
     m_wndw->setRelativePosition(position2di(0, 50));
-    gui_env->addStaticText(L"DriveLine:", rect<s32>(10, 10, 200, 30),
+    gui_env->addStaticText(_(L"DriveLine:"), rect<s32>(10, 10, 200, 30),
         false, false, m_wndw, -1, false)->setOverrideFont(font);
 
 
     m_cb = gui_env->addComboBox(rect<s32>(30, 45, 210, 65), m_wndw, DL_SELECT);
     m_cb->addItem(L"DriveLine", 0);
 
-    gui_env->addStaticText(L"Width:", rect<s32>(30, 77, 90, 92), false, false, m_wndw);
+    gui_env->addStaticText(_(L"Width:"), rect<s32>(30, 77, 90, 92), false, false, m_wndw);
     m_width_sb = gui_env->addScrollBar(true, rect<s32>(100, 80, 210, 90), m_wndw,DL_WIDTH);
     m_width_sb->setMin(1);
     m_width_sb->setMax(200);
     m_width_sb->setPos(80);
 
-    gui_env->addStaticText(L"Detail:", rect<s32>(30, 92, 90, 117), false, false, m_wndw);
+    gui_env->addStaticText(_(L"Detail:"), rect<s32>(30, 92, 90, 117), false, false, m_wndw);
     m_detail_sb = gui_env->addScrollBar(true, rect<s32>(100, 95, 210, 105), m_wndw, DL_DETAIL);
     m_detail_sb->setMin(1);
     m_detail_sb->setMax(100);
     m_detail_sb->setPos(25);
 
-    gui_env->addButton(rect<s32>(30, 123, 90, 143), m_wndw, DL_TEX_CHANGE,L"Texture");
+    gui_env->addButton(rect<s32>(30, 123, 90, 143), m_wndw, DL_TEX_CHANGE, _(L"Texture"));
 
     m_texture_sb = gui_env->addScrollBar(true, rect<s32>(100, 128, 210, 138), m_wndw, DL_TEX_CHANGE);
     m_texture_sb->setMin(1);

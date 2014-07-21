@@ -18,7 +18,7 @@ void EnvPanel::init()
     m_wndw->setRelativePosition(position2di(0, 50));
 
     m_cb = gui_env->addComboBox(rect<s32>(25, 10, 200, 30), m_wndw, CB_ID);
-    m_cb->addItem(L"All");
+    m_cb->addItem(_(L"All"));
     m_cb->setSelected(0);
 
     // !before new Lib

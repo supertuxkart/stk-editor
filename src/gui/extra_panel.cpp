@@ -12,7 +12,7 @@ void ExtraPanel::init()
 
     m_wndw->setRelativePosition(position2di(0, 50));
     
-    gui_env->addStaticText(L"Items:", rect<s32>(10, 10, 200, 30), 
+    gui_env->addStaticText(_(L"Items:"), rect<s32>(10, 10, 200, 30),
                            false, false, m_wndw, -1, false)->setOverrideFont(font);
 
     

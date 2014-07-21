@@ -16,16 +16,16 @@ void WelcomeScreen::init()
         (s32)(ss.Height / 2.0f - 100),
         (s32)(ss.Width / 2.0f + 150),
         (s32)(ss.Height / 2.0f + 175));
-    m_wndw = gui_env->addWindow(frame, false, L"New Track", 0);
+    m_wndw = gui_env->addWindow(frame, false, _(L"New Track"), 0);
 
-    gui_env->addStaticText(L"Welcome!", rect<s32>(110, 20, 190, 40), false, true, m_wndw);
+    gui_env->addStaticText(_(L"Welcome!"), rect<s32>(110, 20, 190, 40), false, true, m_wndw);
 
     m_lb = gui_env->addListBox(rect<s32>(20, 50, 280, 180), m_wndw);
 
-    gui_env->addButton(rect<s32>(70, 200, 230, 220), m_wndw, FBTN_ID, L"Open Selected");
+    gui_env->addButton(rect<s32>(70, 200, 230, 220), m_wndw, FBTN_ID, _(L"Open Selected"));
     
-    gui_env->addButton(rect<s32>(70,  240, 125, 265), m_wndw, FBTN_ID + 1, L"Open");
-    gui_env->addButton(rect<s32>(175, 240, 230, 265), m_wndw, FBTN_ID + 2, L"New");
+    gui_env->addButton(rect<s32>(70, 240, 125, 265), m_wndw, FBTN_ID + 1, _(L"Open"));
+    gui_env->addButton(rect<s32>(175, 240, 230, 265), m_wndw, FBTN_ID + 2, _(L"New"));
 
 
     std::list<stringc> list;

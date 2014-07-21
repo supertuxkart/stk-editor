@@ -58,7 +58,7 @@ std::list<stringw> Library::getCategoryList()
 void Library::selectElements(stringw s, stringw categ)
 {
     m_selected_elements.clear();
-    if (categ == "All")
+    if (categ == _("All"))
     {
         std::map<stringw, std::list<Element*>*>::iterator it;
         for (it = m_element_table.begin(); it != m_element_table.end(); ++it)

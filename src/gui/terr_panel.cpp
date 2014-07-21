@@ -18,10 +18,10 @@ void TerrPanel::init()
 
     m_wndw->setRelativePosition(position2di(0, 50));
     
-    gui_env->addStaticText(L"Brush:", rect<s32>(10, 10, 200, 30), 
+    gui_env->addStaticText(_(L"Brush:"), rect<s32>(10, 10, 200, 30),
                            false, false, m_wndw, -1, false)->setOverrideFont(font);
 
-    gui_env->addStaticText(L"Radius:", rect<s32>(15, 40, 100, 60),
+    gui_env->addStaticText(_(L"Radius:"), rect<s32>(15, 40, 100, 60),
                            false, false, m_wndw, -1, false);
 
     m_h_radius = gui_env->addScrollBar(true, rect<s32>(100, 45, 240, 55),
@@ -32,7 +32,7 @@ void TerrPanel::init()
     m_h_radius->setLargeStep(10);
     m_h_radius->setPos(60);
 
-    gui_env->addStaticText(L"Intensity:", rect<s32>(15, 70, 100, 90),
+    gui_env->addStaticText(_(L"Intensity:"), rect<s32>(15, 70, 100, 90),
                            false, false, m_wndw, -1, false);
 
     m_h_intensity = gui_env->addScrollBar(true, rect<s32>(100, 75, 240, 85),
@@ -51,7 +51,7 @@ void TerrPanel::init()
     b2->setImage(Editor::loadImg("img/edge2.png"));
     b3->setImage(Editor::loadImg("img/edge3.png"));
 
-    gui_env->addStaticText(L"Edge:", rect<s32>(15, 100, 100, 120),
+    gui_env->addStaticText(_(L"Edge:"), rect<s32>(15, 100, 100, 120),
         false, false, m_wndw, -1, false);
 
     m_active_edge_frame = gui_env->addImage(rect<s32>(200, 95, 240, 135), m_wndw);

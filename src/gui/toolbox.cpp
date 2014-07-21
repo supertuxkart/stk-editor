@@ -21,21 +21,21 @@ void ToolBox::init()
     dimension2du ss = Editor::getEditor()->getScreenSize();
     m_wndw->setRelativePosition(position2di(ss.Width - 250, 50));
 
-    m_terr_wndw = gui_env->addWindow(rect<s32>(), false, L"Terrain", m_wndw, TWND_ID);
+    m_terr_wndw = gui_env->addWindow(rect<s32>(), false, _(L"Terrain"), m_wndw, TWND_ID);
     m_terr_panel = TerrPanel::getTerrPanel(m_terr_wndw);
     initWndw(m_terr_wndw);
 
-    m_env_wndw = gui_env->addWindow(rect<s32>(), false, L"Env", m_wndw, EWND_ID);
+    m_env_wndw = gui_env->addWindow(rect<s32>(), false, _(L"Objects"), m_wndw, EWND_ID);
     m_env_panel = EnvPanel::getEnvPanel(m_env_wndw);
     initWndw(m_env_wndw);    
     m_env_wndw->setVisible(false);
 
-    m_road_wndw = gui_env->addWindow(rect<s32>(), false, L"Road", m_wndw, RWND_ID);
+    m_road_wndw = gui_env->addWindow(rect<s32>(), false, _(L"Road"), m_wndw, RWND_ID);
     m_road_panel = RoadPanel::getRoadPanel(m_road_wndw);
     initWndw(m_road_wndw);
     m_road_wndw->setVisible(false);
 
-    m_extr_wndw = gui_env->addWindow(rect<s32>(), false, L"Extra", m_wndw, XWND_ID);
+    m_extr_wndw = gui_env->addWindow(rect<s32>(), false, _(L"Extra"), m_wndw, XWND_ID);
     m_extra_panel = ExtraPanel::getExtraPanel(m_extr_wndw);
     initWndw(m_extr_wndw);
     m_extr_wndw->setVisible(false);
