@@ -180,11 +180,11 @@ bool Editor::importantButtonClicked(int ID)
     case ToolBar::TBI_EXIT:
         m_device->closeDevice();
         return true;
-    case WelcomeScreen::FBTN_ID + 1:
-        m_welcome_screen->hide();
     case ToolBar::TBI_NEW:
         m_new_dialog_wndw->show();
         return true;
+    case WelcomeScreen::FBTN_ID + 1:
+        m_welcome_screen->hide();
     case ToolBar::TBI_OPEN:
         m_new_dialog_wndw->hide();
         m_gui_env->addFileOpenDialog(L"Open track:", true, 0, -1, false, m_maps_path);
