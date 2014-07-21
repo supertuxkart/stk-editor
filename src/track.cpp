@@ -239,14 +239,25 @@ void Track::build()
     writer->writeMesh(file, &smesh);
     file->drop();
     delete writer;
-
-
+    
     m_driveline->build(p);
 
-    ISceneManager* sm = Editor::getEditor()->getSceneManager();
+    std::ofstream mat;
+    mat.open((p + "/materials.xml").c_str());
+    mat << "<materials>\n";
+    mat << "  <material name=\"splatt.png\" graphical-effect=\"splatting\"";
+    SMaterial m = m_terrain->getMaterial(0);
+    for (int i = 1; i < 5; i++)
+    {
+        mat << " splatting-texture-" << i << "=\"";
+        mat << Editor::toRelative(m.getTexture(i+1)->getName()).c_str();
+        mat << "\"";
+    }
+    mat << "/>\n</materials>\n";
+
+    mat.close();
 
     std::ofstream track;
-
     track.open((p + "/track.xml").c_str());
     track << "<track  name           = \"" << m_track_name.c_str() << "\"\n";
     track << "        version        = \"5\"\n";
@@ -263,6 +274,7 @@ void Track::build()
     scene << "<scene>\n";
     scene << "  <track model=\"track.b3d\" x=\"0\" y=\"0\" z=\"0\">\n";
 
+    ISceneManager* sm = Editor::getEditor()->getSceneManager();
     ISceneNode* node;
     stringc name;
     int i = 1;
