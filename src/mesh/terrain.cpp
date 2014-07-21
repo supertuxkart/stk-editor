@@ -395,7 +395,7 @@ Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id,
     for (u32 i = 0; i < nx; i++)
     {
         m_mesh.vertices[j * nx + i].Pos = vector3df(x / nx * i, 0, z / nz *j);
-        m_mesh.vertices[j * nx + i].Color = SColor(255, 0, 200, 100);
+        m_mesh.vertices[j * nx + i].Color = SColor(255, 255, 255, 255);
         m_mesh.vertices[j * nx + i].TCoords  =
             vector2df(i / (float)nx * m_tile_num_x, j / (float)nz * m_tile_num_z);
         m_mesh.vertices[j * nx + i].TCoords2 = vector2df(i / (float)nx, j / (float)nz);
@@ -446,7 +446,7 @@ Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
 
         fread(&m_mesh.vertices[j * m_nx + i].Pos.Y, sizeof(f32), 1, fp);
 
-        m_mesh.vertices[j * m_nx + i].Color = SColor(255, 0, 200, 100);
+        m_mesh.vertices[j * m_nx + i].Color = SColor(255, 255, 255, 255);
 
         m_mesh.vertices[j * m_nx + i].TCoords =
             vector2df(i / (float)m_nx * m_tile_num_x, j / (float)m_nz * m_tile_num_z);
