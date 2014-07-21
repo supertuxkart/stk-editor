@@ -274,7 +274,7 @@ bool Editor::init()
 
     // fonts
     IGUISkin* skin = m_gui_env->getSkin();
-    IGUIFont* font = m_gui_env->getFont(L"font/font2.png");
+    IGUIFont* font = m_gui_env->getFont(L"font/font.xml");
     skin->setFont(font);
 
     // removing gui transparency
