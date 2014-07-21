@@ -10,22 +10,22 @@ void ToolBar::init()
     m_bar = Editor::getEditor()->getGUIEnv()->addToolBar();
     m_bar->setMinSize(dimension2du(0,50));
 
-    buttonInit(0,  TBI_NEW,         "img/new.png",      L"New -ctrl+n");
-    buttonInit(1,  TBI_OPEN,        "img/open.png",     L"Open -ctrl+o");
-    buttonInit(2,  TBI_SAVE,        "img/save.png",     L"Save -ctrl+s");
-    buttonInit(3,  TBI_SAVE_AS,     "img/save_as.png",  L"Export -ctrl+shift+s");
-    buttonInit(4,  TBI_UNDO,        "img/undo.png",     L"Undo -ctrl+z");
-    buttonInit(5,  TBI_REDO,        "img/redo.png",     L"Redo -ctrl+y");
-    buttonInit(6,  TBI_SELECT,      "img/select.png",   L"Select -shift+a");
-    buttonInit(7,  TBI_MOVE,        "img/move.png",     L"Move -shift+g");
-    buttonInit(8,  TBI_ROTATE,      "img/rotate.png",   L"Rotate -shift+r");
-    buttonInit(9,  TBI_SCALE,       "img/scale.png",    L"Scale -shift+s");
-    buttonInit(10, TBI_DELETE,      "img/delete.png",   L"Delete -del");
+    buttonInit(0,  TBI_NEW,         "img/new.png",      L"New (ctrl+n)");
+    buttonInit(1,  TBI_OPEN,        "img/open.png",     L"Open (ctrl+o)");
+    buttonInit(2,  TBI_SAVE,        "img/save.png",     L"Save (ctrl+s)");
+    buttonInit(3,  TBI_SAVE_AS,     "img/save_as.png",  L"Export (ctrl+shift+s)");
+    buttonInit(4,  TBI_UNDO,        "img/undo.png",     L"Undo (ctrl+z)");
+    buttonInit(5,  TBI_REDO,        "img/redo.png",     L"Redo (ctrl+y)");
+    buttonInit(6,  TBI_SELECT,      "img/select.png",   L"Select (shift+a)");
+    buttonInit(7,  TBI_MOVE,        "img/move.png",     L"Move (shift+g)");
+    buttonInit(8,  TBI_ROTATE,      "img/rotate.png",   L"Rotate (shift+r)");
+    buttonInit(9,  TBI_SCALE,       "img/scale.png",    L"Scale (shift+s)");
+    buttonInit(10, TBI_DELETE,      "img/delete.png",   L"Delete (del)");
     buttonInit(11, TBI_CAM,         "img/cam1.png",     L"Free Camera Mode");
     buttonInit(12, TBI_SPLINE,      "img/spline.png",   L"Spline mode on/off");
     buttonInit(13, TBI_TRY,         "img/try.png",      L"Try your track");
     buttonInit(14, TBI_SETTINGS,    "img/settings.png", L"Settings");
-    buttonInit(15, TBI_EXIT,        "img/exit.png",     L"Quit -esc");
+    buttonInit(15, TBI_EXIT,        "img/exit.png",     L"Quit (esc)");
 
     reallocate();
 
