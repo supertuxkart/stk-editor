@@ -55,6 +55,7 @@ private:
     Keys                        m_keys;
     Indicator*                  m_indicator;
 
+    path                        m_data_loc;
     path                        m_config_loc;
     IFileArchive*               m_tex_dir;
     IFileArchive*               m_xml_dir;
@@ -63,10 +64,13 @@ private:
     c8*                         m_music_loc;
 
 	bool                        init();
+    void                        readConfigFile(IFileSystem* file_system);
     void                        fileInit();
-    bool                        validDataLoc(IXMLReader* xml);
+    void                        initResolFromConfigFile();
+    void                        exportRes();
+    bool                        isValidDataLoc();
     bool                        validateDataLoc(path data_loc);
-    void                        setDataLoc(path data_path);
+    void                        initDataLoc();
     void                        dataDirLocDlg();
 
 	Editor() {};

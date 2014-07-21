@@ -265,7 +265,13 @@ bool Editor::init()
     m_maps_path = 0;
     m_music_loc = 0;
     m_valid_data_dir = false;
-	m_device = createDevice(EDT_OPENGL, m_screen_size, 16, false, false, true);
+    
+    IrrlichtDevice *nulldevice = createDevice(video::EDT_NULL);
+    m_screen_size = nulldevice->getVideoModeList()->getDesktopResolution();
+    readConfigFile(nulldevice->getFileSystem());
+    nulldevice->drop();
+
+    m_device = createDevice(EDT_OPENGL, m_screen_size, 16, false, false, true);
 	if (!m_device) return false;
 
 	m_device->setResizable(true);
@@ -275,6 +281,7 @@ bool Editor::init()
 	m_scene_manager = m_device->getSceneManager();
 	m_gui_env       = m_device->getGUIEnvironment();
 
+    m_screen_size   = m_video_driver->getScreenSize();
     m_def_wd        = m_device->getFileSystem()->getWorkingDirectory();
 
     // fonts
@@ -315,79 +322,107 @@ bool Editor::init()
     m_indicator = m_viewport->getIndicator();
     m_scene_manager->setActiveCamera(norm_cam);
 
-    fileInit();
-
     m_toolbar = ToolBar::getToolBar();
     m_new_dialog_wndw = NewDialogWndw::get();
     m_new_dialog_wndw->hide();
-
     m_welcome_screen = WelcomeScreen::get();
 
-
     m_device->setEventReceiver(this);
+
+    if (!isValidDataLoc()) dataDirLocDlg();
+
     return true;
 } // init
 
 
 // ----------------------------------------------------------------------------
-void Editor::fileInit()
-{    
-    IFileSystem* file_system = m_device->getFileSystem();
+void Editor::readConfigFile(IFileSystem* file_system)
+{
+    IXMLReader* xml_reader = file_system->createXMLReader(path(PHYSFS_getBaseDir())
+                                                                    + "config.xml");
 
-    file_system->addFileArchive(PHYSFS_getBaseDir(), false, false, EFAT_FOLDER);
-    IXMLReader* xml_reader = file_system->createXMLReader("config.xml");
     if (!xml_reader)
     {
         path dir = PHYSFS_getUserDir();
         m_config_loc = dir + "/.stk-te";
-
-        if (!file_system->addFileArchive(m_config_loc.c_str(), false, false, EFAT_FOLDER))
+        xml_reader = file_system->createXMLReader(m_config_loc + "/config.xml");
+        if (!xml_reader)
         {
             PHYSFS_setWriteDir(dir.c_str());
             PHYSFS_mkdir(".stk-te");
-            file_system->addFileArchive(m_config_loc, false, false, EFAT_FOLDER);
         }
-        
-        xml_reader = file_system->createXMLReader("config.xml");
-
         if (!xml_reader)
         {
             std::ofstream f;
             f.open("config.xml");
             f.close();
-            xml_reader = file_system->createXMLReader("config.xml");
-            assert(xml_reader);
+            return;
         }
     }
     else m_config_loc = PHYSFS_getBaseDir();
-    if (!validDataLoc(xml_reader)) dataDirLocDlg();
-    xml_reader->drop();
-} // fileInit
 
-// ----------------------------------------------------------------------------
-bool Editor::validDataLoc(IXMLReader* xml)
-{
-    IFileSystem* file_system = m_device->getFileSystem();
-    path data_dir = "";
-    const stringw element(L"data_dir");
-    while (xml->read())
+    const stringw node_name(L"data_dir");
+    const stringw res(L"res");
+    while (xml_reader->read())
     {
-        if (xml->getNodeType() == EXN_ELEMENT)
+        if (xml_reader->getNodeType() == EXN_ELEMENT)
         {
-            if (element.equals_ignore_case(xml->getNodeName()))
+            if (res.equals_ignore_case(xml_reader->getNodeName()))
             {
-                data_dir = xml->getAttributeValueSafe(L"path");
+                m_screen_size = dimension2du(
+                    atol(((stringc)xml_reader->getAttributeValueSafe(L"x")).c_str()),
+                    atol(((stringc)xml_reader->getAttributeValueSafe(L"y")).c_str()));
+            }
+            else  if (node_name.equals_ignore_case(xml_reader->getNodeName()))
+            {
+                m_data_loc = xml_reader->getAttributeValueSafe(L"path");
             }
         }
     }
-    
-    if (file_system->addFileArchive((data_dir + "textures").c_str(),
+    xml_reader->drop();
+} // readConfigFile
+
+// ----------------------------------------------------------------------------
+void Editor::exportRes()
+{
+    stringc p;
+    IFileSystem* file_system = m_device->getFileSystem();
+    IXMLReader*  xml_reader = file_system->createXMLReader(m_config_loc + "/config.xml");
+    if (xml_reader)
+    {
+        const stringw node_name(L"data_dir");
+        while (xml_reader->read())
+        {
+            if (xml_reader->getNodeType() == EXN_ELEMENT
+                && node_name.equals_ignore_case(xml_reader->getNodeName()))
+            {
+                p = xml_reader->getAttributeValueSafe(L"path");
+            }
+        }
+    }
+    xml_reader->drop();
+
+    std::ofstream f;
+    f.open((m_config_loc + "/config.xml").c_str());
+    f << "<config>\n";
+    f << "  <data_dir path=\"" << p.c_str() << "\" />\n";
+    f << "  <res x=\"" << m_screen_size.Width << "\" y=\"";
+    f << m_screen_size.Height << "\" />\n";
+    f << "</config>\n";
+    f.close();
+
+} // exportRes
+
+// ----------------------------------------------------------------------------
+bool Editor::isValidDataLoc()
+{    
+    IFileSystem* file_system = m_device->getFileSystem();
+    if (file_system->addFileArchive((m_data_loc + "textures").c_str(),
         false, false, EFAT_FOLDER, "", &m_tex_dir))
     {
-        setDataLoc(data_dir);
+        initDataLoc();
         return true;
-    }
-    
+    }    
     return false;
 } // validDataLoc
 
@@ -398,8 +433,8 @@ bool Editor::validateDataLoc(path file)
     if (!file_system->addFileArchive((file + "textures").c_str(), false,
                                             false, EFAT_FOLDER, "", &m_tex_dir))
         return false;
-
-    setDataLoc(file);
+    m_data_loc = file;
+    initDataLoc();
 
     std::ofstream f;
     f.open((m_config_loc + "/config.xml").c_str());
@@ -412,36 +447,36 @@ bool Editor::validateDataLoc(path file)
 } // validDataLoc
 
 // ----------------------------------------------------------------------------
-void Editor::setDataLoc(path data_path)
+void Editor::initDataLoc()
 {
     IFileSystem* file_system = m_device->getFileSystem();
-    if (!file_system->addFileArchive((data_path + "editor/xml").c_str(),
+    if (!file_system->addFileArchive((m_data_loc + "editor/xml").c_str(),
         false, false, EFAT_FOLDER, "", &m_xml_dir))
     {
         std::cerr << "Bad news: i couldn't find the xml directory.\n";
         std::cerr << "Maybe the whole editor folder is missing? :(\n";
         exit(-1);
     }
-    file_system->addFileArchive(data_path, false, false, EFAT_FOLDER);
+    file_system->addFileArchive(m_data_loc, false, false, EFAT_FOLDER);
     m_valid_data_dir = true;
 
-    path p = data_path.c_str();
+    path p = m_data_loc.c_str();
     p += "editor/maps";
     m_maps_path = new c8[p.size() + 1];
     strcpy(m_maps_path, p.c_str());
 
-    p = data_path.c_str();
+    p = m_data_loc.c_str();
     p += "music";
     m_music_loc = new c8[p.size() + 1];
     strcpy(m_music_loc, p.c_str());
     
-    m_track_dir = data_path.c_str();
+    m_track_dir = m_data_loc.c_str();
     m_track_dir += "tracks/";
 
     m_tex_sel = TexSel::getTexSel();
     m_toolbox = ToolBox::getToolBox();
 
-    file_system->addFileArchive((data_path + "editor").c_str(),
+    file_system->addFileArchive((m_data_loc + "editor").c_str(),
         false, false, EFAT_FOLDER);
 
 } // setDataLoc
@@ -504,6 +539,11 @@ bool Editor::run()
             m_toolbox->reallocate();
         }
         last_time = current_time;
+    }
+
+    if (m_config_loc!="")
+    {
+        exportRes();
     }
 
     if (m_maps_path)
@@ -656,7 +696,6 @@ bool Editor::OnEvent(const SEvent& event)
     // gui active, there is nothing we should do
     if (m_gui_env->getFocus() != NULL) return false;
     
-
     // keyboard event
     if (event.EventType == EET_KEY_INPUT_EVENT)
     {
@@ -767,7 +806,6 @@ std::list<stringc> Editor::readRecentlyOpenedList()
 
     IFileSystem* file_system = m_device->getFileSystem();
     IXMLReader*  xml_reader = file_system->createXMLReader(m_config_loc + "/recent.xml");
-    IXMLReader*  xml_reader2 = file_system->createXMLReader(m_config_loc + "/config.xml");
 
     stringc s;
     if (xml_reader)
