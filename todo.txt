@@ -5,3 +5,4 @@ TODO list:
 - export without driveline crash
 - road/cp delete
 - driveline - vertex order
+- not all gui element handle resize
