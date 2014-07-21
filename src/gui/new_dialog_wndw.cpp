@@ -9,7 +9,7 @@ NewDialogWndw* NewDialogWndw::m_self = 0;
 void NewDialogWndw::init()
 {
     IGUIEnvironment* gui_env = Editor::getEditor()->getGUIEnv();
-    IGUIFont* font = gui_env->getFont(L"font/font1.png");
+    IGUIFont* font = gui_env->getFont(L"font/font.xml");
     dimension2du ss = Editor::getEditor()->getScreenSize();
 
     rect<s32> frame = rect<s32>((s32)(ss.Width  / 2.0f - 150), 

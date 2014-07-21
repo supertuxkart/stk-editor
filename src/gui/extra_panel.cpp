@@ -8,7 +8,7 @@ void ExtraPanel::init()
 {
     IGUIEnvironment* gui_env = Editor::getEditor()->getGUIEnv();
 
-    IGUIFont* font = gui_env->getFont(L"font/font1.png");
+    IGUIFont* font = gui_env->getFont(L"font/font.xml");
 
     m_wndw->setRelativePosition(position2di(0, 50));
     

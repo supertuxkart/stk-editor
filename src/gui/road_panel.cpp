@@ -17,7 +17,7 @@ void RoadPanel::init()
     m_next_road_mesh_ID = 1;
 
     IGUIEnvironment* gui_env = Editor::getEditor()->getGUIEnv();
-    IGUIFont* font = gui_env->getFont(L"font/font1.png");
+    IGUIFont* font = gui_env->getFont(L"font/font.xml");
     m_wndw->setRelativePosition(position2di(0, 50));
     gui_env->addStaticText(L"DriveLine:", rect<s32>(10, 10, 200, 30),
         false, false, m_wndw, -1, false)->setOverrideFont(font);
