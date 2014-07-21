@@ -57,13 +57,15 @@ private:
     path                        m_config_loc;
     IFileArchive*               m_tex_dir;
     IFileArchive*               m_xml_dir;
-    c8*                         m_maps_path;
     path                        m_track_dir;
+    c8*                         m_maps_path;
+    c8*                         m_music_loc;
 
 	bool                        init();
     void                        fileInit();
     bool                        validDataLoc(IXMLReader* xml);
     bool                        validateDataLoc(path data_loc);
+    void                        setDataLoc(path data_path);
     void                        dataDirLocDlg();
 
 	Editor() {};

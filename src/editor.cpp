@@ -61,11 +61,15 @@ bool Editor::buttonClicked(int ID)
         return true;
     case ToolBar::TBI_TRY:
         return true;
+    case ToolBar::TBI_MUSIC:
+        m_gui_env->addFileOpenDialog(L"Select music:", true, 0, 1234, false, m_music_loc);
+        return true;
+        // WELCOME SCREEN
     case ToolBar::TBI_SAVE:
         if (m_viewport->getTrack())
             m_viewport->getTrack()->save();
         return true;
-    case ToolBar::TBI_SAVE_AS:
+    case ToolBar::TBI_EXPORT:
         m_viewport->build();
         return true;
     // ToolBox BTN:
@@ -259,6 +263,7 @@ void Editor::ctrlShortcuts(EKEY_CODE code)
 bool Editor::init()
 {
     m_maps_path = 0;
+    m_music_loc = 0;
     m_valid_data_dir = false;
 	m_device = createDevice(EDT_OPENGL, m_screen_size, 16, false, false, true);
 	if (!m_device) return false;
@@ -379,30 +384,7 @@ bool Editor::validDataLoc(IXMLReader* xml)
     if (file_system->addFileArchive((data_dir + "textures").c_str(),
         false, false, EFAT_FOLDER, "", &m_tex_dir))
     {
-        m_valid_data_dir = true;
-
-        path p = data_dir + "editor/maps";
-        m_maps_path = new c8[p.size() + 1];
-        strcpy(m_maps_path, p.c_str());
-
-        m_track_dir = data_dir + "tracks/";
-
-        if (!file_system->addFileArchive((data_dir + "editor/xml").c_str(),
-            false, false, EFAT_FOLDER, "", &m_xml_dir))
-        {
-            std::cerr << "Bad news: i couldn't find the xml directory.\n";
-            std::cerr << "Maybe the whole editor folder is missing? :(\n";
-            exit(-1);
-        }
-
-        file_system->addFileArchive(data_dir, false, false, EFAT_FOLDER);
-        
-        m_tex_sel = TexSel::getTexSel();
-        m_toolbox = ToolBox::getToolBox();
-
-        file_system->addFileArchive((data_dir + "editor").c_str(),
-            false, false, EFAT_FOLDER);
-
+        setDataLoc(data_dir);
         return true;
     }
     
@@ -417,35 +399,52 @@ bool Editor::validateDataLoc(path file)
                                             false, EFAT_FOLDER, "", &m_tex_dir))
         return false;
 
+    setDataLoc(file);
 
-    if (!file_system->addFileArchive((file + "editor/xml").c_str(),
+    std::ofstream f;
+    f.open((m_config_loc + "/config.xml").c_str());
+    f << "<config>\n";
+    f << "  <data_dir path=\"" << file.c_str() << "\" />\n";
+    f << "</config>\n";
+    f.close();
+    
+    return true;
+} // validDataLoc
+
+// ----------------------------------------------------------------------------
+void Editor::setDataLoc(path data_path)
+{
+    IFileSystem* file_system = m_device->getFileSystem();
+    if (!file_system->addFileArchive((data_path + "editor/xml").c_str(),
         false, false, EFAT_FOLDER, "", &m_xml_dir))
     {
         std::cerr << "Bad news: i couldn't find the xml directory.\n";
         std::cerr << "Maybe the whole editor folder is missing? :(\n";
         exit(-1);
     }
+    file_system->addFileArchive(data_path, false, false, EFAT_FOLDER);
+    m_valid_data_dir = true;
 
-    std::ofstream f;
-
-    f.open((m_config_loc + "/config.xml").c_str());
-
-    f << "<config>\n";
-    f << "  <data_dir path=\"" << file.c_str() << "\" />\n";
-    f << "</config>\n";
-
-    path p = file.c_str();
-    p += "editor";
-    m_maps_path = new c8[p.size()+1];
+    path p = data_path.c_str();
+    p += "editor/maps";
+    m_maps_path = new c8[p.size() + 1];
     strcpy(m_maps_path, p.c_str());
 
-    m_track_dir = file.c_str();
-    m_track_dir+= "tracks/";
-
-    f.close();
+    p = data_path.c_str();
+    p += "music";
+    m_music_loc = new c8[p.size() + 1];
+    strcpy(m_music_loc, p.c_str());
     
-    return true;
-} // validDataLoc
+    m_track_dir = data_path.c_str();
+    m_track_dir += "tracks/";
+
+    m_tex_sel = TexSel::getTexSel();
+    m_toolbox = ToolBox::getToolBox();
+
+    file_system->addFileArchive((data_path + "editor").c_str(),
+        false, false, EFAT_FOLDER);
+
+} // setDataLoc
 
 // ----------------------------------------------------------------------------
 void Editor::dataDirLocDlg()
@@ -509,6 +508,8 @@ bool Editor::run()
 
     if (m_maps_path)
         delete m_maps_path;
+    if (m_music_loc)
+        delete m_music_loc;
 
     delete m_viewport;
     delete m_toolbox;
@@ -535,9 +536,6 @@ bool Editor::OnEvent(const SEvent& event)
                 if (validateDataLoc(
                     ((IGUIFileOpenDialog*)event.GUIEvent.Caller)->getDirectoryName()))
                 {
-                    m_valid_data_dir = true;
-                    m_tex_sel = TexSel::getTexSel();
-                    m_toolbox = ToolBox::getToolBox();
                     ((IGUIFileOpenDialog*)event.GUIEvent.Caller)->remove();
                 }
                 return true;
@@ -555,7 +553,15 @@ bool Editor::OnEvent(const SEvent& event)
     if (event.EventType == EET_GUI_EVENT
         && event.GUIEvent.EventType == EGET_FILE_SELECTED)
     {
-        open(path(((IGUIFileOpenDialog*) event.GUIEvent.Caller)->getFileName()));
+        switch (((IGUIFileOpenDialog*)event.GUIEvent.Caller)->getID())
+        {
+        case 1234:
+            m_viewport->getTrack()->setMusic(toRelative(
+                path(((IGUIFileOpenDialog*)event.GUIEvent.Caller)->getFileName())));
+            break;
+        default:
+            open(path(((IGUIFileOpenDialog*)event.GUIEvent.Caller)->getFileName()));
+        }
         return true;
     }
 

@@ -13,7 +13,7 @@ void ToolBar::init()
     buttonInit(0,  TBI_NEW,         "img/new.png",      L"New (ctrl+n)");
     buttonInit(1,  TBI_OPEN,        "img/open.png",     L"Open (ctrl+o)");
     buttonInit(2,  TBI_SAVE,        "img/save.png",     L"Save (ctrl+s)");
-    buttonInit(3,  TBI_SAVE_AS,     "img/save_as.png",  L"Export (ctrl+shift+s)");
+    buttonInit(3,  TBI_EXPORT ,     "img/save_as.png",  L"Export (ctrl+shift+s)");
     buttonInit(4,  TBI_UNDO,        "img/undo.png",     L"Undo (ctrl+z)");
     buttonInit(5,  TBI_REDO,        "img/redo.png",     L"Redo (ctrl+y)");
     buttonInit(6,  TBI_SELECT,      "img/select.png",   L"Select (shift+a)");
@@ -23,8 +23,8 @@ void ToolBar::init()
     buttonInit(10, TBI_DELETE,      "img/delete.png",   L"Delete (del)");
     buttonInit(11, TBI_CAM,         "img/cam1.png",     L"Free Camera Mode");
     buttonInit(12, TBI_SPLINE,      "img/spline.png",   L"Spline mode on/off");
-    buttonInit(13, TBI_TRY,         "img/try.png",      L"Try your track");
-    buttonInit(14, TBI_SETTINGS,    "img/settings.png", L"Settings");
+    buttonInit(13, TBI_MUSIC,       "img/settings.png", L"Settings");
+    buttonInit(14, TBI_TRY,         "img/try.png",      L"Try your track");
     buttonInit(15, TBI_EXIT,        "img/exit.png",     L"Quit (esc)");
 
     reallocate();
@@ -81,19 +81,19 @@ void ToolBar::reallocate()
     for (int i = 6; i < 11; i++)
         m_buttons[i]->setRelativePosition(position2di(block_begin + i * 50, 5));
 
-    // fifth icon: switch camera
+    // fifth icon: switch camera, switch spline mode
     block_begin += space_between_blocks;
     m_buttons[11]->setRelativePosition(position2di(block_begin + 11 * 50, 5));
-
-    // Sixth block: spline mode
-    block_begin += space_between_blocks;
     m_buttons[12]->setRelativePosition(position2di(block_begin + 12 * 50, 5));
 
-    // test
+    // Sixth block: music
     block_begin += space_between_blocks;
     m_buttons[13]->setRelativePosition(position2di(block_begin + 13 * 50, 5));
 
-    // last block: 2 icon - settings, quit
-    m_buttons[14]->setRelativePosition(position2di(screen_x - 100, 5));
+    // test
+    block_begin += space_between_blocks;
+    m_buttons[14]->setRelativePosition(position2di(block_begin + 14 * 50, 5));
+
+    // last block - quit
     m_buttons[15]->setRelativePosition(position2di(screen_x - 50, 5));
 } // reallocate

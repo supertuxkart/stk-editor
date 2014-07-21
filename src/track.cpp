@@ -26,6 +26,8 @@ Track::Track(f32 tx, f32 tz)
     ISpline* spline = new TCR(sm->getRootSceneNode(), sm, 0);
     m_driveline = new DriveLine(sm->getRootSceneNode(), sm, 0, spline, L"DriveLine");
     m_roads.insert(0, m_driveline);
+    m_music = "Origin.music";
+
 } // Track
 
 // ----------------------------------------------------------------------------
@@ -40,6 +42,7 @@ Track::Track(path file)
         exit(-1);
     }
 
+    // TRACK NAME
     u8 size;
     wchar_t* c;
     fread(&size, sizeof(u8), 1, pFile);
@@ -48,17 +51,27 @@ Track::Track(path file)
     m_track_name = c;
     delete c;
 
+    // DESIGNER NAME
     fread(&size, sizeof(u8), 1, pFile);
     c = new wchar_t[size];
     fread(c, sizeof(wchar_t), size, pFile);
     m_designer = c;
     delete c;
 
+    // FILE NAME
     c8* cc;
     fread(&size, sizeof(u8), 1, pFile);
     cc = new c8[size];
     fread(cc, sizeof(c8), size, pFile);
     m_file_name = cc;
+    delete cc;
+
+    // MUSIC
+    cc;
+    fread(&size, sizeof(u8), 1, pFile);
+    cc = new c8[size];
+    fread(cc, sizeof(c8), size, pFile);
+    m_music = cc;
     delete cc;
 
     // TERRAIN
@@ -147,6 +160,11 @@ void Track::save()
   size = m_file_name.size() + 1;
   fwrite(&size, sizeof(u8), 1, pFile);
   fwrite(m_file_name.c_str(), sizeof(c8), size, pFile);
+
+  // MUSIC
+  size = m_music.size() + 1;
+  fwrite(&size, sizeof(u8), 1, pFile);
+  fwrite(m_music.c_str(), sizeof(c8), size, pFile);
 
   // TERRAIN
   m_terrain->save(pFile);
@@ -262,7 +280,7 @@ void Track::build()
     track << "<track  name           = \"" << m_track_name.c_str() << "\"\n";
     track << "        version        = \"5\"\n";
     track << "        groups         = \"made-by-STK-TE\"\n";
-    track << "        music          = \"Origin.music\"\n";
+    track << "        music          = \"" << m_music.c_str() << "\"\n";
     track << "        screenshot     = \"screenshot.jpg\"\n";
     track << "        smooth-normals = \"true\"\n";
     track << "        reverse        = \"Y\"\n>\n";

@@ -20,6 +20,7 @@ private:
     stringc     m_file_name;
     Terrain*    m_terrain;
     DriveLine*  m_driveline;
+    stringc     m_music;
 
     // m_roads[0] is the driveline
     map<unsigned int, IRoad*>    m_roads;
@@ -44,12 +45,11 @@ public:
     void       setTrackName(stringw n)       { m_track_name   = n; }
     void       setFileName(stringc n)        { m_file_name    = n; }
     void       setDesigner(stringw d)        { m_designer     = d; }
+    void       setMusic(stringc m)           { m_music        = m; }
 
     Terrain*   getTerrain()                  { return m_terrain;   }
 
     map<unsigned int, IRoad*>* getRoadList() { return &m_roads;    }
 
 };
-
-
 #endif

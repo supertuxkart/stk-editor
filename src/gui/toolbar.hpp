@@ -19,7 +19,7 @@ public:
         TBI_NEW,
         TBI_OPEN,
         TBI_SAVE,
-        TBI_SAVE_AS,
+        TBI_EXPORT,
         TBI_REDO,
         TBI_UNDO,
         TBI_CAM,
@@ -30,7 +30,7 @@ public:
         TBI_DELETE,
         TBI_SPLINE,
         TBI_TRY,
-        TBI_SETTINGS,
+        TBI_MUSIC,
         TBI_EXIT
     };
 
