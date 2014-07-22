@@ -248,7 +248,8 @@ void Track::build()
     for (int i = 1; i < m_roads.size(); i++)
     {
         IRoad* r = m_roads[i];
-        smesh.addMeshBuffer(((Road*)r)->getMeshBuffer());
+        if (r->getSpline()->getPointNum()>1)
+            smesh.addMeshBuffer(((Road*)r)->getMeshBuffer());
     }
 
     B3DMeshWriter* writer = new B3DMeshWriter(device->getFileSystem());

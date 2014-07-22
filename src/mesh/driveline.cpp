@@ -79,11 +79,10 @@ void DriveLine::refresh()
 // ----------------------------------------------------------------------------
 void DriveLine::build(path p)
 {
+    if (m_spline->getPointNum() < 2) return;
     std::ofstream quads;
     quads.open((p + "/quads.xml").c_str());
     quads << "<quads>\n";
-
-
 
     int spn = m_spline->getPointNum() - 1;
     vector3df last_point = m_spline->p(0);
