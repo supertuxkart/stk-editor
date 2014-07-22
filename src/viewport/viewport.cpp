@@ -565,6 +565,7 @@ void Viewport::setTrack(Track* t)
 {
     m_track = t;
     m_terrain = m_track->getTerrain();
+    m_aztec_cam->setOffset(m_terrain->getSizeX(), m_terrain->getSizeZ());
     m_active_road = t->getRoadByID(0);
 } // setTrack
 

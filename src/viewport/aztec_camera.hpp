@@ -24,6 +24,7 @@ private:
     f32                     m_normal_cd;
 
     vector3df               m_last_valid_z_dir;
+    f32                     m_x, m_z;
 
 public:
     AztecCamera(ICameraSceneNode* c, Mouse* m, Keys* k);
@@ -31,10 +32,11 @@ public:
 
     vector3df               getTransformedXdir();
     vector3df               getTransformedZdir();
+    void                    setOffset(f32 x, f32 z) { m_x = x / 2.0f; 
+                                                      m_z = z/2.0f; }
 
-    ICameraSceneNode*       Cam()                    { return m_cam;       }
-    Indicator*              getIndicator()           { return m_indicator; }
+    ICameraSceneNode*       Cam()                   { return m_cam;       }
+    Indicator*              getIndicator()          { return m_indicator; }
 };
 
 #endif
-

@@ -33,6 +33,7 @@ void Indicator::updatePos(vector3df pos, vector3df tar)
     pos.X += m_offset;
     tar.X += m_offset;
     m_cam->setPosition(pos);
+    m_cam->updateAbsolutePosition();
     m_cam->setTarget(tar);
 } // updatePos
 

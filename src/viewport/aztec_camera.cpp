@@ -17,6 +17,8 @@ using namespace scene;
 // ----------------------------------------------------------------------------
 AztecCamera::AztecCamera(ICameraSceneNode* c, Mouse* m, Keys* k)
 {
+    m_x         = 0;
+    m_z         = 0;
     m_cam       = c;
     m_mouse     = m;
     m_keys      = k;
@@ -61,10 +63,14 @@ void AztecCamera::animate(f32 dt)
     if ((m_mouse->left_btn_down && m_keys->state(SPACE_PRESSED))
                                   || m_mouse->middle_btn_down)
     {
+        vector3df pos = m_cam->getPosition();
         vector3df tar = m_cam->getTarget();
-        tar.rotateXZBy(m_mouse->dx() / 5.0f, m_cam->getPosition());
+        tar.rotateXZBy(- m_mouse->dx() / 5.0f, vector3df(m_x, 0, m_z));
+        pos.rotateXZBy(- m_mouse->dx() / 5.0f, vector3df(m_x, 0, m_z));
+        m_cam->setPosition(pos);
+        m_cam->updateAbsolutePosition();
         m_cam->setTarget(tar);
-        m_indicator->updateTar(tar);
+        m_indicator->updatePos(pos,tar);
         ss = true;
     }
 
@@ -73,17 +79,24 @@ void AztecCamera::animate(f32 dt)
     {
         vector3df pos = m_cam->getPosition();
         vector3df tar = m_cam->getTarget();
-        vector3df transformed_z_dir = vector3df(pos.X - tar.X, 0, pos.Z - tar.Z);
-
-        transformed_z_dir.normalize();
-        tar += transformed_z_dir * (f32)m_mouse->dy();
-
-        vector3df d = m_cam->getPosition() - tar;      
-        f32 f = fabs(d.getLength() / d.dotProduct(vector3df(0, 1, 0)));
-        if (f > 1.05f && f < 3.0f)
+        vector3df transformed_z_dir;
+        vector3df rot;
+        transformed_z_dir = vector3df(pos.X - tar.X, 0, pos.Z - tar.Z).normalize();
+        rot = transformed_z_dir.crossProduct(vector3df(0, 1, 0)).normalize();
+        quaternion quat;
+        quat.fromAngleAxis(degToRad(m_mouse->dy() / 5.0f), rot);
+        tar -= vector3df(m_x, 0, m_z);
+        pos -= vector3df(m_x, 0, m_z);
+        quat.getMatrix().rotateVect(tar);
+        quat.getMatrix().rotateVect(pos);
+        if (fabs(tar.X - pos.X) + fabs(tar.Z - pos.Z) > 20)
         {
+            tar += vector3df(m_x, 0, m_z);
+            pos += vector3df(m_x, 0, m_z);
+            m_cam->setPosition(pos);
+            m_cam->updateAbsolutePosition();
             m_cam->setTarget(tar);
-            m_indicator->updateTar(tar);
+            m_indicator->updatePos(pos, tar);
             ss = true;
         }
     }
@@ -123,9 +136,7 @@ void AztecCamera::animate(f32 dt)
 
         m_indicator->updatePos(pos, tar);
     };
-
 } // animate
-
 
 // ----------------------------------------------------------------------------
 vector3df AztecCamera::getTransformedXdir()
@@ -146,5 +157,3 @@ vector3df AztecCamera::getTransformedZdir()
     transformed_z_dir.normalize();
     return transformed_z_dir;
 } // getTransformedZdir
-
-
