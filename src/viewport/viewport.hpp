@@ -95,6 +95,7 @@ public:
     void                roadBorn(IRoad* road, stringw name);
     void                undo();
     void                redo();
+    bool                splineInterrupt();
     void                looseFocus();
     void                gainFocus();
     void                setTrack(Track* t);

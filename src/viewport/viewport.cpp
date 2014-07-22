@@ -155,7 +155,6 @@ void Viewport::animateSplineEditing()
         dynamic_cast<RoadCmd*>(m_active_cmd)->updatePos(p);
     }
 
-
     if (!m_active_cmd||(m_mouse->leftPressed() && !m_keys->state(SPACE_PRESSED)))
     {
         if (m_active_cmd)
@@ -508,26 +507,46 @@ void Viewport::roadBorn(IRoad* road, stringw name)
 
 // ----------------------------------------------------------------------------
 void Viewport::undo()
-{
+{    
+    bool respline = splineInterrupt();
+
     m_command_handler.undo();
+    if (respline) setState(SPLINE);
+
     if (m_spline_mode)
     {
         m_active_road->getSpline()->updatePosition();
         m_active_road->refresh();
     }
+
 } // undo
 
 // ----------------------------------------------------------------------------
-
 void Viewport::redo()
 {
+    bool respline = splineInterrupt();
     m_command_handler.redo();
+    if (respline) setState(SPLINE);
     if (m_spline_mode)
     {
         m_active_road->getSpline()->updatePosition();
         m_active_road->refresh();
     }
 } // redo
+
+// ----------------------------------------------------------------------------
+bool Viewport::splineInterrupt()
+{
+    if (m_state == SPLINE && m_active_cmd)
+    {
+        m_active_cmd->undo();
+        delete m_active_cmd;
+        m_active_cmd = 0;
+        setState(SELECT);
+        return true;
+    }
+    return false;
+} // splineInterrupt
 
 // ----------------------------------------------------------------------------
 void Viewport::looseFocus()
