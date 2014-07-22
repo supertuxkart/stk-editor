@@ -572,7 +572,6 @@ bool Editor::OnEvent(const SEvent& event)
     if (event.EventType == EET_GUI_EVENT
         && event.GUIEvent.EventType == EGET_BUTTON_CLICKED)
             importantButtonClicked(event.GUIEvent.Caller->getID());
-
     if (!m_valid_data_dir)
     {
         if (event.EventType == EET_GUI_EVENT)
@@ -595,6 +594,22 @@ bool Editor::OnEvent(const SEvent& event)
         return false;
     }
 
+    // mouse event
+    if (event.EventType == EET_MOUSE_INPUT_EVENT)
+    {
+        // check if mouse is outside of the viewport's domain
+        if (event.MouseInput.Y < 50 ||
+            event.MouseInput.X >(s32) m_screen_size.Width - 250 ||
+            (event.MouseInput.X >(s32)m_screen_size.Width - 500 && m_tex_sel->isActive()))
+        {
+            m_viewport->looseFocus();
+            m_mouse.in_view = false;
+            return false;
+        }
+        m_mouse.in_view = true;
+        m_viewport->gainFocus();
+        m_mouse.refresh(event);
+    }
 
     if (event.EventType == EET_GUI_EVENT
         && event.GUIEvent.EventType == EGET_FILE_SELECTED)
@@ -642,6 +657,10 @@ bool Editor::OnEvent(const SEvent& event)
         case EGET_EDITBOX_CHANGED:
             switch (id)
             {
+            case TerrPanel::H_MAX_EDIT_BOX:
+            case TerrPanel::H_MIN_EDIT_BOX:
+                TerrPanel::getTerrPanel()->refreshTerrModData();
+                return true;
             case EnvPanel::SF_ID:
                 EnvPanel::getEnvPanel()->resetIndex();
                 EnvPanel::getEnvPanel()->refreshBtnTable();
@@ -722,22 +741,6 @@ bool Editor::OnEvent(const SEvent& event)
         return true;
     }
 
-    // mouse event
-    if (event.EventType == EET_MOUSE_INPUT_EVENT)
-    {
-        // check if mouse is outside of the viewport's domain
-        if (event.MouseInput.Y < 50 ||
-            event.MouseInput.X >(s32) m_screen_size.Width - 250 ||
-            (event.MouseInput.X >(s32)m_screen_size.Width - 500 && m_tex_sel->isActive()))
-        {
-            m_viewport->looseFocus();
-            m_mouse.in_view = false;
-            return false;
-        }
-        m_mouse.in_view = true;
-        m_viewport->gainFocus();
-        m_mouse.refresh(event);
-    }
 	return false;
 
 } // OnEvent
