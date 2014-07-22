@@ -89,6 +89,7 @@ void AztecCamera::animate(f32 dt)
         pos -= vector3df(m_x, 0, m_z);
         quat.getMatrix().rotateVect(tar);
         quat.getMatrix().rotateVect(pos);
+        ss = true;
         if (fabs(tar.X - pos.X) + fabs(tar.Z - pos.Z) > 20)
         {
             tar += vector3df(m_x, 0, m_z);
@@ -97,7 +98,6 @@ void AztecCamera::animate(f32 dt)
             m_cam->updateAbsolutePosition();
             m_cam->setTarget(tar);
             m_indicator->updatePos(pos, tar);
-            ss = true;
         }
     }
 
