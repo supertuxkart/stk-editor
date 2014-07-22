@@ -24,10 +24,6 @@ private:
     void    init();
 
     WelcomeScreen() {};
-
-protected:
-    void                initWndw(IGUIWindow* wndw);
-
 public:
     static WelcomeScreen*   get();
     u32                     getSize();
