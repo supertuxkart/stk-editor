@@ -125,13 +125,13 @@ void AztecCamera::animate(f32 dt)
             sgn = m_keys->state(S_PRESSED) ? 1.0f : -1.0f;
             d += vector3df(m_up_p - pos).normalize() * sgn * dt / 20.0f;
             b = true;
-        };
+        }
         if (m_keys->state(A_PRESSED) ^ m_keys->state(D_PRESSED))
         {
             sgn = m_keys->state(D_PRESSED) ? 1.0f : -1.0f;
             d += r.normalize() * sgn * dt / 20.0f;
             b = true;
-        };
+        }
         if (b)
         {
             m_up_p += d;
@@ -142,7 +142,7 @@ void AztecCamera::animate(f32 dt)
             tar += d;
             m_cam->setTarget(tar);
             m_indicator->updatePos(pos, tar);
-        };
+        }
     }
 
 } // animate
