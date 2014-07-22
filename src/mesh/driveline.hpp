@@ -11,7 +11,8 @@ using namespace io;
 
 class DriveLine :public IRoad
 {
-
+private:
+    bool order(vector3df* v1, vector3df* v2, vector3df* v3, vector3df* v4, vector3df n);
 public:
     DriveLine(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s, stringw n)
         :IRoad(parent, mgr, id, s, n) {};

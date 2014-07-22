@@ -6,6 +6,20 @@
 #include <iostream>
 
 // ----------------------------------------------------------------------------
+bool DriveLine::order(vector3df* v1, vector3df* v2, vector3df* v3, vector3df* v4, vector3df n)
+{
+    vector3df e1, e2, p;
+    e1 = *v2 - *v1;
+    e2 = *v3 - *v1;
+    p = e1.crossProduct(e2);
+    if (p.dotProduct(n) < 0)
+        return true;
+    p = *v1; *v1 = *v2; *v2 = p;
+    p = *v3; *v3 = *v4; *v4 = p;
+    return false;
+} // order
+
+// ----------------------------------------------------------------------------
 void DriveLine::refresh()
 {
     if (m_mesh.vertices)
@@ -88,6 +102,7 @@ void DriveLine::build(path p)
     vector3df last_point = m_spline->p(0);
     vector3df point;
     vector3df n, v, w;
+    vector3df v1, v2, v3, v4;
     float dt = m_detail / spn;
 
     // first two pointb
@@ -98,8 +113,8 @@ void DriveLine::build(path p)
     n.normalize();
     w.normalize();
     w *= m_spline->getWidth(0);
-    vector3df v1 = point - w * (m_width / 2.0f);
-    vector3df v2 = point + w * (m_width / 2.0f);
+    v1 = point - w * (m_width / 2.0f);
+    v2 = point + w * (m_width / 2.0f);
 
     // second two point -> first quad
     point = m_spline->p(dt);
@@ -109,13 +124,14 @@ void DriveLine::build(path p)
     n.normalize();
     w.normalize();
     w *= m_spline->getWidth(0);
+    v3 = point + w * (m_width / 2.0f);
+    v4 = point - w * (m_width / 2.0f);
+    bool b = order(&v1, &v2, &v3, &v4, m_spline->getNormal(0));
 
     quads << "  <quad  p0=\"" << v1.X << " " << v1.Y << " " << v1.Z << "\" ";
     quads << "p1=\"" << v2.X << " " << v2.Y << " " << v2.Z << "\" ";
-    v1 = point + w * (m_width / 2.0f);
-    v2 = point - w * (m_width / 2.0f);
-    quads << "p2=\"" << v1.X << " " << v1.Y << " " << v1.Z;
-    quads << "\" p3=\"" << v2.X << " " << v2.Y << " " << v2.Z << "\"/>\n";
+    quads << "p2=\"" << v3.X << " " << v3.Y << " " << v3.Z;
+    quads << "\" p3=\"" << v4.X << " " << v4.Y << " " << v4.Z << "\"/>\n";
 
     last_point = m_spline->p(dt);
 
@@ -130,8 +146,8 @@ void DriveLine::build(path p)
         w.normalize();
         w *= m_spline->getWidth(t);
 
-        v1 = point - w * (m_width / 2.0f);
-        v2 = point + w * (m_width / 2.0f);
+        v1 = point - w * (m_width / 2.0f) * (b ? -1 : 1);
+        v2 = point + w * (m_width / 2.0f) * (b ? -1 : 1);
 
         quads << "  <quad  p0=\"" << j - 1 << ":3\" p1=\"" << j - 1 << ":2\" ";
         quads << "p2=\"" << v1.X << " " << v1.Y << " " << v1.Z;

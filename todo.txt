@@ -3,4 +3,3 @@ TODO list:
 - monkey testing for crashes
 - hotkeys for actions (both use and their visibility in tooltips)
 - road/cp delete
-- driveline - vertex order
