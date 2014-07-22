@@ -539,6 +539,7 @@ bool Editor::run()
             m_toolbar->reallocate();
             m_toolbox->reallocate();
             m_tex_sel->reallocate();
+            if (m_indicator) m_indicator->reallocate();
         }
         last_time = current_time;
     }
