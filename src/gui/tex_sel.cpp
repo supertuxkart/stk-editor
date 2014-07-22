@@ -25,6 +25,12 @@ void TexSel::init()
 
     m_wndw->getCloseButton()->setVisible(false);
 
+    m_next = gui_env->addButton(rect<s32>(190, ss.Height - 78, 240, ss.Height - 58),
+        m_wndw, FIRST_BTN_ID + m_btn_num + 1);
+
+    m_prev = gui_env->addButton(rect<s32>(10, ss.Height - 78, 60, ss.Height - 58),
+        m_wndw, FIRST_BTN_ID + m_btn_num);
+
     loadTextures();
     initButtons();
     bindTexturesToButton(0);
@@ -104,7 +110,12 @@ void TexSel::initButtons()
 {
     IGUIEnvironment* gui_env = Editor::getEditor()->getGUIEnv();
     dimension2du ss = Editor::getEditor()->getScreenSize();
-    m_btn_num = (ss.Height - 180) / 60 * 4;
+    if (ss.Height < 180)
+    {
+        m_btn_num = 0;
+        return;
+    }
+    else m_btn_num = (ss.Height - 180) / 60 * 4;
     m_btn_table = new std::pair<IGUIButton*,ITexture*>[m_btn_num];
 
     for (int i = 0; i < m_btn_num / 4; i++)
@@ -122,11 +133,9 @@ void TexSel::initButtons()
             (rect<s32>(190, i * 60 + 80, 240, i * 60 + 130), m_wndw, FIRST_BTN_ID + 4 * i + 3);
     }
 
-    m_next = gui_env->addButton(rect<s32>(190, ss.Height - 78, 240, ss.Height - 58),
-        m_wndw, FIRST_BTN_ID + m_btn_num + 1);
+    m_next->setRelativePosition(rect<s32>(190, ss.Height - 78, 240, ss.Height - 58));
 
-    m_prev = gui_env->addButton(rect<s32>(10, ss.Height - 78, 60, ss.Height - 58),
-        m_wndw, FIRST_BTN_ID + m_btn_num);
+    m_prev->setRelativePosition(rect<s32>(10, ss.Height - 78, 60, ss.Height - 58));
 
 } // initButtons
 
@@ -201,4 +210,29 @@ void TexSel::searchFieldDirty()
     m_selected_page = 0;
     bindTexturesToButton(0);
 } // searchFieldDirty
+
+void TexSel::reallocate()
+{
+    dimension2du ss = Editor::getEditor()->getScreenSize();
+    m_wndw->setMinSize(dimension2du(250, ss.Height - 50));
+    m_wndw->setRelativePosition(position2di(ss.Width - 500, 50));
+
+    int new_btn_num;
+    if (ss.Height<180) new_btn_num = 0;
+    else new_btn_num = (ss.Height - 180) / 60 * 4;
+    if (new_btn_num != m_btn_num)
+    {
+        if (m_btn_num>0)
+        {
+            for (int i = 0; i < m_btn_num; i++)
+                m_btn_table[i].first->remove();
+            delete[] m_btn_table;
+        }
+        initButtons();
+        bindTexturesToButton(0);
+        m_next->setID(FIRST_BTN_ID + m_btn_num + 1);
+        m_prev->setID(FIRST_BTN_ID + m_btn_num);
+    }
+
+} // reallocate
 

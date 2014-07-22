@@ -265,6 +265,7 @@ bool Editor::init()
     m_maps_path = 0;
     m_music_loc = 0;
     m_valid_data_dir = false;
+    m_indicator = 0;
     
     IrrlichtDevice *nulldevice = createDevice(video::EDT_NULL);
     m_screen_size = nulldevice->getVideoModeList()->getDesktopResolution();
@@ -537,6 +538,7 @@ bool Editor::run()
             m_screen_size = m_video_driver->getScreenSize();
             m_toolbar->reallocate();
             m_toolbox->reallocate();
+            m_tex_sel->reallocate();
         }
         last_time = current_time;
     }
@@ -550,6 +552,8 @@ bool Editor::run()
         delete m_maps_path;
     if (m_music_loc)
         delete m_music_loc;
+    if (m_indicator)
+        delete m_indicator;
 
     delete m_viewport;
     delete m_toolbox;

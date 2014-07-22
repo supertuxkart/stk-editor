@@ -54,6 +54,11 @@ void EnvPanel::initButtons()
     IGUIEnvironment* gui_env = Editor::getEditor()->getGUIEnv();
     dimension2du ss = Editor::getEditor()->getScreenSize();
     m_btn_num = (ss.Height - 200) / 60 * 4;
+    if (ss.Height < 200)
+    {
+        m_btn_num = 0;
+        return;
+    }
     m_btn_table = new std::pair<IGUIButton*, stringw>[m_btn_num];
 
     for (int i = 0; i < m_btn_num / 4; i++)
@@ -139,11 +144,15 @@ void EnvPanel::reallocate(dimension2du ss)
     m_prev->setRelativePosition(rect<s32>(10, ss.Height - 128, 60, ss.Height - 108));
 
     int new_btn_num = (ss.Height - 200) / 60 * 4;
+    if (ss.Height < 200) new_btn_num = 0;
     if (new_btn_num != m_btn_num)
     {
-        for (int i = 0; i < m_btn_num; i++)
-            m_btn_table[i].first->remove();
-        delete [] m_btn_table;
+        if (m_btn_num>0)
+        {
+            for (int i = 0; i < m_btn_num; i++)
+                m_btn_table[i].first->remove();
+            delete[] m_btn_table;
+        }
         m_lib->setBufferSize(new_btn_num);
         initButtons();
         refreshBtnTable();

@@ -66,7 +66,7 @@ public:
     void        subscribe(IGUIButton* b) { m_bsubs.push_back(b); show();      }
     void        subscribe(ISubscriber* s){ m_subs.push_back(s);  show();      }
     
-
+    void        reallocate();
 };
 
 #endif
