@@ -316,7 +316,7 @@ bool Editor::init()
     // viewport init
     ICameraSceneNode* norm_cam;
     norm_cam = m_scene_manager->addCameraSceneNode(0, vector3df(25, 50, 30),
-        vector3df(25, -30, -15));
+        vector3df(5, 10, 6));
     norm_cam->setID(2);
     m_viewport = Viewport::get(norm_cam, &m_mouse, &m_keys);
     m_viewport->setFreeCamera(cam);
