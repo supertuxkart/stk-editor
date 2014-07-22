@@ -26,10 +26,13 @@ void TexSel::init()
     m_wndw->getCloseButton()->setVisible(false);
 
     m_next = gui_env->addButton(rect<s32>(190, ss.Height - 78, 240, ss.Height - 58),
-        m_wndw, FIRST_BTN_ID + m_btn_num + 1);
+        m_wndw, FIRST_BTN_ID + 1);
 
     m_prev = gui_env->addButton(rect<s32>(10, ss.Height - 78, 60, ss.Height - 58),
-        m_wndw, FIRST_BTN_ID + m_btn_num);
+        m_wndw, FIRST_BTN_ID);
+
+    m_cancel = gui_env->addButton(rect<s32>(95, ss.Height - 78, 155, ss.Height - 58),
+        m_wndw, FIRST_BTN_ID + 2, _(L"Cancel"));
 
     loadTextures();
     initButtons();
@@ -121,21 +124,21 @@ void TexSel::initButtons()
     for (int i = 0; i < m_btn_num / 4; i++)
     {
         m_btn_table[4 * i].first = gui_env->addButton
-            (rect<s32>(10, i * 60 + 80, 60, i * 60 + 130), m_wndw, FIRST_BTN_ID + 4 * i);
+            (rect<s32>(10, i * 60 + 80, 60, i * 60 + 130), m_wndw, FIRST_TEX_BTN_ID + 4 * i);
 
         m_btn_table[4 * i + 1].first = gui_env->addButton
-            (rect<s32>(70, i * 60 + 80, 120, i * 60 + 130), m_wndw, FIRST_BTN_ID + 4 * i + 1);
+            (rect<s32>(70, i * 60 + 80, 120, i * 60 + 130), m_wndw, FIRST_TEX_BTN_ID + 4 * i + 1);
 
         m_btn_table[4 * i + 2].first = gui_env->addButton
-            (rect<s32>(130, i * 60 + 80, 180, i * 60 + 130), m_wndw, FIRST_BTN_ID + 4 * i + 2);
+            (rect<s32>(130, i * 60 + 80, 180, i * 60 + 130), m_wndw, FIRST_TEX_BTN_ID + 4 * i + 2);
 
         m_btn_table[4 * i + 3].first = gui_env->addButton
-            (rect<s32>(190, i * 60 + 80, 240, i * 60 + 130), m_wndw, FIRST_BTN_ID + 4 * i + 3);
+            (rect<s32>(190, i * 60 + 80, 240, i * 60 + 130), m_wndw, FIRST_TEX_BTN_ID + 4 * i + 3);
     }
 
     m_next->setRelativePosition(rect<s32>(190, ss.Height - 78, 240, ss.Height - 58));
-
     m_prev->setRelativePosition(rect<s32>(10, ss.Height - 78, 60, ss.Height - 58));
+    m_cancel->setRelativePosition(rect<s32>(95, ss.Height - 78, 155, ss.Height - 58));
 
 } // initButtons
 
@@ -169,23 +172,29 @@ TexSel* TexSel::getTexSel()
 // ----------------------------------------------------------------------------
 void TexSel::btnClicked(u32 id)
 {
-    u32 ix = id - FIRST_BTN_ID;
+    s32 ix = id - FIRST_TEX_BTN_ID;
 
-    if (ix < m_btn_num)
+    if (ix > 0)
     {
         notify(ix);
         hide();
     }
-    else if (ix == m_btn_num)
+    else if (ix == -3)
     {
         if (m_selected_page > 0) m_selected_page--;
         bindTexturesToButton(m_selected_page);
     }
-    else if (ix == m_btn_num + 1)
+    else if (ix == -2)
     {
         m_selected_page++;
         if (m_selected_page > properTexNum() / m_btn_num) m_selected_page -= 1;
         bindTexturesToButton(m_selected_page);
+    }
+    else if (ix == -1)
+    {
+        m_bsubs.clear();
+        m_subs.clear();
+        hide();
     }
 
 } // btnClicked
@@ -198,7 +207,6 @@ void TexSel::notify(u32 id)
 
     for (list<ISubscriber*>::Iterator it = m_subs.begin(); it != m_subs.end(); it++)
         (*it)->notify(m_btn_table[id].second);
-
     m_bsubs.clear();
     m_subs.clear();
 

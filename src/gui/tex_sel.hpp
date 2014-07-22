@@ -16,6 +16,7 @@ class TexSel
 {
 public:
     static const int FIRST_BTN_ID = 601;
+    static const int FIRST_TEX_BTN_ID = 604;
     static const int SEARCH_BOX   = 600;
 private:
 
@@ -34,6 +35,7 @@ private:
 
     IGUIButton*                         m_next;
     IGUIButton*                         m_prev;
+    IGUIButton*                         m_cancel;
 
     list<ISubscriber*>                  m_subs;
     list<IGUIButton*>                   m_bsubs;

@@ -160,7 +160,7 @@ bool Editor::buttonClicked(int ID)
     }
     
     if (ID >= m_tex_sel->FIRST_BTN_ID &&
-        ID < m_tex_sel->FIRST_BTN_ID + m_tex_sel->getBtnNum() + 2)
+        ID < m_tex_sel->FIRST_TEX_BTN_ID + m_tex_sel->getBtnNum())
     {
         m_tex_sel->btnClicked(ID);
         return true;
