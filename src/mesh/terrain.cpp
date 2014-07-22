@@ -382,6 +382,8 @@ Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id,
 
     m_bounding_box = aabbox3d<f32>(0, 0, 0, x, 0, z);
 
+    setAutomaticCulling(EAC_OFF);
+
     m_tile_num_x = 10;
     m_tile_num_z = 10;
 
@@ -421,6 +423,8 @@ Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id,
 Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
                                               :ISceneNode(parent, mgr, id)
 {
+    setAutomaticCulling(EAC_OFF);
+
     fread(&m_x, sizeof(f32), 1, fp);
     fread(&m_z, sizeof(f32), 1, fp);
 
