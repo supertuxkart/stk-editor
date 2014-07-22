@@ -68,6 +68,7 @@ public:
     f32                   getDetail();
     u32                   getTexWrapCount();
     void                  updateRoadList();
+    void                  reallocate(dimension2du ss);
 
     stringw               getNextRoadType();
     stringw               getNextRoadName() { return m_text_field->getText();         }

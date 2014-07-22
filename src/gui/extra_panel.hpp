@@ -38,7 +38,7 @@ public:
     static ExtraPanel*    getExtraPanel(IGUIWindow* wndw = 0);
 
     void                  btnDown(int btn);
-    void                  refreshTerrModData();
+    void                  reallocate(dimension2du ss);
 };
 
 #endif

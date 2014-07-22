@@ -120,7 +120,6 @@ u32 RoadPanel::getTexWrapCount()
     return m_texture_sb->getPos();
 } // getTexWrapCount
 
-
 //----------------------------------------------------------------------------
 void RoadPanel::updateRoadList()
 {
@@ -142,8 +141,7 @@ void RoadPanel::updateRoadList()
         m_text_field->setText((stringw("RoadMesh_") + s).c_str());
         m_cb->setSelected(road_list->size()-1);
     }
-}
-
+} // updateRoadList
 
 //----------------------------------------------------------------------------
 stringw RoadPanel::getNextRoadType()
@@ -151,3 +149,8 @@ stringw RoadPanel::getNextRoadType()
     return m_spline_type_cb->getItem(m_spline_type_cb->getSelected());
 } // getNextRoadType
 
+// ----------------------------------------------------------------------------
+void RoadPanel::reallocate(dimension2du ss)
+{
+    m_wndw->setMinSize(dimension2du(250, ss.Height - 50));
+} // reallocate

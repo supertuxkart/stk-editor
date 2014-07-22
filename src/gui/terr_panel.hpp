@@ -96,6 +96,7 @@ public:
     void                  btnDown(int btn);
     void                  refreshTerrModData();
     void                  refreshSkyButtons(Sky* sky);
+    void                  reallocate(dimension2du ss);
 };
 
 #endif

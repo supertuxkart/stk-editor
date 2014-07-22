@@ -38,3 +38,10 @@ ExtraPanel* ExtraPanel::getExtraPanel(IGUIWindow* wndw)
     m_extra_panel->init();
     return m_extra_panel;
 } // getTerrPanel
+
+// ----------------------------------------------------------------------------
+void ExtraPanel::reallocate(dimension2du ss)
+{
+    m_wndw->setMinSize(dimension2du(250, ss.Height - 50));
+} // reallocate
+

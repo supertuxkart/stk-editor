@@ -79,6 +79,9 @@ void ToolBox::reallocate()
     m_wndw->setRelativePosition(position2di(ss.Width-250,50));
 
     m_env_panel->reallocate(ss);
+    m_terr_panel->reallocate(ss);
+    m_road_panel->reallocate(ss);
+    m_extra_panel->reallocate(ss);
 
 } // reallocate
 

@@ -297,3 +297,9 @@ void TerrPanel::refreshSkyButtons(Sky* sky)
     m_sb5->setImage(sky->getTex(5));
     m_sb6->setImage(sky->getTex(6));
 } // refreshSkyButtons
+
+// ----------------------------------------------------------------------------
+void TerrPanel::reallocate(dimension2du ss)
+{
+    m_wndw->setMinSize(dimension2du(250, ss.Height - 50));
+} // reallocate
