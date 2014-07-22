@@ -37,6 +37,7 @@ protected:
 public:
     static NewDialogWndw*   get();
     u32                     getSize();
+    void                    reallocate(dimension2du ss);
 
     void                    hide()              { m_wndw->setVisible(false); }
     void                    show()              { m_wndw->setVisible(true);  }

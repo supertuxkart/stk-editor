@@ -540,6 +540,7 @@ bool Editor::run()
             m_toolbox->reallocate();
             m_tex_sel->reallocate();
             if (m_indicator) m_indicator->reallocate();
+            m_new_dialog_wndw->reallocate(m_screen_size);
         }
         last_time = current_time;
     }
