@@ -59,23 +59,23 @@ void TerrPanel::init()
     m_active_edge_frame->setUseAlphaChannel(true);
     // edge end
 
-    m_tb1 = gui_env->addButton(rect<s32>(10,  150, 60,  200), m_wndw, M_T1);
-    m_tb2 = gui_env->addButton(rect<s32>(70,  150, 120, 200), m_wndw, M_T2);
-    m_tb3 = gui_env->addButton(rect<s32>(130, 150, 180, 200), m_wndw, M_T3);
-    m_tb4 = gui_env->addButton(rect<s32>(190, 150, 240, 200), m_wndw, M_T4);
+    m_tb1 = gui_env->addButton(rect<s32>(10,  150, 60,  200), m_wndw, M_T1, L"", _(L"Ground type 1"));
+    m_tb2 = gui_env->addButton(rect<s32>(70,  150, 120, 200), m_wndw, M_T2, L"", _(L"Ground type 2"));
+    m_tb3 = gui_env->addButton(rect<s32>(130, 150, 180, 200), m_wndw, M_T3, L"", _(L"Ground type 3"));
+    m_tb4 = gui_env->addButton(rect<s32>(190, 150, 240, 200), m_wndw, M_T4, L"", _(L"Ground type 4"));
 
     m_tb1->setImage(Editor::loadImg(L"dirt.jpg"));
     m_tb2->setImage(Editor::loadImg(L"grass2.jpg"));
     m_tb3->setImage(Editor::loadImg(L"rock_brown.jpg"));
     m_tb4->setImage(Editor::loadImg(L"sand2.jpg"));
 
-    gui_env->addButton(rect<s32>(10, 205, 60,   220), m_wndw, M_TC1);
-    gui_env->addButton(rect<s32>(70, 205, 120,  220), m_wndw, M_TC2);
-    gui_env->addButton(rect<s32>(130, 205, 180, 220), m_wndw, M_TC3);
-    gui_env->addButton(rect<s32>(190, 205, 240, 220), m_wndw, M_TC4);
+    gui_env->addButton(rect<s32>(10, 205, 60,   220), m_wndw, M_TC1, L"", _(L"Change Texture"));
+    gui_env->addButton(rect<s32>(70, 205, 120,  220), m_wndw, M_TC2, L"", _(L"Change Texture"));
+    gui_env->addButton(rect<s32>(130, 205, 180, 220), m_wndw, M_TC3, L"", _(L"Change Texture"));
+    gui_env->addButton(rect<s32>(190, 205, 240, 220), m_wndw, M_TC4, L"", _(L"Change Texture"));
 
     // height modifier begin
-    gui_env->addButton(rect<s32>(30, 255, 80, 305), m_wndw,H_BTN)
+    gui_env->addButton(rect<s32>(30, 255, 80, 305), m_wndw, H_BTN, L"", _(L"Spade"))
         ->setImage(Editor::loadImg("img/hm.png"));
 
     m_h_max_cb = gui_env->addCheckBox(false, rect<s32>(105, 250, 175, 280),
@@ -93,16 +93,32 @@ void TerrPanel::init()
     // height modifier end
 
     // BRUSH
-    gui_env->addButton(rect<s32>(30, 350, 80, 400), m_wndw,T_SOFT_BTN)
+    gui_env->addButton(rect<s32>(30, 350, 80, 400), m_wndw,T_SOFT_BTN, L"", _(L"Soft Brush"))
         ->setImage(Editor::loadImg("img/sb.png"));
 
-    gui_env->addButton(rect<s32>(95, 350, 145, 400), m_wndw, T_HARD_BTN)
+    gui_env->addButton(rect<s32>(95, 350, 145, 400), m_wndw, T_HARD_BTN, L"", _(L"Hard Brush"))
         ->setImage(Editor::loadImg("img/hb.png"));
 
-    gui_env->addButton(rect<s32>(160, 350, 210, 400), m_wndw, T_BRIGHTNESS_BTN)
+    gui_env->addButton(rect<s32>(160, 350, 210, 400), m_wndw, T_BRIGHTNESS_BTN, L"", _(L"Brightness"))
         ->setImage(Editor::loadImg("img/bb.png"));
 
     // SKYBOX
+
+    gui_env->addStaticText(_(L"Skybox:"), rect<s32>(10, 430, 200, 450),
+        false, false, m_wndw, -1, false)->setOverrideFont(font);
+
+    gui_env->addStaticText(_(L"Up:"), rect<s32>(30, 455, 80, 475),
+        false, false, m_wndw, -1, false)->setOverrideFont(font);
+    gui_env->addStaticText(_(L"Down:"), rect<s32>(95, 455, 145, 475),
+        false, false, m_wndw, -1, false)->setOverrideFont(font);
+    gui_env->addStaticText(_(L"Left:"), rect<s32>(160, 455, 210, 475),
+        false, false, m_wndw, -1, false)->setOverrideFont(font);
+    gui_env->addStaticText(_(L"Right:"), rect<s32>(30, 535, 80, 555),
+        false, false, m_wndw, -1, false)->setOverrideFont(font);
+    gui_env->addStaticText(_(L"Front:"), rect<s32>(95, 535, 145, 555),
+        false, false, m_wndw, -1, false)->setOverrideFont(font);
+    gui_env->addStaticText(_(L"Back:"), rect<s32>(160, 535, 210, 555),
+        false, false, m_wndw, -1, false)->setOverrideFont(font);
 
     ITexture* up    = Editor::loadImg("summersky_t.jpg");
     ITexture* down  = Editor::loadImg("summersky_b.jpg");
@@ -111,12 +127,12 @@ void TerrPanel::init()
     ITexture* front = Editor::loadImg("summersky_n.jpg");
     ITexture* back  = Editor::loadImg("summersky_s.jpg");
 
-    m_sb1 = gui_env->addButton(rect<s32>(30,  475, 80,  525), m_wndw, S_T1);
-    m_sb2 = gui_env->addButton(rect<s32>(95,  475, 145, 525), m_wndw, S_T2);
-    m_sb3 = gui_env->addButton(rect<s32>(160, 475, 210, 525), m_wndw, S_T3);
-    m_sb4 = gui_env->addButton(rect<s32>(30,  550, 80,  600), m_wndw, S_T4);
-    m_sb5 = gui_env->addButton(rect<s32>(95,  550, 145, 600), m_wndw, S_T5);
-    m_sb6 = gui_env->addButton(rect<s32>(160, 550, 210, 600), m_wndw, S_T6);
+    m_sb1 = gui_env->addButton(rect<s32>(30,  475, 80,  525), m_wndw, S_T1, L"", _(L"Up"));
+    m_sb2 = gui_env->addButton(rect<s32>(95,  475, 145, 525), m_wndw, S_T2, L"", _(L"Down"));
+    m_sb3 = gui_env->addButton(rect<s32>(160, 475, 210, 525), m_wndw, S_T3, L"", _(L"Left"));
+    m_sb4 = gui_env->addButton(rect<s32>(30,  555, 80,  605), m_wndw, S_T4, L"", _(L"Right"));
+    m_sb5 = gui_env->addButton(rect<s32>(95,  555, 145, 605), m_wndw, S_T5, L"", _(L"Front"));
+    m_sb6 = gui_env->addButton(rect<s32>(160, 555, 210, 605), m_wndw, S_T6, L"", _(L"Back"));
    
     m_sb1->setImage(up);
     m_sb2->setImage(down);
