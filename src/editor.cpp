@@ -602,7 +602,7 @@ bool Editor::OnEvent(const SEvent& event)
             event.MouseInput.X >(s32) m_screen_size.Width - 250 ||
             (event.MouseInput.X >(s32)m_screen_size.Width - 500 && m_tex_sel->isActive()))
         {
-            m_viewport->looseFocus();
+            m_viewport->loseFocus();
             m_mouse.in_view = false;
             return false;
         }
