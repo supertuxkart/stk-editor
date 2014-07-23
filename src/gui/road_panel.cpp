@@ -45,11 +45,11 @@ void RoadPanel::init()
     m_texture_sb->setMax(100);
     m_texture_sb->setPos(25);
 
-    gui_env->addButton(rect<s32>(30, 180, 80, 230), m_wndw, DL_ADD)
+    gui_env->addButton(rect<s32>(30, 180, 80, 230), m_wndw, DL_ADD, L"", _(L"Add ControlPoint"))
         ->setImage(Editor::loadImg("img/dl_add.png"));
-    gui_env->addButton(rect<s32>(95, 180, 145, 230), m_wndw, DL_INSERT)
+    gui_env->addButton(rect<s32>(95, 180, 145, 230), m_wndw, DL_INSERT, L"", _(L"Insert ControlPoint"))
         ->setImage(Editor::loadImg("img/dl_insert.png"));
-    gui_env->addButton(rect<s32>(160, 180, 210, 230), m_wndw, DL_EXIT)
+    gui_env->addButton(rect<s32>(160, 180, 210, 230), m_wndw, DL_EXIT, L"", _(L"Finish Point Placing"))
         ->setImage(Editor::loadImg("img/dl_ready.png"));
 
     m_spline_type_cb = gui_env->addComboBox(rect<s32>(30, 250, 150, 270), m_wndw);
@@ -58,7 +58,7 @@ void RoadPanel::init()
 
     m_text_field = gui_env->addEditBox(L"RoadMesh_1",rect<s32>(30, 275, 150, 295),true,m_wndw);
 
-    gui_env->addButton(rect<s32>(160, 250, 210, 295), m_wndw, DL_CREATE)
+    gui_env->addButton(rect<s32>(160, 250, 210, 295), m_wndw, DL_CREATE, L"", _(L"Create New Road Mesh"))
         ->setImage(Editor::loadImg("img/road_create.png"));
 
     m_insert = false;

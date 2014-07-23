@@ -21,9 +21,9 @@ void ToolBar::init()
     buttonInit(8,  TBI_ROTATE,      "img/rotate.png",   _(L"Rotate (shift+r)"));
     buttonInit(9,  TBI_SCALE,       "img/scale.png",    _(L"Scale (shift+s)"));
     buttonInit(10, TBI_DELETE,      "img/delete.png",   _(L"Delete (del)"));
-    buttonInit(11, TBI_CAM,         "img/cam1.png",     _(L"Free Camera Mode"));
-    buttonInit(12, TBI_SPLINE,      "img/spline.png",   _(L"Spline mode on/off"));
-    buttonInit(13, TBI_MUSIC,       "img/music.png",    _(L"Settings"));
+    buttonInit(11, TBI_CAM,         "img/cam1.png",     _(L"Toggle camera mode (c)"));
+    buttonInit(12, TBI_SPLINE,      "img/spline.png",   _(L"Road mode on/off (r)"));
+    buttonInit(13, TBI_MUSIC,       "img/music.png",    _(L"Music"));
     buttonInit(14, TBI_TRY,         "img/try.png",      _(L"Try your track"));
     buttonInit(15, TBI_EXIT,        "img/exit.png",     _(L"Quit (esc)"));
 

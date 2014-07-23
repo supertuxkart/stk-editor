@@ -211,6 +211,29 @@ bool Editor::importantButtonClicked(int ID)
 } // importantButtonClicked
 
 // ----------------------------------------------------------------------------
+void Editor::simpleShortcuts(EKEY_CODE code)
+{
+    switch (code)
+    {
+    case KEY_ESCAPE:
+        m_device->closeDevice();
+        return;
+    case KEY_DELETE:
+        m_viewport->deleteCmd();
+        return;
+    case KEY_KEY_R:
+        m_viewport->setSplineMode(!m_viewport->getSplineMode());
+        return;
+    case KEY_KEY_C:
+        m_viewport->setState(Viewport::FREECAM);
+        return;
+    default:
+        return;
+    }   
+
+} // simpleShortcuts
+
+// ----------------------------------------------------------------------------
 void Editor::shiftShortcuts(EKEY_CODE code)
 {
     switch (code)
@@ -735,8 +758,8 @@ bool Editor::OnEvent(const SEvent& event)
         {
             if (m_keys.state(SHIFT_PRESSED)) shiftShortcuts(event.KeyInput.Key);
             if (m_keys.state(CTRL_PRESSED))  ctrlShortcuts(event.KeyInput.Key);
-            if (m_keys.state(DEL_PRESSED))   m_viewport->deleteCmd();
-            if (m_keys.state(ESC_PRESSED))   m_device->closeDevice();
+            if (!m_keys.state(CTRL_PRESSED) && !m_keys.state(SHIFT_PRESSED))  
+                simpleShortcuts(event.KeyInput.Key);
         }
         return true;
     }

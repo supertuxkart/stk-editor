@@ -76,6 +76,7 @@ private:
 	Editor() {};
     bool                        buttonClicked(int ID);
     bool                        importantButtonClicked(int ID);
+    void                        simpleShortcuts(EKEY_CODE code);
     void                        shiftShortcuts(EKEY_CODE code);
     void                        ctrlShortcuts(EKEY_CODE code);
 
