@@ -222,7 +222,7 @@ void Viewport::animateTerrainMod(long dt)
 
     ISceneCollisionManager* cm;
     cm = Editor::getEditor()->getSceneManager()->getSceneCollisionManager();
-    line3d<float> ray;
+    line3d<f32> ray;
     ray = cm->getRayFromScreenCoordinates(vector2d<s32>(m_mouse->x, m_mouse->y));
     TerrainMod* tm = TerrPanel::getTerrPanel()->getTerrainModData();
     tm->ray = ray;

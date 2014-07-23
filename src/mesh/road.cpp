@@ -63,6 +63,7 @@ void Road::createIndexList(int nj, int ni)
 Road::Road(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s, stringw n)
                                                     :IRoad(parent, mgr, id, s, n) 
 {
+    m_tri = 0;
     m_mesh_buff                           = new CMeshBuffer<S3DVertex2TCoords>();
     m_mesh_buff->Material.Wireframe       = true;
     m_mesh_buff->Material.Lighting        = false;
@@ -73,6 +74,7 @@ Road::Road(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s, stringw n
 Road::Road(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
                                          :IRoad(parent, mgr, id, fp) 
 {
+    m_tri = 0;
     m_mesh_buff                           = new CMeshBuffer<S3DVertex2TCoords>();
     m_mesh_buff->Material.Wireframe       = true;
     m_mesh_buff->Material.Lighting        = false;
@@ -85,7 +87,6 @@ void Road::refresh()
     assert(m_width_vert_num % 4 == 0);
 
     m_mesh_buff->setDirty();
-
     if (!m_spline->hasEnoughPoints()) return;
 
     int spn = m_spline->getPointNum() - 1;
@@ -124,9 +125,8 @@ void Road::refresh()
     createIndexList((int)(1.0f / m_detail * spn + 1), m_width_vert_num);
 
     m_mesh_buff->recalculateBoundingBox();
-    Editor::getEditor()->getSceneManager()->getMeshManipulator()
-        ->recalculateNormals(m_mesh_buff, true, true);
-
+    ISceneManager* sm = Editor::getEditor()->getSceneManager();
+    sm->getMeshManipulator()->recalculateNormals(m_mesh_buff, true, true);
 } // refresh
 
 // ----------------------------------------------------------------------------
@@ -153,4 +153,15 @@ void Road::setWireFrame(bool b)
     m_mesh_buff->Material.Wireframe = b;
     m_mesh_buff->Material.Lighting = !b;
     m_mesh_buff->Material.BackfaceCulling = !b;
+
+    if (!b)
+    {
+        ISceneManager* sm = Editor::getEditor()->getSceneManager();
+        m_smesh.clear();
+        m_smesh.addMeshBuffer(m_mesh_buff);
+        if (m_tri) m_tri->drop();
+        m_tri = sm->createOctreeTriangleSelector(&m_smesh, this);
+        setTriangleSelector(m_tri);
+    }
+
 } // setWireFrame

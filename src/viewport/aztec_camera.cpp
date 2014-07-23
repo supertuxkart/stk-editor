@@ -32,9 +32,9 @@ AztecCamera::AztecCamera(ICameraSceneNode* c, Mouse* m, Keys* k)
     f32 hVol = m_normal_cd * ss.Height / ss.Width;
     mat.buildProjectionMatrixOrthoLH(m_normal_cd, hVol, nv, fv);
     m_cam->setProjectionMatrix(mat, true);
-    m_indicator = new Indicator(m_cam->getPosition(),
-                                m_cam->getTarget(),m_normal_cd, hVol, nv, fv);
     init(0, 0);
+    m_indicator = new Indicator(m_cam->getPosition(),
+        m_cam->getTarget(), m_normal_cd, hVol, nv, fv);
 } // AztecCamera
 
 // ----------------------------------------------------------------------------

@@ -9,6 +9,8 @@ class Road :public IRoad, public ISubscriber
 private:
 
     CMeshBuffer<S3DVertex2TCoords>* m_mesh_buff;
+    SMesh                           m_smesh;
+    ITriangleSelector*              m_tri;
 
     void    calcVertexRow(vector3df p, vector3df n, vector3df w, int offset, 
                                                        float wx, float t);
@@ -25,6 +27,7 @@ public:
     void    notify(ITexture* t);
     void    setWireFrame(bool b);
 
+    ITriangleSelector*               getTriangleSel(){ return m_tri;       }
     CMeshBuffer<S3DVertex2TCoords>*  getMeshBuffer() { return m_mesh_buff; }
 };
 #endif

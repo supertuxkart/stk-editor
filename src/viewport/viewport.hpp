@@ -4,6 +4,7 @@
 #include "track.hpp"
 #include "commands/command_handler.hpp"
 #include "viewport/checkline_handler.hpp"
+#include "viewport/aztec_camera.hpp"
 #include "mesh/sky.hpp"
 
 #include <irrlicht.h>
@@ -11,7 +12,6 @@
 class  Terrain;
 class  IRoad;
 class  SelectionHandler;
-class  AztecCamera;
 class  Indicator;
 class  DriveLine;
 struct Mouse;
@@ -108,16 +108,17 @@ public:
     void showSky();
     void setSky(Sky* sky);
 
-    void                setFreeCamera(ICameraSceneNode* cam) { m_free_camera = cam;     }
-    static void         setLastEntityID(u32 id)              { m_last_entity_ID = id;   }
-    static u32          getLastEntityID()                    { return m_last_entity_ID; }
-    bool                getSplineMode()                      { return m_spline_mode;    }
-    Track*              getTrack()                           { return m_track;          }
-    Terrain*            getTerrain()                         { return m_terrain;        }
-    Sky*                getSky()                             { return m_sky;            }
-    void                hideSky()                            { if (m_sky) m_sky->hide();}
-    u32                 getState()                           { return m_state;          }
-    void                printCheckLine(std::ofstream* f)     { m_clh.build(f);          }
+    void                setFreeCamera(ICameraSceneNode* cam) { m_free_camera = cam;      }
+    static void         setLastEntityID(u32 id)              { m_last_entity_ID = id;    }
+    static u32          getLastEntityID()                    { return m_last_entity_ID;  }
+    bool                getSplineMode()                      { return m_spline_mode;     }
+    Track*              getTrack()                           { return m_track;           }
+    Terrain*            getTerrain()                         { return m_terrain;         }
+    Sky*                getSky()                             { return m_sky;             }
+    void                hideSky()                            { if (m_sky) m_sky->hide(); }
+    u32                 getState()                           { return m_state;           }
+    vector3df          getAztecPos()                         { return m_aztec_cam->Pos();}
+    void                printCheckLine(std::ofstream* f)     { m_clh.build(f);           }
 
     ~Viewport();
 };

@@ -34,8 +34,9 @@ public:
     vector3df               getTransformedZdir();
     void                    init(f32 x, f32 z);
 
-    ICameraSceneNode*       Cam()                   { return m_cam;       }
-    Indicator*              getIndicator()          { return m_indicator; }
+    ICameraSceneNode*       Cam()                   { return m_cam;                }
+    Indicator*              getIndicator()          { return m_indicator;          }
+    vector3df               Pos()                   { return m_cam->getPosition(); }
 };
 
 #endif
