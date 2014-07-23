@@ -1,7 +1,6 @@
 TODO list:
 
 - monkey testing for crashes
-- hotkeys for actions (both use and their visibility in tooltips)
 - road/cp delete, road selection with mouse click
 - fix camera states
 - twisted drivelines
