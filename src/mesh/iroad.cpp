@@ -13,18 +13,10 @@ IRoad::IRoad(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s, stringw
 {
     setName(n);
     m_spline            = s;
-    m_mesh.indices      = 0;
-    m_mesh.vertices     = 0;
-    m_mesh.vertex_count = 0;
-    m_mesh.quad_count   = 0;
     m_detail            = 0.25f;
     m_width             = 4.0f;
     m_width_vert_num    = 12;
     m_tex_warp_count    = 10;
-
-    m_material.Wireframe       = true;
-    m_material.Lighting        = false;
-    m_material.BackfaceCulling = false;
 
     setAutomaticCulling(EAC_OFF);
 
@@ -58,11 +50,6 @@ IRoad::IRoad(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
     if (type == L"TCR")
         m_spline = new TCR(sm->getRootSceneNode(), sm, 0, fp);
     else m_spline = new Bezier(sm->getRootSceneNode(), sm, 0, fp);
-
-    m_material.Wireframe = true;
-    m_material.Lighting = false;
-    m_material.BackfaceCulling = false;
-
     setAutomaticCulling(EAC_OFF);
 
 } // IRoad

@@ -12,21 +12,21 @@ void Road::calcVertexRow(vector3df p, vector3df n, vector3df w, int offset,
     w *= m_width / m_width_vert_num * wx;
     for (u32 i = 0; i < m_width_vert_num / 2; i++)
     {
-        m_mesh.vertices[offset + i].Pos = 
+        m_mesh_buff->Vertices[offset + i].Pos = 
             p + w * ((s32)i - (s32)m_width_vert_num / 4 + 0.5f);
-        m_mesh.vertices[offset + i].Color = SColor(255, 255 ,255,255);
-        m_mesh.vertices[offset + i].TCoords = vector2df(i/(f32)m_width_vert_num,
+        m_mesh_buff->Vertices[offset + i].Color = SColor(255, 255, 255, 255);
+        m_mesh_buff->Vertices[offset + i].TCoords = vector2df(i / (f32)m_width_vert_num,
                                                         t*m_tex_warp_count);
     }
 
     for (u32 i = 0; i < m_width_vert_num / 2; i++)
     {
         vector3df vec = 
-            m_mesh.vertices[offset + m_width_vert_num / 2 - i - 1].Pos - 0.3f * n;
-        m_mesh.vertices[offset + m_width_vert_num / 2 + i].Pos = vec;
-        m_mesh.vertices[offset + m_width_vert_num / 2 + i].Color = 
+            m_mesh_buff->Vertices[offset + m_width_vert_num / 2 - i - 1].Pos - 0.3f * n;
+        m_mesh_buff->Vertices[offset + m_width_vert_num / 2 + i].Pos = vec;
+        m_mesh_buff->Vertices[offset + m_width_vert_num / 2 + i].Color =
             SColor(255, 0, 0, 0);
-        m_mesh.vertices[offset + m_width_vert_num / 2 + i].TCoords 
+        m_mesh_buff->Vertices[offset + m_width_vert_num / 2 + i].TCoords
             = vector2df(0.5 + i / (f32)m_width_vert_num,
                                        t*m_tex_warp_count);
     }
@@ -40,51 +40,60 @@ void Road::createIndexList(int nj, int ni)
     {
         for (int i = 0; i < ni - 1; i++)
         {
-            m_mesh.indices[ix] = i + 1 + (j + 1) * ni;   ix++;
-            m_mesh.indices[ix] = i + (j + 1)     * ni;   ix++;
-            m_mesh.indices[ix] = i + 1 + j       * ni;   ix++;
+            m_mesh_buff->Indices[ix] = i + 1 + (j + 1) * ni;   ix++;
+            m_mesh_buff->Indices[ix] = i + (j + 1)     * ni;   ix++;
+            m_mesh_buff->Indices[ix] = i + 1 + j       * ni;   ix++;
 
-            m_mesh.indices[ix] = i + j           * ni;   ix++;
-            m_mesh.indices[ix] = i + 1 + j       * ni;   ix++;
-            m_mesh.indices[ix] = i + (j + 1)     * ni;   ix++;
+            m_mesh_buff->Indices[ix] = i + j           * ni;   ix++;
+            m_mesh_buff->Indices[ix] = i + 1 + j       * ni;   ix++;
+            m_mesh_buff->Indices[ix] = i + (j + 1)     * ni;   ix++;
         }
 
-        m_mesh.indices[ix] = 0  + (j + 1)         * ni;   ix++;
-        m_mesh.indices[ix] = ni - 1 + (j + 1)     * ni;   ix++;
-        m_mesh.indices[ix] = 0  + j               * ni;   ix++;
+        m_mesh_buff->Indices[ix] = 0  + (j + 1)         * ni;   ix++;
+        m_mesh_buff->Indices[ix] = ni - 1 + (j + 1)     * ni;   ix++;
+        m_mesh_buff->Indices[ix] = 0  + j               * ni;   ix++;
 
-        m_mesh.indices[ix] = ni - 1 + j           * ni;   ix++;
-        m_mesh.indices[ix] = 0 + j                * ni;   ix++;
-        m_mesh.indices[ix] = ni - 1 + (j + 1)     * ni;   ix++;
-
-
+        m_mesh_buff->Indices[ix] = ni - 1 + j           * ni;   ix++;
+        m_mesh_buff->Indices[ix] = 0 + j                * ni;   ix++;
+        m_mesh_buff->Indices[ix] = ni - 1 + (j + 1)     * ni;   ix++;
     }
 } // createIndexList
+
+// ----------------------------------------------------------------------------
+Road::Road(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s, stringw n)
+                                                    :IRoad(parent, mgr, id, s, n) 
+{
+    m_mesh_buff                           = new CMeshBuffer<S3DVertex2TCoords>();
+    m_mesh_buff->Material.Wireframe       = true;
+    m_mesh_buff->Material.Lighting        = false;
+    m_mesh_buff->Material.BackfaceCulling = false;
+} // road
+
+// ----------------------------------------------------------------------------
+Road::Road(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
+                                         :IRoad(parent, mgr, id, fp) 
+{
+    m_mesh_buff                           = new CMeshBuffer<S3DVertex2TCoords>();
+    m_mesh_buff->Material.Wireframe       = true;
+    m_mesh_buff->Material.Lighting        = false;
+    m_mesh_buff->Material.BackfaceCulling = false;
+} // Road
 
 // ----------------------------------------------------------------------------
 void Road::refresh()
 {
     assert(m_width_vert_num % 4 == 0);
 
-    if (m_mesh.vertices)
-    {
-        delete[] m_mesh.vertices;
-        m_mesh.vertices = 0;
-    }
-    if (m_mesh.indices)
-    {
-        delete[] m_mesh.indices;
-        m_mesh.indices = 0;
-    }
+    m_mesh_buff->setDirty();
 
     if (!m_spline->hasEnoughPoints()) return;
 
     int spn = m_spline->getPointNum() - 1;
-    m_mesh.vertex_count = (int)(1.0f / m_detail * spn + 1) * m_width_vert_num;
-    m_mesh.quad_count   = (int)(1.0f / m_detail * spn)     * m_width_vert_num;
-
-    m_mesh.vertices = new S3DVertex2TCoords[m_mesh.vertex_count];
-    m_mesh.indices  = new u16[m_mesh.quad_count * 6];
+    m_mesh_buff->Vertices.reallocate((int)(1.0f / m_detail * spn + 1) * m_width_vert_num);
+    m_mesh_buff->Indices.reallocate((int)(1.0f / m_detail * spn) * m_width_vert_num * 6);
+    
+    m_mesh_buff->Vertices.set_used((int)(1.0f / m_detail * spn + 1) * m_width_vert_num);
+    m_mesh_buff->Indices.set_used((int)(1.0f / m_detail * spn) * m_width_vert_num * 6);
 
     vector3df last_point = m_spline->p(0);
     vector3df point;
@@ -112,66 +121,36 @@ void Road::refresh()
         last_point = point;
         j++;
     }
-
     createIndexList((int)(1.0f / m_detail * spn + 1), m_width_vert_num);
-} // refresh
 
+    m_mesh_buff->recalculateBoundingBox();
+    Editor::getEditor()->getSceneManager()->getMeshManipulator()
+        ->recalculateNormals(m_mesh_buff, true, true);
+
+} // refresh
 
 // ----------------------------------------------------------------------------
 void Road::render()
 {
     IVideoDriver* driver = SceneManager->getVideoDriver();
-
-    if (m_mesh.vertices == 0) return;
-
-    driver->setMaterial(m_material);
+    if (m_mesh_buff->Vertices.size() == 0) return;
     driver->setTransform(ETS_WORLD, IdentityMatrix);
-
-    driver->drawVertexPrimitiveList(&m_mesh.vertices[0], m_mesh.vertex_count,
-        &m_mesh.indices[0], m_mesh.quad_count * 2,
-        video::EVT_2TCOORDS, EPT_TRIANGLES,
-        video::EIT_16BIT);
-
+    driver->setMaterial(m_mesh_buff->Material);
+    driver->drawMeshBuffer(m_mesh_buff);
 } // render
-
 
 // ----------------------------------------------------------------------------
 void Road::notify(ITexture* t)
 {
     setWireFrame(false);
-    m_material.setTexture(0,t);
-    m_material.TextureLayer[0].TextureWrapV = ETC_REPEAT;
+    m_mesh_buff->Material.setTexture(0, t);
+    m_mesh_buff->Material.TextureLayer[0].TextureWrapV = ETC_REPEAT;
 } // notify
-
 
 // ----------------------------------------------------------------------------
 void Road::setWireFrame(bool b)
 {
-    m_material.Wireframe = b;
-    m_material.Lighting = !b;
-    m_material.BackfaceCulling = !b;
+    m_mesh_buff->Material.Wireframe = b;
+    m_mesh_buff->Material.Lighting = !b;
+    m_mesh_buff->Material.BackfaceCulling = !b;
 } // setWireFrame
-
-
-// ----------------------------------------------------------------------------
-CMeshBuffer<S3DVertex2TCoords>* Road::getMeshBuffer()
-{
-    CMeshBuffer<S3DVertex2TCoords>* mb = new CMeshBuffer<S3DVertex2TCoords>();
-
-    mb->Vertices.reallocate(m_mesh.vertex_count);
-    mb->Indices.reallocate(m_mesh.quad_count * 6);
-
-    for (u32 i = 0; i < m_mesh.vertex_count; i++)
-        mb->Vertices.push_back(m_mesh.vertices[i]);
-    for (u32 i = 0; i < m_mesh.quad_count * 6; i++)
-        mb->Indices.push_back(m_mesh.indices[i]);
-
-    mb->recalculateBoundingBox();
-    mb->Material = m_material;
-
-    Editor::getEditor()->getSceneManager()->getMeshManipulator()
-                                          ->recalculateNormals(mb, true, true);
-
-    return mb;
-} // getMeshBuffer
-

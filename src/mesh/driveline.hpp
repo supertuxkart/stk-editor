@@ -12,12 +12,15 @@ using namespace io;
 class DriveLine :public IRoad
 {
 private:
+    
+    Mesh            m_mesh;
+    SMaterial       m_material;
+
+
     bool order(vector3df* v1, vector3df* v2, vector3df* v3, vector3df* v4, vector3df n);
 public:
-    DriveLine(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s, stringw n)
-        :IRoad(parent, mgr, id, s, n) {};
-    DriveLine(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
-        :IRoad(parent, mgr, id, fp) {};
+    DriveLine(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s, stringw n);
+    DriveLine(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp);
 
     void    refresh();
     void    build(path p);

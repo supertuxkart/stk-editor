@@ -8,17 +8,16 @@ class Road :public IRoad, public ISubscriber
 {
 private:
 
+    CMeshBuffer<S3DVertex2TCoords>* m_mesh_buff;
+
     void    calcVertexRow(vector3df p, vector3df n, vector3df w, int offset, 
                                                        float wx, float t);
     void    createIndexList(int nj, int ni);
 
 // ----------------------------------------------------------------------------
 public:
-    Road(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s, stringw n) 
-            :IRoad(parent, mgr, id, s, n) {};
-
-    Road(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
-        :IRoad(parent, mgr, id, fp) {};
+    Road(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s, stringw n);
+    Road(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp);
 
     void    refresh();
     void    render();
@@ -26,7 +25,6 @@ public:
     void    notify(ITexture* t);
     void    setWireFrame(bool b);
 
-    CMeshBuffer<S3DVertex2TCoords>*  getMeshBuffer();
+    CMeshBuffer<S3DVertex2TCoords>*  getMeshBuffer() { return m_mesh_buff; }
 };
-
 #endif

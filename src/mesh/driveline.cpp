@@ -22,6 +22,31 @@ bool DriveLine::order(vector3df* v1, vector3df* v2, vector3df* v3, vector3df* v4
 } // order
 
 // ----------------------------------------------------------------------------
+DriveLine::DriveLine(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s, 
+                                                                       stringw n)
+                                                    :IRoad(parent, mgr, id, s, n) 
+{
+    m_mesh.indices      = 0;
+    m_mesh.vertices     = 0;
+    m_mesh.vertex_count = 0;
+    m_mesh.quad_count   = 0;
+
+    
+    m_material.Wireframe       = true;
+    m_material.Lighting        = false;
+    m_material.BackfaceCulling = false;
+} // DriveLine
+
+// ----------------------------------------------------------------------------
+DriveLine::DriveLine(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
+                                                    :IRoad(parent, mgr, id, fp) 
+{
+    m_material.Wireframe       = true;
+    m_material.Lighting        = false;
+    m_material.BackfaceCulling = false;
+} // DriveLine
+
+// ----------------------------------------------------------------------------
 void DriveLine::refresh()
 {
     if (m_mesh.vertices)

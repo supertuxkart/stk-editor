@@ -8,13 +8,12 @@ class IRoad :public ISceneNode
 {
 protected:
     ISpline*        m_spline;
-    Mesh            m_mesh;
 
     f32             m_detail;
     f32             m_width;
+
     u32             m_width_vert_num;
 
-    SMaterial       m_material;
     u32             m_tex_warp_count;
 
     aabbox3d<f32>   m_bounding_box;
