@@ -549,7 +549,7 @@ bool Viewport::splineInterrupt()
 } // splineInterrupt
 
 // ----------------------------------------------------------------------------
-void Viewport::looseFocus()
+void Viewport::loseFocus()
 {
     if (m_new_entity) m_new_entity->setVisible(false);
 }

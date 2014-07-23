@@ -96,7 +96,7 @@ public:
     void                undo();
     void                redo();
     bool                splineInterrupt();
-    void                looseFocus();
+    void                loseFocus();
     void                gainFocus();
     void                setTrack(Track* t);
     void                build();
