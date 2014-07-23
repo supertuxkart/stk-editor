@@ -6,13 +6,15 @@
 #include <iostream>
 
 // ----------------------------------------------------------------------------
+// return value shows if the vertices are swaped or not
+// current usage of this function doesn't support twisted drivelines, TODO!
 bool DriveLine::order(vector3df* v1, vector3df* v2, vector3df* v3, vector3df* v4, vector3df n)
 {
     vector3df e1, e2, p;
     e1 = *v2 - *v1;
     e2 = *v3 - *v1;
     p = e1.crossProduct(e2);
-    if (p.dotProduct(n) < 0)
+    if (p.dotProduct(n) <= 0)
         return true;
     p = *v1; *v1 = *v2; *v2 = p;
     p = *v3; *v3 = *v4; *v4 = p;
