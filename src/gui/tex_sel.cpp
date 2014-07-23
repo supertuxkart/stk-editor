@@ -28,8 +28,11 @@ void TexSel::init()
     m_next = gui_env->addButton(rect<s32>(190, ss.Height - 78, 240, ss.Height - 58),
         m_wndw, FIRST_BTN_ID + 1);
 
+    m_next->setImage(Editor::loadImg("img/texture_next.png"));
+
     m_prev = gui_env->addButton(rect<s32>(10, ss.Height - 78, 60, ss.Height - 58),
         m_wndw, FIRST_BTN_ID);
+    m_prev->setImage(Editor::loadImg("img/texture_previous.png"));
 
     m_cancel = gui_env->addButton(rect<s32>(95, ss.Height - 78, 155, ss.Height - 58),
         m_wndw, FIRST_BTN_ID + 2, _(L"Cancel"));
@@ -203,7 +206,10 @@ void TexSel::btnClicked(u32 id)
 void TexSel::notify(u32 id)
 {
     for (list<IGUIButton*>::Iterator it = m_bsubs.begin(); it != m_bsubs.end(); it++)
+    {
         (*it)->setImage(m_btn_table[id].second);
+        (*it)->setPressedImage(m_btn_table[id].second);
+    }
 
     for (list<ISubscriber*>::Iterator it = m_subs.begin(); it != m_subs.end(); it++)
         (*it)->notify(m_btn_table[id].second);
