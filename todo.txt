@@ -5,4 +5,3 @@ TODO list:
 - fix camera states
 - twisted drivelines
 - moving improvement (object should follow the cursor perfectly)
-- first texture button doesn't work

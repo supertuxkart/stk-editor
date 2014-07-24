@@ -177,7 +177,7 @@ void TexSel::btnClicked(u32 id)
 {
     s32 ix = id - FIRST_TEX_BTN_ID;
 
-    if (ix > 0)
+    if (ix >= 0)
     {
         notify(ix);
         hide();
