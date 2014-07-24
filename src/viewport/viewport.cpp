@@ -37,24 +37,10 @@ void Viewport::animateEditing()
     {
         IObjectCmd* m_active_obj_cmd = dynamic_cast<IObjectCmd*>(m_active_cmd);
 
-        if (m_mouse->left_btn_down)
+        if (m_mouse->left_btn_down || m_mouse->right_btn_down)
         {
             m_active_obj_cmd->undo();
-            vector3df v = m_aztec_cam->getTransformedXdir() * (f32)m_mouse->dx() +
-                          m_aztec_cam->getTransformedYdir() * (f32)m_mouse->dy();
-            m_active_obj_cmd->update(v.X,v.Y,v.Z);
-            m_active_obj_cmd->redo();
-            if (m_spline_mode)
-            {
-                m_active_road->getSpline()->updatePosition();
-                m_active_road->refresh();
-            }
-
-        }
-        if (m_mouse->right_btn_down)
-        {
-            m_active_obj_cmd->undo();
-            m_active_obj_cmd->update(0.0f, (float)-m_mouse->dy(), 0.0f);
+            m_active_obj_cmd->update(m_mouse->x,m_mouse->y);
             m_active_obj_cmd->redo();
             if (m_spline_mode)
             {
@@ -84,27 +70,36 @@ void Viewport::animateEditing()
         m_active_cmd = 0;
     }
 
-    if ((m_mouse->leftPressed() || m_mouse->rightPressed()) && !m_keys->state(SPACE_PRESSED))
+    bool lp = m_mouse->leftPressed();
+    bool rp = m_mouse->rightPressed();
+
+    if ((lp || rp) && !m_keys->state(SPACE_PRESSED))
     {
-        // new operation start
-        switch (m_state)
+        if (m_selection_handler->getSelection().size() > 0)
         {
-        case MOVE:
-            m_active_cmd = new MoveCmd(m_selection_handler->getSelection(),
-                                       m_keys->state(SHIFT_PRESSED));
-            break;
-        case ROTATE:
-            m_active_cmd = new RotateCmd(m_selection_handler->getSelection(),
-                                         m_keys->state(SHIFT_PRESSED));
-            break;
-        case SCALE:
-            m_active_cmd = new ScaleCmd(m_selection_handler->getSelection(),
-                                        m_keys->state(SHIFT_PRESSED));
-            break;
-        default:
-            break;
+            // new operation start
+            switch (m_state)
+            {
+            case MOVE:
+                m_active_cmd = new MoveCmd(m_selection_handler->getSelection(),
+                    m_mouse->x, m_mouse->y);
+                break;
+            case ROTATE:
+                m_active_cmd = new RotateCmd(m_selection_handler->getSelection(),
+                    m_mouse->x, m_mouse->y, m_aztec_cam->getTransformedXdir(),
+                    m_aztec_cam->getTransformedYdir(), m_aztec_cam->getTransformedZdir());
+                if (rp)
+                    ((RotateCmd*)m_active_cmd)->setZMode(true, m_mouse->x, m_mouse->y);
+                break;
+            case SCALE:
+                m_active_cmd = new ScaleCmd(m_selection_handler->getSelection(),
+                    m_keys->state(SHIFT_PRESSED));
+                break;
+            default:
+                break;
+            }
+            m_mouse->setStorePoint();
         }
-        m_mouse->setStorePoint();
     }
 
 } // animateEditing

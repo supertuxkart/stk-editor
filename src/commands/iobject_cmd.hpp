@@ -19,14 +19,12 @@ protected:
     virtual void redo(ISceneNode* e) = 0;
     virtual void undo(ISceneNode* e) = 0;
 
-    void         limit(float& a, float& b, float& c);
-
 public:
     IObjectCmd(list<ISceneNode*> elements) { m_elements = elements; }
     virtual ~IObjectCmd() {};
     void redo();
     void undo();
-    virtual void update(float a, float b, float c) {};
+    virtual void update(s32 x, s32 y) {};
 };
 
 // ----------------------------------------------------------------------------
@@ -61,31 +59,42 @@ public:
 class MoveCmd : public IObjectCmd
 {
 private:
-    float m_dx, m_dy, m_dz;
-    bool m_limited;
+    line3df m_start_ray;
+    line3df m_curr_ray;
+    vector3df m_tx, m_ty;
 public:
-    MoveCmd(list<ISceneNode*> e, bool limited);
+    MoveCmd(list<ISceneNode*> e, s32 sx, s32 sy);
 
-    void update(float a, float b, float c)  { m_dx += a; m_dy += b; m_dz += c; }
+    void update(s32 x, s32 y);
 
     void redo(ISceneNode* e);
     void undo(ISceneNode* e);
-};
+}; // MoveCmd
 
 // ----------------------------------------------------------------------------
 class RotateCmd : public IObjectCmd
 {
 private:
-    float m_dx, m_dy, m_dz;
-    bool m_limited;
+    bool z_mode;
+    s32 m_sx, m_sy;
+    s32 m_x,  m_y;
+    s32 m_cx, m_cy;
+    vector3df m_tx;
+    vector3df m_ty;
+    vector3df m_tz;
+private:
+    vector3df calcRot(f32 angle, vector3df axis);
+    void      calcCenter();
+    void      calcAllRot(vector3df* x, vector3df* y, vector3df* z);
 public:
-    RotateCmd(list<ISceneNode*> e, bool limited);
+    RotateCmd(list<ISceneNode*> e, s32 x, s32 y, vector3df i, vector3df j, vector3df k);
 
-    void update(float a, float b, float c)  { m_dx += a; m_dy += b; m_dz += c; }
+    void update(s32 x, s32 y);
+    void setZMode(bool zmode, s32 x, s32 y);
 
     void redo(ISceneNode* e);
     void undo(ISceneNode* e);
-};
+}; // RotateCmd
 
 // ----------------------------------------------------------------------------
 class ScaleCmd : public IObjectCmd
@@ -96,10 +105,10 @@ private:
 public:
     ScaleCmd(list<ISceneNode*> e, bool limited);
 
-    void update(float a, float b, float c)  { m_dx += a; m_dy += b; m_dz += c; }
+    void update(float a, float b)  { m_dx += a; m_dy += b; }
 
     void redo(ISceneNode* e);
     void undo(ISceneNode* e);
-};
+}; // ScaleCmd
 
 #endif

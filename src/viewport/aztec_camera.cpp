@@ -156,7 +156,7 @@ vector3df AztecCamera::getTransformedXdir()
     vector3df tar = m_cam->getTarget();
     transformed_z_dir = (pos-tar).normalize();
     up = m_up_p - pos;
-    return up.crossProduct(transformed_z_dir);
+    return up.crossProduct(transformed_z_dir).normalize();
 } // getTransformedXdir
 
 // ----------------------------------------------------------------------------
