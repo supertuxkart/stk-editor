@@ -42,7 +42,7 @@ void Viewport::animateEditing()
         {
             m_active_obj_cmd->undo();
             vector3df v = m_aztec_cam->getTransformedXdir() * (f32)m_mouse->dx() +
-                          m_aztec_cam->getTransformedZdir() * (f32)m_mouse->dy();
+                          m_aztec_cam->getTransformedYdir() * (f32)m_mouse->dy();
             m_active_obj_cmd->update(v.X,v.Y,v.Z);
             m_active_obj_cmd->redo();
             if (m_spline_mode)

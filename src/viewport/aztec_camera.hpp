@@ -31,7 +31,9 @@ public:
     void animate(f32 dt);
 
     vector3df               getTransformedXdir();
+    vector3df               getTransformedYdir();
     vector3df               getTransformedZdir();
+
     void                    init(f32 x, f32 z);
 
     ICameraSceneNode*       Cam()                   { return m_cam;                }

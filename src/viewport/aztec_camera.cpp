@@ -82,7 +82,7 @@ void AztecCamera::animate(f32 dt)
         vector3df tar = m_cam->getTarget();
         vector3df transformed_z_dir;
         vector3df rot;
-        transformed_z_dir = vector3df(pos.X - tar.X, 0, pos.Z - tar.Z).normalize();
+        transformed_z_dir = (pos-tar).normalize();
         rot = transformed_z_dir.crossProduct(vector3df(0, 1, 0)).normalize();
         quaternion quat;
         quat.fromAngleAxis(degToRad(m_mouse->dy() / 5.0f), rot);
@@ -150,20 +150,30 @@ void AztecCamera::animate(f32 dt)
 // ----------------------------------------------------------------------------
 vector3df AztecCamera::getTransformedXdir()
 {
-    vector3df transformed_z_dir = getTransformedZdir();
-    transformed_z_dir.rotateXZBy(90);
-
-    return transformed_z_dir;
-
+    vector3df transformed_z_dir;
+    vector3df up;
+    vector3df pos = m_cam->getPosition();
+    vector3df tar = m_cam->getTarget();
+    transformed_z_dir = (pos-tar).normalize();
+    up = m_up_p - pos;
+    return up.crossProduct(transformed_z_dir);
 } // getTransformedXdir
+
+// ----------------------------------------------------------------------------
+vector3df AztecCamera::getTransformedYdir()
+{
+    vector3df pos = m_cam->getPosition();
+    vector3df transformed_y_dir = m_up_p - pos;
+    transformed_y_dir.normalize();
+    return transformed_y_dir;
+} // getTransformedYdir
 
 // ----------------------------------------------------------------------------
 vector3df AztecCamera::getTransformedZdir()
 {
     vector3df pos = m_cam->getPosition();
     vector3df tar = m_cam->getTarget();
-    vector3df transformed_z_dir = vector3df(pos.X - tar.X, 0, pos.Z - tar.Z);
-    transformed_z_dir.normalize();
+    vector3df transformed_z_dir = (pos - tar).normalize();
     return transformed_z_dir;
 } // getTransformedZdir
 
