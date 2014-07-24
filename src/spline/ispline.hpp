@@ -63,6 +63,7 @@ public:
     void                updatePosition();
     void                clear();
     void                save(FILE* fp);
+    u32                 getCPIndexFromNodeID(s32 id);
     bool                hasEnoughPoints()   { return m_cp_num > 1; }
     int                 getPointNum()       { return m_cp_num;     }
 

@@ -4,7 +4,8 @@
 #include "spline/ispline.hpp"
 
 // ----------------------------------------------------------------------------
-RoadCmd::RoadCmd(IRoad* road, bool insert) :m_road(road), m_insert(insert)
+RoadCmd::RoadCmd(IRoad* road, bool insert, bool inverted) 
+    :m_road(road), m_insert(insert), m_inverted(inverted)
 {
     m_created = false;
     m_spline  = m_road->getSpline(); 
@@ -39,6 +40,13 @@ void RoadCmd::updatePos(vector3df pos)
 // ----------------------------------------------------------------------------
 void RoadCmd::redo()
 {
+    if (m_inverted)
+    {
+        m_inverted = false;
+        undo();
+        m_inverted = true;
+        return;
+    }
     if (m_insert)
     {
         m_spline->addControlPoint(m_cp, m_ix);
@@ -49,12 +57,19 @@ void RoadCmd::redo()
     }
     m_road->refresh();
     m_created = true;
-}
+} // redo
 
 // ----------------------------------------------------------------------------
 void RoadCmd::undo()
 {
+    if (m_inverted)
+    {
+        m_inverted = false;
+        redo();
+        m_inverted = true;
+        return;
+    }
     m_cp = m_spline->removeControlPoint(m_ix);
     m_road->refresh();
     m_created = false;
-}
+} // undo

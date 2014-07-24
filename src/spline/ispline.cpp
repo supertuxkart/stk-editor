@@ -206,6 +206,7 @@ u32 ISpline::insertControlPoint(vector3df p)
     return fix;
 } // insertControlPoint
 
+// ----------------------------------------------------------------------------
 void ISpline::addControlPoint(ControlPoint cp)
 {
     cp.node->setVisible(true);
@@ -215,6 +216,7 @@ void ISpline::addControlPoint(ControlPoint cp)
     m_cp_num++;
 } // addControlPoint
 
+// ----------------------------------------------------------------------------
 void ISpline::addControlPoint(ControlPoint cp, u32 pos)
 {
     cp.node->setVisible(true);
@@ -311,6 +313,20 @@ void ISpline::save(FILE* fp)
     }
 
 } // save
+
+// ----------------------------------------------------------------------------
+u32 ISpline::getCPIndexFromNodeID(s32 id)
+{
+    list<ControlPoint>::Iterator it = m_control_points.begin();    
+    int ix = 0;
+    while (it!=m_control_points.end())
+    {
+        if (it->node->getID() == id) return ix;
+        ix++;
+        it++;
+    }
+    return -1;
+} // getCPIndexFromNodeID
 
 // ----------------------------------------------------------------------------
 void ISpline::OnRegisterSceneNode()

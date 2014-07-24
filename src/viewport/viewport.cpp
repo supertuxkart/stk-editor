@@ -30,7 +30,6 @@ int       Viewport::m_last_entity_ID = MAGIC_NUMBER;
 // ----------------------------------------------------------------------------
 void Viewport::animateEditing()
 {
-
     if (m_spline_mode && m_selection_handler->getSelection().size() == 0)
         m_selection_handler->selectNode(m_active_road->getSpline());
 
@@ -140,7 +139,6 @@ void Viewport::animatePlacing()
 // ----------------------------------------------------------------------------
 void Viewport::animateSplineEditing()
 {
-
     ISceneCollisionManager* cm = Editor::getEditor()->getSceneManager()
         ->getSceneCollisionManager();
     line3d<f32> r = cm->getRayFromScreenCoordinates(vector2d<s32>(m_mouse->x, m_mouse->y));
@@ -374,13 +372,29 @@ void Viewport::setState(State state)
 // ----------------------------------------------------------------------------
 void Viewport::deleteCmd()
 {
-    if (m_spline_mode) return;
+    if (m_spline_mode)
+    {
+        list<ISceneNode*> sel = m_selection_handler->getSelectedSplinePoints();
+        list<ISceneNode*>::Iterator it;
+        u32 ix;
+        for (it = sel.begin(); it != sel.end(); it++)
+        {
+            ix = m_active_road->getSpline()->getCPIndexFromNodeID((*it)->getID());
+            if (ix != -1)
+            {
+                RoadCmd* rcmd = new RoadCmd(m_active_road, true, true);
+                rcmd->setIX(ix);
+                rcmd->redo();
+                m_command_handler.add(rcmd);
+            } // if it's a cp
+        } // for selected nodes
+        return;
+    }
 
-    IObjectCmd* dcmd = new DelCmd(m_selection_handler->getSelection());
-
+    IObjectCmd* dcmd = new DelCmd(m_selection_handler->getSelectedObjects());
     m_selection_handler->clearSelection();
     dcmd->redo();
-    m_command_handler.add((ICmd*)dcmd);
+    m_command_handler.add(dcmd);
 
 } //deleteCmd
 

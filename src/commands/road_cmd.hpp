@@ -23,11 +23,14 @@ private:
     vector3df       m_pos;
     bool            m_insert;
     bool            m_created;
+    bool            m_inverted;
     u32             m_ix;
     ControlPoint    m_cp;
 public:
-    RoadCmd(IRoad* road, bool insert);
+    RoadCmd(IRoad* road, bool insert, bool inverted = false);
     virtual ~RoadCmd() {};
+
+    void    setIX(u32 ix) { m_ix = ix; }
 
     void updatePos(vector3df pos);
     void redo();

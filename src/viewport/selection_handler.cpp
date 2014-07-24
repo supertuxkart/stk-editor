@@ -80,7 +80,7 @@ void SelectionHandler::animate(u32 id)
                 if (!selected_road) selected_road = road_node;
                 else selected_road = closerToCamera(road_node, selected_road);
             }
-        }
+        } // while road
 
         ISceneNode* node;
         node = iscm->getSceneNodeFromScreenCoordinatesBB(
@@ -97,5 +97,26 @@ void SelectionHandler::animate(u32 id)
             }
             selectNode(node);
         }
-    }
+    } // left mouse button pressed
 } // animate
+
+
+// ----------------------------------------------------------------------------
+list<ISceneNode*> SelectionHandler::getSelectedSplinePoints()
+{
+    list<ISceneNode*> sel;
+    list<ISceneNode*>::Iterator it;
+    for (it = m_selected_elements.begin(); it != m_selected_elements.end(); it++)
+        if ((*it)->getID() >= ANOTHER_MAGIC_NUMBER) sel.push_back(*it);
+    return sel;
+} // getSelectedSplinePoints
+
+// ----------------------------------------------------------------------------
+list<ISceneNode*> SelectionHandler::getSelectedObjects()
+{
+    list<ISceneNode*> sel;
+    list<ISceneNode*>::Iterator it;
+    for (it = m_selected_elements.begin(); it != m_selected_elements.end(); it++)
+        if ((*it)->getID() < ANOTHER_MAGIC_NUMBER) sel.push_back(*it);
+    return sel;
+} // getSelectedObjects
