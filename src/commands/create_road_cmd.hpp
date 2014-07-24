@@ -12,16 +12,18 @@ using namespace irr;
 using namespace core;
 
 // ----------------------------------------------------------------------------
-class createRoadCmd :public ICmd
+class CreateRoadCmd :public ICmd
 {
 private:
     IRoad*  m_road;
     bool    m_done;
+    bool    m_inverted;
 public:
-    createRoadCmd(IRoad* r, stringw name) :m_road(r) { m_done = true; };
+    CreateRoadCmd(IRoad* r, bool inv = false) :m_road(r),m_inverted(inv)
+                                              { m_done = true; }
 
     // ----------------------------------------------------------------------------
-    virtual ~createRoadCmd() 
+    virtual ~CreateRoadCmd() 
     { 
         if (!m_done)
         {
@@ -33,23 +35,36 @@ public:
     // ----------------------------------------------------------------------------
     virtual void redo()
     { 
+        if (m_inverted)
+        {
+            m_inverted = false;
+            undo();
+            m_inverted = true;
+            return;
+        }
         m_done = true;
         m_road->setVisible(true);
         m_road->getSpline()->setVisible(true);
         Viewport::get()->getTrack()->insertRoad(m_road);
         RoadPanel::getRoadPanel()->updateRoadList();
-    }
+    } // redo
 
     // ----------------------------------------------------------------------------
     virtual void undo()
     {
+        if (m_inverted)
+        {
+            m_inverted = false;
+            redo();
+            m_inverted = true;
+            return;
+        }
         m_done = false;
         m_road->setVisible(false);
         m_road->getSpline()->setVisible(false);
-        Viewport::get()->getTrack()->removeLastRoad();
+        Viewport::get()->getTrack()->removeRoad(m_road);
         RoadPanel::getRoadPanel()->updateRoadList();
-    }
+    } // undo
 };
-
 #endif
 

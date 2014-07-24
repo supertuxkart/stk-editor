@@ -127,7 +127,7 @@ void RoadPanel::updateRoadList()
     if (t)
     {
         IRoad* r;
-        map<unsigned int, IRoad*>* road_list = t->getRoadList();
+        array<IRoad*>* road_list = t->getRoadList();
         m_cb->clear();
 
         for (u32 i = 0; i < road_list->size(); i++)

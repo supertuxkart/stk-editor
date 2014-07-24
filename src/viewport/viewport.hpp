@@ -92,7 +92,7 @@ public:
     void                setSplineMode(bool b);
     void                setActiveRoad(IRoad* r);
     void                setActiveRoad(u32 id);
-    void                roadBorn(IRoad* road, stringw name);
+    void                roadBorn(IRoad* road);
     void                undo();
     void                redo();
     bool                splineInterrupt();

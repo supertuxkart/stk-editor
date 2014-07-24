@@ -377,6 +377,12 @@ void Viewport::deleteCmd()
         list<ISceneNode*> sel = m_selection_handler->getSelectedSplinePoints();
         list<ISceneNode*>::Iterator it;
         u32 ix;
+        if (sel.size() == 0 && (m_active_road != m_track->getRoadByID(0)))
+        {
+            CreateRoadCmd* crd = new CreateRoadCmd(m_active_road,true);
+            crd->redo();
+            m_command_handler.add(crd);
+        } // road is selected
         for (it = sel.begin(); it != sel.end(); it++)
         {
             ix = m_active_road->getSpline()->getCPIndexFromNodeID((*it)->getID());
@@ -390,7 +396,6 @@ void Viewport::deleteCmd()
         } // for selected nodes
         return;
     }
-
     IObjectCmd* dcmd = new DelCmd(m_selection_handler->getSelectedObjects());
     m_selection_handler->clearSelection();
     dcmd->redo();
@@ -506,7 +511,7 @@ void Viewport::setActiveRoad(u32 id)
 } // setActiveRoad
 
 // ----------------------------------------------------------------------------
-void Viewport::roadBorn(IRoad* road, stringw name)
+void Viewport::roadBorn(IRoad* road)
 {
     if (m_active_cmd)
     {
@@ -514,7 +519,7 @@ void Viewport::roadBorn(IRoad* road, stringw name)
         delete m_active_cmd;
         m_active_cmd = 0;
     }
-    m_command_handler.add(new createRoadCmd(road, name));
+    m_command_handler.add(new CreateRoadCmd(road));
     setActiveRoad(road);
     setState(SPLINE);
 } // roadBorn

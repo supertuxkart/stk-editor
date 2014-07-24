@@ -25,7 +25,7 @@ Track::Track(f32 tx, f32 tz)
 
     ISpline* spline = new TCR(sm->getRootSceneNode(), sm, 0);
     m_driveline = new DriveLine(sm->getRootSceneNode(), sm, 0, spline, L"DriveLine");
-    m_roads.insert(0, m_driveline);
+    m_roads.push_back(m_driveline);
     m_music = "Origin.music";
 
 } // Track
@@ -93,14 +93,14 @@ Track::Track(path file)
     if (size > 0)
     {
         m_driveline = new DriveLine(sm->getRootSceneNode(), sm, 0, pFile);
-        m_roads.insert(0, m_driveline);
+        m_roads.push_back(m_driveline);
         m_driveline->refresh();
     }
     for (u8 i = 1; i < size; i++)
     {
         r = new Road(sm->getRootSceneNode(), sm, 0, pFile);
         r->refresh();
-        m_roads.insert(i, r);
+        m_roads.push_back(r);
     }
 
     // OBJECTS
@@ -347,14 +347,26 @@ void Track::build()
 // ----------------------------------------------------------------------------
 void Track::insertRoad(IRoad* road)
 {
-    m_roads.insert(m_roads.size(), road);
+    m_roads.push_back(road);
 } // insertRoad
 
 // ----------------------------------------------------------------------------
-void Track::removeLastRoad()
+void Track::removeRoad(IRoad* road)
 {
-    m_roads.remove(m_roads.size()-1);
-} // removeLastRoad
+    IRoad* r;
+    for (u8 i = 0; i < m_roads.size(); i++)
+    {
+        r = m_roads[i];
+        if (r == road)
+        {
+            array<IRoad*> roads;
+            for (int j = 0; j < m_roads.size(); j++)
+                if (j!=i) roads.push_back(m_roads[j]);
+            m_roads = roads;
+            return;
+        }
+    }
+} // removeRoad
 
 // ----------------------------------------------------------------------------
 void Track::createRoad(stringw type, stringw name)
@@ -374,9 +386,9 @@ void Track::createRoad(stringw type, stringw name)
 
     rm = new Road(sm->getRootSceneNode(), sm, 0, spline, name);
 
-    Viewport::get()->roadBorn(rm, name);
+    Viewport::get()->roadBorn(rm);
 
-    m_roads.insert(m_roads.size(), rm);
+    m_roads.push_back(rm);
 } // createRoad
 
 

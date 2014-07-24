@@ -15,15 +15,15 @@ class DriveLine;
 class Track
 {
 private:
-    stringw     m_track_name;
-    stringw     m_designer;
-    stringc     m_file_name;
-    Terrain*    m_terrain;
-    DriveLine*  m_driveline;
-    stringc     m_music;
+    stringw         m_track_name;
+    stringw         m_designer;
+    stringc         m_file_name;
+    Terrain*        m_terrain;
+    DriveLine*      m_driveline;
+    stringc         m_music;
 
     // m_roads[0] is the driveline
-    map<unsigned int, IRoad*>    m_roads;
+    array<IRoad*>   m_roads;
 
 public:
 
@@ -37,7 +37,7 @@ public:
     void       build();
 
     void       insertRoad(IRoad* road);
-    void       removeLastRoad();
+    void       removeRoad(IRoad* road);
     void       createRoad(stringw type, stringw name);
 
     IRoad*     getRoadByID(u32 id)           { IRoad* r = 0; return (id < m_roads.size()) ? m_roads[id] : r; }
@@ -49,7 +49,6 @@ public:
 
     Terrain*   getTerrain()                  { return m_terrain;   }
 
-    map<unsigned int, IRoad*>* getRoadList() { return &m_roads;    }
-
+    array<IRoad*>* getRoadList()             { return &m_roads;    }
 };
 #endif

@@ -28,7 +28,7 @@ public:
         TBI_ROTATE,
         TBI_SCALE,
         TBI_DELETE,
-        TBI_SPLINE,
+        TBI_DRIVELINE,
         TBI_TRY,
         TBI_MUSIC,
         TBI_EXIT

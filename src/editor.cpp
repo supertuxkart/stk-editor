@@ -56,8 +56,9 @@ bool Editor::buttonClicked(int ID)
     case ToolBar::TBI_CAM:
         m_viewport->setState(Viewport::FREECAM);
         return true;
-    case ToolBar::TBI_SPLINE:
-        m_viewport->setSplineMode(!m_viewport->getSplineMode());
+    case ToolBar::TBI_DRIVELINE:
+        m_viewport->setSplineMode(true);
+        m_viewport->setActiveRoad((u32)0);
         return true;
     case ToolBar::TBI_TRY:
         return true;
@@ -222,7 +223,8 @@ void Editor::simpleShortcuts(EKEY_CODE code)
         m_viewport->deleteCmd();
         return;
     case KEY_KEY_R:
-        m_viewport->setSplineMode(!m_viewport->getSplineMode());
+        m_viewport->setSplineMode(true);
+        m_viewport->setActiveRoad((u32)0);
         return;
     case KEY_KEY_C:
         m_viewport->setState(Viewport::FREECAM);
