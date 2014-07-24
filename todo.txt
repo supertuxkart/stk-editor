@@ -1,6 +1,8 @@
 TODO list:
 
 - monkey testing for crashes
-- road/cp delete, road selection with mouse click
+- road/cp delete
 - fix camera states
 - twisted drivelines
+- moving improvement (object should follow the cursor perfectly)
+- first texture button doesn't work
