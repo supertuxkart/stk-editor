@@ -36,10 +36,18 @@ public:
         FREECAM
     };
 
+    enum Editing
+    {
+        MOVE,
+        ROTATE,
+        SCALE
+    };
+
 private:
     static Viewport*        m_self;
 
     State                   m_state;
+    Editing                 m_edit;
 
     Track*                  m_track;
 
@@ -120,8 +128,9 @@ public:
     Sky*                getSky()                             { return m_sky;             }
     void                hideSky()                            { if (m_sky) m_sky->hide(); }
     u32                 getState()                           { return m_state;           }
-    vector3df          getAztecPos()                         { return m_aztec_cam->Pos();}
+    vector3df           getAztecPos()                        { return m_aztec_cam->Pos();}
     void                printCheckLine(std::ofstream* f)     { m_clh.build(f);           }
+    void                setEditMode(Editing e)               { m_edit = e;               }
 
     ~Viewport();
 };

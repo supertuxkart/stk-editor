@@ -42,13 +42,13 @@ bool Editor::buttonClicked(int ID)
         m_viewport->setState(Viewport::SELECT);
         return true;
     case ToolBar::TBI_MOVE:
-        //m_viewport->setState(Viewport::MOVE);
+        m_viewport->setEditMode(Viewport::MOVE);
         return true;
     case ToolBar::TBI_ROTATE:
-        //m_viewport->setState(Viewport::ROTATE);
+        m_viewport->setEditMode(Viewport::ROTATE);
         return true;
     case ToolBar::TBI_SCALE:
-        //m_viewport->setState(Viewport::SCALE);
+        m_viewport->setEditMode(Viewport::SCALE);
         return true;
     case ToolBar::TBI_DELETE:
         m_viewport->deleteCmd();

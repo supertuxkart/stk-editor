@@ -35,7 +35,18 @@ void Viewport::animateSelection()
 
     // moving?
     if (m_mouse->right_btn_down && (m_mouse->dx() != 0 || m_mouse->dy() != 0))
-        move();
+        switch (m_edit)
+        {
+            case MOVE:
+                move();
+                return;
+            case ROTATE:
+                rotate();
+                return;
+            case SCALE:
+                scale();
+                return;
+        } // switch
 
 } // animateSelection
 
@@ -290,7 +301,6 @@ Viewport* Viewport::get(ICameraSceneNode* cam, Mouse* m, Keys* k)
     return m_self;
 } // getTrack
 
-
 // ----------------------------------------------------------------------------
 void Viewport::init(ICameraSceneNode* cam = 0, Mouse* m = 0, Keys* k = 0)
 {
@@ -305,6 +315,7 @@ void Viewport::init(ICameraSceneNode* cam = 0, Mouse* m = 0, Keys* k = 0)
     m_new_entity        = 0;
     m_terrain           = 0;
     m_track             = 0;
+    m_edit              = MOVE;
 
     m_selection_handler = new SelectionHandler(m_mouse, m_keys);
 
