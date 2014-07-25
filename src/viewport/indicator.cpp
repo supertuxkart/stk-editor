@@ -4,13 +4,14 @@
 
 
 // ----------------------------------------------------------------------------
-Indicator::Indicator(vector3df p, vector3df t, f32 wVol, f32 hWol, f32 zNear, f32 zFar)
+Indicator::Indicator(vector3df p, vector3df t, vector3df u,
+                     f32 wVol, f32 hWol, f32 zNear, f32 zFar)
 {
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
     IVideoDriver*  vd = Editor::getEditor()->getVideoDriver();
 
     m_cam = sm->addCameraSceneNode();
-    updatePos(p, t);
+    update(p, t, u);
     setProjMat(wVol, hWol, zNear, zFar);
     
     m_model = sm->addAnimatedMeshSceneNode(
@@ -28,13 +29,13 @@ Indicator::~Indicator()
 } // ~indicator
 
 // ----------------------------------------------------------------------------
-void Indicator::updatePos(vector3df pos, vector3df tar)
+void Indicator::update(vector3df pos, vector3df tar, vector3df up)
 {
     pos.X += m_offset;
     tar.X += m_offset;
     m_cam->setPosition(pos);
-    m_cam->updateAbsolutePosition();
     m_cam->setTarget(tar);
+    m_cam->setUpVector(up);
 } // updatePos
 
 // ----------------------------------------------------------------------------

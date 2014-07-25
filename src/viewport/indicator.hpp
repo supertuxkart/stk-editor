@@ -19,17 +19,16 @@ private:
     u32 static const    m_offset = 3333;
     dimension2du        m_ss;
 public:
-    Indicator(vector3df p, vector3df t, f32 wVol, f32 hWol, f32 zNear, f32 zFar);
+    Indicator(vector3df p, vector3df t, vector3df u,
+              f32 wVol, f32 hWol, f32 zNear, f32 zFar);
     ~Indicator();
 
-    void        updatePos(vector3df pos, vector3df tar);
+    void        update(vector3df pos, vector3df tar, vector3df up);
     void        setProjMat(f32 wVol, f32 hWol, f32 zNear, f32 zFar);
     void        renderToTexture();
     void        drawToScreen();
     void        reallocate();
 
-    
-    void        updateTar(vector3df tar) { tar.X += m_offset; m_cam->setTarget(tar); }
     ITexture*   getTexture()             { return m_rtt; }
 
 };

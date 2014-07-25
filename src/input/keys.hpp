@@ -17,6 +17,7 @@ enum Key
     DEL_PRESSED,
     SPACE_PRESSED,
     CTRL_PRESSED,
+    NUM_0_PRESSED,
     NUM_1_PRESSED,
     NUM_2_PRESSED,
     NUM_4_PRESSED,
@@ -69,6 +70,9 @@ struct Keys
         case KEY_SHIFT:
         case KEY_LSHIFT:
             m_key_state[SHIFT_PRESSED] = pressed;
+            break;
+        case KEY_NUMPAD0:
+            m_key_state[NUM_0_PRESSED] = pressed;
             break;
         case KEY_NUMPAD1:
             m_key_state[NUM_1_PRESSED] = pressed;
