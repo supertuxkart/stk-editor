@@ -233,6 +233,8 @@ void Terrain::initMaterials()
     m_highlight_material.Lighting = false;
     m_highlight_material.MaterialType = EMT_TRANSPARENT_VERTEX_ALPHA;
     m_highlight_material.Wireframe = true;
+
+    m_material.BackfaceCulling           = false;
 }
 
 // ----------------------------------------------------------------------------
@@ -645,7 +647,6 @@ void Terrain::OnRegisterSceneNode()
 void Terrain::render()
 {
     IVideoDriver* driver = SceneManager->getVideoDriver();
-
 
     driver->setMaterial(m_material);
     driver->setTransform(video::ETS_WORLD, IdentityMatrix);
