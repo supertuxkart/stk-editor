@@ -84,6 +84,7 @@ public:
     static Editor*              getEditor(dimension2du screen_size = dimension2du(1280, 720));
 	bool		                run();
 	virtual bool                OnEvent(const SEvent& event);
+    void                        keepMouseIn(s32 sx, s32 sy);
     void                        open(path p);
     void                        newTrack();
     void                        closeTrack();

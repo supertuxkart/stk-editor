@@ -633,20 +633,10 @@ bool Editor::OnEvent(const SEvent& event)
              event.MouseInput.Y >= m_screen_size.Height - 15 ||
             (event.MouseInput.X >(s32)m_screen_size.Width - 500 && m_tex_sel->isActive()))
         {
-            if (m_viewport->getState() == Viewport::EDIT)
-            {
-                s32 x = event.MouseInput.X;
-                s32 y = event.MouseInput.Y;
-                if (event.MouseInput.Y < 50)
-                    y = m_screen_size.Height - event.MouseInput.Y;
-                else if (event.MouseInput.Y >= m_screen_size.Height-15)
-                    y = 55;
-                if (event.MouseInput.X <= 15)
-                    x = m_screen_size.Width - 250;
-                else if (event.MouseInput.X >= m_screen_size.Width - 250)
-                    x = 20;
-                m_device->getCursorControl()->setPosition(x, y);
-            }
+            u32 s = m_viewport->getState();
+            if (s == Viewport::EDIT ||
+               (s==Viewport::SELECT && m_mouse.middle_btn_down))
+                    keepMouseIn(event.MouseInput.X, event.MouseInput.Y);
             else
             {
                 m_viewport->loseFocus();
@@ -792,6 +782,24 @@ bool Editor::OnEvent(const SEvent& event)
 	return false;
 
 } // OnEvent
+
+// ----------------------------------------------------------------------------
+void Editor::keepMouseIn(s32 sx, s32 sy)
+{
+    s32 x = sx;
+    s32 y = sy;
+    if (sy < 50)
+        y = m_screen_size.Height - sy;
+    else if (sy >= m_screen_size.Height - 15)
+        y = 55;
+    if (sx <= 15)
+        x = m_screen_size.Width - 250;
+    else if (sx >= m_screen_size.Width - 250)
+        x = 20;
+    m_device->getCursorControl()->setPosition(x, y);
+    m_mouse.prev_x = x;
+    m_mouse.prev_y = y;
+} // keepMouseIn
 
 // ----------------------------------------------------------------------------
 void Editor::open(path p)
