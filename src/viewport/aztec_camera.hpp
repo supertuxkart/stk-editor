@@ -30,8 +30,10 @@ private:
     vector3df               m_top_up;
 
     void                    setOrientation(vector3df dir, vector3df up = vector3df(0, 1, 0));
+    void                    setHeight(bool new_indi = false);
     void                    processKeys(f32 dt);
     void                    processMouse(f32 dt);
+
 public:
     AztecCamera(ICameraSceneNode* c, Mouse* m, Keys* k);
     void animate(f32 dt);
@@ -41,7 +43,7 @@ public:
     vector3df               getTransformedZdir();
 
     void                    init(f32 x, f32 z);
-    void                    setHeight(bool new_indi = false);
+    void                    restore();
 
     ICameraSceneNode*       Cam()                   { return m_cam;                }
     Indicator*              getIndicator()          { return m_indicator;          }

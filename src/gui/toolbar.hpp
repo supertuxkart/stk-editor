@@ -23,6 +23,7 @@ public:
         TBI_REDO,
         TBI_UNDO,
         TBI_CAM,
+        TBI_RECAM,
         TBI_SELECT,
         TBI_MOVE,
         TBI_ROTATE,
@@ -40,7 +41,7 @@ private:
     static ToolBar* m_toolbar;
 
     IGUIToolBar*    m_bar;
-    IGUIButton*     m_buttons[16];
+    IGUIButton*     m_buttons[17];
 
     // private functions:
 

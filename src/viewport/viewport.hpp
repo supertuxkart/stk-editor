@@ -102,6 +102,7 @@ public:
     void                build();
     void                clear();
     void                draw();
+    void                restoreCam();
 
     Indicator*          getIndicator();
 

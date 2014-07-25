@@ -25,6 +25,22 @@ void AztecCamera::setOrientation(vector3df dir, vector3df up)
 } // setOrientation
 
 // ----------------------------------------------------------------------------
+void AztecCamera::setHeight(bool new_indi)
+{
+    dimension2du ss = Editor::getEditor()->getScreenSize();
+    matrix4 mat;
+    f32 nv = m_cam->getNearValue();
+    f32 fv = m_cam->getFarValue();
+    f32 hVol = m_normal_cd * ss.Height / ss.Width;
+    mat.buildProjectionMatrixOrthoLH(m_normal_cd, hVol, nv, fv);
+    m_cam->setProjectionMatrix(mat, true);
+
+    if (!new_indi) m_indicator->setProjMat(m_normal_cd, hVol, nv, fv);
+    else m_indicator = new Indicator
+        (m_cam->getPosition(), m_cam->getTarget(), m_normal_cd, hVol, nv, fv);
+} // setHeight
+
+// ----------------------------------------------------------------------------
 AztecCamera::AztecCamera(ICameraSceneNode* c, Mouse* m, Keys* k)
 {
     m_cx        = 0;
@@ -91,9 +107,7 @@ void AztecCamera::processKeys(f32 dt)
 
     if (m_keys->m_key_state[NUM_1_PRESSED])
     {
-        m_normal_cd = 250.0f;
-        setHeight();
-        init(m_cx * 2, m_cz * 2);
+        restore();
     }
 } // processKeys
 
@@ -206,18 +220,9 @@ void AztecCamera::init(f32 x, f32 z)
 } // init
 
 // ----------------------------------------------------------------------------
-void AztecCamera::setHeight(bool new_indi)
+void AztecCamera::restore()
 {
-    dimension2du ss = Editor::getEditor()->getScreenSize();
-    matrix4 mat;
-    f32 nv = m_cam->getNearValue();
-    f32 fv = m_cam->getFarValue();
-    f32 hVol = m_normal_cd * ss.Height / ss.Width;
-    mat.buildProjectionMatrixOrthoLH(m_normal_cd, hVol, nv, fv);
-    m_cam->setProjectionMatrix(mat, true);
-
-    if (!new_indi) m_indicator->setProjMat(m_normal_cd, hVol, nv, fv);
-    else m_indicator = new Indicator
-        (m_cam->getPosition(),m_cam->getTarget(), m_normal_cd, hVol, nv, fv);
-} // setHeight
-
+    m_normal_cd = 250.0f;
+    setHeight();
+    init(m_cx * 2, m_cz * 2);
+} // restore

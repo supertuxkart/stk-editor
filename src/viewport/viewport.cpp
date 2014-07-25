@@ -611,6 +611,13 @@ void Viewport::draw()
 } // draw
 
 // ----------------------------------------------------------------------------
+void Viewport::restoreCam()
+{
+    if (m_state != FREECAM)
+        m_aztec_cam->restore();
+} // restoreCam
+
+// ----------------------------------------------------------------------------
 Indicator*  Viewport::getIndicator()
 {
     return m_aztec_cam->getIndicator();
