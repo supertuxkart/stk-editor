@@ -42,13 +42,13 @@ bool Editor::buttonClicked(int ID)
         m_viewport->setState(Viewport::SELECT);
         return true;
     case ToolBar::TBI_MOVE:
-        m_viewport->setState(Viewport::MOVE);
+        //m_viewport->setState(Viewport::MOVE);
         return true;
     case ToolBar::TBI_ROTATE:
-        m_viewport->setState(Viewport::ROTATE);
+        //m_viewport->setState(Viewport::ROTATE);
         return true;
     case ToolBar::TBI_SCALE:
-        m_viewport->setState(Viewport::SCALE);
+        //m_viewport->setState(Viewport::SCALE);
         return true;
     case ToolBar::TBI_DELETE:
         m_viewport->deleteCmd();
@@ -249,13 +249,13 @@ void Editor::shiftShortcuts(EKEY_CODE code)
         m_viewport->setState(Viewport::SELECT);
         break;
     case KEY_KEY_S:
-        m_viewport->setState(Viewport::SCALE);
+        m_viewport->scale();
         break;
     case KEY_KEY_G:
-        m_viewport->setState(Viewport::MOVE);
+        m_viewport->move();
         break;
     case KEY_KEY_R:
-        m_viewport->setState(Viewport::ROTATE);
+        m_viewport->rotate();
         break;
     default:
         break;
@@ -628,13 +628,31 @@ bool Editor::OnEvent(const SEvent& event)
     if (event.EventType == EET_MOUSE_INPUT_EVENT)
     {
         // check if mouse is outside of the viewport's domain
-        if (event.MouseInput.Y < 50 ||
+        if (event.MouseInput.Y < 50 || event.MouseInput.X <= 15 ||
             event.MouseInput.X >(s32) m_screen_size.Width - 250 ||
+             event.MouseInput.Y >= m_screen_size.Height - 15 ||
             (event.MouseInput.X >(s32)m_screen_size.Width - 500 && m_tex_sel->isActive()))
         {
-            m_viewport->loseFocus();
-            m_mouse.in_view = false;
-            return false;
+            if (m_viewport->getState() == Viewport::EDIT)
+            {
+                s32 x = event.MouseInput.X;
+                s32 y = event.MouseInput.Y;
+                if (event.MouseInput.Y < 50)
+                    y = m_screen_size.Height - event.MouseInput.Y;
+                else if (event.MouseInput.Y >= m_screen_size.Height-15)
+                    y = 55;
+                if (event.MouseInput.X <= 15)
+                    x = m_screen_size.Width - 250;
+                else if (event.MouseInput.X >= m_screen_size.Width - 250)
+                    x = 20;
+                m_device->getCursorControl()->setPosition(x, y);
+            }
+            else
+            {
+                m_viewport->loseFocus();
+                m_mouse.in_view = false;
+                return false;
+            }
         }
         m_mouse.in_view = true;
         m_viewport->gainFocus();

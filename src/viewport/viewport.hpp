@@ -28,9 +28,7 @@ public:
     enum State
     {
         SELECT,
-        MOVE,
-        ROTATE,
-        SCALE,
+        EDIT,
         PLACE,
         SPLINE,
         CHECK_LINE,
@@ -73,6 +71,7 @@ private:
 
     Viewport() {};
 
+    void                    animateSelection();
     void                    animateEditing();
     void                    animatePlacing();
     void                    animateSplineEditing();
@@ -84,6 +83,9 @@ private:
 public:
     static Viewport*    get(ICameraSceneNode* cam = 0, Mouse* m = 0, Keys* k = 0);
     void                init(ICameraSceneNode* cam, Mouse* m, Keys* k);
+    void                move();
+    void                rotate();
+    void                scale();
     void                setState(State state);
     void                deleteCmd();
     void                setNewEntity(const stringw path, const stringw name);

@@ -24,84 +24,62 @@
 
 #include <assert.h>
 
-Viewport* Viewport::m_self = 0;
+Viewport* Viewport::m_self           = 0;
 int       Viewport::m_last_entity_ID = MAGIC_NUMBER;
+
+// ----------------------------------------------------------------------------
+void Viewport::animateSelection()
+{
+    m_selection_handler->animate(m_spline_mode ? ANOTHER_MAGIC_NUMBER
+                                                        : MAGIC_NUMBER);
+
+    // moving?
+    if (m_mouse->right_btn_down && (m_mouse->dx() != 0 || m_mouse->dy() != 0))
+        move();
+
+} // animateSelection
 
 // ----------------------------------------------------------------------------
 void Viewport::animateEditing()
 {
-    if (m_spline_mode && m_selection_handler->getSelection().size() == 0)
-        m_selection_handler->selectNode(m_active_road->getSpline());
+    IObjectCmd* m_active_obj_cmd = dynamic_cast<IObjectCmd*>(m_active_cmd);
 
-    if (m_active_cmd)
+    bool dirty = false;
+
+    if (m_mouse->dx() != 0 || m_mouse->dy() != 0)
     {
-        IObjectCmd* m_active_obj_cmd = dynamic_cast<IObjectCmd*>(m_active_cmd);
+        m_active_obj_cmd->undo();
+        m_active_obj_cmd->update(m_mouse->x,m_mouse->y);
+        m_active_obj_cmd->redo();
+        dirty = true;
+    } // mouse moved
 
-        if (m_mouse->left_btn_down || m_mouse->right_btn_down)
-        {
-            m_active_obj_cmd->undo();
-            m_active_obj_cmd->update(m_mouse->x,m_mouse->y);
-            m_active_obj_cmd->redo();
-            if (m_spline_mode)
-            {
-                m_active_road->getSpline()->updatePosition();
-                m_active_road->refresh();
-            }
-        }
-        m_mouse->setStorePoint();
+    m_mouse->setStorePoint();
 
-        if ((m_mouse->rightPressed() && m_mouse->left_btn_down) ||
-            (m_mouse->leftPressed() && m_mouse->right_btn_down))
-        {
-            // cancel operation
-            m_active_obj_cmd->undo();
-            delete m_active_obj_cmd;
-            m_active_cmd = 0;
-            m_active_road->getSpline()->updatePosition();
-            m_active_road->refresh();
-            return;
-        }
-    }
-
-    if (m_mouse->leftReleased() || m_mouse->rightReleased())
+    if (m_mouse->rightPressed())
     {
-        // operation finished - if there was any
-        if (m_active_cmd != 0) m_command_handler.add(m_active_cmd);
+        // right mouse button cansels the operation
+        m_active_cmd->undo();
+        delete m_active_cmd;
         m_active_cmd = 0;
-    }
-
-    bool lp = m_mouse->leftPressed();
-    bool rp = m_mouse->rightPressed();
-
-    if ((lp || rp) && !m_keys->state(SPACE_PRESSED))
+        m_state = SELECT;
+        dirty = true;
+    } // right mouse button pressed
+    else if (m_mouse->leftPressed())
     {
-        if (m_selection_handler->getSelection().size() > 0)
-        {
-            // new operation start
-            switch (m_state)
-            {
-            case MOVE:
-                m_active_cmd = new MoveCmd(m_selection_handler->getSelection(),
-                    m_mouse->x, m_mouse->y);
-                break;
-            case ROTATE:
-                m_active_cmd = new RotateCmd(m_selection_handler->getSelection(),
-                    m_mouse->x, m_mouse->y, m_aztec_cam->getTransformedXdir(),
-                    m_aztec_cam->getTransformedYdir(), m_aztec_cam->getTransformedZdir());
-                if (rp)
-                    ((RotateCmd*)m_active_cmd)->setZMode(true, m_mouse->x, m_mouse->y);
-                break;
-            case SCALE:
-                m_active_cmd = new ScaleCmd(m_selection_handler->getSelection(),
-                    m_keys->state(SHIFT_PRESSED));
-                break;
-            default:
-                break;
-            }
-            m_mouse->setStorePoint();
-        }
-    }
+        // left mouse finishes the operation
+        m_command_handler.add(m_active_cmd);
+        m_active_cmd = 0;
+        m_state = SELECT;
+        dirty = true;
+    } // left mouse button clicked
 
+    // road & spline refresh if necessary
+    if (dirty && m_spline_mode)
+    {
+        m_active_road->getSpline()->updatePosition();
+        m_active_road->refresh();
+    } // road & spline refresh
 } // animateEditing
 
 // ----------------------------------------------------------------------------
@@ -129,6 +107,9 @@ void Viewport::animatePlacing()
             m_new_entity = m_new_entity->clone();
         } // m_mouse->leftPressed()
     }
+    if (m_mouse->rightPressed())
+        setState(SELECT);
+
 } // animatePlacing
 
 // ----------------------------------------------------------------------------
@@ -333,6 +314,33 @@ void Viewport::init(ICameraSceneNode* cam = 0, Mouse* m = 0, Keys* k = 0)
 } // init
 
 // ----------------------------------------------------------------------------
+void Viewport::move()
+{
+    if (m_state != SELECT) return;
+
+    m_active_cmd = 
+        new MoveCmd(m_selection_handler->getSelection(), m_mouse->x, m_mouse->y);
+    m_state = EDIT;
+} // move
+
+// ----------------------------------------------------------------------------
+void Viewport::rotate()
+{
+    if (m_state != SELECT) return;
+
+    m_active_cmd = new RotateCmd(m_selection_handler->getSelection(),
+                    m_mouse->x, m_mouse->y, m_aztec_cam->getTransformedXdir(),
+        m_aztec_cam->getTransformedYdir(), m_aztec_cam->getTransformedZdir());
+    m_state = EDIT;
+} // rotate
+
+// ----------------------------------------------------------------------------
+void Viewport::scale()
+{
+
+} // scale
+
+// ----------------------------------------------------------------------------
 void Viewport::setState(State state)
 {
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
@@ -438,19 +446,11 @@ void Viewport::animate(long dt)
         m_aztec_cam->animate((f32)dt);
         switch (m_state)
         {
-        case MOVE:
-        case ROTATE:
-        case SCALE:
-            // holding ctrl down will let you select elements in move/rotate state
-            if (m_keys->state(CTRL_PRESSED))
-                m_selection_handler->animate(m_spline_mode ? ANOTHER_MAGIC_NUMBER
-                                                           : MAGIC_NUMBER);
-            else animateEditing();
+        case EDIT:
+            animateEditing();
             return;
-
         case SELECT:
-            m_selection_handler->animate(m_spline_mode ? ANOTHER_MAGIC_NUMBER
-                                                       : MAGIC_NUMBER);
+            animateSelection();
             return;
         case PLACE:
             animatePlacing();

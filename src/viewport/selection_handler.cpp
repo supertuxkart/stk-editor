@@ -60,7 +60,7 @@ void SelectionHandler::animate(u32 id)
 {
     if (m_mouse->leftPressed())
     {
-        if (!m_keys->state(CTRL_PRESSED)) clearSelection();
+        if (!m_keys->state(SHIFT_PRESSED)) clearSelection();
 
         ISceneCollisionManager* iscm;
         iscm = Editor::getEditor()->getSceneManager()->getSceneCollisionManager();
