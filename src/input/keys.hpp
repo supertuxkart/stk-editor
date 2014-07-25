@@ -17,6 +17,12 @@ enum Key
     DEL_PRESSED,
     SPACE_PRESSED,
     CTRL_PRESSED,
+    NUM_1_PRESSED,
+    NUM_2_PRESSED,
+    NUM_4_PRESSED,
+    NUM_5_PRESSED,
+    NUM_6_PRESSED,
+    NUM_8_PRESSED,
     SHIFT_PRESSED //it has to be the last
 };
 
@@ -63,6 +69,24 @@ struct Keys
         case KEY_SHIFT:
         case KEY_LSHIFT:
             m_key_state[SHIFT_PRESSED] = pressed;
+            break;
+        case KEY_NUMPAD1:
+            m_key_state[NUM_1_PRESSED] = pressed;
+            break;
+        case KEY_NUMPAD2:
+            m_key_state[NUM_2_PRESSED] = pressed;
+            break;
+        case KEY_NUMPAD4:
+            m_key_state[NUM_4_PRESSED] = pressed;
+            break;
+        case KEY_NUMPAD5:
+            m_key_state[NUM_5_PRESSED] = pressed;
+            break;
+        case KEY_NUMPAD6:
+            m_key_state[NUM_6_PRESSED] = pressed;
+            break;
+        case KEY_NUMPAD8:
+            m_key_state[NUM_8_PRESSED] = pressed;
             break;
         case KEY_CONTROL:
         case KEY_LCONTROL:

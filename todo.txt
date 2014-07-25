@@ -1,6 +1,5 @@
 TODO list:
 
 - monkey testing for crashes
-- fix camera states
 - twisted drivelines
-- moving improvement (object should follow the cursor perfectly)
+- scale + moving, rotating controls, (rotating visualisation?)
