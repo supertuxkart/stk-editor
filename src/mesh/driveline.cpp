@@ -13,8 +13,8 @@ bool DriveLine::order(vector3df* v1, vector3df* v2, vector3df* v3, vector3df* v4
     vector3df e1, e2, p;
     e1 = *v2 - *v1;
     e2 = *v3 - *v1;
-    p = e1.crossProduct(e2);
-    if (p.dotProduct(n) <= 0)
+    p = e2.crossProduct(e1);
+    if (p.dotProduct(n) > 0)
         return true;
     p = *v1; *v1 = *v2; *v2 = p;
     p = *v3; *v3 = *v4; *v4 = p;
@@ -31,7 +31,6 @@ DriveLine::DriveLine(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s,
     m_mesh.vertex_count = 0;
     m_mesh.quad_count   = 0;
 
-    
     m_material.Wireframe       = true;
     m_material.Lighting        = false;
     m_material.BackfaceCulling = false;
@@ -153,7 +152,7 @@ void DriveLine::build(path p)
     w *= m_spline->getWidth(0);
     v3 = point + w * (m_width / 2.0f);
     v4 = point - w * (m_width / 2.0f);
-    bool b = order(&v1, &v2, &v3, &v4, m_spline->getNormal(0));
+    order(&v1, &v2, &v3, &v4, m_spline->getNormal(0));
 
     quads << "  <quad  p0=\"" << v1.X << " " << v1.Y << " " << v1.Z << "\" ";
     quads << "p1=\"" << v2.X << " " << v2.Y << " " << v2.Z << "\" ";
@@ -172,14 +171,15 @@ void DriveLine::build(path p)
         n.normalize();
         w.normalize();
         w *= m_spline->getWidth(t);
-
-        v1 = point - w * (m_width / 2.0f) * (b ? -1 : 1);
-        v2 = point + w * (m_width / 2.0f) * (b ? -1 : 1);
-
+        v1 = point - w * m_width / 2.0f;
+        v2 = point + w * m_width / 2.0f;
+        order(&v1, &v2, &v3, &v4, m_spline->getNormal(t));
         quads << "  <quad  p0=\"" << j - 1 << ":3\" p1=\"" << j - 1 << ":2\" ";
         quads << "p2=\"" << v1.X << " " << v1.Y << " " << v1.Z;
         quads << "\" p3=\"" << v2.X << " " << v2.Y << " " << v2.Z << "\"/>\n";
 
+        v3 = v1;
+        v4 = v2;
         last_point = point;
         j++;
     }
