@@ -34,7 +34,7 @@ struct Mouse
     void refresh(const SEvent& e);
 
 
-    void setStorePoint()    { prev_x = x; prev_y = y; }
+    void setStorePoint()    { prev_x = x; prev_y = y; wheel = 0; }
     s32 dx()                { return x - prev_x; }
     s32 dy()                { return y - prev_y; }
 

@@ -25,10 +25,14 @@ private:
 
     f32                     m_cx, m_cz;
 
+    bool                    m_mmb_move;
+    ISceneCollisionManager* m_iscm;
+
     void                    setOrientation(vector3df dir, vector3df up = vector3df(0, 1, 0));
     void                    setHeight(bool new_indi = false);
     void                    processKeys(f32 dt);
     void                    processMouse(f32 dt);
+    void                    moveWithMouse();
 
 public:
     AztecCamera(ICameraSceneNode* c, Mouse* m, Keys* k);

@@ -327,7 +327,8 @@ void Viewport::init(ICameraSceneNode* cam = 0, Mouse* m = 0, Keys* k = 0)
 // ----------------------------------------------------------------------------
 void Viewport::move()
 {
-    if (m_state != SELECT) return;
+    if (m_state != SELECT || m_selection_handler->getSelection().size() == 0)
+        return;
 
     m_active_cmd = 
         new MoveCmd(m_selection_handler->getSelection(), m_mouse->x, m_mouse->y);
@@ -337,7 +338,8 @@ void Viewport::move()
 // ----------------------------------------------------------------------------
 void Viewport::rotate()
 {
-    if (m_state != SELECT) return;
+    if (m_state != SELECT || m_selection_handler->getSelection().size() == 0)
+        return;
 
     m_active_cmd = new RotateCmd(m_selection_handler->getSelection(),
                     m_mouse->x, m_mouse->y, m_aztec_cam->getTransformedXdir(),
@@ -348,7 +350,8 @@ void Viewport::rotate()
 // ----------------------------------------------------------------------------
 void Viewport::scale()
 {
-    if (m_state != SELECT) return;
+    if (m_state != SELECT || m_selection_handler->getSelection().size() == 0)
+        return;
     m_active_cmd =
         new ScaleCmd(m_selection_handler->getSelection(), m_mouse->x, m_mouse->y);
     m_state = EDIT;

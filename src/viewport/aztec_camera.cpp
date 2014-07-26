@@ -48,17 +48,22 @@ AztecCamera::AztecCamera(ICameraSceneNode* c, Mouse* m, Keys* k)
     m_cam       = c;
     m_mouse     = m;
     m_keys      = k;
-    
+    m_mmb_move  = false;
+
     m_normal_cd = 250.0f;
     setHeight(true);
     init(0, 0);
+
+    m_iscm = Editor::getEditor()->getSceneManager()->getSceneCollisionManager();
 } // AztecCamera
 
 // ----------------------------------------------------------------------------
 void AztecCamera::processKeys(f32 dt)
 {
-    if (m_keys->state(CTRL_PRESSED) || m_keys->state(SHIFT_PRESSED)) return;
+    if (m_keys->state(CTRL_PRESSED) || m_keys->state(SHIFT_PRESSED)
+        || (m_mmb_move && m_mouse->middle_btn_down)) return;
     // camera moving
+
     if ((m_keys->state(W_PRESSED) ^ m_keys->state(S_PRESSED))
         || (m_keys->state(A_PRESSED) ^ m_keys->state(D_PRESSED)))
     {
@@ -117,6 +122,17 @@ void AztecCamera::processKeys(f32 dt)
 // ----------------------------------------------------------------------------
 void AztecCamera::processMouse(f32 dt)
 {
+    if (m_mouse->middlePressed())
+        m_mmb_move = m_keys->m_key_state[SHIFT_PRESSED];
+    if (m_mouse->middleReleased())
+        m_mmb_move = false;
+
+    if (m_mmb_move)
+    {
+        moveWithMouse();
+        return;
+    }
+
     // zoom
     if (m_mouse->wheel != 0)
     {
@@ -129,7 +145,7 @@ void AztecCamera::processMouse(f32 dt)
     bool ss = false;
     // rotation around y
     if ((m_mouse->left_btn_down && m_keys->state(SPACE_PRESSED))
-        || m_mouse->middle_btn_down)
+        || (m_mouse->middle_btn_down && !m_mmb_move))
     {
         vector3df pos = m_cam->getPosition();
         vector3df tar = m_cam->getTarget();
@@ -165,6 +181,26 @@ void AztecCamera::processMouse(f32 dt)
     } // rot transformed x
     if (ss) m_mouse->setStorePoint();
 } // processMouse
+
+// ----------------------------------------------------------------------------
+void AztecCamera::moveWithMouse()
+{
+    line3df last_ray = 
+        m_iscm->getRayFromScreenCoordinates(vector2d<s32>(m_mouse->prev_x, 
+                                                            m_mouse->prev_y));
+    line3df ray = 
+        m_iscm->getRayFromScreenCoordinates(vector2d<s32>(m_mouse->x, 
+                                                            m_mouse->y));
+    vector3df d = (ray.start - last_ray.start);
+    vector3df pos = m_cam->getPosition();
+    vector3df tar = m_cam->getTarget();
+    pos -= d;
+    tar -= d;
+    m_cam->setPosition(pos);
+    m_cam->setTarget(tar);
+    m_indicator->update(pos, tar, m_cam->getUpVector());
+    m_mouse->setStorePoint();
+} // moveWithMouse
 
 // ----------------------------------------------------------------------------
 void AztecCamera::animate(f32 dt)
