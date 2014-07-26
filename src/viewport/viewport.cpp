@@ -348,7 +348,10 @@ void Viewport::rotate()
 // ----------------------------------------------------------------------------
 void Viewport::scale()
 {
-
+    if (m_state != SELECT) return;
+    m_active_cmd =
+        new ScaleCmd(m_selection_handler->getSelection(), m_mouse->x, m_mouse->y);
+    m_state = EDIT;
 } // scale
 
 // ----------------------------------------------------------------------------
@@ -431,7 +434,6 @@ void Viewport::setNewEntity(const stringw path, const stringw name)
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
     m_new_entity = sm->addAnimatedMeshSceneNode(sm->getMesh(path));
     m_new_entity->setName(name);
-
 } // setNewEntity
 
 // ----------------------------------------------------------------------------

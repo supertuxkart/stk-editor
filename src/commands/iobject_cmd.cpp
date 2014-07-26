@@ -23,6 +23,26 @@ void IObjectCmd::undo()
 } // undo
 
 // ----------------------------------------------------------------------------
+void IObjectCmd::calcCenter(s32 *x, s32 *y)
+{ 
+    (*x) = 0; (*y) = 0;
+    ISceneCollisionManager* iscm;
+    iscm = Editor::getEditor()->getSceneManager()->getSceneCollisionManager();
+    list<ISceneNode*>::Iterator it;
+    vector2d<s32> sp;
+    for (it = m_elements.begin(); it != m_elements.end(); it++)
+    {
+        (*it)->updateAbsolutePosition();
+        sp = iscm->getScreenCoordinatesFrom3DPosition((*it)->getTransformedBoundingBox().getCenter());
+        (*x) += sp.X;
+        (*y) += sp.Y;
+    }
+    assert(m_elements.size() > 0);
+    (*x) /= m_elements.size();
+    (*y) /= m_elements.size();
+} // calcCenter
+
+// ----------------------------------------------------------------------------
 // DelCmd  --------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 DelCmd::~DelCmd()
@@ -105,25 +125,6 @@ vector3df RotateCmd::calcRot(f32 angle, vector3df axis)
 } // calcRot
 
 // ----------------------------------------------------------------------------
-void RotateCmd::calcCenter()
-{
-    ISceneCollisionManager* iscm;
-    iscm = Editor::getEditor()->getSceneManager()->getSceneCollisionManager();
-    list<ISceneNode*>::Iterator it;
-    vector2d<s32> sp;
-    for (it = m_elements.begin(); it != m_elements.end(); it++)
-    {
-        (*it)->updateAbsolutePosition();
-        sp = iscm->getScreenCoordinatesFrom3DPosition((*it)->getTransformedBoundingBox().getCenter());
-        m_cx += sp.X;
-        m_cy += sp.Y;
-    }
-    assert(m_elements.size() > 0);
-    m_cx /= m_elements.size();
-    m_cy /= m_elements.size();
-} // calcCenter
-
-// ----------------------------------------------------------------------------
 void RotateCmd::calcAllRot(vector3df* x, vector3df* y, vector3df* z)
 {
     vector3df rotx, roty, rotz;
@@ -161,17 +162,10 @@ RotateCmd::RotateCmd(list<ISceneNode*> e, s32 x, s32 y,
 } // RotateCmd
 
 // ----------------------------------------------------------------------------
-void RotateCmd::update(s32 x, s32 y)
-{
-    m_x = x;
-    m_y = y;
-} // update
-
-// ----------------------------------------------------------------------------
 void RotateCmd::setZMode(bool zmode, s32 x, s32 y)
 {
     m_sx = x; m_sy = y; z_mode = zmode;
-    if (z_mode) calcCenter();
+    if (z_mode) calcCenter(&m_cx, &m_cy);
 } // switchMode
 
 // ----------------------------------------------------------------------------
@@ -200,37 +194,32 @@ void RotateCmd::undo(ISceneNode *node)
 // ScaleCmd  -----------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
-ScaleCmd::ScaleCmd(list<ISceneNode*> e, bool limited) :IObjectCmd(e)
+ScaleCmd::ScaleCmd(list<ISceneNode*> e, s32 x, s32 y) :IObjectCmd(e)
 {
-    m_dx = 0; m_dy = 0; m_dz = 0;
-    m_limited = limited;
-}
+    m_sx = x;
+    m_sy = y;
+    m_x = x;
+    m_y = y;
+    calcCenter(&m_cx, &m_cy);
+} // ScaleCmd
 
 // ----------------------------------------------------------------------------
 void ScaleCmd::redo(ISceneNode *node)
 {
-    float dx, dy, dz;
-    dx = m_dx; dy = m_dy; dz = m_dz;
-    if (m_limited)
-    {
-        dx = dx + dy + dz;
-        dy = dx;
-        dz = dx;
-    }
-    node->setScale(node->getScale() + vector3df(dz / 10.0f, dy / 10.0f, dx / 10.0f));
+    f32 s1 = vector2df(m_cx,m_cy).getDistanceFrom(vector2df(m_sx,m_sy));
+    f32 s2 = vector2df(m_cx, m_cy).getDistanceFrom(vector2df(m_x, m_y));
+    if (s1 < 0.00001) s1 = 0.00001;
+    if (s2 < 0.00001) s2 = 0.00001;
+    node->setScale(node->getScale()* s2 / s1);
 } // redo
 
 // ----------------------------------------------------------------------------
 void ScaleCmd::undo(ISceneNode *node)
 {
-    float dx, dy, dz;
-    dx = m_dx; dy = m_dy; dz = m_dz;
-    if (m_limited)
-    {
-        dx = dx + dy + dz;
-        dy = dx;
-        dz = dx;
-    }
-    node->setScale(node->getScale() + vector3df(-dz / 10.0f, -dy / 10.0f, -dx/ 10.0f));
+    f32 s1 = vector2df(m_cx, m_cy).getDistanceFrom(vector2df(m_sx, m_sy));
+    f32 s2 = vector2df(m_cx, m_cy).getDistanceFrom(vector2df(m_x, m_y));
+    if (s1 < 0.00001) s1 = 0.00001;
+    if (s2 < 0.00001) s2 = 0.00001;
+    node->setScale(node->getScale()* s1 / s2);
 } // undo
 

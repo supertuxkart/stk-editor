@@ -22,9 +22,11 @@ protected:
 public:
     IObjectCmd(list<ISceneNode*> elements) { m_elements = elements; }
     virtual ~IObjectCmd() {};
-    void redo();
-    void undo();
-    virtual void update(s32 x, s32 y) {};
+
+    void            redo();
+    void            undo();
+    void            calcCenter(s32* x, s32* y);
+    virtual void    update(s32 x, s32 y) {};
 };
 
 // ----------------------------------------------------------------------------
@@ -84,31 +86,31 @@ private:
     vector3df m_tz;
 private:
     vector3df calcRot(f32 angle, vector3df axis);
-    void      calcCenter();
     void      calcAllRot(vector3df* x, vector3df* y, vector3df* z);
 public:
     RotateCmd(list<ISceneNode*> e, s32 x, s32 y, vector3df i, vector3df j, vector3df k);
 
-    void update(s32 x, s32 y);
     void setZMode(bool zmode, s32 x, s32 y);
-
     void redo(ISceneNode* e);
     void undo(ISceneNode* e);
+
+    void update(s32 x, s32 y)       { m_x = x; m_y = y; }
 }; // RotateCmd
 
 // ----------------------------------------------------------------------------
 class ScaleCmd : public IObjectCmd
 {
 private:
-    float m_dx, m_dy, m_dz;
-    bool m_limited;
+    s32 m_sx, m_sy;
+    s32 m_cx, m_cy;
+    s32 m_x,  m_y ;
 public:
-    ScaleCmd(list<ISceneNode*> e, bool limited);
-
-    void update(float a, float b)  { m_dx += a; m_dy += b; }
+    ScaleCmd(list<ISceneNode*> e, s32 x, s32 y);
 
     void redo(ISceneNode* e);
     void undo(ISceneNode* e);
+
+    void update(s32 x, s32 y)       { m_x = x; m_y = y; }
 }; // ScaleCmd
 
 #endif
