@@ -29,5 +29,8 @@ public:
 
     ITriangleSelector*               getTriangleSel(){ return m_tri;       }
     CMeshBuffer<S3DVertex2TCoords>*  getMeshBuffer() { return m_mesh_buff; }
+
+    virtual const aabbox3d<f32>& getBoundingBox() const 
+                                    { return m_mesh_buff->getBoundingBox(); }
 };
 #endif

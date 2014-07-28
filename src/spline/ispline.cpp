@@ -251,6 +251,7 @@ ControlPoint ISpline::removeControlPoint(u32 ix)
 // ----------------------------------------------------------------------------
 ISceneNode* ISpline::getNode(u32 ix)
 {
+    if (ix >= m_cp_num) return 0;
     list<ControlPoint>::Iterator it = m_control_points.begin();
     for (u32 i = 0; i < ix; i++, it++);
     return it->node;
@@ -352,8 +353,7 @@ void ISpline::render()
     material.Lighting = false;
 
     driver->setMaterial(material);
-    driver->setTransform(ETS_WORLD, IdentityMatrix);
-
+    driver->setTransform(ETS_WORLD, getAbsoluteTransformation());
 
     float dt = 0.005f;
     for (float t = dt; t <= 1.0; t += dt)

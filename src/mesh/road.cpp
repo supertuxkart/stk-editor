@@ -68,6 +68,7 @@ Road::Road(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s, stringw n
     m_mesh_buff->Material.Wireframe       = true;
     m_mesh_buff->Material.Lighting        = false;
     m_mesh_buff->Material.BackfaceCulling = false;
+    m_spline->setParent(this);
 } // road
 
 // ----------------------------------------------------------------------------
@@ -79,6 +80,7 @@ Road::Road(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
     m_mesh_buff->Material.Wireframe       = true;
     m_mesh_buff->Material.Lighting        = false;
     m_mesh_buff->Material.BackfaceCulling = false;
+    m_spline->setParent(this);
 } // Road
 
 // ----------------------------------------------------------------------------
@@ -127,6 +129,8 @@ void Road::refresh()
     m_mesh_buff->recalculateBoundingBox();
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
     sm->getMeshManipulator()->recalculateNormals(m_mesh_buff, true, true);
+
+    vector3df trans = m_mesh_buff->getBoundingBox().getCenter();
 } // refresh
 
 // ----------------------------------------------------------------------------
@@ -134,7 +138,7 @@ void Road::render()
 {
     IVideoDriver* driver = SceneManager->getVideoDriver();
     if (m_mesh_buff->Vertices.size() == 0) return;
-    driver->setTransform(ETS_WORLD, IdentityMatrix);
+    driver->setTransform(ETS_WORLD, getRelativeTransformation());
     driver->setMaterial(m_mesh_buff->Material);
     driver->drawMeshBuffer(m_mesh_buff);
 } // render

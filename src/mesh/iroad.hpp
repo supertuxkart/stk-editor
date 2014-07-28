@@ -41,8 +41,8 @@ public:
     void                 OnRegisterSceneNode();
     virtual void         render() = 0;
 
-    const aabbox3d<f32>& getBoundingBox()   const { return m_bounding_box; }
-    u32                  getMaterialCount() const { return 1; }
+    virtual const aabbox3d<f32>& getBoundingBox()   const { return m_bounding_box; }
+    u32                          getMaterialCount() const { return 1; }
 
 };
 

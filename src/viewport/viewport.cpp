@@ -150,15 +150,7 @@ void Viewport::animateSplineEditing()
     } // m_mouse->leftPressed()
 
     if (m_mouse->rightPressed())
-    {
-        if (m_active_cmd)
-        {
-            m_active_cmd->undo();
-            delete m_active_cmd;
-            m_active_cmd = 0;
-        }
         setState(SELECT);
-    }
 
 } // animateSplineEditing
 
@@ -267,6 +259,13 @@ void Viewport::leaveState()
         m_new_entity = 0;
         return;
     case SPLINE:
+        if (m_active_cmd)
+        {
+            m_active_cmd->undo();
+            delete m_active_cmd;
+            m_active_cmd = 0;
+        }
+        setSplineMode(false);
         return;
     case FREECAM:
         m_free_camera->setInputReceiverEnabled(false);

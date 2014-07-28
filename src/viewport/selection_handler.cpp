@@ -88,8 +88,21 @@ void SelectionHandler::animate(u32 id)
         if (node && selected_road)
             node = closerToCamera(node, selected_road);
         if ((node && (node == selected_road)) || selected_road)
+        {
             Viewport::get()->setActiveRoad((Road*)selected_road);
-        if (node)
+            m_selected_elements.clear();
+            ISpline* spline = ((IRoad*)selected_road)->getSpline();
+            u32 ix = 0;
+            ISceneNode* n;
+            while (n = spline->getNode(ix))
+            {
+                m_selected_elements.push_back(n);
+                n->setDebugDataVisible(EDS_BBOX);
+                ix++;
+            }
+
+        }
+        else if (node)
         {
             if (node->getID() < ANOTHER_MAGIC_NUMBER && id == ANOTHER_MAGIC_NUMBER)
             {
