@@ -399,12 +399,13 @@ void Viewport::deleteCmd()
         list<ISceneNode*> sel = m_selection_handler->getSelectedSplinePoints();
         list<ISceneNode*>::Iterator it;
         u32 ix;
-        if (sel.size() == 0 && (m_active_road != m_track->getRoadByID(0)))
+        if (m_active_road->getSpline()->getPointNum() == sel.size())
         {
-            CreateRoadCmd* crd = new CreateRoadCmd(m_active_road,true);
+            CreateRoadCmd* crd = new CreateRoadCmd(m_active_road, true);
             crd->redo();
             m_command_handler.add(crd);
-        } // road is selected
+            return;
+        } // road is removed
         for (it = sel.begin(); it != sel.end(); it++)
         {
             ix = m_active_road->getSpline()->getCPIndexFromNodeID((*it)->getID());
