@@ -559,6 +559,7 @@ bool Editor::run()
 
         m_scene_manager->drawAll();
 		m_gui_env->drawAll();
+
         m_viewport->draw();
         
         if (m_viewport->getState() != Viewport::FREECAM)
