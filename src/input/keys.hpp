@@ -72,24 +72,31 @@ struct Keys
             m_key_state[SHIFT_PRESSED] = pressed;
             break;
         case KEY_NUMPAD0:
+        case KEY_INSERT:
             m_key_state[NUM_0_PRESSED] = pressed;
             break;
         case KEY_NUMPAD1:
+        case KEY_END:
             m_key_state[NUM_1_PRESSED] = pressed;
             break;
         case KEY_NUMPAD2:
+        case KEY_DOWN:
             m_key_state[NUM_2_PRESSED] = pressed;
             break;
         case KEY_NUMPAD4:
+        case KEY_LEFT:
             m_key_state[NUM_4_PRESSED] = pressed;
             break;
         case KEY_NUMPAD5:
+        case KEY_HOME:
             m_key_state[NUM_5_PRESSED] = pressed;
             break;
         case KEY_NUMPAD6:
+        case KEY_RIGHT:
             m_key_state[NUM_6_PRESSED] = pressed;
             break;
         case KEY_NUMPAD8:
+        case KEY_UP:
             m_key_state[NUM_8_PRESSED] = pressed;
             break;
         case KEY_CONTROL:
