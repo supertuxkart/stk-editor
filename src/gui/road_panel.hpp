@@ -27,7 +27,8 @@ public:
         DL_WIDTH,
         DL_DETAIL,
         DL_TEXTURE,
-        DL_TEX_CHANGE
+        DL_TEX_CHANGE,
+        DL_CHECKLINE
     };
 
 private:

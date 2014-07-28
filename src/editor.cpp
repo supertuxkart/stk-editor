@@ -122,6 +122,9 @@ bool Editor::buttonClicked(int ID)
         m_viewport->setState(Viewport::SPLINE);
         RoadPanel::getRoadPanel()->btnDown(ID);
         return true;
+    case RoadPanel::DL_CHECKLINE:
+        m_viewport->setState(Viewport::CHECK_LINE);
+        return true;
     case RoadPanel::DL_EXIT:
         m_viewport->setState(Viewport::SELECT);
         return true;

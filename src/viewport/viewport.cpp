@@ -189,7 +189,10 @@ void Viewport::animateCheckLine()
                 m_active_cmd = 0;
             }
         }
-    }    
+    }   
+
+    if (m_mouse->rightPressed())
+        setState(SELECT);
 } // animateCheckLine
 
 // ----------------------------------------------------------------------------

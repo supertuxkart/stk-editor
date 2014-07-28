@@ -60,6 +60,8 @@ void RoadPanel::init()
 
     gui_env->addButton(rect<s32>(160, 250, 210, 295), m_wndw, DL_CREATE, L"", _(L"Create New Road Mesh"))
         ->setImage(Editor::loadImg("img/road_create.png"));
+        
+    gui_env->addButton(rect<s32>(30, 330, 210, 360), m_wndw, DL_CHECKLINE, L"CHECKLINE");
 
     m_insert = false;
 
