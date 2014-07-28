@@ -115,7 +115,7 @@ void SelectionHandler::animate(u32 id)
 
 
 // ----------------------------------------------------------------------------
-list<ISceneNode*> SelectionHandler::getSelectedSplinePoints()
+list<ISceneNode*> SelectionHandler::getSelectedSpherePoints()
 {
     list<ISceneNode*> sel;
     list<ISceneNode*>::Iterator it;

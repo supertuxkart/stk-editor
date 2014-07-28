@@ -16,12 +16,14 @@ struct CheckLine
     ISceneNode* n1;
     ISceneNode* n2;
     bool active;
+    bool removed;
 
     CheckLine()
     {
         n1 = 0;
         n2 = 0;
-        active = false;
+        active  = false;
+        removed = false;
     }
 
     ~CheckLine()
@@ -45,6 +47,10 @@ public:
 
     void undo();
     void redo();
+    
+    bool isCheckLine(ISceneNode* n);
+    void remove(ISceneNode* n, bool remove);
+
     void cancelActive();
 
     void build(std::ofstream* scene);

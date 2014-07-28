@@ -396,7 +396,7 @@ void Viewport::deleteCmd()
 {
     if (m_spline_mode)
     {
-        list<ISceneNode*> sel = m_selection_handler->getSelectedSplinePoints();
+        list<ISceneNode*> sel = m_selection_handler->getSelectedSpherePoints();
         list<ISceneNode*>::Iterator it;
         u32 ix;
         if (m_active_road->getSpline()->getPointNum() == sel.size())
@@ -417,13 +417,24 @@ void Viewport::deleteCmd()
                 m_command_handler.add(rcmd);
             } // if it's a cp
         } // for selected nodes
+        m_selection_handler->clearSelection();
         return;
-    }
-    IObjectCmd* dcmd = new DelCmd(m_selection_handler->getSelectedObjects());
-    m_selection_handler->clearSelection();
-    dcmd->redo();
-    m_command_handler.add(dcmd);
+    } // road splines
 
+    if (m_selection_handler->getSelectedSpherePoints().size() > 0)
+    {
+        m_command_handler.add(
+            new CLRCmd(&m_clh, m_selection_handler->getSelectedSpherePoints()));
+        
+    } // checkline
+
+    if (m_selection_handler->getSelectedObjects().size() > 0)
+    {
+        IObjectCmd* dcmd = new DelCmd(m_selection_handler->getSelectedObjects());
+        dcmd->redo();
+        m_command_handler.add(dcmd);
+    } // objects
+    m_selection_handler->clearSelection();
 } //deleteCmd
 
 // ----------------------------------------------------------------------------

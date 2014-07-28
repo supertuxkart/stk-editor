@@ -60,6 +60,35 @@ void CheckLineHandler::redo()
 } // redo
 
 // ----------------------------------------------------------------------------
+bool CheckLineHandler::isCheckLine(ISceneNode* n)
+{
+    std::list<CheckLine>::iterator it = m_check_lines.begin();
+    while (it != m_check_lines.end())
+    {
+        if (&(*it->n1) == n || &(*it->n2) == n) return true;
+        it++;
+    }
+    return false;
+} // isCheckLine
+
+// ----------------------------------------------------------------------------
+void CheckLineHandler::remove(ISceneNode* n, bool remove)
+{
+    std::list<CheckLine>::iterator it = m_check_lines.begin();
+    while (it != m_check_lines.end())
+    {
+        if (it->n1 == n || it->n2 == n)
+        {
+            it->removed = remove;
+            it->n1->setVisible(!remove);
+            it->n2->setVisible(!remove);
+            return;
+        }
+        it++;
+    }
+} // remove
+
+// ----------------------------------------------------------------------------
 void CheckLineHandler::cancelActive()
 {
     if (m_clip.n1)
@@ -84,7 +113,7 @@ void CheckLineHandler::build(std::ofstream* scene)
     u32 i = 0;
     while (it != m_check_lines.end() && it->active)
     {
-        i++;
+        if (!it->removed) i++;
         it++;
     }
 
@@ -93,13 +122,22 @@ void CheckLineHandler::build(std::ofstream* scene)
        (*scene) << " other-ids = \"1\" />\n";
         u32 j = 0;
         vector3df p1, p2;
-        for (it = m_check_lines.begin(); j < i - 1 && it != m_check_lines.end(); j++, it++)
+        for (it = m_check_lines.begin(); j < i - 1 && it != m_check_lines.end();)
         {
-            p1 = it->n1->getPosition();
-            p2 = it->n2->getPosition();
-            (*scene) << "    <check-line kind=\"activate\" other-ids=\"" << j + 2;
-            (*scene) << "\" p1=\"" << p1.X << " " << p1.Z << "\" p2=\"" << p2.X;
-            (*scene) << " " << p2.Z << "\" same-group=\"" << j + 1 << "\"/>\n";
+            if (it->removed)
+            {
+                it++;
+            }
+            else
+            {
+                p1 = it->n1->getPosition();
+                p2 = it->n2->getPosition();
+                (*scene) << "    <check-line kind=\"activate\" other-ids=\"" << j + 2;
+                (*scene) << "\" p1=\"" << p1.X << " " << p1.Z << "\" p2=\"" << p2.X;
+                (*scene) << " " << p2.Z << "\" same-group=\"" << j + 1 << "\"/>\n";
+                it++;
+                j++;
+            }
         }
 
         p1 = it->n1->getPosition();
@@ -124,7 +162,8 @@ void CheckLineHandler::draw()
 
     while (it != m_check_lines.end() && it->active)
     {
-        vd->draw3DLine(it->n1->getPosition(), it->n2->getPosition(), SColor(255, 255, 0, 0));
+        if (!it->removed)
+            vd->draw3DLine(it->n1->getPosition(), it->n2->getPosition(), SColor(255, 255, 0, 0));
         it++;
     }
 

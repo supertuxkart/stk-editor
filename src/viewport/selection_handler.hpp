@@ -28,7 +28,7 @@ public:
     void                selectNode(ISceneNode* node);
     void                animate(u32 id);
 
-    list<ISceneNode*>   getSelectedSplinePoints();
+    list<ISceneNode*>   getSelectedSpherePoints();
     list<ISceneNode*>   getSelectedObjects();
 
     void                add(ISceneNode* e)      { m_elements.push_back(e);    }
