@@ -10,8 +10,8 @@ ISceneNode* CheckLineHandler::startPlacingNew()
     m_check_lines.erase(it, m_check_lines.end());
 
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
-    m_clip.n1 = sm->addSphereSceneNode(0.2, 16, 0, ANOTHER_MAGIC_NUMBER);
-    
+    m_clip.n1 = sm->addSphereSceneNode(0.2f, 16, 0, ANOTHER_MAGIC_NUMBER);
+
     return m_clip.n1;
 
 } // startPlacingNew
@@ -28,9 +28,9 @@ ISceneNode* CheckLineHandler::place()
         m_clip.active = true;
         return 0;
     }
-    
+
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
-    m_clip.n2 = sm->addSphereSceneNode(0.2,16,0,ANOTHER_MAGIC_NUMBER);
+    m_clip.n2 = sm->addSphereSceneNode(0.2f,16,0,ANOTHER_MAGIC_NUMBER);
     return m_clip.n2;
 } // place
 
@@ -108,7 +108,7 @@ void CheckLineHandler::build(std::ofstream* scene)
 {
     (*scene) << "  <checks>\n";
     (*scene) << "    <check-lap kind=\"lap\" same-group=\"0\"";
-    
+
     std::list<CheckLine>::iterator it = m_check_lines.begin();
     u32 i = 0;
     while (it != m_check_lines.end() && it->active)
@@ -142,7 +142,6 @@ void CheckLineHandler::build(std::ofstream* scene)
 
         p1 = it->n1->getPosition();
         p2 = it->n2->getPosition();
-        f32 h = (p1.Y + p2.Y) / 2.0 - 1;
         (*scene) << "    <check-line kind=\"activate\" other-ids=\"" << 0;
         (*scene) << "\" p1=\"" << p1.X << " " << p1.Y << " " << p1.Z << "\" p2=\"" << p2.X;
         (*scene) << " " << p2.Y << " " << p2.Z << "\" same-group=\"" << j+1 << "\"/>\n";
@@ -166,9 +165,9 @@ void CheckLineHandler::draw()
     {
         if (!it->removed)
         {
-            vd->draw3DLine(it->n1->getPosition(), it->n2->getPosition(), 
+            vd->draw3DLine(it->n1->getPosition(), it->n2->getPosition(),
                                                 SColor(255, 255, 0, 0));
-        }      
+        }
         it++;
     }
 } // draw

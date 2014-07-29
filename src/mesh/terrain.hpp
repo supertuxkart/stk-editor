@@ -99,8 +99,8 @@ public:
     u32          getNX()    { return m_nx;      }
     u32          getNZ()    { return m_nz;      }
 
-    u32          getSizeX() { return m_x;       }
-    u32          getSizeZ() { return m_z;       }
+    f32          getSizeX() { return m_x;       }
+    f32          getSizeZ() { return m_z;       }
     bool         isValid()  { return m_valid;   }
 
     CMeshBuffer<S3DVertex2TCoords>* build(path p);

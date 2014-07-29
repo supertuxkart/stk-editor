@@ -27,7 +27,6 @@ Editor* Editor::m_editor = 0;
 // ----------------------------------------------------------------------------
 bool Editor::buttonClicked(int ID)
 {
-    char* c = 0;
     RoadPanel* rp;
     switch (ID)
     {
@@ -166,7 +165,7 @@ bool Editor::buttonClicked(int ID)
         ep->switchPage(1);
         return true;
     }
-    
+
     if (ID >= m_tex_sel->FIRST_BTN_ID &&
         ID < m_tex_sel->FIRST_TEX_BTN_ID + m_tex_sel->getBtnNum())
     {
@@ -239,7 +238,7 @@ void Editor::simpleShortcuts(EKEY_CODE code)
         return;
     default:
         return;
-    }   
+    }
 
 } // simpleShortcuts
 
@@ -300,7 +299,7 @@ bool Editor::init()
     m_music_loc = 0;
     m_valid_data_dir = false;
     m_indicator = 0;
-    
+
     IrrlichtDevice *nulldevice = createDevice(video::EDT_NULL);
     m_screen_size = nulldevice->getVideoModeList()->getDesktopResolution();
     readConfigFile(nulldevice->getFileSystem());
@@ -450,20 +449,20 @@ void Editor::exportRes()
 
 // ----------------------------------------------------------------------------
 bool Editor::isValidDataLoc()
-{    
+{
     IFileSystem* file_system = m_device->getFileSystem();
     if (file_system->addFileArchive((m_data_loc + "textures").c_str(),
         false, false, EFAT_FOLDER, "", &m_tex_dir))
     {
         initDataLoc();
         return true;
-    }    
+    }
     return false;
 } // validDataLoc
 
 // ----------------------------------------------------------------------------
 bool Editor::validateDataLoc(path file)
-{    
+{
     IFileSystem* file_system = m_device->getFileSystem();
     if (!file_system->addFileArchive((file + "textures").c_str(), false,
                                             false, EFAT_FOLDER, "", &m_tex_dir))
@@ -477,7 +476,7 @@ bool Editor::validateDataLoc(path file)
     f << "  <data_dir path=\"" << file.c_str() << "\" />\n";
     f << "</config>\n";
     f.close();
-    
+
     return true;
 } // validDataLoc
 
@@ -504,7 +503,7 @@ void Editor::initDataLoc()
     p += "music";
     m_music_loc = new c8[p.size() + 1];
     strcpy(m_music_loc, p.c_str());
-    
+
     m_track_dir = m_data_loc.c_str();
     m_track_dir += "tracks/";
 
@@ -523,7 +522,7 @@ void Editor::dataDirLocDlg()
         L"Pls. select data directory (folder containing textures, tracks, etc.):",
         true, 0, -1, false);
     ofd->setMinSize(dimension2du(600, 512));
-    ofd->setRelativePosition(position2di(m_screen_size.Width / 2.0 - 300, 100));
+    ofd->setRelativePosition(position2di(m_screen_size.Width / 2 - 300, 100));
 } // dataDirLocDlg
 
 
@@ -554,14 +553,14 @@ bool Editor::run()
 
 		// drawing
 		m_video_driver->beginScene(true, true, SColor(255, 80, 0, 170));
-        
+
         m_indicator->renderToTexture();
 
         m_scene_manager->drawAll();
 		m_gui_env->drawAll();
 
         m_viewport->draw();
-        
+
         if (m_viewport->getState() != Viewport::FREECAM)
             m_indicator->drawToScreen();
 
@@ -670,7 +669,7 @@ bool Editor::OnEvent(const SEvent& event)
     }
 
     if (!m_viewport->getTrack()) return false;
-     
+
     if (event.EventType == EET_GUI_EVENT)
     {
         RoadPanel* rp;
@@ -763,25 +762,27 @@ bool Editor::OnEvent(const SEvent& event)
 
     // gui active, there is nothing we should do
     if (m_gui_env->getFocus() != NULL) return false;
-    
+
     // keyboard event
     if (event.EventType == EET_KEY_INPUT_EVENT)
     {
         m_keys.keyEvent(event.KeyInput.Key, event.KeyInput.PressedDown);
 
         if (event.KeyInput.PressedDown)
-        if (m_keys.state(SHIFT_PRESSED) && m_keys.state(CTRL_PRESSED))
         {
-            if (m_keys.state(S_PRESSED))     m_viewport->build();
+            if (m_keys.state(SHIFT_PRESSED) && m_keys.state(CTRL_PRESSED))
+            {
+                if (m_keys.state(S_PRESSED))     m_viewport->build();
+            }
+            else
+            {
+                if (m_keys.state(SHIFT_PRESSED)) shiftShortcuts(event.KeyInput.Key);
+                if (m_keys.state(CTRL_PRESSED))  ctrlShortcuts(event.KeyInput.Key);
+                if (!m_keys.state(CTRL_PRESSED) && !m_keys.state(SHIFT_PRESSED))
+                    simpleShortcuts(event.KeyInput.Key);
+            }
         }
-        else
-        {
-            if (m_keys.state(SHIFT_PRESSED)) shiftShortcuts(event.KeyInput.Key);
-            if (m_keys.state(CTRL_PRESSED))  ctrlShortcuts(event.KeyInput.Key);
-            if (!m_keys.state(CTRL_PRESSED) && !m_keys.state(SHIFT_PRESSED))  
-                simpleShortcuts(event.KeyInput.Key);
-        }
-        return true;
+            return true;
     }
 
 	return false;
@@ -856,10 +857,10 @@ void Editor::addToRecentlyOpenedList(stringc name)
         list.pop_back();
     list.push_front(name);
 
-    
+
     std::ofstream f;
     f.open((m_config_loc + "/recent.xml").c_str());
-    
+
     f << "<files>\n";
 
     it = list.begin();
@@ -892,12 +893,11 @@ std::list<stringc> Editor::readRecentlyOpenedList()
             {
                 s  = xml_reader->getAttributeValueSafe(L"name");
                 list.push_back(s);
-            }            
+            }
         }
+        xml_reader->drop();
     }
     return list;
-
-    xml_reader->drop();
 } // readRecentlyOpenedList
 
 // ----------------------------------------------------------------------------

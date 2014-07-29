@@ -36,7 +36,7 @@ void AztecCamera::setHeight(bool new_indi)
     m_cam->setProjectionMatrix(mat, true);
 
     if (!new_indi) m_indicator->setProjMat(m_normal_cd, hVol, nv, fv);
-    else m_indicator = new Indicator(m_cam->getPosition(), m_cam->getTarget(), 
+    else m_indicator = new Indicator(m_cam->getPosition(), m_cam->getTarget(),
                              m_cam->getUpVector(), m_normal_cd, hVol, nv, fv);
 } // setHeight
 
@@ -136,7 +136,6 @@ void AztecCamera::processMouse(f32 dt)
     // zoom
     if (m_mouse->wheel != 0)
     {
-        dimension2du ss = Editor::getEditor()->getScreenSize();
         m_normal_cd -= m_mouse->wheel * 10.0f;
         if (m_normal_cd < 8) m_normal_cd = 8;
         setHeight();
@@ -185,11 +184,11 @@ void AztecCamera::processMouse(f32 dt)
 // ----------------------------------------------------------------------------
 void AztecCamera::moveWithMouse()
 {
-    line3df last_ray = 
-        m_iscm->getRayFromScreenCoordinates(vector2d<s32>(m_mouse->prev_x, 
+    line3df last_ray =
+        m_iscm->getRayFromScreenCoordinates(vector2d<s32>(m_mouse->prev_x,
                                                             m_mouse->prev_y));
-    line3df ray = 
-        m_iscm->getRayFromScreenCoordinates(vector2d<s32>(m_mouse->x, 
+    line3df ray =
+        m_iscm->getRayFromScreenCoordinates(vector2d<s32>(m_mouse->x,
                                                             m_mouse->y));
     vector3df d = (ray.start - last_ray.start);
     vector3df pos = m_cam->getPosition();
@@ -224,7 +223,6 @@ vector3df AztecCamera::getTransformedXdir()
 // ----------------------------------------------------------------------------
 vector3df AztecCamera::getTransformedYdir()
 {
-    vector3df pos = m_cam->getPosition();
     vector3df transformed_y_dir = m_cam->getUpVector();
     transformed_y_dir.normalize();
     return transformed_y_dir;
@@ -247,7 +245,7 @@ void AztecCamera::init(f32 x, f32 z)
     m_cam->setPosition(vector3df(m_cx - 15, 80, m_cz));
     m_cam->setTarget(vector3df(m_cx - 15, 0, m_cz));
     m_cam->setUpVector(vector3df(0, 0, 1));
-    m_indicator->update(vector3df(m_cx, 80, m_cz + 20), 
+    m_indicator->update(vector3df(m_cx, 80, m_cz + 20),
           vector3df(m_cx, 0, m_cz), vector3df(0, 0, 1));
 } // init
 

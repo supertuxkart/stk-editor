@@ -142,8 +142,8 @@ bool Terrain::intersectionPoint(const line3df& ray, float r,
     float     t = -p1.Y / v.Y;
     vector3df p = vector3df(p1.X + v.X * t, 0, p1.Z + v.Z * t);
 
-    s32 iix = (int) (p.X / (m_x / m_nx) + 0.5);
-    s32 iiz = (int) (p.Z / (m_z / m_nz) + 0.5);
+    u32 iix = (int) (p.X / (m_x / m_nx) + 0.5);
+    u32 iiz = (int) (p.Z / (m_z / m_nz) + 0.5);
 
     if (iix < 0 || iiz < 0 || iix >= m_nx || iiz >= m_nz)
     {

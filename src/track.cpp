@@ -96,7 +96,7 @@ Track::Track(path file)
         std::cerr << "File can not be opened: signature failed.";
         m_valid = false;
         return;
-    } 
+    }
 
     // TRACK NAME
     u8 size;
@@ -126,7 +126,6 @@ Track::Track(path file)
     delete cc;
 
     // MUSIC
-    cc;
     fread(&size, sizeof(u8), 1, pFile);
     if (!isValidSize(size, file)) return;
     cc = new c8[size];
@@ -149,7 +148,7 @@ Track::Track(path file)
 
     Sky* s = Viewport::get()->getSky();
     delete s;
-    
+
     s = new Sky(pFile);
     Viewport::get()->setSky(s);
 
@@ -161,7 +160,7 @@ Track::Track(path file)
     {
         std::cerr << "Invalid road num - file must be corrupted.";
     }
-    else 
+    else
     {
         if (size > 0)
         {
@@ -209,8 +208,8 @@ Track::Track(path file)
         c8 *name = new c8[size];
         fread(name, sizeof(c8), size, pFile);
         path p = name;
-        if (name == "banana" && name == "item"
-            && name == "small-nitro" && name == "big-nitro")
+        if (p == path("banana") || p == path("item")
+            || p == path("small-nitro") || p == path("big-nitro"))
         {
             node = loadItem(name);
         } // item
@@ -368,7 +367,7 @@ void Track::build()
     writer->writeMesh(file, &smesh);
     file->drop();
     delete writer;
-    
+
     m_driveline->build(p);
 
     std::ofstream mat;

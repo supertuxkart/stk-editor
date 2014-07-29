@@ -25,7 +25,7 @@ public:
 
     void            redo();
     void            undo();
-    void            calcCenter(s32* x, s32* y);
+    void            calcCenter(f32* x, f32* y);
     virtual void    update(s32 x, s32 y) {};
 };
 
@@ -78,9 +78,9 @@ class RotateCmd : public IObjectCmd
 {
 private:
     static bool Z_MODE;
-    s32 m_sx, m_sy;
-    s32 m_x,  m_y;
-    s32 m_cx, m_cy;
+    f32 m_sx, m_sy;
+    f32 m_x,  m_y;
+    f32 m_cx, m_cy;
     vector3df m_tx;
     vector3df m_ty;
     vector3df m_tz;
@@ -94,23 +94,23 @@ public:
     void redo(ISceneNode* e);
     void undo(ISceneNode* e);
 
-    void update(s32 x, s32 y)       { m_x = x; m_y = y; }
+    void update(s32 x, s32 y)       { m_x = (f32)x; m_y = (f32)y; }
 }; // RotateCmd
 
 // ----------------------------------------------------------------------------
 class ScaleCmd : public IObjectCmd
 {
 private:
-    s32 m_sx, m_sy;
-    s32 m_cx, m_cy;
-    s32 m_x,  m_y ;
+    f32 m_sx, m_sy;
+    f32 m_cx, m_cy;
+    f32 m_x,  m_y ;
 public:
     ScaleCmd(list<ISceneNode*> e, s32 x, s32 y);
 
     void redo(ISceneNode* e);
     void undo(ISceneNode* e);
 
-    void update(s32 x, s32 y)       { m_x = x; m_y = y; }
+    void update(s32 x, s32 y)       { m_x = (f32)x; m_y = (f32)y; }
 }; // ScaleCmd
 
 #endif

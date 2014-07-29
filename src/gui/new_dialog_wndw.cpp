@@ -72,7 +72,7 @@ u32 NewDialogWndw::getSize()
 // ----------------------------------------------------------------------------
 void NewDialogWndw::reallocate(dimension2du ss)
 {
-    m_wndw->setRelativePosition(position2di(ss.Width / 2.0f - 150,
-                                            ss.Height / 2.0f - 100));
+    m_wndw->setRelativePosition(position2di(ss.Width / 2 - 150,
+                                            ss.Height / 2 - 100));
 } // reallocate
 

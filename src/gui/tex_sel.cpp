@@ -19,7 +19,7 @@ void TexSel::init()
     m_wndw = gui_env->addWindow(rect<s32>(ss.Width-500, 50, ss.Width-250, ss.Height),
                                 false, _(L"Textures"), 0, 0);
 
-    m_search_field = gui_env->addEditBox(L"", rect<s32>(40, 40, 210, 60), 
+    m_search_field = gui_env->addEditBox(L"", rect<s32>(40, 40, 210, 60),
                                                         true, m_wndw, SEARCH_BOX);
     m_selected_page = 0;
 
@@ -41,7 +41,7 @@ void TexSel::init()
     initButtons();
     bindTexturesToButton(0);
     hide();
-    
+
 } // init
 
 // ----------------------------------------------------------------------------
@@ -59,7 +59,7 @@ bool TexSel::texContainsString(ITexture* tex, stringw str)
 void TexSel::bindTexturesToButton(u32 page)
 {
     list<ITexture*>::Iterator it;
-    
+
     it = m_tex_list.begin();
     stringw s = m_search_field->getText();
 
@@ -83,7 +83,7 @@ void TexSel::bindTexturesToButton(u32 page)
             }
             it++;
         }
-        else 
+        else
         {
             m_btn_table[i].first->setVisible(false);
             i++;
@@ -95,7 +95,6 @@ void TexSel::bindTexturesToButton(u32 page)
 // ----------------------------------------------------------------------------
 void TexSel::loadTextures()
 {
-    IFileSystem* file_system = Editor::getEditor()->getDevice()->getFileSystem();
     IFileArchive* dir = Editor::getEditor()->getTexDir();
     ITexture* t;
     const IFileList* file_list = dir->getFileList();

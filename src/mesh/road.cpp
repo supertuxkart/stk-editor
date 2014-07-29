@@ -6,13 +6,13 @@
 #include "assert.h"
 
 // ----------------------------------------------------------------------------
-void Road::calcVertexRow(vector3df p, vector3df n, vector3df w, int offset, 
+void Road::calcVertexRow(vector3df p, vector3df n, vector3df w, int offset,
                                                       float wx, float t)
 {
     w *= m_width / m_width_vert_num * wx;
     for (u32 i = 0; i < m_width_vert_num / 2; i++)
     {
-        m_mesh_buff->Vertices[offset + i].Pos = 
+        m_mesh_buff->Vertices[offset + i].Pos =
             p + w * ((s32)i - (s32)m_width_vert_num / 4 + 0.5f);
         m_mesh_buff->Vertices[offset + i].Color = SColor(255, 255, 255, 255);
         m_mesh_buff->Vertices[offset + i].TCoords = vector2df(i / (f32)m_width_vert_num,
@@ -21,13 +21,13 @@ void Road::calcVertexRow(vector3df p, vector3df n, vector3df w, int offset,
 
     for (u32 i = 0; i < m_width_vert_num / 2; i++)
     {
-        vector3df vec = 
+        vector3df vec =
             m_mesh_buff->Vertices[offset + m_width_vert_num / 2 - i - 1].Pos - 0.3f * n;
         m_mesh_buff->Vertices[offset + m_width_vert_num / 2 + i].Pos = vec;
         m_mesh_buff->Vertices[offset + m_width_vert_num / 2 + i].Color =
             SColor(255, 0, 0, 0);
         m_mesh_buff->Vertices[offset + m_width_vert_num / 2 + i].TCoords
-            = vector2df(0.5 + i / (f32)m_width_vert_num,
+            = vector2df(0.5f + i / (f32)m_width_vert_num,
                                        t*m_tex_warp_count);
     }
 } // calcVertexRow
@@ -61,7 +61,7 @@ void Road::createIndexList(int nj, int ni)
 
 // ----------------------------------------------------------------------------
 Road::Road(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s, stringw n)
-                                                    :IRoad(parent, mgr, id, s, n) 
+                                                    :IRoad(parent, mgr, id, s, n)
 {
     m_tri = 0;
     m_mesh_buff                           = new CMeshBuffer<S3DVertex2TCoords>();
@@ -72,7 +72,7 @@ Road::Road(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s, stringw n
 
 // ----------------------------------------------------------------------------
 Road::Road(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
-                                         :IRoad(parent, mgr, id, fp) 
+                                         :IRoad(parent, mgr, id, fp)
 {
     m_tri = 0;
     m_mesh_buff                           = new CMeshBuffer<S3DVertex2TCoords>();
@@ -92,7 +92,7 @@ void Road::refresh()
     int spn = m_spline->getPointNum() - 1;
     m_mesh_buff->Vertices.reallocate((int)(1.0f / m_detail * spn + 1) * m_width_vert_num);
     m_mesh_buff->Indices.reallocate((int)(1.0f / m_detail * spn) * m_width_vert_num * 6);
-    
+
     m_mesh_buff->Vertices.set_used((int)(1.0f / m_detail * spn + 1) * m_width_vert_num);
     m_mesh_buff->Indices.set_used((int)(1.0f / m_detail * spn) * m_width_vert_num * 6);
 
@@ -127,8 +127,6 @@ void Road::refresh()
     m_mesh_buff->recalculateBoundingBox();
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
     sm->getMeshManipulator()->recalculateNormals(m_mesh_buff, true, true);
-
-    vector3df trans = m_mesh_buff->getBoundingBox().getCenter();
 } // refresh
 
 // ----------------------------------------------------------------------------

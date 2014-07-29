@@ -114,7 +114,6 @@ stringc Sky::getXmlString()
 {
     stringc s = "  <sky-box texture=\"";
     stringc h;
-    u32 ix;
 
     s += getTexStr(m_up) + " " + getTexStr(m_down) + " " + getTexStr(m_left) + " ";
     s += getTexStr(m_right) + " " + getTexStr(m_front) + " " + getTexStr(m_back);

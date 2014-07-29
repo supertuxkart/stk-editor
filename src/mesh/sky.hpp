@@ -28,11 +28,11 @@ private:
     void    readTexSt(FILE* fp, ITexture** tex);
 
 public:
-    Sky(ITexture* up,    ITexture* down,  ITexture* left, 
+    Sky(ITexture* up,    ITexture* down,  ITexture* left,
         ITexture* right, ITexture* front, ITexture* back);
     Sky(FILE* fp);
 
-    ~Sky() { m_sky->remove(); }
+    virtual ~Sky() { m_sky->remove(); }
 
     void        save(FILE *fp);
     void        notify(ITexture* t);

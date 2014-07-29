@@ -7,16 +7,15 @@ ExtraPanel* ExtraPanel::m_extra_panel = 0;
 void ExtraPanel::init()
 {
     IGUIEnvironment* gui_env = Editor::getEditor()->getGUIEnv();
-    IVideoDriver*    driver  = Editor::getEditor()->getVideoDriver();
 
     IGUIFont* font = gui_env->getFont(L"font/font.xml");
 
     m_wndw->setRelativePosition(position2di(0, 50));
-    
+
     gui_env->addStaticText(_(L"Items:"), rect<s32>(10, 10, 200, 30),
                            false, false, m_wndw, -1, false)->setOverrideFont(font);
 
-    
+
     IGUIButton* b4 = gui_env->addButton(rect<s32>(10,  50, 60,  100), m_wndw, BTN_BANANA);
     IGUIButton* b5 = gui_env->addButton(rect<s32>(70,  50, 120, 100), m_wndw, BTN_ITEM);
     IGUIButton* b6 = gui_env->addButton(rect<s32>(130, 50, 180, 100), m_wndw, BTN_SNITRO);

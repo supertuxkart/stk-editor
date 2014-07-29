@@ -23,7 +23,7 @@ void IObjectCmd::undo()
 } // undo
 
 // ----------------------------------------------------------------------------
-void IObjectCmd::calcCenter(s32 *x, s32 *y)
+void IObjectCmd::calcCenter(f32 *x, f32 *y)
 { 
     (*x) = 0; (*y) = 0;
     ISceneCollisionManager* iscm;
@@ -151,10 +151,10 @@ void RotateCmd::calcAllRot(vector3df* x, vector3df* y, vector3df* z)
 RotateCmd::RotateCmd(list<ISceneNode*> e, s32 x, s32 y,
     vector3df i, vector3df j, vector3df k) :IObjectCmd(e)
 {
-    m_sx = x;
-    m_sy = y;
-    m_x = x;
-    m_y = y;
+    m_sx = (f32) x;
+    m_sy = (f32) y;
+    m_x  = (f32) x;
+    m_y  = (f32) y;
     m_tx = j;
     m_ty = -i;
     m_tz = k;
@@ -167,7 +167,7 @@ RotateCmd::RotateCmd(list<ISceneNode*> e, s32 x, s32 y,
 void RotateCmd::swapZMode(s32 x, s32 y)
 {
     Z_MODE = !Z_MODE;
-    m_sx = x; m_sy = y;
+    m_sx = (f32)x; m_sy = (f32)y;
     if (Z_MODE) calcCenter(&m_cx, &m_cy);
 } // switchMode
 
@@ -199,10 +199,10 @@ void RotateCmd::undo(ISceneNode *node)
 
 ScaleCmd::ScaleCmd(list<ISceneNode*> e, s32 x, s32 y) :IObjectCmd(e)
 {
-    m_sx = x;
-    m_sy = y;
-    m_x = x;
-    m_y = y;
+    m_sx = (f32) x;
+    m_sy = (f32) y;
+    m_x =  (f32) x;
+    m_y =  (f32) y;
     calcCenter(&m_cx, &m_cy);
 } // ScaleCmd
 
@@ -211,8 +211,8 @@ void ScaleCmd::redo(ISceneNode *node)
 {
     f32 s1 = vector2df(m_cx,m_cy).getDistanceFrom(vector2df(m_sx,m_sy));
     f32 s2 = vector2df(m_cx, m_cy).getDistanceFrom(vector2df(m_x, m_y));
-    if (s1 < 0.00001) s1 = 0.00001;
-    if (s2 < 0.00001) s2 = 0.00001;
+    if (s1 < 0.00001f) s1 = 0.00001f;
+    if (s2 < 0.00001f) s2 = 0.00001f;
     node->setScale(node->getScale()* s2 / s1);
 } // redo
 
@@ -221,8 +221,8 @@ void ScaleCmd::undo(ISceneNode *node)
 {
     f32 s1 = vector2df(m_cx, m_cy).getDistanceFrom(vector2df(m_sx, m_sy));
     f32 s2 = vector2df(m_cx, m_cy).getDistanceFrom(vector2df(m_x, m_y));
-    if (s1 < 0.00001) s1 = 0.00001;
-    if (s2 < 0.00001) s2 = 0.00001;
+    if (s1 < 0.00001f) s1 = 0.00001f;
+    if (s2 < 0.00001f) s2 = 0.00001f;
     node->setScale(node->getScale()* s1 / s2);
 } // undo
 

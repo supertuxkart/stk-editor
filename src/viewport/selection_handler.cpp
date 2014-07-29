@@ -14,7 +14,7 @@ bool SelectionHandler::firstIsCloser(vector3df v1, vector3df v2)
     vector3df pos = Viewport::get()->getAztecPos();
 
     if ((pos - v1).getLength() < (pos - v2).getLength()) return true;
-    
+
     return false;
 } // closerToCamera
 
@@ -69,7 +69,7 @@ void SelectionHandler::animate(u32 id)
         u32 ix = 1;
         vector3df   cp_end;
         ISceneNode* road_node;
-        while (road_node = (Road*)Viewport::get()->getTrack()->getRoadByID(ix))
+        while ((road_node = (Road*)Viewport::get()->getTrack()->getRoadByID(ix)))
         {
             ix++;
             vector3df   cp;
@@ -99,7 +99,7 @@ void SelectionHandler::animate(u32 id)
             ISpline* spline = ((IRoad*)selected_road)->getSpline();
             u32 ix = 0;
             ISceneNode* n;
-            while (n = spline->getNode(ix))
+            while ((n = spline->getNode(ix)))
             {
                 m_selected_elements.push_back(n);
                 n->setDebugDataVisible(EDS_BBOX);
