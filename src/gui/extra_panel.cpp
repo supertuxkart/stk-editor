@@ -7,6 +7,7 @@ ExtraPanel* ExtraPanel::m_extra_panel = 0;
 void ExtraPanel::init()
 {
     IGUIEnvironment* gui_env = Editor::getEditor()->getGUIEnv();
+    IVideoDriver*    driver  = Editor::getEditor()->getVideoDriver();
 
     IGUIFont* font = gui_env->getFont(L"font/font.xml");
 
@@ -20,11 +21,11 @@ void ExtraPanel::init()
     IGUIButton* b5 = gui_env->addButton(rect<s32>(70,  50, 120, 100), m_wndw, BTN_ITEM);
     IGUIButton* b6 = gui_env->addButton(rect<s32>(130, 50, 180, 100), m_wndw, BTN_SNITRO);
     IGUIButton* b7 = gui_env->addButton(rect<s32>(190, 50, 240, 100), m_wndw, BTN_BNITRO);
-                                                                              
+
     b4->setImage(Editor::loadImg(L"img/banana.png"));
-    b5->setImage(Editor::loadImg(L"img/item.jpg"));
-    b6->setImage(Editor::loadImg(L"img/snitro.jpg"));
-    b7->setImage(Editor::loadImg(L"img/bnitro.jpg"));
+    b5->setImage(Editor::loadImg(L"img/gift.png"));
+    b6->setImage(Editor::loadImg(L"img/snitro.png"));
+    b7->setImage(Editor::loadImg(L"img/bnitro.png"));
 
 } // init
 
