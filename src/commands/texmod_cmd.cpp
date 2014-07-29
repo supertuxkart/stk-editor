@@ -87,9 +87,9 @@ void TexModCmd::undo()
     u8* img;
     img = (u8*) tex->lock(ETLM_READ_WRITE);
 
-    u8 tmp;
     for (u32 i = 0; i < m_mod_count; i++)
     {
+        u8 tmp;
         tmp = *((u8*)(m_mod[i].first + img));
         *((u8*)(m_mod[i].first + img)) = m_mod[i].second;
         m_mod[i].second = tmp;

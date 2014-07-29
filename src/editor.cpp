@@ -433,8 +433,8 @@ void Editor::exportRes()
                 p = xml_reader->getAttributeValueSafe(L"path");
             }
         }
+        xml_reader->drop();
     }
-    xml_reader->drop();
 
     std::ofstream f;
     f.open((m_config_loc + "/config.xml").c_str());

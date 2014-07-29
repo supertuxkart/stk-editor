@@ -30,7 +30,7 @@ void Sky::readTexSt(FILE* fp, ITexture** tex)
     fread(cc, sizeof(c8), size, fp);
     path p = cc;
     *tex = Editor::loadImg(p);
-    delete cc;
+    delete[] cc;
 } // readTexSt
 
 // ----------------------------------------------------------------------------

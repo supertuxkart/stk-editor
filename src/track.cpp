@@ -114,7 +114,7 @@ Track::Track(path file)
     c = new wchar_t[size];
     fread(c, sizeof(wchar_t), size, pFile);
     m_designer = c;
-    delete c;
+    delete[] c;
 
     // FILE NAME
     c8* cc;
@@ -123,7 +123,7 @@ Track::Track(path file)
     cc = new c8[size];
     fread(cc, sizeof(c8), size, pFile);
     m_file_name = cc;
-    delete cc;
+    delete[] cc;
 
     // MUSIC
     fread(&size, sizeof(u8), 1, pFile);
@@ -131,7 +131,7 @@ Track::Track(path file)
     cc = new c8[size];
     fread(cc, sizeof(c8), size, pFile);
     m_music = cc;
-    delete cc;
+    delete[] cc;
 
     // TERRAIN
     ISceneManager* sm = Editor::getEditor()->getSceneManager();

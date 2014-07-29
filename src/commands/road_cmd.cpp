@@ -10,6 +10,7 @@ RoadCmd::RoadCmd(IRoad* road, bool insert, bool inverted)
     m_created = false;
     m_spline  = m_road->getSpline(); 
     m_cp.node = 0;
+    m_ix = 0;
 }; // RoadCommand
 
 // ----------------------------------------------------------------------------

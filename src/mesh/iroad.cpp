@@ -41,7 +41,7 @@ IRoad::IRoad(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
     cc = new c8[size];
     fread(cc, sizeof(c8), size, fp);
     setName(cc);
-    delete cc;
+    delete[] cc;
 
     fread(&m_width_vert_num, sizeof(u32), 1, fp);
     fread(&m_detail, sizeof(f32), 1, fp);
@@ -60,7 +60,7 @@ IRoad::IRoad(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
     c = new wchar_t[size];
     fread(c, sizeof(wchar_t), size, fp);
     type = c;
-    delete c;
+    delete[] c;
 
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
     if (type == L"TCR")
