@@ -77,7 +77,7 @@ public:
 class RotateCmd : public IObjectCmd
 {
 private:
-    bool z_mode;
+    static bool Z_MODE;
     s32 m_sx, m_sy;
     s32 m_x,  m_y;
     s32 m_cx, m_cy;
@@ -90,7 +90,7 @@ private:
 public:
     RotateCmd(list<ISceneNode*> e, s32 x, s32 y, vector3df i, vector3df j, vector3df k);
 
-    void setZMode(bool zmode, s32 x, s32 y);
+    void swapZMode(s32 x, s32 y);
     void redo(ISceneNode* e);
     void undo(ISceneNode* e);
 

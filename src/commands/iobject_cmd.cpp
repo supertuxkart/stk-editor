@@ -112,6 +112,8 @@ void MoveCmd::undo(ISceneNode *node)
 // RotateCmd  -----------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
+bool RotateCmd::Z_MODE = false;
+
 // ----------------------------------------------------------------------------
 vector3df RotateCmd::calcRot(f32 angle, vector3df axis)
 {
@@ -128,7 +130,7 @@ vector3df RotateCmd::calcRot(f32 angle, vector3df axis)
 void RotateCmd::calcAllRot(vector3df* x, vector3df* y, vector3df* z)
 {
     vector3df rotx, roty, rotz;
-    if (z_mode)
+    if (Z_MODE)
     {
         vector2df v1 = vector2df(m_cx - m_sx, m_cy - m_sy);
         vector2df v2 = vector2df(m_cx - m_x, m_cy - m_y);
@@ -158,14 +160,15 @@ RotateCmd::RotateCmd(list<ISceneNode*> e, s32 x, s32 y,
     m_tz = k;
     m_cx = 0;
     m_cy = 0;
-    setZMode(false, x,y);
+    if (Z_MODE) calcCenter(&m_cx, &m_cy);
 } // RotateCmd
 
 // ----------------------------------------------------------------------------
-void RotateCmd::setZMode(bool zmode, s32 x, s32 y)
+void RotateCmd::swapZMode(s32 x, s32 y)
 {
-    m_sx = x; m_sy = y; z_mode = zmode;
-    if (z_mode) calcCenter(&m_cx, &m_cy);
+    Z_MODE = !Z_MODE;
+    m_sx = x; m_sy = y;
+    if (Z_MODE) calcCenter(&m_cx, &m_cy);
 } // switchMode
 
 // ----------------------------------------------------------------------------

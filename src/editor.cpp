@@ -258,6 +258,7 @@ void Editor::shiftShortcuts(EKEY_CODE code)
         m_viewport->move();
         break;
     case KEY_KEY_R:
+        m_viewport->setEditMode(Viewport::ROTATE);
         m_viewport->rotate();
         break;
     default:
@@ -553,7 +554,6 @@ bool Editor::run()
 
 		// drawing
 		m_video_driver->beginScene(true, true, SColor(255, 80, 0, 170));
-
         
         m_indicator->renderToTexture();
 
