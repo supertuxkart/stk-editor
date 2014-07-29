@@ -1,6 +1,8 @@
 #include "spline/ispline.hpp"
 #include "editor.hpp"
 
+#define MAX_SPLINE_CP_NUM 3000
+
 // ----------------------------------------------------------------------------
 vector3df ISpline::calculateVelInPoint(vector3df pm, vector3df p0, vector3df pp,
                                   list<ControlPoint>::Iterator it)
@@ -94,6 +96,7 @@ void ISpline::loadNode(ISceneNode* sn, FILE* fp)
 ISpline::ISpline(ISceneNode* parent, ISceneManager* mgr, s32 id, stringw type)
                                                     :ISceneNode(parent, mgr, id)
 {
+    m_valid = true;
     m_type = type;
     setAutomaticCulling(EAC_OFF);
     m_cp_num = 0;
@@ -103,9 +106,15 @@ ISpline::ISpline(ISceneNode* parent, ISceneManager* mgr, s32 id, stringw type)
 ISpline::ISpline(ISceneNode* parent, ISceneManager* mgr, s32 id, stringw t, FILE* fp)
                                                          :ISceneNode(parent, mgr, id)
 {
+    m_valid = true;
     m_type = t;
     u32 size;
     fread(&size, sizeof(u32), 1, fp);
+    if (size > MAX_SPLINE_CP_NUM)
+    {
+        m_valid = false;
+        return;
+    }
     list<ControlPoint>::Iterator it;
     m_cp_num = 0;
     for (u32 i = 0; i < size; i++)

@@ -7,6 +7,10 @@
 
 #include <iostream>
 
+#define MAX_DETAIL 100       
+#define MAX_WIDTH 200
+#define MAX_WVT 20
+
 // ----------------------------------------------------------------------------
 IRoad::IRoad(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s, stringw n)
                                                        :ISceneNode(parent, mgr, id)
@@ -29,6 +33,11 @@ IRoad::IRoad(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
     u8 size;
     c8* cc;
     fread(&size, sizeof(u8), 1, fp);
+    if (size > 40)
+    {
+        m_valid = false;
+        return;
+    }
     cc = new c8[size];
     fread(cc, sizeof(c8), size, fp);
     setName(cc);
@@ -37,6 +46,13 @@ IRoad::IRoad(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
     fread(&m_width_vert_num, sizeof(u32), 1, fp);
     fread(&m_detail, sizeof(f32), 1, fp);
     fread(&m_width, sizeof(f32), 1, fp);
+
+    if (m_width_vert_num < 0 || m_detail < 0 || m_width < 0
+        || m_width_vert_num > MAX_WVT ||m_detail > MAX_DETAIL ||m_width > MAX_WIDTH)
+    {
+        m_valid = false;
+        return;
+    }
 
     stringw type;
     wchar_t* c;
@@ -52,6 +68,7 @@ IRoad::IRoad(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
     else m_spline = new Bezier(sm->getRootSceneNode(), sm, 0, fp);
     setAutomaticCulling(EAC_OFF);
 
+    m_valid = m_spline->isValid();
 } // IRoad
 
 // ----------------------------------------------------------------------------

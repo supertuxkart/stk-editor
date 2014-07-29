@@ -7,6 +7,7 @@
 class IRoad :public ISceneNode
 {
 protected:
+    bool            m_valid;
     ISpline*        m_spline;
 
     f32             m_detail;
@@ -30,7 +31,7 @@ public:
     void    setWidth(float d)     { m_width = d; refresh(); setWireFrame(true);          }
     void    setTexWrapCount(u32 c){ m_tex_warp_count = c; refresh(); setWireFrame(false);}
 
-
+    bool            isValid()               { return m_valid;  }
     ISpline*        getSpline()             { return m_spline; }
 
     virtual void    save(FILE* fp);

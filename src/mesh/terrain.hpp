@@ -17,6 +17,7 @@ using namespace io;
 class Terrain :public ISceneNode, public IShaderConstantSetCallBack, public ISubscriber
 {
 private:
+    bool                m_valid;
 // ----------------------------------------------------------------------------
     // private variables - geometry
     Mesh                m_mesh;
@@ -95,12 +96,12 @@ public:
 
     void         setHighlightVisibility(bool b) { m_highlight_visible = b; }
 
-    u32          getNX() { return m_nx; }
-    u32          getNZ() { return m_nz; }
+    u32          getNX()    { return m_nx;      }
+    u32          getNZ()    { return m_nz;      }
 
-    u32          getSizeX() { return m_x; }
-    u32          getSizeZ() { return m_z; }
-
+    u32          getSizeX() { return m_x;       }
+    u32          getSizeZ() { return m_z;       }
+    bool         isValid()  { return m_valid;   }
 
     CMeshBuffer<S3DVertex2TCoords>* build(path p);
     void                            save(FILE* file);

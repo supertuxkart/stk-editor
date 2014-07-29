@@ -8,6 +8,7 @@
 
 #include <algorithm>
 #include <assert.h>
+#include <iostream>
 
 const u32 Terrain::SPIMG_X = 1024;
 const u32 Terrain::SPIMG_Y = 1024;
@@ -382,6 +383,7 @@ Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id,
     :ISceneNode(parent, mgr, id), m_nx(nx), m_nz(nz)
 {
 
+    m_valid = true;
     m_bounding_box = aabbox3d<f32>(0, 0, 0, x, 0, z);
 
     setAutomaticCulling(EAC_OFF);
@@ -425,13 +427,26 @@ Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id,
 Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
                                               :ISceneNode(parent, mgr, id)
 {
+    m_valid = true;
     setAutomaticCulling(EAC_OFF);
 
     fread(&m_x, sizeof(f32), 1, fp);
     fread(&m_z, sizeof(f32), 1, fp);
 
+    if (m_x < 0 || m_z < 0 || m_x > 200 || m_z > 200)
+    {
+        m_valid = false;
+        return;
+    }
+
     fread(&m_nx, sizeof(u32), 1, fp);
     fread(&m_nz, sizeof(u32), 1, fp);
+
+    if (m_x > 400 || m_z > 400)
+    {
+        m_valid = false;
+        return;
+    }
 
     m_bounding_box = aabbox3d<f32>(0, 0, 0, m_x, 0, m_z);
 
@@ -449,9 +464,7 @@ Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
     {
         m_mesh.vertices[j * m_nx + i].Pos =
             vector3df(m_x / m_nx * i, 0, m_z / m_nz *j);
-
         fread(&m_mesh.vertices[j * m_nx + i].Pos.Y, sizeof(f32), 1, fp);
-
         m_mesh.vertices[j * m_nx + i].Color = SColor(255, 255, 255, 255);
 
         m_mesh.vertices[j * m_nx + i].TCoords =
@@ -474,14 +487,15 @@ Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
     fread(&x, sizeof(u32), 1, fp);
     fread(&y, sizeof(u32), 1, fp);
 
-    assert(x == SPIMG_X && y == SPIMG_Y);
+    if (x != SPIMG_X || y != SPIMG_Y)
+    {
+        std::cerr << "Warning: splatting image size incorrect!\n";
+    }
 
     fread(m_material.getTexture(1)->lock(ETLM_WRITE_ONLY), sizeof(u8),
                                              4 * SPIMG_X*SPIMG_Y, fp);
     m_material.getTexture(1)->unlock();
-
     m_highlight_visible = false;
-
 } // Terrain - fp
 
 

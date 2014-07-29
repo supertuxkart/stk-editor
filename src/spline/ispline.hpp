@@ -29,6 +29,7 @@ class ISpline :public ISceneNode
     // variables
 
 private:
+    bool                m_valid;
     aabbox3d<f32>       m_bounding_box;
     stringw             m_type;
 protected:
@@ -66,6 +67,7 @@ public:
     u32                 getCPIndexFromNodeID(s32 id);
     bool                hasEnoughPoints()   { return m_cp_num > 1; }
     int                 getPointNum()       { return m_cp_num;     }
+    bool                isValid()           { return m_valid;      }
 
 // ----------------------------------------------------------------------------
     // inherited functions - ISceneNode

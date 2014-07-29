@@ -15,6 +15,8 @@ class DriveLine;
 class Track
 {
 private:
+    bool            m_valid;
+
     stringw         m_track_name;
     stringw         m_designer;
     stringc         m_file_name;
@@ -24,6 +26,8 @@ private:
 
     // m_roads[0] is the driveline
     array<IRoad*>   m_roads;
+
+    bool           isValidSize(u8 size, path file);
 
 public:
 
@@ -50,5 +54,7 @@ public:
     Terrain*   getTerrain()                  { return m_terrain;   }
 
     array<IRoad*>* getRoadList()             { return &m_roads;    }
+
+    bool       isValid()                     { return m_valid;     }
 };
 #endif

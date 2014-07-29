@@ -616,12 +616,17 @@ void Viewport::gainFocus()
 }
 
 // ----------------------------------------------------------------------------
-void Viewport::setTrack(Track* t)
+bool Viewport::setTrack(Track* t)
 {
-    m_track = t;
-    m_terrain = m_track->getTerrain();
-    m_aztec_cam->init(m_terrain->getSizeX(), m_terrain->getSizeZ());
-    m_active_road = t->getRoadByID(0);
+    if (t->isValid())
+    {
+        m_track = t;
+        m_terrain = m_track->getTerrain();
+        m_aztec_cam->init(m_terrain->getSizeX(), m_terrain->getSizeZ());
+        m_active_road = t->getRoadByID(0);
+        return true;
+    }
+    return false;
 } // setTrack
 
 // ----------------------------------------------------------------------------

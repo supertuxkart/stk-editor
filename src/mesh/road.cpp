@@ -68,7 +68,6 @@ Road::Road(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s, stringw n
     m_mesh_buff->Material.Wireframe       = true;
     m_mesh_buff->Material.Lighting        = false;
     m_mesh_buff->Material.BackfaceCulling = false;
-    m_spline->setParent(this);
 } // road
 
 // ----------------------------------------------------------------------------
@@ -80,7 +79,6 @@ Road::Road(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
     m_mesh_buff->Material.Wireframe       = true;
     m_mesh_buff->Material.Lighting        = false;
     m_mesh_buff->Material.BackfaceCulling = false;
-    m_spline->setParent(this);
 } // Road
 
 // ----------------------------------------------------------------------------

@@ -85,7 +85,7 @@ public:
 	bool		                run();
 	virtual bool                OnEvent(const SEvent& event);
     void                        keepMouseIn(s32 sx, s32 sy);
-    void                        open(path p);
+    bool                        open(path p);
     void                        newTrack();
     void                        closeTrack();
     void                        addToRecentlyOpenedList(stringc name);

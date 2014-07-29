@@ -202,8 +202,8 @@ bool Editor::importantButtonClicked(int ID)
         s = m_welcome_screen->getActiveText();
         if (s != "")
         {
-            m_welcome_screen->hide();
-            open(path(m_maps_path) + "/" + m_welcome_screen->getActiveText());
+            if (open(path(m_maps_path) + "/" + m_welcome_screen->getActiveText()))
+                m_welcome_screen->hide();
         }
         return true;
     case WelcomeScreen::FBTN_ID + 2:
@@ -663,7 +663,8 @@ bool Editor::OnEvent(const SEvent& event)
                 path(((IGUIFileOpenDialog*)event.GUIEvent.Caller)->getFileName())));
             break;
         default:
-            open(path(((IGUIFileOpenDialog*)event.GUIEvent.Caller)->getFileName()));
+            if (!open(path(((IGUIFileOpenDialog*)event.GUIEvent.Caller)->getFileName())))
+                m_gui_env->addFileOpenDialog(L"Open track:", true, 0, -1, false, m_maps_path);
         }
         return true;
     }
@@ -806,14 +807,18 @@ void Editor::keepMouseIn(s32 sx, s32 sy)
 } // keepMouseIn
 
 // ----------------------------------------------------------------------------
-void Editor::open(path p)
+bool Editor::open(path p)
 {
     closeTrack();
     m_device->getFileSystem()->changeWorkingDirectoryTo(m_def_wd);
-    m_viewport->setTrack(new Track(p.c_str()));
-    m_viewport->setSplineMode(false);
-    m_viewport->setState(Viewport::SELECT);
-    RoadPanel::getRoadPanel()->updateRoadList();
+    if (m_viewport->setTrack(new Track(p.c_str())))
+    {
+        m_viewport->setSplineMode(false);
+        m_viewport->setState(Viewport::SELECT);
+        RoadPanel::getRoadPanel()->updateRoadList();
+        return true;
+    }
+    else return false;
 } // open
 
 // ----------------------------------------------------------------------------

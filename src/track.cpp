@@ -16,6 +16,22 @@
 #include <stdio.h>
 #include <assert.h>
 
+#define TOP_SECRET_SIGNATURE_NUMBER 3293525168
+#define MAX_ROAD_NUM 1000
+
+// ----------------------------------------------------------------------------
+bool Track::isValidSize(u8 size, path file)
+{
+    if (size < 0 || size > 20)
+    {
+        m_valid = false;
+        std::cerr << "File < " << file.c_str() << " > loading failed:";
+        std::cerr << " File contains invalid string size.\n";
+        return false;
+    }
+    return true;
+} // isValidSize
+
 // ----------------------------------------------------------------------------
 Track::Track(f32 tx, f32 tz)
 {
@@ -27,25 +43,38 @@ Track::Track(f32 tx, f32 tz)
     m_driveline = new DriveLine(sm->getRootSceneNode(), sm, 0, spline, L"DriveLine");
     m_roads.push_back(m_driveline);
     m_music = "Origin.music";
-
+    m_valid = true;
 } // Track
 
 // ----------------------------------------------------------------------------
 Track::Track(path file)
 {
+    m_valid = true;
     FILE* pFile;
     pFile = fopen(file.c_str(), "rb");
 
     if (!pFile)
     {
-        std::cerr << "File is removed or corrupted.\n Sorry! Terminating...\n";
-        exit(-1);
+        std::cerr << "File < " << file.c_str() << " > is removed or corrupted.\n";
+        std::cerr << "Sorry! Terminating...\n";
+        return;
     }
+
+    // SIGN
+    u64 sign;
+    fread(&sign, sizeof(u64), 1, pFile);
+    if (sign != TOP_SECRET_SIGNATURE_NUMBER)
+    {
+        std::cerr << "File can not be opened: signature failed.";
+        m_valid = false;
+        return;
+    } 
 
     // TRACK NAME
     u8 size;
     wchar_t* c;
     fread(&size, sizeof(u8), 1, pFile);
+    if (!isValidSize(size, file)) return;
     c = new wchar_t[size];
     fread(c, sizeof(wchar_t), size, pFile);
     m_track_name = c;
@@ -53,6 +82,7 @@ Track::Track(path file)
 
     // DESIGNER NAME
     fread(&size, sizeof(u8), 1, pFile);
+    if (!isValidSize(size, file)) return;
     c = new wchar_t[size];
     fread(c, sizeof(wchar_t), size, pFile);
     m_designer = c;
@@ -61,6 +91,7 @@ Track::Track(path file)
     // FILE NAME
     c8* cc;
     fread(&size, sizeof(u8), 1, pFile);
+    if (!isValidSize(size, file)) return;
     cc = new c8[size];
     fread(cc, sizeof(c8), size, pFile);
     m_file_name = cc;
@@ -69,6 +100,7 @@ Track::Track(path file)
     // MUSIC
     cc;
     fread(&size, sizeof(u8), 1, pFile);
+    if (!isValidSize(size, file)) return;
     cc = new c8[size];
     fread(cc, sizeof(c8), size, pFile);
     m_music = cc;
@@ -77,6 +109,13 @@ Track::Track(path file)
     // TERRAIN
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
     m_terrain = new Terrain(sm->getRootSceneNode(), sm, 1, pFile);
+
+    if (!m_terrain->isValid())
+    {
+        std::cout << "Loading failed :invalid terrain!\n";
+        m_valid = false;
+        return;
+    }
 
     // SKY
 
@@ -90,24 +129,40 @@ Track::Track(path file)
 
     IRoad* r;
     fread(&size, sizeof(u8), 1, pFile);
-    if (size > 0)
+    if (size < 0 || size > MAX_ROAD_NUM)
     {
-        m_driveline = new DriveLine(sm->getRootSceneNode(), sm, 0, pFile);
-        m_roads.push_back(m_driveline);
-        m_driveline->refresh();
+        std::cerr << "Invalid road num - file must be corrupted.";
     }
-    for (u8 i = 1; i < size; i++)
+    else 
     {
-        r = new Road(sm->getRootSceneNode(), sm, 0, pFile);
-        r->refresh();
-        r->setWireFrame(false);
-        Viewport::get()->setActiveRoad(r);
-        Viewport::get()->setSplineMode(false);
-        m_roads.push_back(r);
-    }
+        if (size > 0)
+        {
+            m_driveline = new DriveLine(sm->getRootSceneNode(), sm, 0, pFile);
+            if (!m_driveline->isValid())
+            {
+                std::cerr << "Warning: invalid driveline!\n";
+                ISpline* spline = new TCR(sm->getRootSceneNode(), sm, 0);
+                m_driveline = new DriveLine(sm->getRootSceneNode(), sm, 0, spline, L"DriveLine");
+            }
+            m_roads.push_back(m_driveline);
+            m_driveline->refresh();
+        } // driveline
+        for (u8 i = 1; i < size; i++)
+        {
+            r = new Road(sm->getRootSceneNode(), sm, 0, pFile);
+            if (r->isValid())
+            {
+                r->refresh();
+                r->setWireFrame(false);
+                Viewport::get()->setActiveRoad(r);
+                Viewport::get()->setSplineMode(false);
+                m_roads.push_back(r);
+            }
+            else std::cerr << "Warning: invalid road - skipped :(\n";
+        } // roads
+    } // valid roadnum
 
     // OBJECTS
-
     u32 num;
     fread(&num, sizeof(u32), 1, pFile);
     Viewport::setLastEntityID(num + MAGIC_NUMBER);
@@ -120,17 +175,26 @@ Track::Track(path file)
         fread(&sca, sizeof(vector3df), 1, pFile);
         u8 size;
         fread(&size, sizeof(u8), 1, pFile);
+        if (!isValidSize(size, file)) return;
         c8 *name = new c8[size];
         fread(name, sizeof(c8), size, pFile);
-        path p =name;
+        path p = name;
         ISceneNode* node =sm->addAnimatedMeshSceneNode(sm->getMesh(p));
-        node->setPosition(pos);
-        node->setRotation(rot);
-        node->setScale(sca);
-        node->setID(MAGIC_NUMBER + i);
+        if (node)
+        {
+            node->setPosition(pos);
+            node->setRotation(rot);
+            node->setScale(sca);
+            node->setID(MAGIC_NUMBER + i);
+        }
+        else
+        {
+            std::cerr << "Warning: couldn't load object < " << name << " >!\n";
+            num -= 1;
+            i -= 1;
+        }
         delete name;
     }
-
     fclose(pFile);
 } // Track - from file
 
@@ -147,6 +211,10 @@ void Track::save()
   pFile = fopen(p.c_str(), "wb");
 
   assert(pFile);
+
+  // SIGN
+  u64 sign = TOP_SECRET_SIGNATURE_NUMBER;
+  fwrite(&sign, sizeof(u64), 1, pFile);
 
   // TRACK NAME
   u8 size = m_track_name.size() + 1;

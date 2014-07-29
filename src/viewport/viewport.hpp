@@ -108,7 +108,7 @@ public:
     bool                splineInterrupt();
     void                loseFocus();
     void                gainFocus();
-    void                setTrack(Track* t);
+    bool                setTrack(Track* t);
     void                build();
     void                clear();
     void                draw();
