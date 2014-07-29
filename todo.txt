@@ -7,4 +7,3 @@ TODO list:
 - try function
 - warnings
 - checkline export
-- checkline leave crash

@@ -37,6 +37,8 @@ ISceneNode* CheckLineHandler::place()
 // ----------------------------------------------------------------------------
 void CheckLineHandler::undo()
 {
+    if (m_check_lines.size() == 0) return;
+
     std::list<CheckLine>::iterator it = m_check_lines.begin();
     while (it != m_check_lines.end() && it->active) it++;
     if (it != m_check_lines.begin()) it--;
