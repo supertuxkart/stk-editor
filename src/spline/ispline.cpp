@@ -276,11 +276,6 @@ void ISpline::updatePosition()
     for (it = m_control_points.begin(); it != m_control_points.end(); it++)
     {
         v = it->normal_node->getPosition();
-        if (v.getLength() > 1.0)
-        {
-            v.normalize();
-            it->normal_node->setPosition(v);
-        }
         it->pos = it->node->getPosition() + getPosition();
         it->normal = it->normal_node->getPosition();
         it->normal.normalize();
