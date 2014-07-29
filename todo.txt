@@ -6,4 +6,3 @@ TODO list:
 - objects
 - try function
 - warnings
-- checkline export
