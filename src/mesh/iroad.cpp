@@ -46,6 +46,7 @@ IRoad::IRoad(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
     fread(&m_width_vert_num, sizeof(u32), 1, fp);
     fread(&m_detail, sizeof(f32), 1, fp);
     fread(&m_width, sizeof(f32), 1, fp);
+    fread(&m_tex_warp_count, sizeof(u32), 1, fp);
 
     if (m_width_vert_num < 0 || m_detail < 0 || m_width < 0
         || m_width_vert_num > MAX_WVT ||m_detail > MAX_DETAIL ||m_width > MAX_WIDTH)
@@ -67,7 +68,6 @@ IRoad::IRoad(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
         m_spline = new TCR(sm->getRootSceneNode(), sm, 0, fp);
     else m_spline = new Bezier(sm->getRootSceneNode(), sm, 0, fp);
     setAutomaticCulling(EAC_OFF);
-
     m_valid = m_spline->isValid();
 } // IRoad
 
@@ -88,8 +88,10 @@ void IRoad::save(FILE* fp)
     fwrite(&m_width_vert_num, sizeof(u32), 1, fp);
     fwrite(&m_detail, sizeof(f32), 1, fp);
     fwrite(&m_width, sizeof(f32), 1, fp);
+    fwrite(&m_tex_warp_count, sizeof(u32), 1, fp);
 
     m_spline->save(fp);
+    textureExport(fp);
 } // save
 
 // ----------------------------------------------------------------------------

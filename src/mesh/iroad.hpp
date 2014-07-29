@@ -19,6 +19,7 @@ protected:
 
     aabbox3d<f32>   m_bounding_box;
 
+    virtual void    textureExport(FILE* fp) = 0;
 public:
     IRoad(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s, stringw n);
     IRoad(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp);

@@ -96,6 +96,7 @@ public:
     void                  btnDown(int btn);
     void                  refreshTerrModData();
     void                  refreshSkyButtons(Sky* sky);
+    void                  refreshTerrainTextures(SMaterial m);
     void                  reallocate(dimension2du ss);
 };
 

@@ -15,9 +15,10 @@ private:
     
     Mesh            m_mesh;
     SMaterial       m_material;
-
-
     bool order(vector3df* v1, vector3df* v2, vector3df* v3, vector3df* v4, vector3df n);
+
+    virtual void    textureExport(FILE* fp) {};
+
 public:
     DriveLine(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s, stringw n);
     DriveLine(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp);

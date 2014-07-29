@@ -16,11 +16,14 @@
 
 #include "mesh/driveline.hpp"
 #include "mesh/road.hpp"
+#include "mesh/terrain.hpp"
 
 #include <physfs.h>
 #include <iostream>
 #include <fstream>
 #include <assert.h>
+
+#define MAX_VALID_STRING_SIZE 200
 
 Editor* Editor::m_editor = 0;
 
@@ -291,6 +294,18 @@ void Editor::ctrlShortcuts(EKEY_CODE code)
         break;
     }
 } // ctrlShortcuts
+
+// ----------------------------------------------------------------------------
+bool Editor::isValidSize(u8 size)
+{
+    if (size < 0 || size > MAX_VALID_STRING_SIZE)
+    {
+        std::cerr << "File loading failed:";
+        std::cerr << " File contains invalid string size.\n";
+        return false;
+    }
+    return true;
+} // isValidSize
 
 // ----------------------------------------------------------------------------
 bool Editor::init()
@@ -814,6 +829,8 @@ bool Editor::open(path p)
     m_device->getFileSystem()->changeWorkingDirectoryTo(m_def_wd);
     if (m_viewport->setTrack(new Track(p.c_str())))
     {
+        TerrPanel* tp = TerrPanel::getTerrPanel();
+        tp->refreshTerrainTextures(m_viewport->getTerrain()->getMaterial(0));
         m_viewport->setSplineMode(false);
         m_viewport->setState(Viewport::SELECT);
         RoadPanel::getRoadPanel()->updateRoadList();
@@ -949,3 +966,40 @@ ITexture* Editor::loadImg(const stringw& file_path)
     return m_editor->m_video_driver->getTexture(file_path);
 } // loadImg
 
+// ----------------------------------------------------------------------------
+stringc Editor::getTexStr(ITexture* tex)
+{
+    stringc h;
+    u32 ix;
+    h = tex->getName();
+    ix = h.findLast('/');
+    h = h.subString(ix + 1, h.size() - ix - 1);
+    return h;
+} // getTexStr
+
+// ----------------------------------------------------------------------------
+void Editor::writeStrc(FILE* fp, stringc str)
+{
+    u8 size;
+    size = str.size() + 1;
+    fwrite(&size, sizeof(u8), 1, fp);
+    fwrite(str.c_str(), sizeof(c8), size, fp);
+} // writeStrc
+
+// ----------------------------------------------------------------------------
+void Editor::readTexSt(FILE* fp, ITexture** tex)
+{
+    u8 size;
+    fread(&size, sizeof(u8), 1, fp);
+
+    if (!isValidSize(size))
+    {
+        *tex = 0;
+        return;
+    }
+    c8* cc = new c8[size];
+    fread(cc, sizeof(c8), size, fp);
+    path p = cc;
+    *tex = Editor::loadImg(p);
+    delete[] cc;
+} // readTexSt

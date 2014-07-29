@@ -6,6 +6,36 @@
 #include "assert.h"
 
 // ----------------------------------------------------------------------------
+void Road::textureExport(FILE* fp)
+{
+    ITexture* tex = m_mesh_buff->Material.getTexture(0);
+    u8 v = 1;
+    if (tex)
+    {
+        fwrite(&v, sizeof(u8), 1, fp);
+        Editor::writeStrc(fp, Editor::getTexStr(tex));
+    }
+    else
+    {
+        v = 0;
+        fwrite(&v, sizeof(u8), 1, fp);
+    }
+} // textureExport
+
+// ----------------------------------------------------------------------------
+void Road::textureImport(FILE* fp)
+{
+    ITexture* tex;
+    u8 v;
+    fread(&v, sizeof(u8), 1, fp);
+    if (v == 1)
+    {
+        Editor::readTexSt(fp, &tex);
+        m_mesh_buff->Material.setTexture(0, tex);
+    }
+} // textureImport
+
+// ----------------------------------------------------------------------------
 void Road::calcVertexRow(vector3df p, vector3df n, vector3df w, int offset,
                                                       float wx, float t)
 {
@@ -79,6 +109,7 @@ Road::Road(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
     m_mesh_buff->Material.Wireframe       = true;
     m_mesh_buff->Material.Lighting        = false;
     m_mesh_buff->Material.BackfaceCulling = false;
+    textureImport(fp);
 } // Road
 
 // ----------------------------------------------------------------------------

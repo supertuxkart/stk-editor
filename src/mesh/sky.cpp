@@ -4,36 +4,6 @@
 #include "editor.hpp"
 
 // ----------------------------------------------------------------------------
-stringc Sky::getTexStr(ITexture* tex)
-{
-    stringc h;
-    u32 ix;
-    h = tex->getName();
-    ix = h.findLast('/');
-    h = h.subString(ix + 1, h.size() - ix - 1);
-    return h;
-} // getTexStr
-
-void Sky::writeStrc(FILE* fp, stringc str)
-{
-    u8 size;
-    size = str.size() + 1;
-    fwrite(&size, sizeof(u8), 1, fp);
-    fwrite(str.c_str(), sizeof(c8), size, fp);
-} // writeStrc
-
-void Sky::readTexSt(FILE* fp, ITexture** tex)
-{
-    u8 size;
-    fread(&size, sizeof(u8), 1, fp);
-    c8* cc = new c8[size];
-    fread(cc, sizeof(c8), size, fp);
-    path p = cc;
-    *tex = Editor::loadImg(p);
-    delete[] cc;
-} // readTexSt
-
-// ----------------------------------------------------------------------------
 Sky::Sky(ITexture* up, ITexture*    down, ITexture* left,
          ITexture* right, ITexture* front, ITexture* back)
 {
@@ -52,12 +22,12 @@ Sky::Sky(ITexture* up, ITexture*    down, ITexture* left,
 // ----------------------------------------------------------------------------
 Sky::Sky(FILE* fp)
 {
-    readTexSt(fp, &m_up);
-    readTexSt(fp, &m_down);
-    readTexSt(fp, &m_left);
-    readTexSt(fp, &m_right);
-    readTexSt(fp, &m_front);
-    readTexSt(fp, &m_back);
+    Editor::readTexSt(fp, &m_up);
+    Editor::readTexSt(fp, &m_down);
+    Editor::readTexSt(fp, &m_left);
+    Editor::readTexSt(fp, &m_right);
+    Editor::readTexSt(fp, &m_front);
+    Editor::readTexSt(fp, &m_back);
 
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
     m_sky = sm->addSkyBoxSceneNode(m_up, m_down, m_left, m_right, m_front, m_back);
@@ -67,12 +37,12 @@ Sky::Sky(FILE* fp)
 // ----------------------------------------------------------------------------
 void Sky::save(FILE *fp)
 {
-    writeStrc(fp, getTexStr(m_up));
-    writeStrc(fp, getTexStr(m_down));
-    writeStrc(fp, getTexStr(m_left));
-    writeStrc(fp, getTexStr(m_right));
-    writeStrc(fp, getTexStr(m_front));
-    writeStrc(fp, getTexStr(m_back));
+    Editor::writeStrc(fp, Editor::getTexStr(m_up));
+    Editor::writeStrc(fp, Editor::getTexStr(m_down));
+    Editor::writeStrc(fp, Editor::getTexStr(m_left));
+    Editor::writeStrc(fp, Editor::getTexStr(m_right));
+    Editor::writeStrc(fp, Editor::getTexStr(m_front));
+    Editor::writeStrc(fp, Editor::getTexStr(m_back));
 
 } // build
 
@@ -115,8 +85,10 @@ stringc Sky::getXmlString()
     stringc s = "  <sky-box texture=\"";
     stringc h;
 
-    s += getTexStr(m_up) + " " + getTexStr(m_down) + " " + getTexStr(m_left) + " ";
-    s += getTexStr(m_right) + " " + getTexStr(m_front) + " " + getTexStr(m_back);
+    s += Editor::getTexStr(m_up) + " " + Editor::getTexStr(m_down) + " " + 
+         Editor::getTexStr(m_left) + " ";
+    s += Editor::getTexStr(m_right) + " " + Editor::getTexStr(m_front) + " " + 
+         Editor::getTexStr(m_back);
     s += h + "\"/>\n";
 
     return s;

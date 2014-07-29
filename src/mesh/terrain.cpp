@@ -496,6 +496,12 @@ Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
                                              4 * SPIMG_X*SPIMG_Y, fp);
     m_material.getTexture(1)->unlock();
     m_highlight_visible = false;
+
+    ITexture* tex;
+    Editor::readTexSt(fp, &tex); m_material.setTexture(2,tex);
+    Editor::readTexSt(fp, &tex); m_material.setTexture(3, tex);
+    Editor::readTexSt(fp, &tex); m_material.setTexture(4, tex);
+    Editor::readTexSt(fp, &tex); m_material.setTexture(5, tex);
 } // Terrain - fp
 
 
@@ -644,6 +650,11 @@ void Terrain::save(FILE* file)
                       sizeof(u8), 4*SPIMG_X * SPIMG_Y, file);
 
     m_material.getTexture(1)->unlock();
+    
+    Editor::writeStrc(file, Editor::getTexStr(m_material.getTexture(2)));
+    Editor::writeStrc(file, Editor::getTexStr(m_material.getTexture(3)));
+    Editor::writeStrc(file, Editor::getTexStr(m_material.getTexture(4)));
+    Editor::writeStrc(file, Editor::getTexStr(m_material.getTexture(5)));
 
 } // save
 

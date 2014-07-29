@@ -79,8 +79,9 @@ private:
     void                        simpleShortcuts(EKEY_CODE code);
     void                        shiftShortcuts(EKEY_CODE code);
     void                        ctrlShortcuts(EKEY_CODE code);
-
 public:
+    static bool                 isValidSize(u8 size);
+
     static Editor*              getEditor(dimension2du screen_size = dimension2du(1280, 720));
 	bool		                run();
 	virtual bool                OnEvent(const SEvent& event);
@@ -95,6 +96,10 @@ public:
     static path                 toRelative(path p);
 
     static ITexture*            loadImg(const stringw& file_path);
+
+    static stringc              getTexStr(ITexture* tex);
+    static void                 writeStrc(FILE* fp, stringc str);
+    static void                 readTexSt(FILE* fp, ITexture** tex);
 
     IrrlichtDevice*             getDevice()       { return m_device;        }
     IVideoDriver*               getVideoDriver()  { return m_video_driver;  }

@@ -28,7 +28,6 @@ private:
     // m_roads[0] is the driveline
     array<IRoad*>   m_roads;
 
-    bool           isValidSize(u8 size, path file);
     ISceneNode*    loadItem(stringc name);
 
 public:

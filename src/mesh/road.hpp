@@ -12,6 +12,9 @@ private:
     SMesh                           m_smesh;
     ITriangleSelector*              m_tri;
 
+    virtual void    textureExport(FILE* fp);
+    virtual void    textureImport(FILE* fp);
+
     void    calcVertexRow(vector3df p, vector3df n, vector3df w, int offset, 
                                                        float wx, float t);
     void    createIndexList(int nj, int ni);

@@ -6,4 +6,5 @@ TODO list:
 - objects
 - try function
 - warnings
-- road and terrain texture export
+- checkline export
+- checkline leave crash

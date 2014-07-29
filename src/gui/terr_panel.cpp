@@ -315,6 +315,15 @@ void TerrPanel::refreshSkyButtons(Sky* sky)
 } // refreshSkyButtons
 
 // ----------------------------------------------------------------------------
+void TerrPanel::refreshTerrainTextures(SMaterial m)
+{
+    m_tb1->setImage(m.getTexture(2));
+    m_tb2->setImage(m.getTexture(3));
+    m_tb3->setImage(m.getTexture(4));
+    m_tb4->setImage(m.getTexture(5));
+} // refreshTerrainTextures
+
+// ----------------------------------------------------------------------------
 void TerrPanel::reallocate(dimension2du ss)
 {
     m_wndw->setMinSize(dimension2du(250, ss.Height - 50));

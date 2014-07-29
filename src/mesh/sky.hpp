@@ -22,11 +22,6 @@ private:
     ITexture* m_front;
     ITexture* m_back;
 
-private:
-    stringc getTexStr(ITexture* tex);
-    void    writeStrc(FILE* fp, stringc str);
-    void    readTexSt(FILE* fp, ITexture** tex);
-
 public:
     Sky(ITexture* up,    ITexture* down,  ITexture* left,
         ITexture* right, ITexture* front, ITexture* back);
