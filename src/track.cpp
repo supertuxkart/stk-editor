@@ -22,7 +22,7 @@
 // ----------------------------------------------------------------------------
 bool Track::isValidSize(u8 size, path file)
 {
-    if (size < 0 || size > 20)
+    if (size < 0 || size > 200)
     {
         m_valid = false;
         std::cerr << "File < " << file.c_str() << " > loading failed:";
@@ -31,6 +31,34 @@ bool Track::isValidSize(u8 size, path file)
     }
     return true;
 } // isValidSize
+
+// ----------------------------------------------------------------------------
+ISceneNode* Track::loadItem(stringc name)
+{
+    ISceneManager* sm = Editor::getEditor()->getSceneManager();
+    ISceneNode* node = 0;
+    if (name == "banana")
+    {
+        node = sm->addAnimatedMeshSceneNode(sm->getMesh("models/banana.b3d"));
+        node->setName("banana");
+    }
+    if (name == "item")
+    {
+        node = sm->addAnimatedMeshSceneNode(sm->getMesh("models/gift-box.b3d"));
+        node->setName("item");
+    }
+    if (name == "small-nitro")
+    {
+        node = sm->addAnimatedMeshSceneNode(sm->getMesh("models/nitrotank-small.b3d"));
+        node->setName("small-nitro");
+    }
+    if (name == "big-nitro")
+    {
+        node = sm->addAnimatedMeshSceneNode(sm->getMesh("models/nitrotank-big.b3d"));
+        node->setName("big-nitro");
+    }
+    return node;
+} // loadItem
 
 // ----------------------------------------------------------------------------
 Track::Track(f32 tx, f32 tz)
@@ -162,6 +190,7 @@ Track::Track(path file)
         } // roads
     } // valid roadnum
 
+
     // OBJECTS
     u32 num;
     fread(&num, sizeof(u32), 1, pFile);
@@ -169,6 +198,7 @@ Track::Track(path file)
 
     for (u32 i = 0; i < num; i++)
     {
+        ISceneNode* node = 0;
         vector3df pos, rot, sca;
         fread(&pos, sizeof(vector3df), 1, pFile);
         fread(&rot, sizeof(vector3df), 1, pFile);
@@ -179,20 +209,30 @@ Track::Track(path file)
         c8 *name = new c8[size];
         fread(name, sizeof(c8), size, pFile);
         path p = name;
-        ISceneNode* node =sm->addAnimatedMeshSceneNode(sm->getMesh(p));
+        if (name == "banana" && name == "item"
+            && name == "small-nitro" && name == "big-nitro")
+        {
+            node = loadItem(name);
+        } // item
+        else
+        {
+            path op = path("library/") + p;
+            node = sm->addAnimatedMeshSceneNode(sm->getMesh(op));
+            node->setName(name);
+        } // object
         if (node)
         {
             node->setPosition(pos);
             node->setRotation(rot);
             node->setScale(sca);
-            node->setID(MAGIC_NUMBER + i);
-        }
+            node->setID(MAGIC_NUMBER + i + 1);
+        }  // valid node
         else
         {
             std::cerr << "Warning: couldn't load object < " << name << " >!\n";
             num -= 1;
             i -= 1;
-        }
+        } // invalid node
         delete name;
     }
     fclose(pFile);

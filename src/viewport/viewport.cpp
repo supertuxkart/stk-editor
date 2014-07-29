@@ -637,9 +637,9 @@ void Viewport::build()
 
 void Viewport::clear()
 {
+    m_selection_handler->clearSelection();
     m_command_handler.clear();
-    if (m_new_entity) m_new_entity->remove();
-    m_new_entity = 0;
+    setState(SELECT);
     m_last_entity_ID = MAGIC_NUMBER;
     if (m_track)
     {

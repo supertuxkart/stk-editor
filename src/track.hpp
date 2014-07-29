@@ -4,6 +4,7 @@
 #include <irrlicht.h>
 
 using namespace irr;
+using namespace scene;
 using namespace core;
 using namespace io;
 
@@ -28,6 +29,7 @@ private:
     array<IRoad*>   m_roads;
 
     bool           isValidSize(u8 size, path file);
+    ISceneNode*    loadItem(stringc name);
 
 public:
 
