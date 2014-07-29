@@ -2,4 +2,8 @@ TODO list:
 
 - monkey testing for crashes
 - twisted drivelines
-- scale + moving, rotating controls, (rotating visualisation?)
+- xml in repo
+- objects
+- try function
+- warnings
+- road and terrain texture export
