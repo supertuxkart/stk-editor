@@ -9,15 +9,13 @@
 #include "viewport/viewport.hpp"
 
 // ----------------------------------------------------------------------------
-ISceneNode* SelectionHandler::closerToCamera(ISceneNode* n1, ISceneNode* n2)
+bool SelectionHandler::firstIsCloser(vector3df v1, vector3df v2)
 {
     vector3df pos = Viewport::get()->getAztecPos();
 
-    if ((pos - n1->getPosition()).getLength() <
-        (pos - n2->getPosition()).getLength())
-        return n1;
+    if ((pos - v1).getLength() < (pos - v2).getLength()) return true;
     
-    return n2;
+    return false;
 } // closerToCamera
 
 // ----------------------------------------------------------------------------
@@ -69,6 +67,7 @@ void SelectionHandler::animate(u32 id)
 
         ISceneNode* selected_road = 0;
         u32 ix = 1;
+        vector3df   cp_end;
         ISceneNode* road_node;
         while (road_node = (Road*)Viewport::get()->getTrack()->getRoadByID(ix))
         {
@@ -77,17 +76,23 @@ void SelectionHandler::animate(u32 id)
             triangle3df ot;
             if (iscm->getCollisionPoint(ray, road_node->getTriangleSelector(), cp, ot, road_node))
             {
-                if (!selected_road) selected_road = road_node;
-                else selected_road = closerToCamera(road_node, selected_road);
+                if (!selected_road)
+                {
+                    selected_road = road_node;
+                    cp_end = cp;
+                }
+                else selected_road = firstIsCloser(cp, cp_end) ? road_node : selected_road;
             }
         } // while road
 
         ISceneNode* node;
         node = iscm->getSceneNodeFromScreenCoordinatesBB(
                                        vector2d<s32>(m_mouse->x, m_mouse->y), MAGIC_NUMBER);
+        /*
         if (node && selected_road)
-            node = closerToCamera(node, selected_road);
-        if ((node && (node == selected_road)) || selected_road)
+            node = firstIsCloser(node->getPosition(), cp_end) ? node : selected_road;
+        */
+        if ((node && (node == selected_road)) || (!node && selected_road))
         {
             Viewport::get()->setActiveRoad((Road*)selected_road);
             m_selected_elements.clear();
@@ -101,7 +106,7 @@ void SelectionHandler::animate(u32 id)
                 ix++;
             }
 
-        }
+        } // road is selected
         else if (node)
         {
             if (node->getID() < ANOTHER_MAGIC_NUMBER && id == ANOTHER_MAGIC_NUMBER)

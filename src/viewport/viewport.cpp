@@ -340,12 +340,23 @@ void Viewport::move()
 // ----------------------------------------------------------------------------
 void Viewport::rotate()
 {
-    if (m_state != SELECT || m_selection_handler->getSelection().size() == 0)
+    bool swap = false;
+    if (m_state == EDIT && m_edit == ROTATE)
+    {
+        m_active_cmd->undo();
+        delete m_active_cmd;
+        m_active_cmd = 0;
+        swap = true;
+    }
+    else if (m_state != SELECT || m_selection_handler->getSelection().size() == 0)
         return;
 
     m_active_cmd = new RotateCmd(m_selection_handler->getSelection(),
                     m_mouse->x, m_mouse->y, m_aztec_cam->getTransformedXdir(),
         m_aztec_cam->getTransformedYdir(), m_aztec_cam->getTransformedZdir());
+
+    if (swap) ((RotateCmd*)m_active_cmd)->swapZMode(m_mouse->x, m_mouse->y);
+
     m_state = EDIT;
 } // rotate
 

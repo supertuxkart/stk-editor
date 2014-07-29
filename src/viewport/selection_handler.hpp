@@ -19,7 +19,7 @@ private:
     Mouse*              m_mouse;
     Keys*               m_keys;
 
-    ISceneNode*         closerToCamera(ISceneNode* n1, ISceneNode* n2);
+    bool                firstIsCloser(vector3df v1, vector3df v2);
 
 public:
     SelectionHandler(Mouse* m, Keys* k) :m_mouse(m), m_keys(k) {};

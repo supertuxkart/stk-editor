@@ -100,6 +100,9 @@ Track::Track(path file)
     {
         r = new Road(sm->getRootSceneNode(), sm, 0, pFile);
         r->refresh();
+        r->setWireFrame(false);
+        Viewport::get()->setActiveRoad(r);
+        Viewport::get()->setSplineMode(false);
         m_roads.push_back(r);
     }
 
