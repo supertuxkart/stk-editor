@@ -166,19 +166,9 @@ void CheckLineHandler::draw()
     {
         if (!it->removed)
         {
-            S3DVertex vertices[2];
-            vertices[0].Pos = it->n1->getPosition();
-            vertices[1].Pos = it->n2->getPosition();
-            u16 indices[2];
-            indices[0] = 0;
-            indices[1] = 1;
-            vd->drawVertexPrimitiveList(&vertices[0], 2,
-                &indices[0], 2,
-                video::EVT_STANDARD, EPT_LINES,
-                video::EIT_16BIT);
-
-        }
-        vd->draw3DLine(it->n1->getPosition(), it->n2->getPosition(), SColor(255, 255, 0, 0));
+            vd->draw3DLine(it->n1->getPosition(), it->n2->getPosition(), 
+                                                SColor(255, 255, 0, 0));
+        }      
         it++;
     }
 } // draw
