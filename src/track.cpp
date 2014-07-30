@@ -238,7 +238,13 @@ void Track::save()
   path p = Editor::getEditor()->getMapsPath() + "/" + m_file_name.c_str();
   pFile = fopen(p.c_str(), "wb");
 
-  assert(pFile);
+  if (!pFile)
+  {
+      std::cerr << "Save failed: file could not be created!\n";
+      std::cerr << "Maybe your maps path isn't a valid location: \n";
+      std::cerr << Editor::getEditor()->getMapsPath().c_str() << "\n";
+      return;
+  }
 
   // SIGN
   u64 sign = TOP_SECRET_SIGNATURE_NUMBER;
