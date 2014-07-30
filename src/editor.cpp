@@ -23,6 +23,10 @@
 #include <fstream>
 #include <assert.h>
 
+#if _IRR_MATERIAL_MAX_TEXTURES_ < 6
+    #error Configure your irr for more textures
+#endif
+
 #define MAX_VALID_STRING_SIZE 200
 
 Editor* Editor::m_editor = 0;
