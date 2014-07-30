@@ -3,6 +3,7 @@ TODO list:
 - monkey testing for crashes
 - twisted drivelines
 - xml in repo
-- objects
 - try function
 - warnings
+- user msg window (like saved, save failed, are you sure u wanna to leave, etc.)
+- hide terrain button
