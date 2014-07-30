@@ -600,9 +600,9 @@ bool Editor::run()
     }
 
     if (m_maps_path)
-        delete m_maps_path;
+        delete[] m_maps_path;
     if (m_music_loc)
-        delete m_music_loc;
+        delete[] m_music_loc;
     if (m_indicator)
         delete m_indicator;
 

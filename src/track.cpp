@@ -95,7 +95,7 @@ Track::Track(path file)
     c = new wchar_t[size];
     fread(c, sizeof(wchar_t), size, pFile);
     m_track_name = c;
-    delete c;
+    delete[] c;
 
     // DESIGNER NAME
     fread(&size, sizeof(u8), 1, pFile);
@@ -221,7 +221,7 @@ Track::Track(path file)
             num -= 1;
             i -= 1;
         } // invalid node
-        delete name;
+        delete[] name;
     }
     fclose(pFile);
 } // Track - from file
