@@ -146,6 +146,12 @@ void RoadPanel::updateRoadList()
 } // updateRoadList
 
 //----------------------------------------------------------------------------
+void RoadPanel::setActiveRoad(u32 ix)
+{
+    m_cb->setSelected(ix);
+} // setActiveRoad
+
+//----------------------------------------------------------------------------
 stringw RoadPanel::getNextRoadType()
 {
     return m_spline_type_cb->getItem(m_spline_type_cb->getSelected());

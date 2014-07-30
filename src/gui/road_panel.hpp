@@ -71,6 +71,8 @@ public:
     void                  updateRoadList();
     void                  reallocate(dimension2du ss);
 
+    void                  setActiveRoad(u32 ix);
+
     stringw               getNextRoadType();
     stringw               getNextRoadName() { return m_text_field->getText();         }
 

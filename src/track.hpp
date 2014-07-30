@@ -44,6 +44,7 @@ public:
     void       insertRoad(IRoad* road);
     void       removeRoad(IRoad* road);
     void       createRoad(stringw type, stringw name);
+    u32        getRoadID(IRoad* r);
 
     IRoad*     getRoadByID(u32 id)           { IRoad* r = 0; return (id < m_roads.size()) ? m_roads[id] : r; }
 

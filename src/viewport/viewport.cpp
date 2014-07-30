@@ -544,6 +544,9 @@ void Viewport::setActiveRoad(IRoad* r)
     r->setWireFrame(true);
     if (!m_spline_mode)
         setSplineMode(true);
+
+    RoadPanel::getRoadPanel()->setActiveRoad(m_track->getRoadID(r));
+
 } // setActiveRoad
 
 // ----------------------------------------------------------------------------

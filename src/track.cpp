@@ -489,4 +489,10 @@ void Track::createRoad(stringw type, stringw name)
     m_roads.push_back(rm);
 } // createRoad
 
-
+// ----------------------------------------------------------------------------
+u32 Track::getRoadID(IRoad* r)
+{ 
+    u32 i;
+    for (i = 0; i < m_roads.size() && m_roads[i] != r; i++);
+    return i;
+} // getRoadID
