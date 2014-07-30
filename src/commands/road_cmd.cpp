@@ -3,6 +3,8 @@
 #include "mesh/iroad.hpp"
 #include "spline/ispline.hpp"
 
+#include "viewport/viewport.hpp"
+
 // ----------------------------------------------------------------------------
 RoadCmd::RoadCmd(IRoad* road, bool insert, bool inverted) 
     :m_road(road), m_insert(insert), m_inverted(inverted)

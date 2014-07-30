@@ -47,6 +47,7 @@ public:
         m_road->getSpline()->setVisible(true);
         Viewport::get()->getTrack()->insertRoad(m_road);
         RoadPanel::getRoadPanel()->updateRoadList();
+        Viewport::get()->setActiveRoad(m_road);
     } // redo
 
     // ----------------------------------------------------------------------------
