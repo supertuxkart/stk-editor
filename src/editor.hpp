@@ -100,6 +100,7 @@ public:
     static stringc              getTexStr(ITexture* tex);
     static void                 writeStrc(FILE* fp, stringc str);
     static void                 readTexSt(FILE* fp, ITexture** tex);
+    static stringc              getLib(stringc s);
 
     IrrlichtDevice*             getDevice()       { return m_device;        }
     IVideoDriver*               getVideoDriver()  { return m_video_driver;  }

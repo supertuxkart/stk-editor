@@ -390,6 +390,7 @@ void Track::build()
     scene.open((p + "/scene.xml").c_str());
     scene << "<scene>\n";
     scene << "  <track model=\"track.b3d\" x=\"0\" y=\"0\" z=\"0\">\n";
+    scene << "  </track>\n";
 
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
     ISceneNode* node;
@@ -405,14 +406,13 @@ void Track::build()
             pos   = node->getPosition();
             rot   = node->getRotation();
             sca = node->getScale();
-            scene << "    <static-object model=\"" << node->getName() << "\" xyz=\"";
+            scene << "  <library name=\"" << Editor::getLib(node->getName()).c_str() << "\" xyz=\"";
             scene << pos.X << " " << pos.Y << " " << pos.Z << "\" hpr=\"";
             scene << rot.X << " " << rot.Y << " " << rot.Z << "\" scale=\"";
             scene << sca.X << " " << sca.Y << " " << sca.Z << "\"/>\n";
         }
         i++;
     }
-    scene << "  </track>\n";
 
     i = 1;
     while ((node = sm->getSceneNodeFromId(MAGIC_NUMBER + i)))

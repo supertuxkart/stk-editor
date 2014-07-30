@@ -567,7 +567,8 @@ bool Editor::run()
             m_viewport->animate(current_time - last_time);
 
 		// drawing
-		m_video_driver->beginScene(true, true, SColor(255, 80, 0, 170));
+//		m_video_driver->beginScene(true, true, SColor(255, 80, 0, 170));
+        m_video_driver->beginScene(true, true, SColor(255, 120, 80, 170));
 
         m_indicator->renderToTexture();
 
@@ -1003,3 +1004,14 @@ void Editor::readTexSt(FILE* fp, ITexture** tex)
     *tex = Editor::loadImg(p);
     delete[] cc;
 } // readTexSt
+
+// ----------------------------------------------------------------------------
+stringc Editor::getLib(stringc s)
+{
+    u32 ix;
+    ix = s.findLast('/');
+    s = s.subString(0, ix);
+    ix = s.findLast('/');
+    s = s.subString(ix + 1, s.size() - ix - 1);
+    return s;
+} // getLib

@@ -461,6 +461,12 @@ void Viewport::setNewEntity(const stringw path, const stringw name)
 
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
     m_new_entity = sm->addAnimatedMeshSceneNode(sm->getMesh(path));
+    if (!m_new_entity)
+    {
+        std::cerr << "Couldn't open object :(";
+        setState(SELECT);
+        return;
+    }
     m_new_entity->setName(name);
 } // setNewEntity
 
@@ -688,4 +694,3 @@ Viewport::~Viewport()
 {
     if (m_active_cmd) delete m_active_cmd;
 }
-

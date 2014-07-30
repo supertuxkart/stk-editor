@@ -57,7 +57,9 @@ void Indicator::renderToTexture()
 
     m_sm->drawAll();
 
-    m_vd->setRenderTarget(0, true, true, SColor(255, 80, 0, 170));
+    //m_vd->setRenderTarget(0, true, true, SColor(255, 80, 0, 170));
+    m_vd->setRenderTarget(0, true, true, SColor(255, 130, 130, 130));
+
     m_sm->setActiveCamera(cam);
 
 } // render
