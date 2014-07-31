@@ -3,11 +3,15 @@
 
 #include "viewport/viewport.hpp"
 
+#include "gui/msg_wndw.hpp"
+
 #include "mesh/terrain.hpp"
 #include "mesh/driveline.hpp"
 #include "mesh/road.hpp"
+
 #include "spline/bezier.hpp"
 #include "spline/tcr.hpp"
+
 #include "b3d/B3DMeshWriter.h"
 
 #include "editor.hpp"
@@ -72,8 +76,10 @@ Track::Track(path file)
 
     if (!pFile)
     {
-        std::cerr << "File < " << file.c_str() << " > is removed or corrupted.\n";
-        std::cerr << "Sorry! Terminating...\n";
+        stringw emsg = "Editor failed to open file:\n \"";
+        emsg += file;
+        emsg += "\"";
+        MsgWndw::get()->showMsg(emsg);
         return;
     }
 
@@ -82,7 +88,7 @@ Track::Track(path file)
     fread(&sign, sizeof(u64), 1, pFile);
     if (sign != TOP_SECRET_SIGNATURE_NUMBER)
     {
-        std::cerr << "File can not be opened: signature failed.";
+        MsgWndw::get()->showMsg("File can not be opened: signature failed.");
         m_valid = false;
         return;
     }
@@ -128,7 +134,7 @@ Track::Track(path file)
 
     if (!m_terrain->isValid())
     {
-        std::cout << "Loading failed :invalid terrain!\n";
+        MsgWndw::get()->showMsg("Loading failed :invalid terrain!");
         m_valid = false;
         return;
     }
@@ -147,7 +153,7 @@ Track::Track(path file)
     fread(&size, sizeof(u8), 1, pFile);
     if (size < 0 || size > MAX_ROAD_NUM)
     {
-        std::cerr << "Invalid road num - file must be corrupted.";
+        MsgWndw::get()->showMsg("Loading failed :invalid terrain!");
     }
     else
     {
@@ -168,16 +174,14 @@ Track::Track(path file)
             r = new Road(sm->getRootSceneNode(), sm, 0, pFile);
             if (r->isValid())
             {
+                m_roads.push_back(r);
                 r->refresh();
                 r->setWireFrame(false);
-                Viewport::get()->setActiveRoad(r);
                 Viewport::get()->setSplineMode(false);
-                m_roads.push_back(r);
             }
             else std::cerr << "Warning: invalid road - skipped :(\n";
         } // roads
     } // valid roadnum
-
 
     // OBJECTS
     u32 num;
@@ -240,9 +244,7 @@ void Track::save()
 
   if (!pFile)
   {
-      std::cerr << "Save failed: file could not be created!\n";
-      std::cerr << "Maybe your maps path isn't a valid location: \n";
-      std::cerr << Editor::getEditor()->getMapsPath().c_str() << "\n";
+      MsgWndw::get()->showMsg("Save failed: file could not be created!\n");
       return;
   }
 
@@ -446,6 +448,9 @@ void Track::build()
 
     scene << "</scene>\n";
     scene.close();
+
+    MsgWndw::get()->showMsg("Saving: success!");
+
 } // build
 
 // ----------------------------------------------------------------------------

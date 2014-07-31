@@ -632,7 +632,11 @@ bool Viewport::setTrack(Track* t)
         m_track = t;
         m_terrain = m_track->getTerrain();
         m_aztec_cam->init(m_terrain->getSizeX(), m_terrain->getSizeZ());
-        m_active_road = t->getRoadByID(0);
+        
+        for (int i = 0; t->getRoadByID(i); i++)
+            setActiveRoad(i);
+
+        setActiveRoad((u32)0);
         return true;
     }
     return false;
