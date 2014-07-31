@@ -30,6 +30,7 @@ public:
         TBI_SCALE,
         TBI_DELETE,
         TBI_DRIVELINE,
+        TBI_HIDE_TERRAIN,
         TBI_TRY,
         TBI_MUSIC,
         TBI_EXIT
@@ -41,7 +42,7 @@ private:
     static ToolBar* m_toolbar;
 
     IGUIToolBar*    m_bar;
-    IGUIButton*     m_buttons[17];
+    IGUIButton*     m_buttons[18];
 
     // private functions:
 

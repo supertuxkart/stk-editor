@@ -18,6 +18,7 @@ class Terrain :public ISceneNode, public IShaderConstantSetCallBack, public ISub
 {
 private:
     bool                m_valid;
+    bool                m_visible;
 // ----------------------------------------------------------------------------
     // private variables - geometry
     Mesh                m_mesh;
@@ -93,7 +94,8 @@ public:
     void         highlight(TerrainMod* tm);
 
     vector3df    placeBBtoGround(const aabbox3d<f32>& box, line3d<float> ray);
-
+    
+    void         swapVisibility()               { m_visible = !m_visible;  }
     void         setHighlightVisibility(bool b) { m_highlight_visible = b; }
 
     u32          getNX()    { return m_nx;      }
@@ -102,6 +104,7 @@ public:
     f32          getSizeX() { return m_x;       }
     f32          getSizeZ() { return m_z;       }
     bool         isValid()  { return m_valid;   }
+
 
     CMeshBuffer<S3DVertex2TCoords>* build(path p);
     void                            save(FILE* file);

@@ -25,7 +25,7 @@
 #include <assert.h>
 
 #if _IRR_MATERIAL_MAX_TEXTURES_ < 6
-    #error Configure your irr for more textures
+    #error Configure your irr for more textures... check readme
 #endif
 
 #define MAX_VALID_STRING_SIZE 200
@@ -67,9 +67,10 @@ bool Editor::buttonClicked(int ID)
         m_viewport->restoreCam();
         return true;
     case ToolBar::TBI_DRIVELINE:
-        m_viewport->setState(Viewport::SELECT);
-        m_viewport->setSplineMode(true);
-        m_viewport->setActiveRoad((u32)0);
+        m_viewport->selectDriveLine();
+        return true;
+    case ToolBar::TBI_HIDE_TERRAIN:
+        m_viewport->getTerrain()->swapVisibility();
         return true;
     case ToolBar::TBI_TRY:
         return true;
@@ -244,12 +245,13 @@ void Editor::simpleShortcuts(EKEY_CODE code)
         m_viewport->deleteCmd();
         return;
     case KEY_KEY_R:
-        m_viewport->setState(Viewport::SELECT);
-        m_viewport->setSplineMode(true);
-        m_viewport->setActiveRoad((u32)0);
+        m_viewport->selectDriveLine();
         return;
     case KEY_KEY_C:
         m_viewport->setState(Viewport::FREECAM);
+        return;
+    case KEY_KEY_T:
+        m_viewport->getTerrain()->swapVisibility();
         return;
     default:
         return;

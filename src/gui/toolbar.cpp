@@ -23,10 +23,11 @@ void ToolBar::init()
     buttonInit(10, TBI_DELETE,      "img/delete.png",   _(L"Delete (del)"));
     buttonInit(11, TBI_CAM,         "img/cam1.png",     _(L"Toggle camera mode (c)"));
     buttonInit(12, TBI_RECAM,       "img/cam2.png",     _(L"Restore camera state (NUM1)"));
-    buttonInit(13, TBI_DRIVELINE,   "img/spline.png",   _(L"Select DriveLine (r)"));
-    buttonInit(14, TBI_MUSIC,       "img/music.png",    _(L"Music"));
-    buttonInit(15, TBI_TRY,         "img/try.png",      _(L"Try your track"));
-    buttonInit(16, TBI_EXIT,        "img/exit.png",     _(L"Quit (esc)"));
+    buttonInit(13, TBI_DRIVELINE,   "img/spline.png",   _(L"Select DriveLine (r)"));  
+    buttonInit(14, TBI_HIDE_TERRAIN,"img/ht.png",       _(L"Hide terrain (t)"));
+    buttonInit(15, TBI_MUSIC,       "img/music.png",    _(L"Music"));
+    buttonInit(16, TBI_TRY,         "img/try.png",      _(L"Try your track"));
+    buttonInit(17, TBI_EXIT,        "img/exit.png",     _(L"Quit (esc)"));
 
     reallocate();
 
@@ -87,15 +88,16 @@ void ToolBar::reallocate()
     m_buttons[11]->setRelativePosition(position2di(block_begin + 11 * 50, 5));
     m_buttons[12]->setRelativePosition(position2di(block_begin + 12 * 50, 5));
 
-    // Sixth block: driveline,music
+    // Sixth block: driveline,hide terrain, music
     block_begin += space_between_blocks;
     m_buttons[13]->setRelativePosition(position2di(block_begin + 13 * 50, 5));
     m_buttons[14]->setRelativePosition(position2di(block_begin + 14 * 50, 5));
+    m_buttons[15]->setRelativePosition(position2di(block_begin + 15 * 50, 5));
 
     // test
     block_begin += space_between_blocks;
-    m_buttons[15]->setRelativePosition(position2di(block_begin + 15 * 50, 5));
+    m_buttons[16]->setRelativePosition(position2di(block_begin + 16 * 50, 5));
 
     // last block - quit
-    m_buttons[16]->setRelativePosition(position2di(screen_x - 50, 5));
+    m_buttons[17]->setRelativePosition(position2di(screen_x - 50, 5));
 } // reallocate

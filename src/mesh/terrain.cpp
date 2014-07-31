@@ -383,7 +383,8 @@ Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id,
     :ISceneNode(parent, mgr, id), m_nx(nx), m_nz(nz)
 {
 
-    m_valid = true;
+    m_valid        = true;
+    m_visible      = true;
     m_bounding_box = aabbox3d<f32>(0, 0, 0, x, 0, z);
 
     setAutomaticCulling(EAC_OFF);
@@ -427,7 +428,8 @@ Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id,
 Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
                                               :ISceneNode(parent, mgr, id)
 {
-    m_valid = true;
+    m_visible = true;
+    m_valid   = true;
     setAutomaticCulling(EAC_OFF);
 
     fread(&m_x, sizeof(f32), 1, fp);
@@ -671,6 +673,8 @@ void Terrain::OnRegisterSceneNode()
 // ----------------------------------------------------------------------------
 void Terrain::render()
 {
+    if (!m_visible) return;
+
     IVideoDriver* driver = SceneManager->getVideoDriver();
 
     driver->setMaterial(m_material);
