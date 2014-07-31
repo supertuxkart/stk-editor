@@ -5,6 +5,7 @@
 #include "viewport/indicator.hpp"
 
 #include "gui/welcome_screen.hpp"
+#include "gui/msg_wndw.hpp"
 #include "gui/new_dialog_wndw.hpp"
 #include "gui/toolbar.hpp"
 #include "gui/toolbox.hpp"
@@ -192,7 +193,8 @@ bool Editor::importantButtonClicked(int ID)
     {
         // ToolBar buttons
     case ToolBar::TBI_EXIT:
-        m_device->closeDevice();
+        m_msg_wndw->showMsg(L"Do you really want to quit?\n"
+                            L"Any unsaved progress will be lost!", true, true);
         return true;
     case ToolBar::TBI_NEW:
         m_new_dialog_wndw->show();
@@ -219,6 +221,12 @@ bool Editor::importantButtonClicked(int ID)
     case NewDialogWndw::BTN_ID:
         newTrack();
         m_new_dialog_wndw->hide();
+        return true;
+    case MsgWndw::OK_BTN_ID:
+        m_msg_wndw->buttonClicked();
+        return true;
+    case MsgWndw::CA_BTN_ID:
+        m_msg_wndw->buttonClicked(true);
         return true;
     }
     return false;
@@ -379,6 +387,8 @@ bool Editor::init()
     m_new_dialog_wndw = NewDialogWndw::get();
     m_new_dialog_wndw->hide();
     m_welcome_screen = WelcomeScreen::get();
+
+    m_msg_wndw = MsgWndw::get();
 
     m_device->setEventReceiver(this);
 
@@ -567,7 +577,7 @@ bool Editor::run()
 	while (m_device->run())
     {
         current_time = m_device->getTimer()->getTime();
-        if (m_valid_data_dir)
+        if (m_valid_data_dir && !m_msg_wndw->isVisible())
             m_viewport->animate(current_time - last_time);
 
 		// drawing
@@ -623,8 +633,12 @@ bool Editor::run()
 bool Editor::OnEvent(const SEvent& event)
 {
     if (event.EventType == EET_GUI_EVENT
-        && event.GUIEvent.EventType == EGET_BUTTON_CLICKED)
-            importantButtonClicked(event.GUIEvent.Caller->getID());
+       && event.GUIEvent.EventType == EGET_BUTTON_CLICKED)
+            if (importantButtonClicked(event.GUIEvent.Caller->getID()))
+                return true;
+
+    if (m_msg_wndw->isVisible()) return false;
+
     if (!m_valid_data_dir)
     {
         if (event.EventType == EET_GUI_EVENT)
