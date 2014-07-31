@@ -308,8 +308,9 @@ void Track::save()
       }
   }
   fclose(pFile);
-
   Editor::getEditor()->addToRecentlyOpenedList(m_file_name);
+
+  MsgWndw::get()->showMsg("Track saved!\n");
 
 } // save
 
@@ -449,7 +450,7 @@ void Track::build()
     scene << "</scene>\n";
     scene.close();
 
-    MsgWndw::get()->showMsg("Saving: success!");
+    MsgWndw::get()->showMsg("Track exported!");
 
 } // build
 

@@ -5,5 +5,4 @@ TODO list:
 - xml in repo
 - try function
 - warnings
-- user msg window (like saved, save failed, are you sure u wanna to leave, etc.)
 - hide terrain button
