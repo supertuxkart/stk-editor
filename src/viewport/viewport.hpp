@@ -113,6 +113,7 @@ public:
     void                clear();
     void                draw();
     void                restoreCam();
+    void                selectDriveLine();
 
     Indicator*          getIndicator();
 

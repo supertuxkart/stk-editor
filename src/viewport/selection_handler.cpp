@@ -54,6 +54,22 @@ void SelectionHandler::selectNode(ISceneNode* node)
 } // selectNode
 
 // ----------------------------------------------------------------------------
+void SelectionHandler::selectRoad(IRoad* r)
+{
+    m_selected_elements.clear();
+    ISpline* spline = r->getSpline();
+    u32 ix = 0;
+    ISceneNode* n;
+    while ((n = spline->getNode(ix)))
+    {
+        m_selected_elements.push_back(n);
+        n->setDebugDataVisible(EDS_BBOX);
+        ix++;
+    }
+
+} // selectNode
+
+// ----------------------------------------------------------------------------
 void SelectionHandler::animate(u32 id)
 {
     if (m_mouse->leftPressed())
@@ -94,18 +110,8 @@ void SelectionHandler::animate(u32 id)
         */
         if ((node && (node == selected_road)) || (!node && selected_road))
         {
-            Viewport::get()->setActiveRoad((Road*)selected_road);
-            m_selected_elements.clear();
-            ISpline* spline = ((IRoad*)selected_road)->getSpline();
-            u32 ix = 0;
-            ISceneNode* n;
-            while ((n = spline->getNode(ix)))
-            {
-                m_selected_elements.push_back(n);
-                n->setDebugDataVisible(EDS_BBOX);
-                ix++;
-            }
-
+            selectRoad((IRoad*)selected_road);
+            Viewport::get()->setActiveRoad((Road*)selected_road);   
         } // road is selected
         else if (node)
         {

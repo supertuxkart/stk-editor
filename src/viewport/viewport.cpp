@@ -133,7 +133,6 @@ void Viewport::animateSplineEditing()
     m_junk_node->setPosition(vector3df(0, 0, 0));
     m_junk_node->updateAbsolutePosition();
     vector3df p = m_terrain->placeBBtoGround(m_junk_node->getTransformedBoundingBox(), r);
-    p.Y += 1.0;
 
     if (m_active_cmd)
     {
@@ -165,7 +164,6 @@ void Viewport::animateCheckLine()
     m_junk_node->setPosition(vector3df(0, 0, 0));
     m_junk_node->updateAbsolutePosition();
     vector3df p = m_terrain->placeBBtoGround(m_junk_node->getTransformedBoundingBox(), r);
-    p.Y += 0.5;
 
     if (m_new_entity) m_new_entity->setPosition(p);
 
@@ -322,7 +320,7 @@ void Viewport::init(ICameraSceneNode* cam = 0, Mouse* m = 0, Keys* k = 0)
     m_selection_handler = new SelectionHandler(m_mouse, m_keys);
 
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
-    m_junk_node = sm->addSphereSceneNode(3);
+    m_junk_node = sm->addSphereSceneNode(0.5);
     m_junk_node->setVisible(false);
 } // init
 
@@ -674,6 +672,15 @@ void Viewport::restoreCam()
     if (m_state != FREECAM)
         m_aztec_cam->restore();
 } // restoreCam
+
+// ----------------------------------------------------------------------------
+void Viewport::selectDriveLine()
+{
+    setState(Viewport::SELECT);
+    setSplineMode(true);
+    setActiveRoad((u32)0);
+    m_selection_handler->selectRoad(m_track->getRoadByID(0));
+} // selectDriveLine
 
 // ----------------------------------------------------------------------------
 Indicator*  Viewport::getIndicator()

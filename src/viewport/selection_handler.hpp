@@ -10,6 +10,7 @@ using namespace core;
 
 struct Mouse;
 struct Keys;
+class  IRoad;
 
 class SelectionHandler
 {
@@ -26,6 +27,7 @@ public:
 
     void                clearSelection();
     void                selectNode(ISceneNode* node);
+    void                selectRoad(IRoad* r);
     void                animate(u32 id);
 
     list<ISceneNode*>   getSelectedSpherePoints();
