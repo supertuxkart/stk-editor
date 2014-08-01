@@ -333,6 +333,7 @@ void Viewport::move()
     m_active_cmd = 
         new MoveCmd(m_selection_handler->getSelection(), m_mouse->x, m_mouse->y);
     m_state = EDIT;
+    m_edit = MOVE;
 } // move
 
 // ----------------------------------------------------------------------------
@@ -348,7 +349,6 @@ void Viewport::rotate()
     }
     else if (m_state != SELECT || m_selection_handler->getSelection().size() == 0)
         return;
-
     m_active_cmd = new RotateCmd(m_selection_handler->getSelection(),
                     m_mouse->x, m_mouse->y, m_aztec_cam->getTransformedXdir(),
         m_aztec_cam->getTransformedYdir(), m_aztec_cam->getTransformedZdir());
@@ -356,6 +356,7 @@ void Viewport::rotate()
     if (swap) ((RotateCmd*)m_active_cmd)->swapZMode(m_mouse->x, m_mouse->y);
 
     m_state = EDIT;
+    m_edit = ROTATE;
 } // rotate
 
 // ----------------------------------------------------------------------------
@@ -366,6 +367,7 @@ void Viewport::scale()
     m_active_cmd =
         new ScaleCmd(m_selection_handler->getSelection(), m_mouse->x, m_mouse->y);
     m_state = EDIT;
+    m_edit = SCALE;
 } // scale
 
 // ----------------------------------------------------------------------------
@@ -531,7 +533,7 @@ void Viewport::setSplineMode(bool b)
 // ----------------------------------------------------------------------------
 void Viewport::setActiveRoad(IRoad* r)
 {
-    if (m_active_road)
+    if (m_active_road && m_active_road!=r)
     {
         m_active_road->getSpline()->setNodeVisibility(false);
         m_active_road->setWireFrame(false);
