@@ -110,8 +110,8 @@ void SelectionHandler::animate(u32 id)
         */
         if ((node && (node == selected_road)) || (!node && selected_road))
         {
-            selectRoad((IRoad*)selected_road);
-            Viewport::get()->setActiveRoad((Road*)selected_road);   
+            Viewport::get()->setActiveRoad((Road*)selected_road);
+            selectRoad((IRoad*)selected_road);  
         } // road is selected
         else if (node)
         {

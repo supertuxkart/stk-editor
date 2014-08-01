@@ -232,9 +232,16 @@ void ISpline::addControlPoint(ControlPoint cp, u32 pos)
     cp.normal_node->setVisible(true);
     cp.width_node->setVisible(true);
 
-    list<ControlPoint>::Iterator it = m_control_points.begin();
-    for (u32 i = 0; i < pos; i++, it++);
-    m_control_points.insert_before(it,cp);
+    if (m_control_points.size() == pos)
+    {
+        m_control_points.push_back(cp);
+    }
+    else
+    {
+        list<ControlPoint>::Iterator it = m_control_points.begin();
+        for (u32 i = 0; i < pos; i++, it++);
+        m_control_points.insert_before(it, cp);
+    }
     m_cp_num++;
 } // addControlPoint
 
