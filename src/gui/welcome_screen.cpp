@@ -40,7 +40,7 @@ void WelcomeScreen::init()
         stringw s = *it;
         m_lb->addItem(s.c_str());
     }
-    if (list.size() == 0)
+    if (list.empty())
         bos->setEnabled(false);
 
     m_wndw->setDrawTitlebar(false);

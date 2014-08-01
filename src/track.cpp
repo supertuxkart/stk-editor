@@ -90,6 +90,7 @@ Track::Track(path file)
     {
         MsgWndw::get()->showMsg("File can not be opened: signature failed.");
         m_valid = false;
+        fclose(pFile);
         return;
     }
 
@@ -296,7 +297,8 @@ void Track::save()
 
   for (u32 i = 0; i < num; i++)
   {
-      assert(node = sm->getSceneNodeFromId(MAGIC_NUMBER + i + 1));
+      node = sm->getSceneNodeFromId(MAGIC_NUMBER + i + 1);
+      assert(node);
       if (node->isVisible())
       {
           fwrite(&node->getPosition(), sizeof(vector3df), 1, pFile);

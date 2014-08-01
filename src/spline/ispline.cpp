@@ -282,7 +282,6 @@ void ISpline::updatePosition()
     vector3df v;
     for (it = m_control_points.begin(); it != m_control_points.end(); it++)
     {
-        v = it->normal_node->getPosition();
         it->pos = it->node->getPosition() + getPosition();
         it->normal = it->normal_node->getPosition();
         it->normal.normalize();

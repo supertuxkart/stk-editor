@@ -130,7 +130,7 @@ void DriveLine::build(path p)
     quads << "<quads>\n";
 
     int spn = m_spline->getPointNum() - 1;
-    vector3df last_point = m_spline->p(0);
+    vector3df last_point;
     vector3df point;
     vector3df n, v, w;
     vector3df v1, v2, v3, v4;
