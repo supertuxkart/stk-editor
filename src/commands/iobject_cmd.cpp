@@ -2,6 +2,8 @@
 
 #include "editor.hpp"
 
+#include "mesh/iroad.hpp"
+
 #include <assert.h>
 
 // ----------------------------------------------------------------------------
@@ -76,9 +78,9 @@ CreateCmd::~CreateCmd()
 // ----------------------------------------------------------------------------
 // MoveCmd  -------------------------------------------------------------------
 // ----------------------------------------------------------------------------
-
-MoveCmd::MoveCmd(list<ISceneNode*> e, s32 sx, s32 sy) :IObjectCmd(e)
+MoveCmd::MoveCmd(list<ISceneNode*> e, s32 sx, s32 sy, IRoad* r) :IObjectCmd(e)
 {
+    m_road = r;
     ISceneCollisionManager* iscm;
     iscm = Editor::getEditor()->getSceneManager()->getSceneCollisionManager();
     m_start_ray = iscm->getRayFromScreenCoordinates(vector2d<s32>(sx, sy));
@@ -98,6 +100,7 @@ void MoveCmd::redo(ISceneNode *node)
 {
     vector3df d = m_curr_ray.start - m_start_ray.start;
     node->setPosition(node->getPosition() + d);
+    if (m_road) m_road->refresh();
 } // redo
 
 // ----------------------------------------------------------------------------
@@ -106,6 +109,7 @@ void MoveCmd::undo(ISceneNode *node)
     vector3df d = m_curr_ray.start - m_start_ray.start;
     if (d.getLength()>0)
         node->setPosition(node->getPosition() - d);
+    if (m_road) m_road->refresh();
 } // undo
 
 // ----------------------------------------------------------------------------

@@ -6,6 +6,8 @@
 #include <irrlicht.h>
 #include <list>
 
+class IRoad;
+
 using namespace irr;
 using namespace scene;
 using namespace core;
@@ -61,11 +63,12 @@ public:
 class MoveCmd : public IObjectCmd
 {
 private:
-    line3df m_start_ray;
-    line3df m_curr_ray;
+    line3df   m_start_ray;
+    line3df   m_curr_ray;
     vector3df m_tx, m_ty;
+    IRoad*    m_road;
 public:
-    MoveCmd(list<ISceneNode*> e, s32 sx, s32 sy);
+    MoveCmd(list<ISceneNode*> e, s32 sx, s32 sy, IRoad* r = 0);
 
     void update(s32 x, s32 y);
 

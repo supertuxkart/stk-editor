@@ -53,6 +53,8 @@ DriveLine::DriveLine(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
 // ----------------------------------------------------------------------------
 void DriveLine::refresh()
 {
+    m_spline->updatePosition();
+
     if (m_mesh.vertices)
     {
         delete[] m_mesh.vertices;

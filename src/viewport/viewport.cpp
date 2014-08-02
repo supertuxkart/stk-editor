@@ -330,8 +330,9 @@ void Viewport::move()
     if (m_state != SELECT || m_selection_handler->getSelection().size() == 0)
         return;
 
+    IRoad* r = m_spline_mode ? m_active_road : 0;
     m_active_cmd = 
-        new MoveCmd(m_selection_handler->getSelection(), m_mouse->x, m_mouse->y);
+        new MoveCmd(m_selection_handler->getSelection(), m_mouse->x, m_mouse->y,r);
     m_state = EDIT;
     m_edit = MOVE;
 } // move

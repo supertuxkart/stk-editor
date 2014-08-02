@@ -35,7 +35,6 @@ void RoadCmd::updatePos(vector3df pos)
         else m_spline->getNode(m_ix)->setPosition(pos);
     }
 
-    m_spline->updatePosition();
     m_road->refresh();
 
 } // updatePos
