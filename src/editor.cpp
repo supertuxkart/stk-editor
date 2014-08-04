@@ -237,11 +237,12 @@ bool Editor::importantButtonClicked(int ID)
     case RoadCrossSectionWndw::CANCEL:
         m_viewport->switchRoadCrossSectionMode(false);
         return true;
+    case RoadCrossSectionWndw::POINT_M:
+    case RoadCrossSectionWndw::POINT_P:
+        m_viewport->clearSelection();
     case RoadCrossSectionWndw::GRID_ON_OFF:
     case RoadCrossSectionWndw::GRID_M:
     case RoadCrossSectionWndw::GRID_P:
-    case RoadCrossSectionWndw::POINT_M:
-    case RoadCrossSectionWndw::POINT_P:
     case RoadCrossSectionWndw::SYM_ON_OFF:
         m_rcs->buttonClicked(ID);
         return true;
@@ -272,7 +273,6 @@ void Editor::simpleShortcuts(EKEY_CODE code)
     default:
         return;
     }
-
 } // simpleShortcuts
 
 // ----------------------------------------------------------------------------

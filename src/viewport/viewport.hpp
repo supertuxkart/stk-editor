@@ -113,6 +113,7 @@ public:
     bool                setTrack(Track* t);
     void                build();
     void                clear();
+    void                clearSelection();
     void                draw();
     void                restoreCam();
     void                selectDriveLine();

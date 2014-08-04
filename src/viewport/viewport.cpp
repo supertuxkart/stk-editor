@@ -93,6 +93,10 @@ void Viewport::animateEditing()
         m_active_road->getSpline()->updatePosition();
         m_active_road->refresh();
     } // road & spline refresh
+
+    if (dirty && m_rcs_mode)
+        RoadCrossSectionWndw::get()->handleSymmetry();
+
 } // animateEditing
 
 // ----------------------------------------------------------------------------
@@ -434,6 +438,9 @@ void Viewport::setState(State state)
 // ----------------------------------------------------------------------------
 void Viewport::deleteCmd()
 {
+    // in road cross-section mode removing points isn't supported
+    if (m_rcs_mode) return;
+
     if (m_spline_mode)
     {
         list<ISceneNode*> sel = m_selection_handler->getSelectedSpherePoints();
@@ -680,6 +687,7 @@ void Viewport::build()
     m_track->build();
 } // build
 
+// ----------------------------------------------------------------------------
 void Viewport::clear()
 {
     m_selection_handler->clearSelection();
@@ -693,6 +701,12 @@ void Viewport::clear()
         m_track = 0;
     }
 
+} // clear
+
+// ----------------------------------------------------------------------------
+void Viewport::clearSelection()
+{
+    m_selection_handler->clearSelection();
 } // clear
 
 // ----------------------------------------------------------------------------

@@ -221,6 +221,7 @@ array<vector2df> Road::genStandardCrossSection(u32 wvn)
     for (u32 i = 1; i <= wvn / 2; i++)
         cs.push_back(vector2df(-1.0f - 1 / (f32)wvn*2.0f
         + i / (f32)wvn * 4.0f, 0.5f));
+
     for (u32 i = wvn / 2; i >= 1; i--)
         cs.push_back(vector2df(-1.0f - 1 / (f32)wvn*2.0f
         + i / (f32)wvn * 4.0f, -0.5f));

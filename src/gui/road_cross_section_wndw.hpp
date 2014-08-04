@@ -73,6 +73,7 @@ public:
 
     void                           render();
 
+    void                           handleSymmetry();
     void                           buttonClicked(u32 id);
     void                           reallocate();
 
