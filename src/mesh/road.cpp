@@ -118,7 +118,7 @@ void Road::refresh()
     assert(m_width_vert_num % 4 == 0);
 
     m_spline->updatePosition();
-    m_spline->genNormalsFromFirst();
+    //m_spline->genNormalsFromFirst();
 
     m_mesh_buff->setDirty();
     if (!m_spline->hasEnoughPoints()) return;
@@ -187,7 +187,6 @@ void Road::setWireFrame(bool b)
     m_mesh_buff->Material.Wireframe = b;
     m_mesh_buff->Material.Lighting = !b;
     m_mesh_buff->Material.BackfaceCulling = !b;
-
     if (!b)
     {
         ISceneManager* sm = Editor::getEditor()->getSceneManager();
@@ -197,5 +196,21 @@ void Road::setWireFrame(bool b)
         m_tri = sm->createOctreeTriangleSelector(&m_smesh, this);
         setTriangleSelector(m_tri);
     }
-
 } // setWireFrame
+
+// ----------------------------------------------------------------------------
+void Road::attachToDriveLine(IRoad* dl)
+{
+    ISpline* dl_spline = dl->getSpline();
+    ISceneNode* node;
+    u32 n = m_spline->getPointNum();
+    vector3df pos;
+    f32 t;
+    for (u32 i = 0; i < n; i++)
+    {
+        t = i / (f32)(n - 1);
+        pos = m_spline->p(t) + m_spline->getNormal(t) * 0.01f;
+        dl_spline->addControlPoint(pos);
+    }
+    dl->refresh();
+} // attachToDriveLine

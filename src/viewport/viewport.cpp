@@ -376,8 +376,11 @@ void Viewport::genRoadNormals()
 {
     if (m_active_road)
     {
-        m_active_road->getSpline()->genNormalsFromFirst();
-        m_active_road->refresh();
+        IRoad* dl = m_track->getRoadByID(0);
+        if (m_active_road != dl)
+        {
+            ((Road*)m_active_road)->attachToDriveLine(dl);
+        }
     }
 } // genRoadNormals
 
@@ -421,8 +424,11 @@ void Viewport::deleteCmd()
         list<ISceneNode*> sel = m_selection_handler->getSelectedSpherePoints();
         list<ISceneNode*>::Iterator it;
         u32 ix;
-        if (m_active_road->getSpline()->getPointNum() == sel.size())
+        if (m_active_road->getSpline()->getPointNum() == sel.size() 
+            && m_active_road != m_track->getRoadByID(0))
         {
+            // if all control point is selected, but the IRoad isn't the DriveLine,
+            // the road itself is removed
             CreateRoadCmd* crd = new CreateRoadCmd(m_active_road, true);
             crd->redo();
             m_command_handler.add(crd);

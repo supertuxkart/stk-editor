@@ -25,7 +25,7 @@ void ISpline::calculateVelocity()
 
     for (int i = 0; it != m_control_points.end(); it++, i++)
     {
-        it->t = i / (float)(m_cp_num - 1);
+        it->t = i / (f32)(m_cp_num - 1);
     }
 
     if (m_cp_num < 2) return;

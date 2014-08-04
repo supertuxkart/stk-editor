@@ -30,6 +30,8 @@ public:
     void    notify(ITexture* t);
     void    setWireFrame(bool b);
 
+    void    attachToDriveLine(IRoad* dl);
+
     ITriangleSelector*               getTriangleSel(){ return m_tri;       }
     CMeshBuffer<S3DVertex2TCoords>*  getMeshBuffer() { return m_mesh_buff; }
 
