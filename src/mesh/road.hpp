@@ -33,9 +33,10 @@ public:
     void    setWireFrame(bool b);
 
     void    attachToDriveLine(IRoad* dl);
-
-    void    genStandardCrossSection(u32 wvn);
     void    setCrossSection(array<vector2df> cs);
+
+    static array<vector2df> genStandardCrossSection(u32 wvn);
+    
 
     array<vector2df> getCrossSectionArray()          { return m_cross_section; }
     ITriangleSelector*               getTriangleSel(){ return m_tri;           }

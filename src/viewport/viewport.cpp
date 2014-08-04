@@ -375,13 +375,13 @@ void Viewport::scale()
 } // scale
 
 // ----------------------------------------------------------------------------
-void Viewport::genRoadNormals()
+void Viewport::switchRoadCrossSectionMode(bool apply_mod)
 {
     if (m_rcs_mode)
     {
         m_selection_handler->clearSelection();
         m_rcs_mode = false;
-        RoadCrossSectionWndw::get()->hide();
+        RoadCrossSectionWndw::get()->hide(apply_mod);
         Editor::getEditor()->getSceneManager()->setActiveCamera(m_aztec_cam->Cam());
     }
     else

@@ -85,7 +85,7 @@ Road::Road(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s, stringw n
                                                     :IRoad(parent, mgr, id, s, n)
 {
     m_tri = 0;
-    genStandardCrossSection(m_width_vert_num);
+    m_cross_section                       = genStandardCrossSection(m_width_vert_num);
     m_mesh_buff                           = new CMeshBuffer<S3DVertex2TCoords>();
     m_mesh_buff->Material.Wireframe       = true;
     m_mesh_buff->Material.Lighting        = false;
@@ -208,19 +208,21 @@ void Road::attachToDriveLine(IRoad* dl)
 } // attachToDriveLine
 
 // ----------------------------------------------------------------------------
-void Road::genStandardCrossSection(u32 wvn)
-{
-    m_cross_section.clear();
-    m_width_vert_num = wvn;
-    for (u32 i = 1; i <= wvn / 2; i++)
-        m_cross_section.push_back(vector2df(-1.0f + i / (f32)wvn * 4.0f, 0.5f));
-    for (u32 i = wvn / 2; i >= 1; i--)
-        m_cross_section.push_back(vector2df(-1.0f + i / (f32)wvn * 4.0f, -0.5f));
-} // genStandardCrossSection
-
-// ----------------------------------------------------------------------------
 void Road::setCrossSection(array<vector2df> cs)
 {
     m_cross_section = cs;
     m_width_vert_num = cs.size();
 } // setCrossSection
+
+// ----------------------------------------------------------------------------
+array<vector2df> Road::genStandardCrossSection(u32 wvn)
+{
+    array<vector2df> cs;
+    for (u32 i = 1; i <= wvn / 2; i++)
+        cs.push_back(vector2df(-1.0f - 1 / (f32)wvn*2.0f
+        + i / (f32)wvn * 4.0f, 0.5f));
+    for (u32 i = wvn / 2; i >= 1; i--)
+        cs.push_back(vector2df(-1.0f - 1 / (f32)wvn*2.0f
+        + i / (f32)wvn * 4.0f, -0.5f));
+    return cs;
+} // genStandardCrossSection

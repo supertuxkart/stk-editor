@@ -74,7 +74,7 @@ bool Editor::buttonClicked(int ID)
         m_viewport->getTerrain()->swapVisibility();
         return true;
     case ToolBar::TBI_TRY:
-        m_viewport->genRoadNormals();
+        m_viewport->switchRoadCrossSectionMode(false);
         return true;
     case ToolBar::TBI_MUSIC:
         m_gui_env->addFileOpenDialog(L"Select music:", true, 0, 1234, false, m_music_loc);
@@ -230,6 +230,20 @@ bool Editor::importantButtonClicked(int ID)
         return true;
     case MsgWndw::CA_BTN_ID:
         m_msg_wndw->buttonClicked(true);
+        return true;
+    case RoadCrossSectionWndw::OK:
+        m_viewport->switchRoadCrossSectionMode(true);
+        return true;
+    case RoadCrossSectionWndw::CANCEL:
+        m_viewport->switchRoadCrossSectionMode(false);
+        return true;
+    case RoadCrossSectionWndw::GRID_ON_OFF:
+    case RoadCrossSectionWndw::GRID_M:
+    case RoadCrossSectionWndw::GRID_P:
+    case RoadCrossSectionWndw::POINT_M:
+    case RoadCrossSectionWndw::POINT_P:
+    case RoadCrossSectionWndw::SYM_ON_OFF:
+        m_rcs->buttonClicked(ID);
         return true;
     }
     return false;
@@ -609,6 +623,7 @@ bool Editor::run()
             m_toolbar->reallocate();
             m_toolbox->reallocate();
             m_tex_sel->reallocate();
+            m_rcs->reallocate();
             if (m_indicator) m_indicator->reallocate();
             m_new_dialog_wndw->reallocate(m_screen_size);
         }
