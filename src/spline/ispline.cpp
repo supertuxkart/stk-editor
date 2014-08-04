@@ -340,6 +340,51 @@ u32 ISpline::getCPIndexFromNodeID(s32 id)
 } // getCPIndexFromNodeID
 
 // ----------------------------------------------------------------------------
+void ISpline::genNormalsFromFirst()
+{
+    if (m_cp_num < 3) return;
+    list<ControlPoint>::Iterator it = m_control_points.begin();
+    vector3df prev = (it++)->pos;
+    vector3df curr = it->pos;
+    vector3df next;
+    vector3df n;
+    vector3df ref_dir = (curr - prev).crossProduct((it-1)->normal);
+    vector3df d;
+    for (u32 ix = 1; ix < m_cp_num - 1; ix++)
+    {
+        next = (it + 1)->pos;
+        
+        n = (prev + next - curr * 2);
+        if (n.getLength() < 0.1)
+        {
+            d = (prev - curr).crossProduct((it - 1)->normal).normalize();
+            quaternion q;
+            q.fromAngleAxis(PI/2.0f, d);
+            q.getMatrix().rotateVect(n, (prev - curr));
+        }
+        n.normalize();
+        
+        d = (next - curr).crossProduct(n);
+        if (d.dotProduct(ref_dir) < 0)
+            n *= -1;
+        
+        it->normal = n;
+        it->normal_node->setPosition(n);
+        it++;
+        prev = curr;
+        curr = it->pos;
+    } // internal controlpoints
+
+    d = (curr - prev).crossProduct(it->normal);
+    if (d.dotProduct(ref_dir) < 0)
+    {
+        it->normal *= -1;
+        it->normal_node->setPosition(it->normal);
+    }
+
+} // genNormalsFromFirst
+
+// ----------------------------------------------------------------------------
 void ISpline::OnRegisterSceneNode()
 {
     if (IsVisible)

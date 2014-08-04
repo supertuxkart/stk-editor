@@ -372,6 +372,16 @@ void Viewport::scale()
 } // scale
 
 // ----------------------------------------------------------------------------
+void Viewport::genRoadNormals()
+{
+    if (m_active_road)
+    {
+        m_active_road->getSpline()->genNormalsFromFirst();
+        m_active_road->refresh();
+    }
+} // genRoadNormals
+
+// ----------------------------------------------------------------------------
 void Viewport::setState(State state)
 {
     ISceneManager* sm = Editor::getEditor()->getSceneManager();

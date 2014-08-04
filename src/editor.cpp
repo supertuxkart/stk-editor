@@ -73,6 +73,7 @@ bool Editor::buttonClicked(int ID)
         m_viewport->getTerrain()->swapVisibility();
         return true;
     case ToolBar::TBI_TRY:
+        m_viewport->genRoadNormals();
         return true;
     case ToolBar::TBI_MUSIC:
         m_gui_env->addFileOpenDialog(L"Select music:", true, 0, 1234, false, m_music_loc);

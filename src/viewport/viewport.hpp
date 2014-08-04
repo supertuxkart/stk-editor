@@ -94,6 +94,7 @@ public:
     void                move();
     void                rotate();
     void                scale();
+    void                genRoadNormals();
     void                setState(State state);
     void                deleteCmd();
     void                setNewEntity(const stringw path, const stringw name);

@@ -65,6 +65,9 @@ public:
     void                clear();
     void                save(FILE* fp);
     u32                 getCPIndexFromNodeID(s32 id);
+
+    void                genNormalsFromFirst();
+
     bool                hasEnoughPoints()   { return m_cp_num > 1; }
     int                 getPointNum()       { return m_cp_num;     }
     bool                isValid()           { return m_valid;      }

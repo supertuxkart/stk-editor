@@ -118,6 +118,7 @@ void Road::refresh()
     assert(m_width_vert_num % 4 == 0);
 
     m_spline->updatePosition();
+    m_spline->genNormalsFromFirst();
 
     m_mesh_buff->setDirty();
     if (!m_spline->hasEnoughPoints()) return;
