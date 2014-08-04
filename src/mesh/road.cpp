@@ -40,25 +40,16 @@ void Road::calcVertexRow(vector3df p, vector3df n, vector3df w, int offset,
                                                       float wx, float t)
 {
     w *= m_width / m_width_vert_num * wx;
-    for (u32 i = 0; i < m_width_vert_num / 2; i++)
+    for (u32 i = 0; i < m_width_vert_num; i++)
     {
-        m_mesh_buff->Vertices[offset + i].Pos =
-            p + w * ((s32)i - (s32)m_width_vert_num / 4 + 0.5f);
-        m_mesh_buff->Vertices[offset + i].Color = SColor(255, 255, 255, 255);
+        m_mesh_buff->Vertices[offset + i].Pos = 
+            p + w * m_cross_section[i].X + n * m_cross_section[i].Y;
+
+        m_mesh_buff->Vertices[offset + i].Color = 
+            (m_cross_section[i].Y>0) ? SColor(255, 255, 255, 255) : SColor(255, 0, 0, 0);
+
         m_mesh_buff->Vertices[offset + i].TCoords = vector2df(i / (f32)m_width_vert_num,
                                                         t*m_tex_warp_count);
-    }
-
-    for (u32 i = 0; i < m_width_vert_num / 2; i++)
-    {
-        vector3df vec =
-            m_mesh_buff->Vertices[offset + m_width_vert_num / 2 - i - 1].Pos - 0.3f * n;
-        m_mesh_buff->Vertices[offset + m_width_vert_num / 2 + i].Pos = vec;
-        m_mesh_buff->Vertices[offset + m_width_vert_num / 2 + i].Color =
-            SColor(255, 0, 0, 0);
-        m_mesh_buff->Vertices[offset + m_width_vert_num / 2 + i].TCoords
-            = vector2df(0.5f + i / (f32)m_width_vert_num,
-                                       t*m_tex_warp_count);
     }
 } // calcVertexRow
 
@@ -94,6 +85,7 @@ Road::Road(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s, stringw n
                                                     :IRoad(parent, mgr, id, s, n)
 {
     m_tri = 0;
+    genStandardCrossSection(m_width_vert_num);
     m_mesh_buff                           = new CMeshBuffer<S3DVertex2TCoords>();
     m_mesh_buff->Material.Wireframe       = true;
     m_mesh_buff->Material.Lighting        = false;
@@ -214,3 +206,21 @@ void Road::attachToDriveLine(IRoad* dl)
     }
     dl->refresh();
 } // attachToDriveLine
+
+// ----------------------------------------------------------------------------
+void Road::genStandardCrossSection(u32 wvn)
+{
+    m_cross_section.clear();
+    m_width_vert_num = wvn;
+    for (u32 i = 1; i <= wvn / 2; i++)
+        m_cross_section.push_back(vector2df(-1.0f + i / (f32)wvn * 4.0f, 0.5f));
+    for (u32 i = wvn / 2; i >= 1; i--)
+        m_cross_section.push_back(vector2df(-1.0f + i / (f32)wvn * 4.0f, -0.5f));
+} // genStandardCrossSection
+
+// ----------------------------------------------------------------------------
+void Road::setCrossSection(array<vector2df> cs)
+{
+    m_cross_section = cs;
+    m_width_vert_num = cs.size();
+} // setCrossSection

@@ -26,6 +26,7 @@ class  WelcomeScreen;
 class  Viewport;
 class  TexSel;
 class  MsgWndw;
+class  RoadCrossSectionWndw;
 
 class Editor :public IEventReceiver
 {
@@ -46,6 +47,7 @@ private:
     Viewport*                   m_viewport;
 
     TexSel*                     m_tex_sel;
+    RoadCrossSectionWndw*       m_rcs;
 
     bool                        m_valid_data_dir;
 

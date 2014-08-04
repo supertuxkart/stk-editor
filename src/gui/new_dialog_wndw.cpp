@@ -61,7 +61,7 @@ NewDialogWndw* NewDialogWndw::get()
     m_self = new NewDialogWndw();
     m_self->init();
     return m_self;
-} // getToolBox
+} // get
 
 // ----------------------------------------------------------------------------
 u32 NewDialogWndw::getSize()

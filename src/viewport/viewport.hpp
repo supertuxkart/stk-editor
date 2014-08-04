@@ -62,6 +62,7 @@ private:
     static int              m_last_entity_ID;
 
     bool                    m_spline_mode;
+    bool                    m_rcs_mode;
 
     IRoad*                  m_active_road;
     ISceneNode*             m_junk_node;
@@ -121,7 +122,8 @@ public:
     void showSky();
     void setSky(Sky* sky);
 
-    void                setFreeCamera(ICameraSceneNode* cam) { m_free_camera = cam;      }
+    void                setRCSMode(bool b)                   { m_rcs_mode       = b;     }
+    void                setFreeCamera(ICameraSceneNode* cam) { m_free_camera    = cam;   }
     static void         setLastEntityID(u32 id)              { m_last_entity_ID = id;    }
     static u32          getLastEntityID()                    { return m_last_entity_ID;  }
     bool                getSplineMode()                      { return m_spline_mode;     }

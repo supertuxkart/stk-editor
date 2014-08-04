@@ -4,6 +4,7 @@
 
 #include "gui/terr_panel.hpp"
 #include "gui/road_panel.hpp"
+#include "gui/road_cross_section_wndw.hpp"
 
 #include "commands/height_mod_cmd.hpp"
 #include "commands/texmod_cmd.hpp"
@@ -79,7 +80,8 @@ void Viewport::animateEditing()
     else if (m_mouse->leftPressed())
     {
         // left mouse finishes the operation
-        m_command_handler.add(m_active_cmd);
+        if (!m_rcs_mode)
+            m_command_handler.add(m_active_cmd);
         m_active_cmd = 0;
         m_state = SELECT;
         dirty = true;
@@ -309,6 +311,7 @@ void Viewport::init(ICameraSceneNode* cam = 0, Mouse* m = 0, Keys* k = 0)
     m_keys              = k;
     m_state             = SELECT;
     m_spline_mode       = false;
+    m_rcs_mode          = false;
     m_active_cmd        = 0;
     m_active_road       = 0;
     m_new_entity        = 0;
@@ -374,12 +377,24 @@ void Viewport::scale()
 // ----------------------------------------------------------------------------
 void Viewport::genRoadNormals()
 {
-    if (m_active_road)
+    if (m_rcs_mode)
     {
-        IRoad* dl = m_track->getRoadByID(0);
-        if (m_active_road != dl)
+        m_selection_handler->clearSelection();
+        m_rcs_mode = false;
+        RoadCrossSectionWndw::get()->hide();
+        Editor::getEditor()->getSceneManager()->setActiveCamera(m_aztec_cam->Cam());
+    }
+    else
+    {
+        if (m_active_road)
         {
-            ((Road*)m_active_road)->attachToDriveLine(dl);
+            IRoad* dl = m_track->getRoadByID(0);
+            if (m_active_road != dl)
+            {
+                RoadCrossSectionWndw::get()->show(((Road*)m_active_road));
+                m_rcs_mode = true;
+                m_selection_handler->clearSelection();
+            }
         }
     }
 } // genRoadNormals
@@ -507,7 +522,8 @@ void Viewport::animate(long dt)
     if ((!m_track) || (!m_terrain)) return;
     if (m_state != FREECAM)
     {
-        m_aztec_cam->animate((f32)dt);
+        if (!m_rcs_mode)
+            m_aztec_cam->animate((f32)dt);
         switch (m_state)
         {
         case EDIT:

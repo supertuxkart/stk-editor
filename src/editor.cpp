@@ -14,6 +14,7 @@
 #include "gui/road_panel.hpp"
 #include "gui/extra_panel.hpp"
 #include "gui/tex_sel.hpp"
+#include "gui/road_cross_section_wndw.hpp"
 
 #include "mesh/driveline.hpp"
 #include "mesh/road.hpp"
@@ -368,6 +369,8 @@ bool Editor::init()
     l->setLightType(ELT_DIRECTIONAL);
     l->setPosition(vector3df(0, 1, 0));
 
+    m_rcs = RoadCrossSectionWndw::get();
+
     // free camera
     ICameraSceneNode* cam;
     cam = m_scene_manager->addCameraSceneNodeMaya();
@@ -593,8 +596,9 @@ bool Editor::run()
 		m_gui_env->drawAll();
 
         m_viewport->draw();
+        m_rcs->render();
 
-        if (m_viewport->getState() != Viewport::FREECAM)
+        if (m_viewport->getState() != Viewport::FREECAM && !m_rcs->isVisible())
             m_indicator->drawToScreen();
 
 		m_video_driver->endScene();

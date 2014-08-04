@@ -11,6 +11,8 @@ private:
     CMeshBuffer<S3DVertex2TCoords>* m_mesh_buff;
     SMesh                           m_smesh;
     ITriangleSelector*              m_tri;
+    
+    array<vector2df>                m_cross_section;
 
     virtual void    textureExport(FILE* fp);
     virtual void    textureImport(FILE* fp);
@@ -32,10 +34,14 @@ public:
 
     void    attachToDriveLine(IRoad* dl);
 
-    ITriangleSelector*               getTriangleSel(){ return m_tri;       }
-    CMeshBuffer<S3DVertex2TCoords>*  getMeshBuffer() { return m_mesh_buff; }
+    void    genStandardCrossSection(u32 wvn);
+    void    setCrossSection(array<vector2df> cs);
 
-    virtual const aabbox3d<f32>& getBoundingBox() const 
-                                    { return m_mesh_buff->getBoundingBox(); }
+    array<vector2df> getCrossSectionArray()          { return m_cross_section; }
+    ITriangleSelector*               getTriangleSel(){ return m_tri;           }
+    CMeshBuffer<S3DVertex2TCoords>*  getMeshBuffer() { return m_mesh_buff;     }
+                                                                               
+    virtual const aabbox3d<f32>& getBoundingBox() const                        
+                                    { return m_mesh_buff->getBoundingBox();    }
 };
 #endif
