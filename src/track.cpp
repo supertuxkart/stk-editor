@@ -19,6 +19,9 @@
 #include <physfs.h>
 #include <fstream>
 #include <iostream>
+#include <string>
+#include <locale>
+#include <codecvt>
 #include <stdio.h>
 #include <assert.h>
 
@@ -388,17 +391,21 @@ void Track::build()
 
     mat.close();
 
-    std::ofstream track;
+    std::wofstream track;
+    track.imbue(std::locale(std::locale::empty(), 
+        new std::codecvt_utf8<wchar_t, 0x10ffff, std::generate_header>));
     track.open((p + "/track.xml").c_str());
-    track << "<track  name           = \"" << m_track_name.c_str() << "\"\n";
-    track << "        version        = \"5\"\n";
-    track << "        groups         = \"made-by-STK-TE\"\n";
-    track << "        music          = \"" << m_music.c_str() << "\"\n";
-    track << "        screenshot     = \"screenshot.jpg\"\n";
-    track << "        smooth-normals = \"true\"\n";
-    track << "        reverse        = \"Y\"\n>\n";
-    track << "</track>\n";
+    track << L"<track  name           = \"" << m_track_name.c_str() << L"\"\n";
+    track << L"        version        = \"5\"\n";
+    track << L"        groups         = \"made-by-STK-TE\"\n";
+    track << L"        designer       = \"" << m_designer.c_str() << L"\"\n";
+    track << L"        music          = \"" << m_music.c_str() << L"\"\n";
+    track << L"        screenshot     = \"screenshot.jpg\"\n";
+    track << L"        smooth-normals = \"true\"\n";
+    track << L"        reverse        = \"Y\"\n>\n";
+    track << L"</track>\n";
     track.close();
+
 
     std::ofstream scene;
     scene.open((p + "/scene.xml").c_str());
