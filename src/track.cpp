@@ -19,9 +19,6 @@
 #include <physfs.h>
 #include <fstream>
 #include <iostream>
-#include <string>
-#include <locale>
-#include <codecvt>
 #include <stdio.h>
 #include <assert.h>
 
@@ -391,20 +388,41 @@ void Track::build()
 
     mat.close();
 
-    std::wofstream track;
-    track.imbue(std::locale(std::locale::empty(), 
-        new std::codecvt_utf8<wchar_t, 0x10ffff, std::generate_header>));
-    track.open((p + "/track.xml").c_str());
-    track << L"<track  name           = \"" << m_track_name.c_str() << L"\"\n";
-    track << L"        version        = \"5\"\n";
-    track << L"        groups         = \"made-by-STK-TE\"\n";
-    track << L"        designer       = \"" << m_designer.c_str() << L"\"\n";
-    track << L"        music          = \"" << m_music.c_str() << L"\"\n";
-    track << L"        screenshot     = \"screenshot.jpg\"\n";
-    track << L"        smooth-normals = \"true\"\n";
-    track << L"        reverse        = \"Y\"\n>\n";
-    track << L"</track>\n";
-    track.close();
+    stringw track;
+
+    track += "<track  name           = \"";
+    track += m_track_name + L"\"\n";
+    track += "        version        = \"5\"\n";
+    track += "        groups         = \"made-by-STK-TE\"\n";
+    track += "        designer       = \"";
+    track += m_designer + "\"\n";
+    track += "        music          = \"";
+    track += m_music.c_str();
+    track += "\"\n";
+    track += "        screenshot     = \"screenshot.jpg\"\n";
+    track += "        smooth-normals = \"true\"\n";
+    track += "        reverse        = \"Y\"\n>\n";
+    track += "</track>\n";
+
+    char*	dst = new char[2 * track.size()];
+
+    PHYSFS_uint64 len = 2 * track.size() * sizeof(PHYSFS_uint16);
+    
+#ifdef _WIN32
+    PHYSFS_utf8FromUcs2((PHYSFS_uint16*)track.c_str(),dst,len);
+#else
+    len*=2;
+    PHYSFS_utf8FromUcs4((PHYSFS_uint32*)track.c_str(), dst, len);
+#endif
+
+    u32 s = 0;
+    while (dst[s++]);
+
+    FILE* f;
+    f = fopen((p + "/track.xml").c_str(), "wb");
+    fwrite(dst, sizeof(char), s-1, f);
+    fclose(f);
+    delete[] dst;
 
 
     std::ofstream scene;
