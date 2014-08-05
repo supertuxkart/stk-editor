@@ -18,8 +18,8 @@ class Track
 private:
     bool            m_valid;
 
-    stringc         m_track_name;
-    stringc         m_designer;
+    stringw         m_track_name;
+    stringw         m_designer;
     stringc         m_file_name;
     Terrain*        m_terrain;
     DriveLine*      m_driveline;

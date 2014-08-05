@@ -98,23 +98,24 @@ Track::Track(path file)
 
     // TRACK NAME
     u8 size;
-    c8* cc;
+    wchar_t* c;
     fread(&size, sizeof(u8), 1, pFile);
     if (!Editor::isValidSize(size)) { fclose(pFile); m_valid = false; return; }
-    cc = new c8[size];
-    fread(cc, sizeof(c8), size, pFile);
-    m_track_name = cc;
-    delete[] cc;
+    c = new wchar_t[size];
+    fread(c, sizeof(wchar_t), size, pFile);
+    m_track_name = c;
+    delete[] c;
 
     // DESIGNER NAME
     fread(&size, sizeof(u8), 1, pFile);
     if (!Editor::isValidSize(size)) { fclose(pFile); m_valid = false; return; }
-    cc = new c8[size];
-    fread(cc, sizeof(c8), size, pFile);
-    m_designer = cc;
-    delete[] cc;
+    c = new wchar_t[size];
+    fread(c, sizeof(wchar_t), size, pFile);
+    m_designer = c;
+    delete[] c;
 
     // FILE NAME
+    c8* cc;
     fread(&size, sizeof(u8), 1, pFile);
     if (!Editor::isValidSize(size)) { fclose(pFile); m_valid = false; return; }
     cc = new c8[size];
@@ -258,12 +259,12 @@ void Track::save()
   // TRACK NAME
   u8 size = m_track_name.size() + 1;
   fwrite(&size, sizeof(u8), 1, pFile);
-  fwrite(m_track_name.c_str(), sizeof(c8), size, pFile);
+  fwrite(m_track_name.c_str(), sizeof(wchar_t), size, pFile);
 
   // DESIGNER NAME
   size = m_designer.size() + 1;
   fwrite(&size, sizeof(u8), 1, pFile);
-  fwrite(m_designer.c_str(), sizeof(c8), size, pFile);
+  fwrite(m_designer.c_str(), sizeof(wchar_t), size, pFile);
 
   // FILE NAME
   size = m_file_name.size() + 1;
