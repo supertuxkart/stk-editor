@@ -8,6 +8,7 @@
 // ----------------------------------------------------------------------------
 void Road::textureExport(FILE* fp)
 {
+    fwrite(&m_tex_warp_count, sizeof(u32), 1, fp);
     ITexture* tex = m_mesh_buff->Material.getTexture(0);
     u8 v = 1;
     if (tex)
@@ -25,6 +26,7 @@ void Road::textureExport(FILE* fp)
 // ----------------------------------------------------------------------------
 void Road::textureImport(FILE* fp)
 {
+    fread(&m_tex_warp_count, sizeof(u32), 1, fp);
     ITexture* tex;
     u8 v;
     fread(&v, sizeof(u8), 1, fp);
@@ -34,6 +36,29 @@ void Road::textureImport(FILE* fp)
         m_mesh_buff->Material.setTexture(0, tex);
     }
 } // textureImport
+
+// ----------------------------------------------------------------------------
+void Road::crossRoadExport(FILE* fp)
+{
+    fwrite(&m_width_vert_num, sizeof(u32), 1, fp);
+
+    for (u32 i = 0; i < m_width_vert_num; i++)
+        fwrite(&m_cross_section[i], sizeof(vector2df), 1, fp);
+
+} // crossRoadExport
+
+// ----------------------------------------------------------------------------
+void Road::crossRoadImport(FILE* fp)
+{
+    fread(&m_width_vert_num, sizeof(u32), 1, fp);
+
+    for (u32 i = 0; i < m_width_vert_num; i++)
+    {
+        vector2df pos;
+        fread(&pos, sizeof(vector2df), 1, fp);
+        m_cross_section.push_back(pos);
+    }
+} // crossRoadImport
 
 // ----------------------------------------------------------------------------
 void Road::calcVertexRow(vector3df p, vector3df n, vector3df w, int offset,
@@ -84,7 +109,9 @@ void Road::createIndexList(int nj, int ni)
 Road::Road(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s, stringw n)
                                                     :IRoad(parent, mgr, id, s, n)
 {
-    m_tri = 0;
+    m_width_vert_num                      = 12;
+    m_tex_warp_count                      = 10;
+    m_tri                                 = 0;
     m_cross_section                       = genStandardCrossSection(m_width_vert_num);
     m_mesh_buff                           = new CMeshBuffer<S3DVertex2TCoords>();
     m_mesh_buff->Material.Wireframe       = true;
@@ -102,6 +129,7 @@ Road::Road(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
     m_mesh_buff->Material.Lighting        = false;
     m_mesh_buff->Material.BackfaceCulling = false;
     textureImport(fp);
+    crossRoadImport(fp);
 } // Road
 
 // ----------------------------------------------------------------------------
