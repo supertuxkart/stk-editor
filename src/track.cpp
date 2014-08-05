@@ -98,7 +98,7 @@ Track::Track(path file)
     u8 size;
     wchar_t* c;
     fread(&size, sizeof(u8), 1, pFile);
-    if (!Editor::isValidSize(size)) { m_valid = false; return; }
+    if (!Editor::isValidSize(size)) { fclose(pFile); m_valid = false; return; }
     c = new wchar_t[size];
     fread(c, sizeof(wchar_t), size, pFile);
     m_track_name = c;
@@ -106,7 +106,7 @@ Track::Track(path file)
 
     // DESIGNER NAME
     fread(&size, sizeof(u8), 1, pFile);
-    if (!Editor::isValidSize(size)) { m_valid = false; return; }
+    if (!Editor::isValidSize(size)) { fclose(pFile); m_valid = false; return; }
     c = new wchar_t[size];
     fread(c, sizeof(wchar_t), size, pFile);
     m_designer = c;
@@ -115,7 +115,7 @@ Track::Track(path file)
     // FILE NAME
     c8* cc;
     fread(&size, sizeof(u8), 1, pFile);
-    if (!Editor::isValidSize(size)) { m_valid = false; return; }
+    if (!Editor::isValidSize(size)) { fclose(pFile); m_valid = false; return; }
     cc = new c8[size];
     fread(cc, sizeof(c8), size, pFile);
     m_file_name = cc;
@@ -123,7 +123,7 @@ Track::Track(path file)
 
     // MUSIC
     fread(&size, sizeof(u8), 1, pFile);
-    if (!Editor::isValidSize(size)) { m_valid = false; return; }
+    if (!Editor::isValidSize(size)) { fclose(pFile); m_valid = false; return; }
     cc = new c8[size];
     fread(cc, sizeof(c8), size, pFile);
     m_music = cc;
@@ -135,6 +135,7 @@ Track::Track(path file)
 
     if (!m_terrain->isValid())
     {
+        fclose(pFile);
         MsgWndw::get()->showMsg("Loading failed :invalid terrain!");
         m_valid = false;
         return;
