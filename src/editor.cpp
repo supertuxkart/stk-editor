@@ -74,7 +74,6 @@ bool Editor::buttonClicked(int ID)
         m_viewport->getTerrain()->swapVisibility();
         return true;
     case ToolBar::TBI_TRY:
-        m_viewport->switchRoadCrossSectionMode(false);
         return true;
     case ToolBar::TBI_MUSIC:
         m_gui_env->addFileOpenDialog(L"Select music:", true, 0, 1234, false, m_music_loc);
@@ -120,25 +119,31 @@ bool Editor::buttonClicked(int ID)
         TerrPanel::getTerrPanel()->btnDown(ID);
          return true;
     // ToolBox / RoadPanel buttons:
-    case RoadPanel::DL_CREATE:
+    case RoadPanel::CREATE:
         rp = RoadPanel::getRoadPanel();
         Viewport::get()->getTrack()->createRoad(rp->getNextRoadType(),
                                                 rp->getNextRoadName());
         rp->btnDown(ID);
         return true;
-    case RoadPanel::DL_ADD:
-    case RoadPanel::DL_INSERT:
+    case RoadPanel::ADD:
+    case RoadPanel::INSERT:
         m_viewport->setSplineMode(true);
         m_viewport->setState(Viewport::SPLINE);
         RoadPanel::getRoadPanel()->btnDown(ID);
         return true;
-    case RoadPanel::DL_CHECKLINE:
+    case RoadPanel::CHECKLINE:
         m_viewport->setState(Viewport::CHECK_LINE);
         return true;
-    case RoadPanel::DL_EXIT:
+    case RoadPanel::EXIT:
         m_viewport->setState(Viewport::SELECT);
         return true;
-    case RoadPanel::DL_TEX_CHANGE:
+    case RoadPanel::CROSS_SECTION:
+        m_viewport->switchRoadCrossSectionMode(false);
+        return true;
+    case RoadPanel::ATTACH_TO_DL:
+        m_viewport->attachRoadToDriveLine();
+        return true;
+    case RoadPanel::TEX_CHANGE:
         for (int i = RoadPanel::getRoadPanel()->getSelectedRoadID(); i != 0; i = 0)
         {
             m_tex_sel->subscribe((Road*)m_viewport->getTrack()->getRoadByID(i));
@@ -745,7 +750,7 @@ bool Editor::OnEvent(const SEvent& event)
                 EnvPanel::getEnvPanel()->resetIndex();
                 EnvPanel::getEnvPanel()->refreshBtnTable();
                 return true;
-            case RoadPanel::DL_SELECT:
+            case RoadPanel::SELECT:
                 m_viewport->setActiveRoad(RoadPanel::getRoadPanel()
                                                      ->getSelectedRoadID());
                 break;
@@ -781,17 +786,17 @@ bool Editor::OnEvent(const SEvent& event)
                 TerrPanel::getTerrPanel()->refreshTerrModData();
                 m_viewport->setState(Viewport::TERRAIN_MOD);
                 return true;
-            case RoadPanel::DL_DETAIL:
+            case RoadPanel::DETAIL:
                 rp = RoadPanel::getRoadPanel();
                 m_viewport->getTrack()->getRoadByID(rp->getSelectedRoadID())
                                                 ->setDetail(rp->getDetail());
                 return true;
-            case RoadPanel::DL_WIDTH:
+            case RoadPanel::WIDTH:
                 rp = RoadPanel::getRoadPanel();
                 m_viewport->getTrack()->getRoadByID(rp->getSelectedRoadID())
                                                  ->setWidth(rp->getWidth());
                 return true;
-            case RoadPanel::DL_TEX_CHANGE:
+            case RoadPanel::TEX_CHANGE:
                 rp = RoadPanel::getRoadPanel();
                 m_viewport->getTrack()->getRoadByID(rp->getSelectedRoadID())
                                                 ->setTexWrapCount(rp->getTexWrapCount());

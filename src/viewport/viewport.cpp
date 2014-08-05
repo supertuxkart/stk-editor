@@ -404,6 +404,17 @@ void Viewport::switchRoadCrossSectionMode(bool apply_mod)
 } // genRoadNormals
 
 // ----------------------------------------------------------------------------
+void Viewport::attachRoadToDriveLine()
+{
+    if (m_active_road)
+    {
+        IRoad* dl = m_track->getRoadByID(0);
+        if (m_active_road != dl)
+            ((Road*)m_active_road)->attachToDriveLine(dl);
+    }
+} // attachRoadToDriveLine
+
+// ----------------------------------------------------------------------------
 void Viewport::setState(State state)
 {
     ISceneManager* sm = Editor::getEditor()->getSceneManager();

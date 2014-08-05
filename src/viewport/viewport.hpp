@@ -96,6 +96,7 @@ public:
     void                rotate();
     void                scale();
     void                switchRoadCrossSectionMode(bool apply_mod);
+    void                attachRoadToDriveLine();
     void                setState(State state);
     void                deleteCmd();
     void                setNewEntity(const stringw path, const stringw name);

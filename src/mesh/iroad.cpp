@@ -18,7 +18,7 @@ IRoad::IRoad(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s, stringw
     setName(n);
     m_spline            = s;
     m_detail            = 0.25f;
-    m_width             = 4.0f;
+    m_width             = 16.0f;
 
     setAutomaticCulling(EAC_OFF);
 

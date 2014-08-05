@@ -19,16 +19,18 @@ public:
 
     enum
     {
-        DL_ADD = FGEI,
-        DL_INSERT,
-        DL_EXIT,
-        DL_SELECT,
-        DL_CREATE,
-        DL_WIDTH,
-        DL_DETAIL,
-        DL_TEXTURE,
-        DL_TEX_CHANGE,
-        DL_CHECKLINE
+        ADD = FGEI,
+        INSERT,
+        EXIT,
+        CROSS_SECTION,
+        ATTACH_TO_DL,
+        SELECT,
+        CREATE,
+        WIDTH,
+        DETAIL,
+        TEXTURE,
+        TEX_CHANGE,
+        CHECKLINE
     };
 
 private:
