@@ -403,12 +403,12 @@ bool Editor::init()
     m_indicator = m_viewport->getIndicator();
     m_scene_manager->setActiveCamera(norm_cam);
 
+    m_msg_wndw = MsgWndw::get();
+
     m_toolbar = ToolBar::getToolBar();
     m_new_dialog_wndw = NewDialogWndw::get();
     m_new_dialog_wndw->hide();
     m_welcome_screen = WelcomeScreen::get();
-
-    m_msg_wndw = MsgWndw::get();
 
     m_device->setEventReceiver(this);
 
@@ -721,8 +721,7 @@ bool Editor::OnEvent(const SEvent& event)
                 path(((IGUIFileOpenDialog*)event.GUIEvent.Caller)->getFileName())));
             break;
         default:
-            if (!open(path(((IGUIFileOpenDialog*)event.GUIEvent.Caller)->getFileName())))
-                m_gui_env->addFileOpenDialog(L"Open track:", true, 0, -1, false, m_maps_path);
+            open(path(((IGUIFileOpenDialog*)event.GUIEvent.Caller)->getFileName()));
         }
         return true;
     }

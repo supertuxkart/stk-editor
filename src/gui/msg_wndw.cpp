@@ -1,5 +1,6 @@
 #include "gui/msg_wndw.hpp"
 
+
 #include "editor.hpp"
 
 MsgWndw* MsgWndw::m_self = 0;
@@ -46,6 +47,8 @@ MsgWndw* MsgWndw::get()
 // ----------------------------------------------------------------------------
 void MsgWndw::showMsg(stringw msg, bool cbtn, bool eoo)
 {
+    IGUIEnvironment* gui_env = Editor::getEditor()->getGUIEnv();
+    gui_env->setFocus(m_wndw);
     m_wndw->setVisible(true);
     exit_on_ok = eoo;
     m_msg->setText(msg.c_str());
