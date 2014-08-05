@@ -76,9 +76,11 @@ Track::Track(path file)
 
     if (!pFile)
     {
+        m_valid = false;
         stringw emsg = "Editor failed to open file:\n \"";
         emsg += file;
         emsg += "\"";
+        
         MsgWndw::get()->showMsg(emsg);
         return;
     }
@@ -96,24 +98,23 @@ Track::Track(path file)
 
     // TRACK NAME
     u8 size;
-    wchar_t* c;
+    c8* cc;
     fread(&size, sizeof(u8), 1, pFile);
     if (!Editor::isValidSize(size)) { fclose(pFile); m_valid = false; return; }
-    c = new wchar_t[size];
-    fread(c, sizeof(wchar_t), size, pFile);
-    m_track_name = c;
-    delete[] c;
+    cc = new c8[size];
+    fread(cc, sizeof(c8), size, pFile);
+    m_track_name = cc;
+    delete[] cc;
 
     // DESIGNER NAME
     fread(&size, sizeof(u8), 1, pFile);
     if (!Editor::isValidSize(size)) { fclose(pFile); m_valid = false; return; }
-    c = new wchar_t[size];
-    fread(c, sizeof(wchar_t), size, pFile);
-    m_designer = c;
-    delete[] c;
+    cc = new c8[size];
+    fread(cc, sizeof(c8), size, pFile);
+    m_designer = cc;
+    delete[] cc;
 
     // FILE NAME
-    c8* cc;
     fread(&size, sizeof(u8), 1, pFile);
     if (!Editor::isValidSize(size)) { fclose(pFile); m_valid = false; return; }
     cc = new c8[size];
@@ -257,12 +258,12 @@ void Track::save()
   // TRACK NAME
   u8 size = m_track_name.size() + 1;
   fwrite(&size, sizeof(u8), 1, pFile);
-  fwrite(m_track_name.c_str(), sizeof(wchar_t), size, pFile);
+  fwrite(m_track_name.c_str(), sizeof(c8), size, pFile);
 
   // DESIGNER NAME
   size = m_designer.size() + 1;
   fwrite(&size, sizeof(u8), 1, pFile);
-  fwrite(m_designer.c_str(), sizeof(wchar_t), size, pFile);
+  fwrite(m_designer.c_str(), sizeof(c8), size, pFile);
 
   // FILE NAME
   size = m_file_name.size() + 1;
