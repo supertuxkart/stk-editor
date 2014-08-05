@@ -606,11 +606,14 @@ bool Editor::run()
 
         m_indicator->renderToTexture();
 
+        //m_rcs->drawGrid();
+
         m_scene_manager->drawAll();
-		m_gui_env->drawAll();
 
         m_viewport->draw();
         m_rcs->render();
+        
+		m_gui_env->drawAll();
 
         if (m_viewport->getState() != Viewport::FREECAM && !m_rcs->isVisible())
             m_indicator->drawToScreen();

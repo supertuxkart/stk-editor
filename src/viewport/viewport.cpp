@@ -52,7 +52,7 @@ void Viewport::animateSelection()
 } // animateSelection
 
 // ----------------------------------------------------------------------------
-void Viewport::animateEditing()
+void Viewport::animateEditing(u32 dt)
 {
     IObjectCmd* m_active_obj_cmd = dynamic_cast<IObjectCmd*>(m_active_cmd);
 
@@ -94,8 +94,8 @@ void Viewport::animateEditing()
         m_active_road->refresh();
     } // road & spline refresh
 
-    if (dirty && m_rcs_mode)
-        RoadCrossSectionWndw::get()->handleSymmetry();
+    if (m_rcs_mode)
+        RoadCrossSectionWndw::get()->animate(dt, dirty);
 
 } // animateEditing
 
@@ -534,7 +534,7 @@ void Viewport::animate(long dt)
         switch (m_state)
         {
         case EDIT:
-            animateEditing();
+            animateEditing(dt);
             return;
         case SELECT:
             animateSelection();

@@ -49,6 +49,7 @@ private:
     IGUIButton*                    m_cancel;
 
     bool                           m_sym_mode;
+    bool                           m_allign;
 
     Road*                          m_road;
     ISceneNode**                   m_nodes;
@@ -58,11 +59,16 @@ private:
 
     bool                           m_visible;
 
+    f32                            m_grid;
+    bool                           m_grid_on;
+    f32                            m_rt;
+
     // private functions:
 
     void    init();
     void    setPointNum(u32 n);
     void    createNodesFromPoints(array<vector2df> points);
+    void                           drawGrid();
 
     RoadCrossSectionWndw() {};
 public:
@@ -73,7 +79,8 @@ public:
 
     void                           render();
 
-    void                           handleSymmetry();
+    void                           animate(u32 dt, bool dirty = false);
+
     void                           buttonClicked(u32 id);
     void                           reallocate();
 

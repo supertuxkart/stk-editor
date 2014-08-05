@@ -9,6 +9,10 @@ RoadCrossSectionWndw* RoadCrossSectionWndw::m_self = 0;
 void RoadCrossSectionWndw::init()
 {
     m_sym_mode = false;
+    m_allign   = false;
+    m_grid_on  = true;
+    m_grid     = 0.25;
+    m_rt       = 0;
     IGUIEnvironment* gui_env = Editor::getEditor()->getGUIEnv();
     m_smgr                   = Editor::getEditor()->getSceneManager();
     m_driver                 = Editor::getEditor()->getVideoDriver();
@@ -39,8 +43,8 @@ void RoadCrossSectionWndw::init()
     m_center_node = m_smgr->addSphereSceneNode(0.02);
     m_center_node->setID(1);
     m_center_node->setPosition(vector3df(m_offset, 0, 0));
-    m_center_node->getMaterial(0).DiffuseColor = SColor(255, 255, 0, 0);
-    m_center_node->getMaterial(0).AmbientColor = SColor(255, 255, 0, 0);
+    m_center_node->getMaterial(0).DiffuseColor = SColor(255, 0, 255, 0);
+    m_center_node->getMaterial(0).AmbientColor = SColor(255, 0, 255, 0);
     m_center_node->setVisible(false);
 
     f32 dx = (ss.Width - 300 - 8 * 50) / 9.0f;
@@ -103,10 +107,37 @@ void RoadCrossSectionWndw::createNodesFromPoints(array<vector2df> points)
         pos.X = points[i].X + m_offset;
         pos.Y = points[i].Y;
         m_nodes[i]->setPosition(pos);
-        (m_nodes[i]->getMaterial(0)).DiffuseColor = SColor(255, 0, 0, 255);
-        (m_nodes[i]->getMaterial(0)).AmbientColor = SColor(255, 0, 0, 255);
+        (m_nodes[i]->getMaterial(0)).DiffuseColor = SColor(255, 255, 0, 0);
+        (m_nodes[i]->getMaterial(0)).AmbientColor = SColor(255, 255, 0, 0);
     }
 } // createNodesFromPoints
+
+// ----------------------------------------------------------------------------
+void RoadCrossSectionWndw::drawGrid()
+{
+    const s32 sx = 4;
+    if (m_grid_on)
+    {
+        SMaterial mat;
+        mat.Lighting = false;
+        m_driver->setMaterial(mat);
+        for (s32 s = 1; s > -2; s -= 2)
+        {
+            for (f32 dy = 0; dy < sx; dy += m_grid)
+            {
+                bool   cl = (s32)(dy * 100) % 100 == 0;
+                SColor col = SColor(255, (1 - cl) * 100, 100 + 35 * cl, 100 + 60 * cl);
+                vector3df start = vector3df(-sx + m_offset, s * dy, -0.01);
+                vector3df end = vector3df(sx + m_offset, s * dy, -0.01);
+                m_driver->draw3DLine(start, end, col);
+
+                start = vector3df(s * dy + m_offset, -sx, -0.01);
+                end = vector3df(s * dy + m_offset, sx, -0.01);
+                m_driver->draw3DLine(start, end, col);
+            } // dy for
+        } // sign for
+    } // m_grid_on
+} // render
 
 // ----------------------------------------------------------------------------
 RoadCrossSectionWndw* RoadCrossSectionWndw::get()
@@ -182,19 +213,24 @@ void RoadCrossSectionWndw::render()
 {
     if (m_visible)
     {
+        SMaterial mat;
+        mat.Lighting = false;
+        m_driver->setMaterial(mat);
         for (int i = 0; i < m_node_num - 1; i++)
             m_driver->draw3DLine(m_nodes[i]->getPosition(), 
-                                 m_nodes[i+1]->getPosition(),SColor(125,255,0,0));
+                                 m_nodes[i+1]->getPosition(),SColor(255,255,0,0));
 
         m_driver->draw3DLine(m_nodes[m_node_num - 1]->getPosition(), 
-                             m_nodes[0]->getPosition(), SColor(125, 255, 0, 0));
+                             m_nodes[0]->getPosition(), SColor(255, 255, 0, 0));
+        drawGrid();
     }
 } // render
 
 // ----------------------------------------------------------------------------
-void RoadCrossSectionWndw::handleSymmetry()
+void RoadCrossSectionWndw::animate(u32 dt, bool dirty)
 {
-    if (m_sym_mode)
+    // Symetry
+    if (m_sym_mode && dirty)
     {
         for (u32 j = 0; j < 2; j++)
         {
@@ -208,7 +244,33 @@ void RoadCrossSectionWndw::handleSymmetry()
             s = -1;
         } // j = 0, 1
     }  // m_sym_mode
-} // handleSymmetry
+
+    // Grid
+    if (m_allign)
+    {
+        m_rt -= dt;
+        if (m_rt < 0)
+        {
+            m_rt = 500;
+            for (int i = 0; i < m_node_num; i++)
+            {
+                vector3df pos = m_nodes[i]->getPosition();
+                f32 x = fabs(pos.X);
+                f32 y = fabs(pos.Y);
+
+                u32 m = (s32)(x * 1000) % (s32)(m_grid * 1000);
+                x -= m / 1000.0f - m_grid * (m > m_grid * 500);
+                pos.X = x * pos.X / fabs(pos.X);
+
+                m = (s32)(y * 1000) % (s32)(m_grid * 1000);
+                y -= m / 1000.0f - m_grid * (m > m_grid * 500);
+                pos.Y = y * pos.Y / fabs(pos.Y);
+                
+                m_nodes[i]->setPosition(pos);
+            } // for - nodes
+        } // remaining time < 0
+    } // grid on
+} // animate
 
 // ----------------------------------------------------------------------------
 void RoadCrossSectionWndw::buttonClicked(u32 id)
@@ -217,12 +279,15 @@ void RoadCrossSectionWndw::buttonClicked(u32 id)
     {
     case SYM_ON_OFF:
         m_sym_mode = !m_sym_mode;
-        for (u32 i = m_node_num / 4; i < 3 * m_node_num / 4; i++)
+        for (u32 j = 0; j < 2; j++)
         {
-            m_nodes[i]->getMaterial(0).DiffuseColor = 
-                SColor(255, m_sym_mode ? 255 : 0, 0, m_sym_mode ? 0 : 255);
-            m_nodes[i]->getMaterial(0).AmbientColor =
-                SColor(255, m_sym_mode ? 255 : 0, 0, m_sym_mode ? 0 : 255);
+            for (u32 i = 0; i < m_node_num / 4; i++)
+            {
+                m_nodes[i + j * 3 * m_node_num / 4]->getMaterial(0).DiffuseColor =
+                    SColor(255, m_sym_mode ? 0 : 255, 0, m_sym_mode ? 255 : 0);
+                m_nodes[i + j * 3 * m_node_num / 4]->getMaterial(0).AmbientColor =
+                    SColor(255, m_sym_mode ? 0 : 255, 0, m_sym_mode ? 255 : 0);
+            }
         }
         return;
     case POINT_M:
@@ -230,6 +295,22 @@ void RoadCrossSectionWndw::buttonClicked(u32 id)
         return;
     case POINT_P:
         setPointNum(m_node_num + 4);
+        return;
+    case GRID_ON_OFF:
+        if (!m_grid_on) { m_grid_on = true; }
+        else
+        {
+            if (!m_allign) { m_allign = true; }
+            else { m_allign = false; m_grid_on = false; }
+        }        
+        return;
+    case GRID_M:
+        m_grid *= 2;
+        if (m_grid > 1) m_grid = 1;
+        return;
+    case GRID_P:
+        m_grid /= 2;
+        if (m_grid < 0.0625) m_grid = 0.0625;
         return;
     default:
         return;

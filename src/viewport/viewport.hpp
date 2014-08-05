@@ -81,7 +81,7 @@ private:
     Viewport() {};
 
     void                    animateSelection();
-    void                    animateEditing();
+    void                    animateEditing(u32 dt);
     void                    animatePlacing();
     void                    animateSplineEditing();
     void                    animateCheckLine();
