@@ -356,7 +356,7 @@ void Track::build()
     SMesh smesh;
     smesh.addMeshBuffer(mb);
 
-    for (int i = 1; i < m_roads.size(); i++)
+    for (u32 i = 1; i < m_roads.size(); i++)
     {
         IRoad* r = m_roads[i];
         if (r->getSpline()->getPointNum()>1)
@@ -474,7 +474,7 @@ void Track::removeRoad(IRoad* road)
         if (r == road)
         {
             array<IRoad*> roads;
-            for (int j = 0; j < m_roads.size(); j++)
+            for (u8 j = 0; j < m_roads.size(); j++)
                 if (j!=i) roads.push_back(m_roads[j]);
             m_roads = roads;
             return;

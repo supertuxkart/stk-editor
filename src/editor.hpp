@@ -31,7 +31,7 @@ class  RoadCrossSectionWndw;
 class Editor :public IEventReceiver
 {
 private:
-    static const int            EVIL_NUMBER = 5;
+    static const u32            EVIL_NUMBER = 5;
 	static Editor*              m_editor;
 
 	IrrlichtDevice*             m_device;

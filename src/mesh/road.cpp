@@ -222,7 +222,6 @@ void Road::setWireFrame(bool b)
 void Road::attachToDriveLine(IRoad* dl)
 {
     ISpline* dl_spline = dl->getSpline();
-    ISceneNode* node;
     u32 n = m_spline->getPointNum();
     vector3df pos;
     f32 t;

@@ -19,20 +19,15 @@ void RoadCrossSectionWndw::init()
 
     dimension2du ss = Editor::getEditor()->getScreenSize();
 
-    rect<s32> frame = rect<s32>((s32)(ss.Width / 2.0f - 300),
-        (s32)(ss.Height / 2.0f - 250),
-        (s32)(ss.Width / 2.0f + 300),
-        (s32)(ss.Height / 2.0f + 250));
-
     ICameraSceneNode* c = m_smgr->getActiveCamera();
-    m_cam = m_smgr->addCameraSceneNode(0, vector3df(m_offset - 1, 0, 5), 
+    m_cam = m_smgr->addCameraSceneNode(0, vector3df(m_offset - 1, 0, 5),
                                           vector3df(m_offset - 1, 0, 0));
     m_cam->setID(1);
 
     matrix4 mat;
     f32 nv = m_cam->getNearValue();
     f32 fv = m_cam->getFarValue();
-    f32 hVol = 10 * ss.Height / ss.Width;
+    f32 hVol = 10.0f * ss.Height / ss.Width;
     mat.buildProjectionMatrixOrthoLH(10, hVol, nv, fv);
     m_cam->setProjectionMatrix(mat, true);
 
@@ -40,9 +35,9 @@ void RoadCrossSectionWndw::init()
     m_nodes = 0;
     m_visible = false;
 
-    m_center_node = m_smgr->addSphereSceneNode(0.02);
+    m_center_node = m_smgr->addSphereSceneNode(0.02f);
     m_center_node->setID(1);
-    m_center_node->setPosition(vector3df(m_offset, 0, 0));
+    m_center_node->setPosition(vector3df((f32)m_offset, 0, 0));
     m_center_node->getMaterial(0).DiffuseColor = SColor(255, 0, 255, 0);
     m_center_node->getMaterial(0).AmbientColor = SColor(255, 0, 255, 0);
     m_center_node->setVisible(false);
@@ -51,14 +46,14 @@ void RoadCrossSectionWndw::init()
     f32 x = 25 + dx;
     s32 h = ss.Height;
 
-    m_gof    = gui_env->addButton(rect<s32>(x,h - 100, x+50, h-50)); x += dx + 50;
-    m_gp     = gui_env->addButton(rect<s32>(x,h - 100, x+50, h-50)); x += dx + 50;
-    m_gm     = gui_env->addButton(rect<s32>(x,h - 100, x+50, h-50)); x += dx + 50;
-    m_pp     = gui_env->addButton(rect<s32>(x,h - 100, x+50, h-50)); x += dx + 50;
-    m_pm     = gui_env->addButton(rect<s32>(x,h - 100, x+50, h-50)); x += dx + 50;
-    m_sym    = gui_env->addButton(rect<s32>(x,h - 100, x+50, h-50)); x += dx + 50;
-    m_ok     = gui_env->addButton(rect<s32>(x,h - 100, x+50, h-50)); x += dx + 50;
-    m_cancel = gui_env->addButton(rect<s32>(x,h - 100, x+50, h-50)); x += dx + 50;
+    m_gof    = gui_env->addButton(rect<s32>((s32)x,h - 100, (s32)x+50, h-50)); x += dx + 50;
+    m_gp     = gui_env->addButton(rect<s32>((s32)x,h - 100, (s32)x+50, h-50)); x += dx + 50;
+    m_gm     = gui_env->addButton(rect<s32>((s32)x,h - 100, (s32)x+50, h-50)); x += dx + 50;
+    m_pp     = gui_env->addButton(rect<s32>((s32)x,h - 100, (s32)x+50, h-50)); x += dx + 50;
+    m_pm     = gui_env->addButton(rect<s32>((s32)x,h - 100, (s32)x+50, h-50)); x += dx + 50;
+    m_sym    = gui_env->addButton(rect<s32>((s32)x,h - 100, (s32)x+50, h-50)); x += dx + 50;
+    m_ok     = gui_env->addButton(rect<s32>((s32)x,h - 100, (s32)x+50, h-50)); x += dx + 50;
+    m_cancel = gui_env->addButton(rect<s32>((s32)x,h - 100, (s32)x+50, h-50)); x += dx + 50;
 
     m_gof    ->setID(GRID_ON_OFF);
     m_gp     ->setID(GRID_P     );
@@ -103,7 +98,7 @@ void RoadCrossSectionWndw::createNodesFromPoints(array<vector2df> points)
 
     for (u32 i = 0; i < m_node_num; i++)
     {
-        m_nodes[i] = m_smgr->addSphereSceneNode(0.05);
+        m_nodes[i] = m_smgr->addSphereSceneNode(0.05f);
         pos.X = points[i].X + m_offset;
         pos.Y = points[i].Y;
         m_nodes[i]->setPosition(pos);
@@ -127,12 +122,12 @@ void RoadCrossSectionWndw::drawGrid()
             {
                 bool   cl = (s32)(dy * 100) % 100 == 0;
                 SColor col = SColor(255, (1 - cl) * 100, 100 + 35 * cl, 100 + 60 * cl);
-                vector3df start = vector3df(-sx + m_offset, s * dy, -0.01);
-                vector3df end = vector3df(sx + m_offset, s * dy, -0.01);
+                vector3df start = vector3df(-sx + m_offset, s * dy, -0.01f);
+                vector3df end = vector3df(sx + m_offset, s * dy, -0.01f);
                 m_driver->draw3DLine(start, end, col);
 
-                start = vector3df(s * dy + m_offset, -sx, -0.01);
-                end = vector3df(s * dy + m_offset, sx, -0.01);
+                start = vector3df((f32)s * dy + m_offset, (f32)-sx, -0.01f);
+                end   = vector3df((f32)s * dy + m_offset, (f32) sx, -0.01f);
                 m_driver->draw3DLine(start, end, col);
             } // dy for
         } // sign for
@@ -154,7 +149,7 @@ void RoadCrossSectionWndw::show(Road* r)
 {
     m_sym_mode = false;
     m_smgr->setActiveCamera(m_cam);
-    m_road = r;    
+    m_road = r;
     array<vector2df> points = m_road->getCrossSectionArray();
     m_node_num = points.size();
     createNodesFromPoints(points);
@@ -179,7 +174,7 @@ void RoadCrossSectionWndw::hide(bool apply_mod)
     {
         array<vector2df> points;
         vector2df pos;
-        for (int i = 0; i < m_node_num; i++)
+        for (u32 i = 0; i < m_node_num; i++)
         {
             pos.X = m_nodes[i]->getPosition().X - m_offset;
             pos.Y = m_nodes[i]->getPosition().Y;
@@ -216,11 +211,11 @@ void RoadCrossSectionWndw::render()
         SMaterial mat;
         mat.Lighting = false;
         m_driver->setMaterial(mat);
-        for (int i = 0; i < m_node_num - 1; i++)
-            m_driver->draw3DLine(m_nodes[i]->getPosition(), 
+        for (u32 i = 0; i < m_node_num - 1; i++)
+            m_driver->draw3DLine(m_nodes[i]->getPosition(),
                                  m_nodes[i+1]->getPosition(),SColor(255,255,0,0));
 
-        m_driver->draw3DLine(m_nodes[m_node_num - 1]->getPosition(), 
+        m_driver->draw3DLine(m_nodes[m_node_num - 1]->getPosition(),
                              m_nodes[0]->getPosition(), SColor(255, 255, 0, 0));
         drawGrid();
     }
@@ -252,7 +247,7 @@ void RoadCrossSectionWndw::animate(u32 dt, bool dirty)
         if (m_rt < 0)
         {
             m_rt = 500;
-            for (int i = 0; i < m_node_num; i++)
+            for (u32 i = 0; i < m_node_num; i++)
             {
                 vector3df pos = m_nodes[i]->getPosition();
                 f32 x = fabs(pos.X);
@@ -265,7 +260,7 @@ void RoadCrossSectionWndw::animate(u32 dt, bool dirty)
                 m = (s32)(y * 1000) % (s32)(m_grid * 1000);
                 y -= m / 1000.0f - m_grid * (m > m_grid * 500);
                 pos.Y = y * pos.Y / fabs(pos.Y);
-                
+
                 m_nodes[i]->setPosition(pos);
             } // for - nodes
         } // remaining time < 0
@@ -302,7 +297,7 @@ void RoadCrossSectionWndw::buttonClicked(u32 id)
         {
             if (!m_allign) { m_allign = true; }
             else { m_allign = false; m_grid_on = false; }
-        }        
+        }
         return;
     case GRID_M:
         m_grid *= 2;
@@ -325,12 +320,12 @@ void RoadCrossSectionWndw::reallocate()
     f32          x  = 25 + dx;
     s32          h  = ss.Height;
 
-    m_gof    ->setRelativePosition(position2di(x,h - 100)); x += dx + 50;
-    m_gp     ->setRelativePosition(position2di(x,h - 100)); x += dx + 50;
-    m_gm     ->setRelativePosition(position2di(x,h - 100)); x += dx + 50;
-    m_pp     ->setRelativePosition(position2di(x,h - 100)); x += dx + 50;
-    m_pm     ->setRelativePosition(position2di(x,h - 100)); x += dx + 50;
-    m_sym    ->setRelativePosition(position2di(x,h - 100)); x += dx + 50;
-    m_ok     ->setRelativePosition(position2di(x,h - 100)); x += dx + 50;
-    m_cancel ->setRelativePosition(position2di(x,h - 100)); x += dx + 50;
+    m_gof    ->setRelativePosition(position2di((s32)x,h - 100)); x += dx + 50;
+    m_gp     ->setRelativePosition(position2di((s32)x,h - 100)); x += dx + 50;
+    m_gm     ->setRelativePosition(position2di((s32)x,h - 100)); x += dx + 50;
+    m_pp     ->setRelativePosition(position2di((s32)x,h - 100)); x += dx + 50;
+    m_pm     ->setRelativePosition(position2di((s32)x,h - 100)); x += dx + 50;
+    m_sym    ->setRelativePosition(position2di((s32)x,h - 100)); x += dx + 50;
+    m_ok     ->setRelativePosition(position2di((s32)x,h - 100)); x += dx + 50;
+    m_cancel ->setRelativePosition(position2di((s32)x,h - 100)); x += dx + 50;
 } // reallocate

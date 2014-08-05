@@ -95,7 +95,7 @@ EnvPanel* EnvPanel::getEnvPanel(IGUIWindow* wndw)
 // ----------------------------------------------------------------------------
 stringw EnvPanel::getModelPathFromBtnId(u32 ID)
 {
-    assert(ID - FIRST_BTN_ID >= 0 && ID - FIRST_BTN_ID < m_btn_num);
+    assert(ID - FIRST_BTN_ID >= 0 && ID - FIRST_BTN_ID < (u32)m_btn_num);
     stringw dir = L"library/";
     return dir + m_btn_table[ID - FIRST_BTN_ID].second;
 } // getModelPathFromBtnId
@@ -103,7 +103,7 @@ stringw EnvPanel::getModelPathFromBtnId(u32 ID)
 // ----------------------------------------------------------------------------
 stringw EnvPanel::getModelNameFromBtnId(u32 ID)
 {
-    assert(ID - FIRST_BTN_ID >= 0 && ID - FIRST_BTN_ID < m_btn_num);
+    assert((s32)ID - FIRST_BTN_ID >= 0 && (s32)ID - FIRST_BTN_ID < (s32)m_btn_num);
     return m_btn_table[ID - FIRST_BTN_ID].second;
 } // getModelNameFromBtnId
 

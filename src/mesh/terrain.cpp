@@ -27,22 +27,22 @@ void Terrain::callOnVertices(TerrainMod* tmod, bool call_outside,
     bool call_in_square)
 {
 
-    int ix, iz, dx, dz;
+    s32 ix, iz, dx, dz;
     vector2df cpos;
 
     if (!intersectionPoint(tmod->ray, tmod->radius, &cpos, &ix, &iz))
         return;
 
-    dx = (int)(tmod->radius / (m_x / m_nx) + 1);
-    dz = (int)(tmod->radius / (m_z / m_nz) + 1);
+    dx = (s32)(tmod->radius / (m_x / m_nx) + 1);
+    dz = (s32)(tmod->radius / (m_z / m_nz) + 1);
 
     tmod->index = 0;
-    for (int j = -dz; j <= dz; j++)
-    for (int i = -dx; i <= dx; i++)
+    for (s32 j = -dz; j <= dz; j++)
+    for (s32 i = -dx; i <= dx; i++)
     {
         tmod->in_terrain = true;
         // check if the point is outside of the terrain
-        if (ix + i < 1 || ix + i > m_nx - 2 || iz + j < 1 || iz + j > m_nz - 2)
+        if (ix + i < 1 || ix + i >(s32)m_nx - 2 || iz + j < 1 || iz + j >(s32)m_nz - 2)
             tmod->in_terrain = false;
 
         if (call_outside && !tmod->in_terrain) (*this.*m_fp_h)(*tmod, ix, iz, i, j);
@@ -593,7 +593,7 @@ vector3df Terrain::placeBBtoGround(const aabbox3d<f32>& box, line3d<float> ray)
         for (int j = -dz; j <= dz; j++)
         {
             // check if the point is outside of the terrain
-            if (ix + i > 0 && ix + i < m_nx && iz + j > 0 && iz + j < m_nz)
+            if (ix + i > 0 && ix + i < (s32)m_nx && iz + j > 0 && iz + j < (s32)m_nz)
             {
                 max_h = std::max((m_mesh.vertices[(iz + j) * m_nx + ix + i].Pos.Y),max_h);
             } // this square point is a valid vertex
