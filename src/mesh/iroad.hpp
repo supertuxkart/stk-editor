@@ -13,6 +13,8 @@ protected:
     f32             m_detail;
     f32             m_width;
 
+    bool            m_auto_calc_norm;
+
     aabbox3d<f32>   m_bounding_box;
     virtual void    textureExport(FILE* fp)   = 0;
     virtual void    crossRoadExport(FILE* fp) {};
@@ -24,12 +26,13 @@ public:
     virtual void    refresh() = 0;
     void            clear();
 
+    void    setAutoNorm(bool b)   { m_auto_calc_norm = b;                       }
+    void    setDetail(float d)    { m_detail = d; refresh(); setWireFrame(true);}
+    void    setWidth(float d)     { m_width = d; refresh(); setWireFrame(true); }
 
-    void    setDetail(float d)    { m_detail = d; refresh(); setWireFrame(true);         }
-    void    setWidth(float d)     { m_width = d; refresh(); setWireFrame(true);          }
-
-    bool            isValid()               { return m_valid;  }
-    ISpline*        getSpline()             { return m_spline; }
+    bool      getAutoNorm()       { return m_auto_calc_norm; }
+    bool      isValid()           { return m_valid;          }
+    ISpline*  getSpline()         { return m_spline;         }
 
     virtual void    save(FILE* fp);
     virtual void    setWireFrame(bool b)    {};

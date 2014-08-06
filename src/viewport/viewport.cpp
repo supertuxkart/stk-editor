@@ -603,7 +603,7 @@ void Viewport::setActiveRoad(IRoad* r)
     if (!m_spline_mode)
         setSplineMode(true);
 
-    RoadPanel::getRoadPanel()->setActiveRoad(m_track->getRoadID(r));
+    RoadPanel::getRoadPanel()->setActiveRoad(m_track->getRoadID(r),m_active_road);
 
 } // setActiveRoad
 
@@ -749,6 +749,12 @@ void Viewport::selectDriveLine()
     setActiveRoad((u32)0);
     m_selection_handler->selectRoad(m_track->getRoadByID(0));
 } // selectDriveLine
+
+// ----------------------------------------------------------------------------
+void Viewport::roadNormModeChanged()
+{
+    m_active_road->setAutoNorm(RoadPanel::getRoadPanel()->getNormMode());
+} // roadNormModeChanged
 
 // ----------------------------------------------------------------------------
 Indicator*  Viewport::getIndicator()

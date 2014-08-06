@@ -118,6 +118,7 @@ public:
     void                draw();
     void                restoreCam();
     void                selectDriveLine();
+    void                roadNormModeChanged();
 
     Indicator*          getIndicator();
 

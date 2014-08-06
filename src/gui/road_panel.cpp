@@ -22,7 +22,6 @@ void RoadPanel::init()
     gui_env->addStaticText(_(L"Selected Road:"), rect<s32>(10, 10, 200, 30),
         false, false, m_wndw, -1, false)->setOverrideFont(font);
 
-
     m_cb = gui_env->addComboBox(rect<s32>(30, 45, 210, 65), m_wndw, SELECT);
     m_cb->addItem(L"DriveLine", 0);
 
@@ -44,6 +43,9 @@ void RoadPanel::init()
     m_texture_sb->setMin(1);
     m_texture_sb->setMax(100);
     m_texture_sb->setPos(25);
+
+    m_auto_norm_cb = gui_env->addCheckBox(false, rect<s32>(30,145,210,175), 
+                                          m_wndw, AUTO_NORM_CHECK_BOX, L"Calculate Normals");
 
     gui_env->addButton(rect<s32>(30, 180, 80, 230), m_wndw, ADD, L"", _(L"Add ControlPoint"))
         ->setImage(Editor::loadImg("img/dl_add.png"));
@@ -101,13 +103,11 @@ void RoadPanel::btnDown(int btn)
     }
 } // btnDown
 
-
 //----------------------------------------------------------------------------
 u32 RoadPanel::getSelectedRoadID()
 {
     return m_cb->getSelected();
 } // getSelectedRoadID
-
 
 //----------------------------------------------------------------------------
 f32 RoadPanel::getWidth()
@@ -151,9 +151,10 @@ void RoadPanel::updateRoadList()
 } // updateRoadList
 
 //----------------------------------------------------------------------------
-void RoadPanel::setActiveRoad(u32 ix)
+void RoadPanel::setActiveRoad(u32 ix, IRoad* r)
 {
     m_cb->setSelected(ix);
+    m_auto_norm_cb->setChecked(r->getAutoNorm());
 } // setActiveRoad
 
 //----------------------------------------------------------------------------

@@ -30,7 +30,8 @@ public:
         DETAIL,
         TEXTURE,
         TEX_CHANGE,
-        CHECKLINE
+        CHECKLINE,
+        AUTO_NORM_CHECK_BOX
     };
 
 private:
@@ -50,6 +51,8 @@ private:
     IGUIScrollBar*               m_width_sb;
     IGUIScrollBar*               m_detail_sb;
     IGUIScrollBar*               m_texture_sb;
+
+    IGUICheckBox*                m_auto_norm_cb;
                                  
     unsigned int                 m_next_road_mesh_ID;
     bool                         m_insert;
@@ -73,11 +76,11 @@ public:
     void                  updateRoadList();
     void                  reallocate(dimension2du ss);
 
-    void                  setActiveRoad(u32 ix);
+    void                  setActiveRoad(u32 ix, IRoad* r);
 
     stringw               getNextRoadType();
-    stringw               getNextRoadName() { return m_text_field->getText();         }
-
+    stringw               getNextRoadName() { return m_text_field->getText();     }
+    bool                  getNormMode()     { return m_auto_norm_cb->isChecked(); }
 };
 
 #endif
