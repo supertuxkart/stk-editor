@@ -26,9 +26,9 @@ public:
     virtual void    refresh() = 0;
     void            clear();
 
-    void    setAutoNorm(bool b)   { m_auto_calc_norm = b;                       }
-    void    setDetail(float d)    { m_detail = d; refresh(); setWireFrame(true);}
-    void    setWidth(float d)     { m_width = d; refresh(); setWireFrame(true); }
+    void    setAutoNorm(bool b)   { m_auto_calc_norm = b;    refresh();          }
+    void    setDetail(float d)    { m_detail = d; refresh(); setWireFrame(true); }
+    void    setWidth(float d)     { m_width = d;  refresh(); setWireFrame(true); }
 
     bool      getAutoNorm()       { return m_auto_calc_norm; }
     bool      isValid()           { return m_valid;          }
