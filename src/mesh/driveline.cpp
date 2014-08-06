@@ -31,6 +31,8 @@ DriveLine::DriveLine(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s,
     m_mesh.vertex_count = 0;
     m_mesh.quad_count   = 0;
 
+    m_width = 4.0;
+
     m_material.Wireframe       = true;
     m_material.Lighting        = false;
     m_material.BackfaceCulling = false;
