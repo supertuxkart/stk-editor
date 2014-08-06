@@ -230,7 +230,7 @@ void Road::attachToDriveLine(IRoad* dl)
     {
         t = i / (f32)(n - 1);
         pos = m_spline->p(t) + m_spline->getNormal(t) * 0.5f;
-        dl_spline->addControlPoint(pos);
+        dl_spline->addControlPoint(pos,m_spline->getNormal(t));
     }
     dl->refresh();
 } // attachToDriveLine

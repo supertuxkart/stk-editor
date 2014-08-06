@@ -42,7 +42,7 @@ protected:
     vector3df       calculateVelInPoint(vector3df pm1, vector3df p0, vector3df p1,
                                         list<ControlPoint>::Iterator it);
     void            calculateVelocity();
-    ControlPoint    newControlPoint(vector3df p);
+    ControlPoint    newControlPoint(vector3df p, vector3df n = vector3df(0.0f, 1.0f, 0.0f));
     void            saveNode(ISceneNode* sn, FILE* fp);
     void            loadNode(ISceneNode* sn, FILE* fp);
 
@@ -55,7 +55,7 @@ public:
     virtual vector3df   getNormal(float t) = 0;
     virtual float       getWidth(float t) = 0;
     void                setNodeVisibility(bool visible);
-    u32                 addControlPoint(vector3df p);
+    u32                 addControlPoint(vector3df p, vector3df n = vector3df(0.0f, 1.0f, 0.0f));
     u32                 insertControlPoint(vector3df p);
     void                addControlPoint(ControlPoint cp);
     void                addControlPoint(ControlPoint cp, u32 pos);

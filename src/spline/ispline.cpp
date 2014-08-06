@@ -43,12 +43,12 @@ void ISpline::calculateVelocity()
 } // calculateVelocity
 
 // ----------------------------------------------------------------------------
-ControlPoint ISpline::newControlPoint(vector3df p)
+ControlPoint ISpline::newControlPoint(vector3df p, vector3df n)
 {
     m_cp_num++;
     ControlPoint cp;
     cp.pos = p;
-    cp.normal = vector3df(0.0f, 1.0f, 0.0f);
+    cp.normal = n;
     cp.width  = 1.0f;
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
     cp.node = sm->addSphereSceneNode(0.2f, 16,this,
@@ -57,7 +57,7 @@ ControlPoint ISpline::newControlPoint(vector3df p)
     cp.node->getMaterial(0).AmbientColor = SColor(255, 255, 0, 0);
 
     cp.normal_node = sm->addSphereSceneNode(0.1f, 16, cp.node,
-        ANOTHER_MAGIC_NUMBER + 3 * m_cp_num + 1,vector3df(0,1,0));
+        ANOTHER_MAGIC_NUMBER + 3 * m_cp_num + 1, n);
     cp.normal_node->getMaterial(0).DiffuseColor = SColor(255, 0, 255, 0);
     cp.normal_node->getMaterial(0).AmbientColor = SColor(255, 0, 255, 0);
 
@@ -142,9 +142,9 @@ void ISpline::setNodeVisibility(bool visible)
 } // showNodes
 
 // ----------------------------------------------------------------------------
-u32 ISpline::addControlPoint(vector3df p)
+u32 ISpline::addControlPoint(vector3df p, vector3df n)
 {
-    m_control_points.push_back(newControlPoint(p));
+    m_control_points.push_back(newControlPoint(p,n));
     calculateVelocity();
 
     return m_cp_num - 1;
