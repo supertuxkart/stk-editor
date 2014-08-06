@@ -599,11 +599,9 @@ void Editor::runTrack()
         return;
     }
     stringc msg = "";
-#ifndef _WIN32
-    msg = ".\"
-#endif    
     msg += m_exe_loc + " --no-start-screen --track=";
     msg += m_viewport->getTrack()->getFileName();
+    system(msg.c_str());
 } // runTrack
 
 // ----------------------------------------------------------------------------
