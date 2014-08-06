@@ -172,14 +172,7 @@ void RoadCrossSectionWndw::hide(bool apply_mod)
 {
     if (apply_mod)
     {
-        array<vector2df> points;
-        vector2df pos;
-        for (u32 i = 0; i < m_node_num; i++)
-        {
-            pos.X = m_nodes[i]->getPosition().X - m_offset;
-            pos.Y = m_nodes[i]->getPosition().Y;
-            points.push_back(pos);
-        }
+        array<vector2df> points = genCrossSectionArray();
         m_road->setCrossSection(points);
         m_road->refresh();
     } // apply modifications
@@ -329,3 +322,17 @@ void RoadCrossSectionWndw::reallocate()
     m_ok     ->setRelativePosition(position2di((s32)x,h - 100)); x += dx + 50;
     m_cancel ->setRelativePosition(position2di((s32)x,h - 100)); x += dx + 50;
 } // reallocate
+
+// ----------------------------------------------------------------------------
+array<vector2df> RoadCrossSectionWndw::genCrossSectionArray()
+{
+    array<vector2df> points;
+    vector2df pos;
+    for (u32 i = 0; i < m_node_num; i++)
+    {
+        pos.X = m_nodes[i]->getPosition().X - m_offset;
+        pos.Y = m_nodes[i]->getPosition().Y;
+        points.push_back(pos);
+    }
+    return points;
+} // genCrossSectionArray

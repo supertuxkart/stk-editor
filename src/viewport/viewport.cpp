@@ -12,6 +12,7 @@
 #include "commands/create_road_cmd.hpp"
 #include "commands/iobject_cmd.hpp"
 #include "commands/cl_cmd.hpp"
+#include "commands/rcs_cmd.hpp"
 
 #include "input/mouse.hpp"
 #include "input/keys.hpp"
@@ -381,13 +382,20 @@ void Viewport::scale()
 // ----------------------------------------------------------------------------
 void Viewport::switchRoadCrossSectionMode(bool apply_mod)
 {
+    RoadCrossSectionWndw* rcs = RoadCrossSectionWndw::get();
     if (m_rcs_mode)
     {
         m_selection_handler->clearSelection();
         m_rcs_mode = false;
-        RoadCrossSectionWndw::get()->hide(apply_mod);
+        if (apply_mod)
+        {
+            Road* r = rcs->getRoad();
+            m_command_handler.add(new RCSCmd(r, r->getCrossSectionArray(),
+                                             rcs->genCrossSectionArray()));
+        } // apply mod
+        rcs->hide(apply_mod);
         Editor::getEditor()->getSceneManager()->setActiveCamera(m_aztec_cam->Cam());
-    }
+    } // road cross section mode
     else
     {
         if (m_active_road)
@@ -399,8 +407,8 @@ void Viewport::switchRoadCrossSectionMode(bool apply_mod)
                 m_rcs_mode = true;
                 m_selection_handler->clearSelection();
             }
-        }
-    }
+        } // m_active_road
+    } // else - road cross section mode
 } // genRoadNormals
 
 // ----------------------------------------------------------------------------

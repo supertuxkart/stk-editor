@@ -84,7 +84,9 @@ public:
     void                           buttonClicked(u32 id);
     void                           reallocate();
 
+    array<vector2df>               genCrossSectionArray();
     bool                           isVisible() { return m_visible; }
+    Road*                          getRoad()   { return m_road;    }
 
 };
 
