@@ -384,8 +384,19 @@ void Track::build()
         mat << Editor::toRelative(m.getTexture(i+1)->getName()).c_str();
         mat << "\"";
     }
-    mat << "/>\n</materials>\n";
-
+    mat << "/>\n";
+    for (u32 i = 1; i < m_roads.size(); i++)
+    {
+        stringc tex = m_roads[i]->getTexName();
+        if (tex.size()>0)
+        {
+            mat << "  <material name=\"";
+            mat << tex.c_str();
+            mat << "\" has-gravity=\"yes\" />\n";
+        }
+    }
+    
+    mat <<"</materials>\n";
     mat.close();
 
     stringw track;
