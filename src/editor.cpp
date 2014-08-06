@@ -74,6 +74,7 @@ bool Editor::buttonClicked(s32 ID)
         m_viewport->getTerrain()->swapVisibility();
         return true;
     case ToolBar::TBI_TRY:
+        runTrack();
         return true;
     case ToolBar::TBI_MUSIC:
         m_gui_env->addFileOpenDialog(L"Select music:", true, 0, 1234, false, m_music_loc);
@@ -349,6 +350,7 @@ bool Editor::init()
     m_music_loc = 0;
     m_valid_data_dir = false;
     m_indicator = 0;
+    m_exe_loc   = "";
 
     IrrlichtDevice *nulldevice = createDevice(video::EDT_NULL);
     m_screen_size = nulldevice->getVideoModeList()->getDesktopResolution();
@@ -451,6 +453,7 @@ void Editor::readConfigFile(IFileSystem* file_system)
 
     const stringw node_name(L"data_dir");
     const stringw res(L"res");
+    const stringw exe(L"exe");
     while (xml_reader->read())
     {
         if (xml_reader->getNodeType() == EXN_ELEMENT)
@@ -465,13 +468,17 @@ void Editor::readConfigFile(IFileSystem* file_system)
             {
                 m_data_loc = xml_reader->getAttributeValueSafe(L"path");
             }
+            else if (exe.equals_ignore_case(xml_reader->getNodeName()))
+            {
+                m_exe_loc = xml_reader->getAttributeValueSafe(L"path");
+            }
         }
     }
     xml_reader->drop();
 } // readConfigFile
 
 // ----------------------------------------------------------------------------
-void Editor::exportRes()
+void Editor::writeResAndExePathIntoConfig()
 {
     stringc p;
     IFileSystem* file_system = m_device->getFileSystem();
@@ -494,12 +501,16 @@ void Editor::exportRes()
     f.open((m_config_loc + "/config.xml").c_str());
     f << "<config>\n";
     f << "  <data_dir path=\"" << p.c_str() << "\" />\n";
+    
+    if (!m_exe_loc.empty())
+        f << "  <exe path=\"" << m_exe_loc.c_str() << "\" />\n";
+    
     f << "  <res x=\"" << m_screen_size.Width << "\" y=\"";
     f << m_screen_size.Height << "\" />\n";
     f << "</config>\n";
     f.close();
 
-} // exportRes
+} // writeResAndExePathIntoConfig
 
 // ----------------------------------------------------------------------------
 bool Editor::isValidDataLoc()
@@ -579,6 +590,21 @@ void Editor::dataDirLocDlg()
     ofd->setRelativePosition(position2di(m_screen_size.Width / 2 - 300, 100));
 } // dataDirLocDlg
 
+// ----------------------------------------------------------------------------
+void Editor::runTrack()
+{
+    if (m_exe_loc.empty())
+    {
+        m_gui_env->addFileOpenDialog(L"Select STK binary:", true, 0, 333);
+        return;
+    }
+    stringc msg = "";
+#ifndef _WIN32
+    msg = ".\"
+#endif    
+    msg += m_exe_loc + " --no-start-screen --track=";
+    msg += m_viewport->getTrack()->getFileName();
+} // runTrack
 
 // ----------------------------------------------------------------------------
 Editor* Editor::getEditor(dimension2du screen_size)
@@ -640,7 +666,7 @@ bool Editor::run()
 
     if (m_config_loc!="")
     {
-        exportRes();
+        writeResAndExePathIntoConfig();
     }
 
     if (m_maps_path)
@@ -724,6 +750,11 @@ bool Editor::OnEvent(const SEvent& event)
         case 1234:
             m_viewport->getTrack()->setMusic(toRelative(
                 path(((IGUIFileOpenDialog*)event.GUIEvent.Caller)->getFileName())));
+            break;
+        case 333:
+            m_exe_loc = path(((IGUIFileOpenDialog*)event.GUIEvent.Caller)->getFileName());
+            writeResAndExePathIntoConfig();
+            runTrack();
             break;
         default:
             open(path(((IGUIFileOpenDialog*)event.GUIEvent.Caller)->getFileName()));

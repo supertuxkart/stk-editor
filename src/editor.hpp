@@ -66,16 +66,18 @@ private:
     path                        m_track_dir;
     c8*                         m_maps_path;
     c8*                         m_music_loc;
+    path                        m_exe_loc;
 
 	bool                        init();
     void                        readConfigFile(IFileSystem* file_system);
     void                        fileInit();
     void                        initResolFromConfigFile();
-    void                        exportRes();
+    void                        writeResAndExePathIntoConfig();
     bool                        isValidDataLoc();
     bool                        validateDataLoc(path data_loc);
     void                        initDataLoc();
     void                        dataDirLocDlg();
+    void                        runTrack();
 
 	Editor() {};
     bool                        buttonClicked(int ID);

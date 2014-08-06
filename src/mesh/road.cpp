@@ -255,3 +255,9 @@ array<vector2df> Road::genStandardCrossSection(u32 wvn)
         + i / (f32)wvn * 4.0f, -0.5f));
     return cs;
 } // genStandardCrossSection
+
+// ----------------------------------------------------------------------------
+stringc Road::getTexName()
+{
+    return Editor::toRelative(m_mesh_buff->Material.getTexture(0)->getName());
+} // getTexName

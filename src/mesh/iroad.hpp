@@ -26,6 +26,8 @@ public:
     virtual void    refresh() = 0;
     void            clear();
 
+    virtual stringc getTexName() { return ""; }
+
     void    setAutoNorm(bool b)   { m_auto_calc_norm = b;    refresh();          }
     void    setDetail(float d)    { m_detail = d; refresh(); setWireFrame(true); }
     void    setWidth(float d)     { m_width = d;  refresh(); setWireFrame(true); }

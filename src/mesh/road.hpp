@@ -42,6 +42,7 @@ public:
 
     static array<vector2df> genStandardCrossSection(u32 wvn);
     
+    virtual stringc getTexName();
     
     ITriangleSelector*              getTriangleSel(){ return m_tri;                  }
     CMeshBuffer<S3DVertex2TCoords>* getMeshBuffer() { return m_mesh_buff;            }

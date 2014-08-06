@@ -47,6 +47,7 @@ public:
     u32        getRoadID(IRoad* r);
 
     IRoad*     getRoadByID(u32 id)           { IRoad* r = 0; return (id < m_roads.size()) ? m_roads[id] : r; }
+    stringc    getFileName()                 { return m_file_name; }
 
     void       setTrackName(stringw n)       { m_track_name   = n; }
     void       setFileName(stringc n)        { m_file_name    = n; }
