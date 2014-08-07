@@ -39,8 +39,8 @@ public:
     u32                     getSize();
     void                    reallocate(dimension2du ss);
 
-    void                    hide()              { m_wndw->setVisible(false); }
-    void                    show()              { m_wndw->setVisible(true);  }
+    void    hide() { m_wndw->setVisible(false); Viewport::get()->lock(false); }
+    void    show() { m_wndw->setVisible(true);  Viewport::get()->lock(true);  }
 
     stringw getTrackName()  { return m_track_name->getText();        }
     stringw getFileName()   { return m_file_name ->getText();        }

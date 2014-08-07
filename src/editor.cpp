@@ -77,6 +77,7 @@ bool Editor::buttonClicked(s32 ID)
         runTrack();
         return true;
     case ToolBar::TBI_MUSIC:
+        m_viewport->lock();
         m_gui_env->addFileOpenDialog(L"Select music:", true, 0, 1234, false, m_music_loc);
         return true;
         // WELCOME SCREEN
@@ -205,6 +206,7 @@ bool Editor::importantButtonClicked(int ID)
                             L"Any unsaved progress will be lost!", true, true);
         return true;
     case ToolBar::TBI_NEW:
+        if (m_viewport) m_viewport->lock();
         m_new_dialog_wndw->show();
         return true;
     case WelcomeScreen::FBTN_ID + 1:
@@ -212,6 +214,7 @@ bool Editor::importantButtonClicked(int ID)
     case ToolBar::TBI_OPEN:
         m_new_dialog_wndw->hide();
         m_gui_env->addFileOpenDialog(L"Open track:", true, 0, -1, false, m_maps_path);
+        if (m_viewport) m_viewport->lock();
         return true;
         // WELCOME SCREEN
     case WelcomeScreen::FBTN_ID:
@@ -704,15 +707,15 @@ bool Editor::OnEvent(const SEvent& event)
                     ((IGUIFileOpenDialog*)event.GUIEvent.Caller)->remove();
                 }
                 return true;
-            }
+            } // Directory selected
             if (event.GUIEvent.EventType == EGET_FILE_CHOOSE_DIALOG_CANCELLED)
             {
                 dataDirLocDlg();
                 return true;
             }
-        }
+        } // GUI_EVENT
         return false;
-    }
+    } // !valid data dir
 
     // mouse event
     if (event.EventType == EET_MOUSE_INPUT_EVENT)
@@ -729,15 +732,15 @@ bool Editor::OnEvent(const SEvent& event)
                     keepMouseIn(event.MouseInput.X, event.MouseInput.Y);
             else
             {
-                m_viewport->loseFocus();
+                m_viewport->setFocus(false);
                 m_mouse.in_view = false;
                 return false;
             }
-        }
+        } // mouse is outside
         m_mouse.in_view = true;
-        m_viewport->gainFocus();
+        m_viewport->setFocus(true);
         m_mouse.refresh(event);
-    }
+    } // mouse event
 
     if (event.EventType == EET_GUI_EVENT
         && event.GUIEvent.EventType == EGET_FILE_SELECTED)
@@ -756,6 +759,7 @@ bool Editor::OnEvent(const SEvent& event)
         default:
             open(path(((IGUIFileOpenDialog*)event.GUIEvent.Caller)->getFileName()));
         }
+        m_viewport->lock(false);
         return true;
     }
 
@@ -767,6 +771,9 @@ bool Editor::OnEvent(const SEvent& event)
         s32 id = event.GUIEvent.Caller->getID();
         switch (event.GUIEvent.EventType)
         {
+        case EGET_FILE_CHOOSE_DIALOG_CANCELLED:
+            m_viewport->lock(false);
+            return true;
         case EGET_BUTTON_CLICKED:
             m_gui_env->removeFocus(m_gui_env->getFocus()->getParent());
             return buttonClicked(id);
@@ -855,7 +862,7 @@ bool Editor::OnEvent(const SEvent& event)
     } // EventType == EET_GUI_EVENT
 
     // gui active, there is nothing we should do
-    if (m_gui_env->getFocus() != NULL) return false;
+    if (m_viewport->isLocked()) return false;
 
     // keyboard event
     if (event.EventType == EET_KEY_INPUT_EVENT)

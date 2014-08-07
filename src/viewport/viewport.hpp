@@ -61,12 +61,12 @@ private:
     ISceneNode*             m_new_entity;
     static int              m_last_entity_ID;
 
+    bool                    m_locked;
     bool                    m_spline_mode;
     bool                    m_rcs_mode;
 
     IRoad*                  m_active_road;
     ISceneNode*             m_junk_node;
-
 
     // command not yet finished
     ICmd*                   m_active_cmd;
@@ -109,8 +109,7 @@ public:
     void                undo();
     void                redo();
     bool                splineInterrupt();
-    void                loseFocus();
-    void                gainFocus();
+    void                setFocus(bool b);
     bool                setTrack(Track* t);
     void                build();
     void                clear();
@@ -138,6 +137,8 @@ public:
     vector3df           getAztecPos()                        { return m_aztec_cam->Pos();}
     void                printCheckLine(std::ofstream* f)     { m_clh.build(f);           }
     void                setEditMode(Editing e)               { m_edit = e;               }
+    bool                isLocked()                           { return m_locked;          }
+    void                lock(bool b = true)                  { m_locked = b;             }
 
     ~Viewport();
 };

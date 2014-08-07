@@ -327,6 +327,7 @@ void Viewport::init(ICameraSceneNode* cam = 0, Mouse* m = 0, Keys* k = 0)
     m_terrain           = 0;
     m_track             = 0;
     m_edit              = MOVE;
+    m_locked            = true;
 
     m_selection_handler = new SelectionHandler(m_mouse, m_keys);
 
@@ -548,7 +549,7 @@ void Viewport::setNewEntity(ISceneNode* node)
 // ----------------------------------------------------------------------------
 void Viewport::animate(long dt)
 {
-    if ((!m_track) || (!m_terrain)) return;
+    if (m_locked || (!m_track) || (!m_terrain)) return;
     if (m_state != FREECAM)
     {
         if (!m_rcs_mode)
@@ -674,16 +675,10 @@ bool Viewport::splineInterrupt()
 } // splineInterrupt
 
 // ----------------------------------------------------------------------------
-void Viewport::loseFocus()
+void Viewport::setFocus(bool b)
 {
-    if (m_new_entity) m_new_entity->setVisible(false);
-}
-
-// ----------------------------------------------------------------------------
-void Viewport::gainFocus()
-{
-    if (m_new_entity) m_new_entity->setVisible(true);
-}
+    if (m_new_entity) m_new_entity->setVisible(b);
+} // setFocus
 
 // ----------------------------------------------------------------------------
 bool Viewport::setTrack(Track* t)
