@@ -99,7 +99,7 @@ void Track::copyObj(stringc name)
     p += "/../";
     std::ifstream  src((p+name).c_str(), std::ios::binary);    
     name = Editor::toRelative(name);
-    stringw dst_s = Editor::getEditor()->getTrackDir() + m_file_name + "/";
+    stringc dst_s = Editor::getEditor()->getTrackDir() + m_file_name + "/";
     std::ofstream  dst((dst_s + name).c_str(), std::ios::binary);
     try
     {
