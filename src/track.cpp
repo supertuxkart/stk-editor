@@ -74,10 +74,10 @@ void Track::exportElements(std::ofstream& stream, bool obj)
             {
                 stream << "    <static-object model=\"" << Editor::toRelative(name).c_str();
                 copyObj(name);
-                
+
                 ITexture* tex;
-                for (int j = 0; tex = node->getMaterial(0).getTexture(j); j++)
-                    copyObj(stringc("obj/") + Editor::toRelative(tex->getName()));                
+                for (int j = 0; (tex = node->getMaterial(0).getTexture(j)); j++)
+                    copyObj(stringc("obj/") + Editor::toRelative(tex->getName()));
             } // export as static-object
             else
             {
@@ -97,7 +97,7 @@ void Track::copyObj(stringc name)
 {
     stringc p = Editor::getEditor()->getMapsPath();
     p += "/../";
-    std::ifstream  src((p+name).c_str(), std::ios::binary);    
+    std::ifstream  src((p+name).c_str(), std::ios::binary);
     name = Editor::toRelative(name);
     stringc dst_s = Editor::getEditor()->getTrackDir() + m_file_name + "/";
     std::ofstream  dst((dst_s + name).c_str(), std::ios::binary);
@@ -105,14 +105,14 @@ void Track::copyObj(stringc name)
     {
         dst << src.rdbuf();
     }
-    catch (const std::exception& ex) 
+    catch (const std::exception& ex)
     {
         std::cerr << ex.what();
     }
     catch (const std::string& ex) {
         std::cerr << ex.c_str();
     }
-    catch (...) 
+    catch (...)
     {
         std::cerr << "Something terrible happend :(";
     }
@@ -148,7 +148,7 @@ Track::Track(path file)
         stringw emsg = "Editor failed to open file:\n \"";
         emsg += file;
         emsg += "\"";
-        
+
         MsgWndw::get()->showMsg(emsg);
         return;
     }
@@ -218,7 +218,7 @@ Track::Track(path file)
 
     s = new Sky(pFile);
     Viewport::get()->setSky(s);
-    
+
     // GRAVITY ROAD FLAG
     fread(&m_gravity_road, sizeof(bool), 1, pFile);
 
@@ -510,7 +510,7 @@ void Track::build()
     scene.open((p + "/scene.xml").c_str());
     scene << "<scene>\n";
     scene << "  <track model=\"track.b3d\" x=\"0\" y=\"0\" z=\"0\">\n";
-    
+
     exportElements(scene, true);
     scene << "  </track>\n";
     exportElements(scene, false);
@@ -599,7 +599,7 @@ void Track::createRoad(stringw type, stringw name)
 
 // ----------------------------------------------------------------------------
 u32 Track::getRoadID(IRoad* r)
-{ 
+{
     u32 i;
     for (i = 0; i < m_roads.size() && m_roads[i] != r; i++);
     return i;
