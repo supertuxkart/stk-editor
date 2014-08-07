@@ -1,7 +1,7 @@
 #ifndef NEW_DIALOG_WNDW_HPP
 #define NEW_DIALOG_WNDW_HPP
 
-#include "viewport\viewport.hpp"
+#include "viewport/viewport.hpp"
 #include <irrlicht.h>
 
 using namespace irr;
