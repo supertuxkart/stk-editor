@@ -117,6 +117,7 @@ public:
     IFileArchive*               getXMLDir()       { return m_xml_dir;       }
     path                        getMapsPath()     { return m_maps_path;     }
     path                        getTrackDir()     { return m_track_dir;     }
+
 };
 
 #endif

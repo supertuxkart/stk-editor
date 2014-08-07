@@ -99,7 +99,7 @@ public:
     void                attachRoadToDriveLine();
     void                setState(State state);
     void                deleteCmd();
-    void                setNewEntity(const stringw path, const stringw name);
+    void                setNewEntity(const stringw path);
     void                setNewEntity(ISceneNode* node);
     void                animate(long dt);
     void                setSplineMode(bool b);

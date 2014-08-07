@@ -263,8 +263,11 @@ void Viewport::leaveState()
     switch (m_state)
     {
     case PLACE:
-        m_new_entity->remove();
-        m_new_entity = 0;
+        if (m_new_entity)
+        {
+            m_new_entity->remove();
+            m_new_entity = 0;
+        }
         return;
     case SPLINE:
         if (m_active_cmd)
@@ -507,7 +510,7 @@ void Viewport::deleteCmd()
 } //deleteCmd
 
 // ----------------------------------------------------------------------------
-void Viewport::setNewEntity(const stringw path, const stringw name)
+void Viewport::setNewEntity(const stringw path)
 {
     if (m_state != PLACE)
         setState(PLACE);
@@ -525,7 +528,7 @@ void Viewport::setNewEntity(const stringw path, const stringw name)
         setState(SELECT);
         return;
     }
-    m_new_entity->setName(name);
+    m_new_entity->setName(path);
 } // setNewEntity
 
 // ----------------------------------------------------------------------------

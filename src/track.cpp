@@ -17,7 +17,6 @@
 #include "editor.hpp"
 
 #include <physfs.h>
-#include <fstream>
 #include <iostream>
 #include <stdio.h>
 #include <assert.h>
@@ -52,6 +51,75 @@ ISceneNode* Track::loadItem(stringc name)
     }
     return node;
 } // loadItem
+
+// ----------------------------------------------------------------------------
+void Track::exportElements(std::ofstream& stream, bool obj)
+{
+    ISceneManager* sm = Editor::getEditor()->getSceneManager();
+    ISceneNode* node;
+    stringc name;
+    int i = 1;
+    while ((node = sm->getSceneNodeFromId(MAGIC_NUMBER + i)))
+    {
+        name = node->getName();
+        vector3df pos, rot, sca;
+        if (node->isVisible() && name != "banana" && name != "item"
+            && name != "small-nitro" && name != "big-nitro"
+            && (name.equalsn("obj/", 4) == obj))
+        {
+            pos = node->getPosition();
+            rot = node->getRotation();
+            sca = node->getScale();
+            if (name.equalsn("obj/", 4))
+            {
+                stream << "    <static-object model=\"" << Editor::toRelative(name).c_str();
+                copyObj(name);
+                
+                ITexture* tex;
+                for (int j = 0; tex = node->getMaterial(0).getTexture(j); j++)
+                    copyObj(stringc("obj/") + Editor::toRelative(tex->getName()));                
+            } // export as static-object
+            else
+            {
+                stream << "  <library name=\"" << Editor::getLib(node->getName()).c_str();
+            } // export as library
+            stream << "\" xyz=\"";
+            stream << pos.X << " " << pos.Y << " " << pos.Z << "\" hpr=\"";
+            stream << rot.X << " " << rot.Y << " " << rot.Z << "\" scale=\"";
+            stream << sca.X << " " << sca.Y << " " << sca.Z << "\"/>\n";
+        }
+        i++;
+    }
+} // exportElements
+
+// ----------------------------------------------------------------------------
+void Track::copyObj(stringc name)
+{
+    stringc p = Editor::getEditor()->getMapsPath();
+    p += "/../";
+    std::ifstream  src((p+name).c_str(), std::ios::binary);    
+    name = Editor::toRelative(name);
+    stringw dst_s = Editor::getEditor()->getTrackDir() + m_file_name + "/";
+    std::ofstream  dst((dst_s + name).c_str(), std::ios::binary);
+    try
+    {
+        dst << src.rdbuf();
+    }
+    catch (const std::exception& ex) 
+    {
+        std::cerr << ex.what();
+    }
+    catch (const std::string& ex) {
+        std::cerr << ex.c_str();
+    }
+    catch (...) 
+    {
+        std::cerr << "Something terrible happend :(";
+    }
+
+    src.close();
+    dst.close();
+} // cpyFile
 
 // ----------------------------------------------------------------------------
 Track::Track(f32 tx, f32 tz)
@@ -212,8 +280,7 @@ Track::Track(path file)
         } // item
         else
         {
-            path op = path("library/") + p;
-            node = sm->addAnimatedMeshSceneNode(sm->getMesh(op));
+            node = sm->addAnimatedMeshSceneNode(sm->getMesh(p));
             node->setName(name);
         } // object
         if (node)
@@ -433,31 +500,16 @@ void Track::build()
     scene.open((p + "/scene.xml").c_str());
     scene << "<scene>\n";
     scene << "  <track model=\"track.b3d\" x=\"0\" y=\"0\" z=\"0\">\n";
+    
+    exportElements(scene, true);
     scene << "  </track>\n";
+    exportElements(scene, false);
+
 
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
     ISceneNode* node;
-    stringc name;
     int i = 1;
-    while ((node = sm->getSceneNodeFromId(MAGIC_NUMBER + i)))
-    {
-        name = node->getName();
-        vector3df pos, rot, sca;
-        if (node->isVisible() && name != "banana" && name != "item"
-                              && name != "small-nitro" && name != "big-nitro")
-        {
-            pos   = node->getPosition();
-            rot   = node->getRotation();
-            sca = node->getScale();
-            scene << "  <library name=\"" << Editor::getLib(node->getName()).c_str() << "\" xyz=\"";
-            scene << pos.X << " " << pos.Y << " " << pos.Z << "\" hpr=\"";
-            scene << rot.X << " " << rot.Y << " " << rot.Z << "\" scale=\"";
-            scene << sca.X << " " << sca.Y << " " << sca.Z << "\"/>\n";
-        }
-        i++;
-    }
-
-    i = 1;
+    stringw name;
     while ((node = sm->getSceneNodeFromId(MAGIC_NUMBER + i)))
     {
         name = node->getName();

@@ -96,17 +96,8 @@ EnvPanel* EnvPanel::getEnvPanel(IGUIWindow* wndw)
 stringw EnvPanel::getModelPathFromBtnId(u32 ID)
 {
     assert(ID - FIRST_BTN_ID >= 0 && ID - FIRST_BTN_ID < (u32)m_btn_num);
-    stringw dir = L"library/";
-    return dir + m_btn_table[ID - FIRST_BTN_ID].second;
-} // getModelPathFromBtnId
-
-// ----------------------------------------------------------------------------
-stringw EnvPanel::getModelNameFromBtnId(u32 ID)
-{
-    assert((s32)ID - FIRST_BTN_ID >= 0 && (s32)ID - FIRST_BTN_ID < (s32)m_btn_num);
     return m_btn_table[ID - FIRST_BTN_ID].second;
-} // getModelNameFromBtnId
-
+} // getModelPathFromBtnId
 
 // ----------------------------------------------------------------------------
 void EnvPanel::refreshBtnTable()
@@ -121,6 +112,7 @@ void EnvPanel::refreshBtnTable()
     for (i = 0; i < m_btn_num && it != elements.end(); i++, it++)
     {
         ITexture* img = Editor::loadImg(dir+(*it)->getImg());
+        if (!img) img = Editor::loadImg(dir + "noimg.png");
         m_btn_table[i].first->setVisible(true);
         m_btn_table[i].first->setImage(img);
         m_btn_table[i].first->setPressedImage(img);
@@ -131,7 +123,6 @@ void EnvPanel::refreshBtnTable()
     {
         m_btn_table[i].first->setVisible(false);
     }
-
 } // refreshBtnTable
 
 // ----------------------------------------------------------------------------

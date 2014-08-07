@@ -168,8 +168,7 @@ bool Editor::buttonClicked(s32 ID)
     {
         // element is picked from env panel
         m_viewport->setSplineMode(false);
-        m_viewport->setNewEntity(EnvPanel::getEnvPanel()->getModelPathFromBtnId(ID),
-                                 EnvPanel::getEnvPanel()->getModelNameFromBtnId(ID));
+        m_viewport->setNewEntity(EnvPanel::getEnvPanel()->getModelPathFromBtnId(ID));
         return true;
     }
     if (ID == ep->FIRST_BTN_ID + ep->getBtnNum())

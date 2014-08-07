@@ -2,6 +2,7 @@
 #define TRACK_HPP
 
 #include <irrlicht.h>
+#include <fstream>
 
 using namespace irr;
 using namespace scene;
@@ -30,6 +31,8 @@ private:
 
     ISceneNode*    loadItem(stringc name);
 
+    void           exportElements(std::ofstream& stream, bool obj);
+    void           copyObj(stringc name);
 public:
 
     Track(f32 tx, f32 tz);
