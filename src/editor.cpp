@@ -927,6 +927,7 @@ void Editor::newTrack()
     t->setFileName(m_new_dialog_wndw->getFileName());
     t->setTrackName(m_new_dialog_wndw->getTrackName());
     t->setDesigner(m_new_dialog_wndw->getDesigner());
+    t->setGravityRoad(m_new_dialog_wndw->gravRoad());
     m_viewport->setTrack(t);
 
     RoadPanel::getRoadPanel()->updateRoadList();

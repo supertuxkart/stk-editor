@@ -15,7 +15,7 @@ void NewDialogWndw::init()
     rect<s32> frame = rect<s32>((s32)(ss.Width  / 2.0f - 150), 
                                 (s32)(ss.Height / 2.0f - 100),
                                 (s32)(ss.Width  / 2.0f + 150),
-                                (s32)(ss.Height / 2.0f + 100));
+                                (s32)(ss.Height / 2.0f + 130));
     m_wndw = gui_env->addWindow(frame, false, _(L"New Track"), 0);
 
     gui_env->addStaticText(_(L"Track name:"), rect<s32>(10, 30, 130, 50),
@@ -45,7 +45,10 @@ void NewDialogWndw::init()
     m_size_cb->addItem(_(L"Large"      ),  100);
     m_size_cb->addItem(_(L"Extra Large"),  120);
 
-    frame = rect<s32>(120,160,180,180);
+    m_grav_road_check = gui_env->addCheckBox(false, rect<s32>(80, 160, 220, 180), 
+                                                    m_wndw, -1, L"  Gravity Roads");
+    
+    frame = rect<s32>(120,190,180,210);
     gui_env->addButton(frame, m_wndw, BTN_ID, _(L"Create"), _(L"Create"));
 
     m_wndw->setDrawTitlebar(false);

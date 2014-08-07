@@ -19,6 +19,8 @@ class Track
 private:
     bool            m_valid;
 
+    bool            m_gravity_road;
+
     stringw         m_track_name;
     stringw         m_designer;
     stringc         m_file_name;
@@ -56,6 +58,7 @@ public:
     void       setFileName(stringc n)        { m_file_name    = n; }
     void       setDesigner(stringw d)        { m_designer     = d; }
     void       setMusic(stringc m)           { m_music        = m; }
+    void       setGravityRoad(bool b)        { m_gravity_road = b; }
 
     Terrain*   getTerrain()                  { return m_terrain;   }
 

@@ -218,6 +218,9 @@ Track::Track(path file)
 
     s = new Sky(pFile);
     Viewport::get()->setSky(s);
+    
+    // GRAVITY ROAD FLAG
+    fread(&m_gravity_road, sizeof(bool), 1, pFile);
 
     // ROADS
 
@@ -349,6 +352,9 @@ void Track::save()
   // SKY
   Viewport::get()->getSky()->save(pFile);
 
+  // GRAVITY ROAD FLAG
+  fwrite(&m_gravity_road, sizeof(bool), 1, pFile);
+
   // ROADS
   size = m_roads.size();
   fwrite(&size, sizeof(u8), 1, pFile);
@@ -452,17 +458,21 @@ void Track::build()
         mat << "\"";
     }
     mat << "/>\n";
-    for (u32 i = 1; i < m_roads.size(); i++)
+
+    if (m_gravity_road)
     {
-        stringc tex = m_roads[i]->getTexName();
-        if (tex.size()>0)
+        for (u32 i = 1; i < m_roads.size(); i++)
         {
-            mat << "  <material name=\"";
-            mat << tex.c_str();
-            mat << "\" has-gravity=\"yes\" />\n";
-        }
-    }
-    
+            stringc tex = m_roads[i]->getTexName();
+            if (tex.size()>0)
+            {
+                mat << "  <material name=\"";
+                mat << tex.c_str();
+                mat << "\" has-gravity=\"yes\" />\n";
+            }
+        } // roads
+    } // gravity road mode
+
     mat <<"</materials>\n";
     mat.close();
 
