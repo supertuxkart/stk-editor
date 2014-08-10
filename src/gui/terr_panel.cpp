@@ -69,10 +69,10 @@ void TerrPanel::init()
     m_tb3->setImage(Editor::loadImg(L"rock_brown.jpg"));
     m_tb4->setImage(Editor::loadImg(L"sand2.jpg"));
 
-    gui_env->addButton(rect<s32>(10, 205, 60,   220), m_wndw, M_TC1, L"", _(L"Change Texture"));
-    gui_env->addButton(rect<s32>(70, 205, 120,  220), m_wndw, M_TC2, L"", _(L"Change Texture"));
-    gui_env->addButton(rect<s32>(130, 205, 180, 220), m_wndw, M_TC3, L"", _(L"Change Texture"));
-    gui_env->addButton(rect<s32>(190, 205, 240, 220), m_wndw, M_TC4, L"", _(L"Change Texture"));
+    gui_env->addButton(rect<s32>(10, 205, 60,   220), m_wndw, M_TC1, L"Vary", _(L"Change Texture"));
+    gui_env->addButton(rect<s32>(70, 205, 120,  220), m_wndw, M_TC2, L"Vary", _(L"Change Texture"));
+    gui_env->addButton(rect<s32>(130, 205, 180, 220), m_wndw, M_TC3, L"Vary", _(L"Change Texture"));
+    gui_env->addButton(rect<s32>(190, 205, 240, 220), m_wndw, M_TC4, L"Vary", _(L"Change Texture"));
 
     // height modifier begin
     gui_env->addButton(rect<s32>(30, 255, 80, 305), m_wndw, H_BTN, L"", _(L"Spade"))
