@@ -131,8 +131,8 @@ void EnvPanel::reallocate(dimension2du ss)
 
     m_wndw->setMinSize(dimension2du(250, ss.Height - 50));
 
-    m_next->setRelativePosition(rect<s32>(190, ss.Height - 128, 240, ss.Height - 108));
-    m_prev->setRelativePosition(rect<s32>(10, ss.Height - 128, 60, ss.Height - 108));
+    m_next->setRelativePosition(rect<s32>(195, ss.Height - 145, 235, ss.Height - 105));
+    m_prev->setRelativePosition(rect<s32>(15, ss.Height - 145, 55, ss.Height - 105));
 
     int new_btn_num = (ss.Height - 200) / 60 * 4;
     if (ss.Height < 200) new_btn_num = 0;
