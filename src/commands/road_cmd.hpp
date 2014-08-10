@@ -28,6 +28,7 @@ private:
     ControlPoint    m_cp;
 public:
     RoadCmd(IRoad* road, bool insert, bool inverted = false);
+    RoadCmd(IRoad* road);
     virtual ~RoadCmd() {};
 
     void    setIX(u32 ix) { m_ix = ix; }

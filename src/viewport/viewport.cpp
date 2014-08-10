@@ -157,7 +157,6 @@ void Viewport::animateSplineEditing()
 
     if (m_mouse->rightPressed())
         setState(SELECT);
-
 } // animateSplineEditing
 
 
@@ -752,6 +751,12 @@ void Viewport::selectDriveLine()
 void Viewport::roadNormModeChanged()
 {
     m_active_road->setAutoNorm(RoadPanel::getRoadPanel()->getNormMode());
+} // roadNormModeChanged
+
+// ----------------------------------------------------------------------------
+void Viewport::registerCPCreation(IRoad* road)
+{
+    m_command_handler.add(new RoadCmd(road));
 } // roadNormModeChanged
 
 // ----------------------------------------------------------------------------

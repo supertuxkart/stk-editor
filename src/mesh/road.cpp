@@ -1,6 +1,7 @@
 #include "mesh/road.hpp"
 
 #include "editor.hpp"
+#include "viewport/viewport.hpp"
 
 #include <iostream>
 #include "assert.h"
@@ -181,7 +182,7 @@ void Road::refresh()
 
     m_mesh_buff->recalculateBoundingBox();
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
-    sm->getMeshManipulator()->recalculateNormals(m_mesh_buff, true, true);
+    sm->getMeshManipulator()->recalculateNormals(m_mesh_buff, false, false);
 } // refresh
 
 // ----------------------------------------------------------------------------
@@ -231,6 +232,7 @@ void Road::attachToDriveLine(IRoad* dl)
         t = i / (f32)(n - 1);
         pos = m_spline->p(t) + m_spline->getNormal(t) * 0.5f;
         dl_spline->addControlPoint(pos,m_spline->getNormal(t));
+        Viewport::get()->registerCPCreation(dl);
     }
     dl->refresh();
 } // attachToDriveLine

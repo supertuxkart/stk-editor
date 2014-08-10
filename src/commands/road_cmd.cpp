@@ -16,6 +16,15 @@ RoadCmd::RoadCmd(IRoad* road, bool insert, bool inverted)
 }; // RoadCommand
 
 // ----------------------------------------------------------------------------
+RoadCmd::RoadCmd(IRoad* road) :m_road(road), m_insert(false), m_inverted(false)
+{
+    m_spline = m_road->getSpline();
+    m_created = true;
+    m_cp.node = 0;
+    m_ix = m_spline->getPointNum() - 1;
+}; // RoadCommand
+
+// ----------------------------------------------------------------------------
 void RoadCmd::updatePos(vector3df pos)
 {
     m_pos = pos;
