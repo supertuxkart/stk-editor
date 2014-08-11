@@ -336,7 +336,7 @@ void Editor::ctrlShortcuts(EKEY_CODE code)
 // ----------------------------------------------------------------------------
 bool Editor::isValidSize(u8 size)
 {
-    if (size < 0 || size > MAX_VALID_STRING_SIZE)
+    if (size < 1 || size > MAX_VALID_STRING_SIZE)
     {
         std::cerr << "File loading failed:";
         std::cerr << " File contains invalid string size.\n";

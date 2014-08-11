@@ -435,7 +435,7 @@ Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
     fread(&m_x, sizeof(f32), 1, fp);
     fread(&m_z, sizeof(f32), 1, fp);
 
-    if (m_x < 0 || m_z < 0 || m_x > 200 || m_z > 200)
+    if (m_x < 1 || m_z < 1 || m_x > 200 || m_z > 200)
     {
         m_valid = false;
         return;
@@ -444,7 +444,7 @@ Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
     fread(&m_nx, sizeof(u32), 1, fp);
     fread(&m_nz, sizeof(u32), 1, fp);
 
-    if (m_x > 400 || m_z > 400)
+    if (m_nx > 400 || m_nz > 400)
     {
         m_valid = false;
         return;

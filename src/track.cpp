@@ -21,7 +21,7 @@
 #include <stdio.h>
 #include <assert.h>
 
-#define TOP_SECRET_SIGNATURE_NUMBER 3293525168
+#define TOP_SECRET_SIGNATURE_NUMBER 3293525169
 #define MAX_ROAD_NUM 1000
 
 // ----------------------------------------------------------------------------
@@ -168,7 +168,12 @@ Track::Track(path file)
     u8 size;
     wchar_t* c;
     fread(&size, sizeof(u8), 1, pFile);
-    if (!Editor::isValidSize(size)) { fclose(pFile); m_valid = false; return; }
+    if (!Editor::isValidSize(size)) 
+    { 
+        fclose(pFile); m_valid = false;
+        MsgWndw::get()->showMsg("File loading failed!");
+        return; 
+    }
     c = new wchar_t[size];
     fread(c, sizeof(wchar_t), size, pFile);
     m_track_name = c;
@@ -176,7 +181,12 @@ Track::Track(path file)
 
     // DESIGNER NAME
     fread(&size, sizeof(u8), 1, pFile);
-    if (!Editor::isValidSize(size)) { fclose(pFile); m_valid = false; return; }
+    if (!Editor::isValidSize(size))
+    {
+        fclose(pFile); m_valid = false;
+        MsgWndw::get()->showMsg("File loading failed!");
+        return;
+    }
     c = new wchar_t[size];
     fread(c, sizeof(wchar_t), size, pFile);
     m_designer = c;
@@ -185,7 +195,12 @@ Track::Track(path file)
     // FILE NAME
     c8* cc;
     fread(&size, sizeof(u8), 1, pFile);
-    if (!Editor::isValidSize(size)) { fclose(pFile); m_valid = false; return; }
+    if (!Editor::isValidSize(size)) 
+    {
+        fclose(pFile); m_valid = false;
+        MsgWndw::get()->showMsg("File loading failed!");
+        return;
+    }
     cc = new c8[size];
     fread(cc, sizeof(c8), size, pFile);
     m_file_name = cc;
@@ -193,7 +208,12 @@ Track::Track(path file)
 
     // MUSIC
     fread(&size, sizeof(u8), 1, pFile);
-    if (!Editor::isValidSize(size)) { fclose(pFile); m_valid = false; return; }
+    if (!Editor::isValidSize(size)) 
+    {
+        fclose(pFile); m_valid = false;
+        MsgWndw::get()->showMsg("File loading failed!");
+        return;
+    }
     cc = new c8[size];
     fread(cc, sizeof(c8), size, pFile);
     m_music = cc;
@@ -228,7 +248,7 @@ Track::Track(path file)
     fread(&size, sizeof(u8), 1, pFile);
     if (size < 0 || size > MAX_ROAD_NUM)
     {
-        MsgWndw::get()->showMsg("Loading failed :invalid terrain!");
+        MsgWndw::get()->showMsg("Loading failed: invalid terrain!");
     }
     else
     {
@@ -270,11 +290,19 @@ Track::Track(path file)
         fread(&pos, sizeof(vector3df), 1, pFile);
         fread(&rot, sizeof(vector3df), 1, pFile);
         fread(&sca, sizeof(vector3df), 1, pFile);
+
         u8 size;
         fread(&size, sizeof(u8), 1, pFile);
-        if (!Editor::isValidSize(size)) return;
+        if (!Editor::isValidSize(size))
+        {
+            m_valid = false;
+            MsgWndw::get()->showMsg("Loading failed!");
+            fclose(pFile);
+            return;            
+        }
         c8 *name = new c8[size];
         fread(name, sizeof(c8), size, pFile);
+        
         path p = name;
         if (p == path("banana") || p == path("item")
             || p == path("small-nitro") || p == path("big-nitro"))
