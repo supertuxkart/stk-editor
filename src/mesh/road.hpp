@@ -11,11 +11,14 @@ private:
     u32                             m_tex_warp_count;
     u32                             m_width_vert_num;
 
+    f32                             m_district;
+
     CMeshBuffer<S3DVertex2TCoords>* m_mesh_buff;
     SMesh                           m_smesh;
     ITriangleSelector*              m_tri;
     
     array<vector2df>                m_cross_section;
+    array<f32>                      m_cross_sec_point_coords;
 
     virtual void    textureExport(FILE* fp);
     virtual void    textureImport(FILE* fp);

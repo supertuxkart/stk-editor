@@ -52,19 +52,22 @@ void Road::crossRoadExport(FILE* fp)
 void Road::crossRoadImport(FILE* fp)
 {
     fread(&m_width_vert_num, sizeof(u32), 1, fp);
+    array<vector2df> cs;
 
     for (u32 i = 0; i < m_width_vert_num; i++)
     {
         vector2df pos;
         fread(&pos, sizeof(vector2df), 1, fp);
-        m_cross_section.push_back(pos);
+        cs.push_back(pos);
     }
+    setCrossSection(cs);
 } // crossRoadImport
 
 // ----------------------------------------------------------------------------
 void Road::calcVertexRow(vector3df p, vector3df n, vector3df w, int offset,
                                                       float wx, float t)
 {
+    assert(m_district > 0);
     w *= m_width / m_width_vert_num * wx;
     for (u32 i = 0; i < m_width_vert_num; i++)
     {
@@ -74,8 +77,8 @@ void Road::calcVertexRow(vector3df p, vector3df n, vector3df w, int offset,
         m_mesh_buff->Vertices[offset + i].Color = 
             (m_cross_section[i].Y>0) ? SColor(255, 255, 255, 255) : SColor(255, 0, 0, 0);
 
-        m_mesh_buff->Vertices[offset + i].TCoords = vector2df(i / (f32)m_width_vert_num,
-                                                        t*m_tex_warp_count);
+        m_mesh_buff->Vertices[offset + i].TCoords = 
+            vector2df(m_cross_sec_point_coords[i] / m_district, t*m_tex_warp_count);
     }
 } // calcVertexRow
 
@@ -110,10 +113,13 @@ void Road::createIndexList(int nj, int ni)
 Road::Road(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s, stringw n)
                                                     :IRoad(parent, mgr, id, s, n)
 {
+    m_district                            = -1;
     m_width_vert_num                      = 12;
     m_tex_warp_count                      = 10;
     m_tri                                 = 0;
-    m_cross_section                       = genStandardCrossSection(m_width_vert_num);
+
+    setCrossSection(genStandardCrossSection(m_width_vert_num));
+
     m_mesh_buff                           = new CMeshBuffer<S3DVertex2TCoords>();
     m_mesh_buff->Material.Wireframe       = true;
     m_mesh_buff->Material.Lighting        = false;
@@ -124,7 +130,8 @@ Road::Road(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s, stringw n
 Road::Road(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
                                          :IRoad(parent, mgr, id, fp)
 {
-    m_tri = 0;
+    m_district                            = -1;
+    m_tri                                 = 0;
     m_mesh_buff                           = new CMeshBuffer<S3DVertex2TCoords>();
     m_mesh_buff->Material.Wireframe       = true;
     m_mesh_buff->Material.Lighting        = false;
@@ -242,6 +249,17 @@ void Road::setCrossSection(array<vector2df> cs)
 {
     m_cross_section = cs;
     m_width_vert_num = cs.size();
+
+    m_district = 0;
+    m_cross_sec_point_coords.clear();
+    m_cross_sec_point_coords.push_back(0.0f);
+    for (u32 i = 1; i < m_width_vert_num; i++)
+    {
+        m_district += (m_cross_section[i] - m_cross_section[i - 1]).getLength();
+        m_cross_sec_point_coords.push_back(m_district);
+    }
+    m_district += (m_cross_section[0] - m_cross_section[m_width_vert_num - 1]).getLength();
+
 } // setCrossSection
 
 // ----------------------------------------------------------------------------
