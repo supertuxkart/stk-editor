@@ -3,6 +3,7 @@
 #include "gui/isubscriber.hpp"
 
 #include "editor.hpp"
+#include "viewport/viewport.hpp"
 
 #include <iostream>
 #include <assert.h>
@@ -224,6 +225,21 @@ void TexSel::searchFieldDirty()
     bindTexturesToButton(0);
 } // searchFieldDirty
 
+// ----------------------------------------------------------------------------
+void TexSel::show()
+{
+    m_wndw->setVisible(true);
+    Viewport::get()->lock(true); 
+}
+
+// ----------------------------------------------------------------------------
+void TexSel::hide()
+{
+    m_wndw->setVisible(false); clear(); 
+    Viewport::get()->lock(false);
+}
+
+// ----------------------------------------------------------------------------
 void TexSel::reallocate()
 {
     dimension2du ss = Editor::getEditor()->getScreenSize();

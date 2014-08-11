@@ -864,6 +864,14 @@ bool Editor::OnEvent(const SEvent& event)
     // gui active, there is nothing we should do
     if (m_viewport->isLocked()) return false;
 
+    if (m_gui_env->getFocus())
+    {
+        s32 id = m_gui_env->getFocus()->getID();
+        if (id == RoadPanel::NAMEBOX || id == EnvPanel::SF_ID
+            || id == TerrPanel::H_MAX_EDIT_BOX || id == TerrPanel::H_MIN_EDIT_BOX)
+            return false;
+    }
+
     // keyboard event
     if (event.EventType == EET_KEY_INPUT_EVENT)
     {

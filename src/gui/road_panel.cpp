@@ -63,7 +63,7 @@ void RoadPanel::init()
     m_spline_type_cb->addItem(L"Bezier", 0);
     m_spline_type_cb->addItem(L"Catmull-Rom", 1);
 
-    m_text_field = gui_env->addEditBox(L"RoadMesh_1",rect<s32>(30, 345, 150, 365),true,m_wndw);
+    m_text_field = gui_env->addEditBox(L"RoadMesh_1",rect<s32>(30, 345, 150, 365),true,m_wndw,NAMEBOX);
 
     gui_env->addButton(rect<s32>(160, 320, 210, 365), m_wndw, CREATE, L"", _(L"Create New Road Mesh"))
         ->setImage(Editor::loadImg("img/road_create.png"));

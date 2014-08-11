@@ -58,10 +58,10 @@ public:
     void        notify(u32 id);
     void        searchFieldDirty();
 
-    u32         getBtnNum()              { return m_btn_num; }
+    void        show();
+    void        hide();
 
-    void        show()                   { m_wndw->setVisible(true);          }
-    void        hide()                   { m_wndw->setVisible(false); clear();}
+    u32         getBtnNum()              { return m_btn_num; }
     bool        isActive()               { return m_wndw->isVisible();        }
     void        clear()                  { m_bsubs.clear(); m_subs.clear();   }
 

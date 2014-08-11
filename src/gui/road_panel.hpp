@@ -31,7 +31,8 @@ public:
         TEXTURE,
         TEX_CHANGE,
         CHECKLINE,
-        AUTO_NORM_CHECK_BOX
+        AUTO_NORM_CHECK_BOX,
+        NAMEBOX
     };
 
 private:
