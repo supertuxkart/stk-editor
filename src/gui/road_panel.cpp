@@ -55,9 +55,9 @@ void RoadPanel::init()
         ->setImage(Editor::loadImg("img/dl_ready.png"));
 
     gui_env->addButton(rect<s32>(60, 245, 110, 295), m_wndw, CROSS_SECTION, L"", _(L"Editor road cross section"))
-        ->setImage(Editor::loadImg("img/dl_cross_sec.png"));
+        ->setImage(Editor::loadImg("img/edit_crossroads_section.png"));
     gui_env->addButton(rect<s32>(130, 245, 180, 295), m_wndw, ATTACH_TO_DL, L"", _(L"Attach to DriveLine"))
-        ->setImage(Editor::loadImg("img/dl_attach_to_dl.png"));
+        ->setImage(Editor::loadImg("img/create-quads.png"));
 
     m_spline_type_cb = gui_env->addComboBox(rect<s32>(30, 320, 150, 340), m_wndw);
     m_spline_type_cb->addItem(L"Bezier", 0);

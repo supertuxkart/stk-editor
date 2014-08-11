@@ -55,6 +55,15 @@ void RoadCrossSectionWndw::init()
     m_ok     = gui_env->addButton(rect<s32>((s32)x,h - 100, (s32)x+50, h-50)); x += dx + 50;
     m_cancel = gui_env->addButton(rect<s32>((s32)x,h - 100, (s32)x+50, h-50)); x += dx + 50;
 
+    m_gof    ->setImage(Editor::loadImg("img/grid-on_align-off.png"));
+    m_gp     ->setImage(Editor::loadImg("img/grid-plus.png"));
+    m_gm     ->setImage(Editor::loadImg("img/grid-minus.png"));
+    m_pp     ->setImage(Editor::loadImg("img/points-plus.png"));
+    m_pm     ->setImage(Editor::loadImg("img/points-minus.png"));
+    m_sym    ->setImage(Editor::loadImg("img/symm_off.png"));
+    m_ok     ->setImage(Editor::loadImg("img/qsave.png"));
+    m_cancel ->setImage(Editor::loadImg("img/qcancel.png"));
+
     m_gof    ->setID(GRID_ON_OFF);
     m_gp     ->setID(GRID_P     );
     m_gm     ->setID(GRID_M     );
@@ -267,6 +276,10 @@ void RoadCrossSectionWndw::buttonClicked(u32 id)
     {
     case SYM_ON_OFF:
         m_sym_mode = !m_sym_mode;
+        
+        if (m_sym_mode) m_sym->setImage(Editor::loadImg("img/symm_on.png"));
+        else m_sym->setImage(Editor::loadImg("img/symm_off.png"));
+        
         for (u32 j = 0; j < 2; j++)
         {
             for (u32 i = 0; i < m_node_num / 4; i++)
@@ -285,12 +298,24 @@ void RoadCrossSectionWndw::buttonClicked(u32 id)
         setPointNum(m_node_num + 4);
         return;
     case GRID_ON_OFF:
-        if (!m_grid_on) { m_grid_on = true; }
+        if (!m_grid_on) 
+        { 
+            m_grid_on = true; 
+            m_gof->setImage(Editor::loadImg("img/grid-on_align-off.png"));
+        } // grid on
         else
         {
-            if (!m_allign) { m_allign = true; }
-            else { m_allign = false; m_grid_on = false; }
-        }
+            if (!m_allign) 
+            { 
+                m_allign = true; 
+                m_gof->setImage(Editor::loadImg("img/grid-on_align-on.png"));
+            }
+            else 
+            { 
+                m_allign = false; m_grid_on = false; 
+                m_gof->setImage(Editor::loadImg("img/grid-off_align-off.png"));
+            } // allign on
+        } // !grid on
         return;
     case GRID_M:
         m_grid *= 2;
