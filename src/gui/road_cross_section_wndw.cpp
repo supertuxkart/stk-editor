@@ -71,7 +71,7 @@ void RoadCrossSectionWndw::init()
     m_pm     ->setID(POINT_M    );
     m_sym    ->setID(SYM_ON_OFF );
     m_ok     ->setID(OK         );
-    m_cancel ->setID(CANCEL     );
+    m_cancel ->setID(CANCEL     );    
 
     m_gof    ->setVisible(false);
     m_gp     ->setVisible(false);
@@ -81,6 +81,15 @@ void RoadCrossSectionWndw::init()
     m_sym    ->setVisible(false);
     m_ok     ->setVisible(false);
     m_cancel ->setVisible(false);
+
+    m_gof    ->setToolTipText(L"Grid on alignment on");
+    m_gp     ->setToolTipText(L"Increase grid density");
+    m_gm     ->setToolTipText(L"Decrease grid density");
+    m_pp     ->setToolTipText(L"Add 4 points");
+    m_pm     ->setToolTipText(L"Remove 4 points");
+    m_sym    ->setToolTipText(L"Click to turn on symmetry");
+    m_ok     ->setToolTipText(L"Save and Leave");
+    m_cancel ->setToolTipText(L"Leave without save");
 
 } // init
 
@@ -275,11 +284,17 @@ void RoadCrossSectionWndw::buttonClicked(u32 id)
     switch (id)
     {
     case SYM_ON_OFF:
-        m_sym_mode = !m_sym_mode;
-        
-        if (m_sym_mode) m_sym->setImage(Editor::loadImg("img/symm_on.png"));
-        else m_sym->setImage(Editor::loadImg("img/symm_off.png"));
-        
+        m_sym_mode = !m_sym_mode;        
+        if (m_sym_mode)
+        {
+            m_sym->setImage(Editor::loadImg("img/symm_on.png"));
+            m_sym->setToolTipText(L"Click to turn off symmetry");
+        }
+        else
+        {
+            m_sym->setImage(Editor::loadImg("img/symm_off.png"));
+            m_sym->setToolTipText(L"Click to turn on symmetry");
+        }        
         for (u32 j = 0; j < 2; j++)
         {
             for (u32 i = 0; i < m_node_num / 4; i++)
@@ -309,11 +324,13 @@ void RoadCrossSectionWndw::buttonClicked(u32 id)
             { 
                 m_allign = true; 
                 m_gof->setImage(Editor::loadImg("img/grid-on_align-on.png"));
+                m_gof->setToolTipText(L"Grid off alignment off");
             }
             else 
             { 
                 m_allign = false; m_grid_on = false; 
                 m_gof->setImage(Editor::loadImg("img/grid-off_align-off.png"));
+                m_gof->setToolTipText(L"Grid on alignment off");
             } // allign on
         } // !grid on
         return;
