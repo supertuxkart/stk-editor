@@ -101,15 +101,17 @@ void TexSel::loadTextures()
     const IFileList* file_list = dir->getFileList();
     for (unsigned int i = 0; i < file_list->getFileCount(); i++)
     {
-        if ((t = Editor::getEditor()->getVideoDriver()
-                                    ->getTexture(file_list->getFullFileName(i))))
+        path p = file_list->getFullFileName(i);
+        if ((p.equals_substring_ignore_case(".png", p.size() - 4) || 
+            p.equals_substring_ignore_case(".jpg", p.size() - 4) ||
+            p.equals_substring_ignore_case(".bmp", p.size() - 4) ||
+            p.equals_substring_ignore_case(".jpeg", p.size() - 5))
+            && (t = Editor::getEditor()->getVideoDriver()->getTexture(p)))
         {
             m_tex_list.push_back(t);
         }
     }
-
 } // loadTextures
-
 
 // ----------------------------------------------------------------------------
 void TexSel::initButtons()
