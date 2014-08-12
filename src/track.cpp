@@ -520,7 +520,7 @@ void Track::build()
     track += "</track>\n";
 
     PHYSFS_uint64 len = 4 * track.size();
-    char*	      dst = new char[len];
+    char*         dst = new char[len];
 #ifdef _WIN32
     PHYSFS_utf8FromUcs2((PHYSFS_uint16*)track.c_str(),dst,len);
 #else

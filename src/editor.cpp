@@ -360,14 +360,14 @@ bool Editor::init()
     nulldevice->drop();
 
     m_device = createDevice(EDT_OPENGL, m_screen_size, 16, false, false, true);
-	if (!m_device) return false;
+    if (!m_device) return false;
 
-	m_device->setResizable(true);
-	m_device->setWindowCaption(L"SuperTuxKart Track Editor");
-
-	m_video_driver  = m_device->getVideoDriver();
-	m_scene_manager = m_device->getSceneManager();
-	m_gui_env       = m_device->getGUIEnvironment();
+    m_device->setResizable(true);
+    m_device->setWindowCaption(L"SuperTuxKart Track Editor");
+    
+    m_video_driver  = m_device->getVideoDriver();
+    m_scene_manager = m_device->getSceneManager();
+    m_gui_env       = m_device->getGUIEnvironment();
 
     m_screen_size   = m_video_driver->getScreenSize();
     m_def_wd        = m_device->getFileSystem()->getWorkingDirectory();
@@ -609,23 +609,23 @@ void Editor::runTrack()
 // ----------------------------------------------------------------------------
 Editor* Editor::getEditor(dimension2du screen_size)
 {
-	if (m_editor != 0) return m_editor;
-
-	m_editor = new Editor();
-    m_editor->m_screen_size = screen_size;
-	if (!m_editor->init()) return 0;
-	return m_editor;
+    if (m_editor != 0) return m_editor;
+    
+    m_editor = new Editor();
+       m_editor->m_screen_size = screen_size;
+    if (!m_editor->init()) return 0;
+    return m_editor;
 } // getEditorf
 
 // ----------------------------------------------------------------------------
 bool Editor::run()
 {
-	if (!m_device) return 0;
+    if (!m_device) return 0;
 
     long current_time = m_device->getTimer()->getTime();
     long last_time    = current_time;
 
-	while (m_device->run())
+    while (m_device->run())
     {
         if (m_device->isWindowActive())
         {
@@ -638,9 +638,6 @@ bool Editor::run()
             m_video_driver->beginScene(true, true, SColor(255, 120, 80, 170));
 
             m_indicator->renderToTexture();
-
-            //m_rcs->drawGrid();
-
             m_scene_manager->drawAll();
 
             m_viewport->draw();
@@ -686,7 +683,7 @@ bool Editor::run()
 
     m_device->drop();
 
-	return 1;
+    return 1;
 } // run
 
 // ----------------------------------------------------------------------------
@@ -898,7 +895,7 @@ bool Editor::OnEvent(const SEvent& event)
             return true;
     }
 
-	return false;
+    return false;
 
 } // OnEvent
 

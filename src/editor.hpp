@@ -32,12 +32,12 @@ class Editor :public IEventReceiver
 {
 private:
     static const u32            EVIL_NUMBER = 5;
-	static Editor*              m_editor;
-
-	IrrlichtDevice*             m_device;
-	IVideoDriver*               m_video_driver;
-	ISceneManager*              m_scene_manager;
-	IGUIEnvironment*            m_gui_env;
+    static Editor*              m_editor;
+    
+    IrrlichtDevice*             m_device;
+    IVideoDriver*               m_video_driver;
+    ISceneManager*              m_scene_manager;
+    IGUIEnvironment*            m_gui_env;
 
     ToolBar*                    m_toolbar;
     ToolBox*                    m_toolbox;
@@ -68,7 +68,7 @@ private:
     c8*                         m_music_loc;
     path                        m_exe_loc;
 
-	bool                        init();
+    bool                        init();
     void                        readConfigFile(IFileSystem* file_system);
     void                        fileInit();
     void                        initResolFromConfigFile();
@@ -79,7 +79,7 @@ private:
     void                        dataDirLocDlg();
     void                        runTrack();
 
-	Editor() {};
+    Editor() {};
     bool                        buttonClicked(int ID);
     bool                        importantButtonClicked(int ID);
     void                        simpleShortcuts(EKEY_CODE code);
@@ -89,8 +89,8 @@ public:
     static bool                 isValidSize(u8 size);
 
     static Editor*              getEditor(dimension2du screen_size = dimension2du(1280, 720));
-	bool		                run();
-	virtual bool                OnEvent(const SEvent& event);
+    bool                        run();
+    virtual bool                OnEvent(const SEvent& event);
     void                        keepMouseIn(s32 sx, s32 sy);
     bool                        open(path p);
     void                        newTrack();

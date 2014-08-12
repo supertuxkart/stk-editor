@@ -19,19 +19,19 @@ class B3DMeshWriter : public IMeshWriter
 {
 public:
 
-	B3DMeshWriter(io::IFileSystem *fs);
+    B3DMeshWriter(io::IFileSystem *fs);
 
-	//! Returns the type of the mesh writer
-	virtual EMESH_WRITER_TYPE getType() const;
+    //! Returns the type of the mesh writer
+    virtual EMESH_WRITER_TYPE getType() const;
 
-	//! writes a mesh
-	virtual bool writeMesh(io::IWriteFile* file, scene::IMesh* mesh, s32 flags=EMWF_NONE);
+    //! writes a mesh
+    virtual bool writeMesh(io::IWriteFile* file, scene::IMesh* mesh, s32 flags=EMWF_NONE);
 
 private:
-	io::IFileSystem *FileSystem;
-	u32 size;
+    io::IFileSystem *FileSystem;
+    u32 size;
 
-	void write(io::IWriteFile* file, const void *ptr, const u32 bytes);
+    void write(io::IWriteFile* file, const void *ptr, const u32 bytes);
 };
 
 } // end namespace

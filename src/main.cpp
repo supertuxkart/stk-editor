@@ -5,10 +5,10 @@
 int main(int argc, char* argv[])
 {
     PHYSFS_init(argv[0]);
-	Editor* editor = Editor::getEditor();
+    Editor* editor = Editor::getEditor();
 
     if (editor!=0)
-	    editor->run();
+        editor->run();
 
-	return 0;
+    return 0;
 }
