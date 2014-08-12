@@ -202,8 +202,8 @@ bool Editor::importantButtonClicked(int ID)
     {
         // ToolBar buttons
     case ToolBar::TBI_EXIT:
-        m_msg_wndw->showMsg(L"Do you really want to quit?\n"
-                            L"Any unsaved progress will be lost!", true, true);
+        m_msg_wndw->showMsg(_(L"Do you really want to quit?\n"
+                            L"Any unsaved progress will be lost!"), true, true);
         return true;
     case ToolBar::TBI_NEW:
         if (m_viewport) m_viewport->lock();

@@ -145,7 +145,7 @@ Track::Track(path file)
     if (!pFile)
     {
         m_valid = false;
-        stringw emsg = "Editor failed to open file:\n \"";
+        stringw emsg = _("Editor failed to open file:\n \"");
         emsg += file;
         emsg += "\"";
 
@@ -158,7 +158,7 @@ Track::Track(path file)
     fread(&sign, sizeof(u64), 1, pFile);
     if (sign != TOP_SECRET_SIGNATURE_NUMBER)
     {
-        MsgWndw::get()->showMsg("File can not be opened: signature failed.");
+        MsgWndw::get()->showMsg(_("File can not be opened: signature failed."));
         m_valid = false;
         fclose(pFile);
         return;
@@ -171,7 +171,7 @@ Track::Track(path file)
     if (!Editor::isValidSize(size)) 
     { 
         fclose(pFile); m_valid = false;
-        MsgWndw::get()->showMsg("File loading failed!");
+        MsgWndw::get()->showMsg(_("File loading failed!"));
         return; 
     }
     c = new wchar_t[size];
@@ -184,7 +184,7 @@ Track::Track(path file)
     if (!Editor::isValidSize(size))
     {
         fclose(pFile); m_valid = false;
-        MsgWndw::get()->showMsg("File loading failed!");
+        MsgWndw::get()->showMsg(_("File loading failed!"));
         return;
     }
     c = new wchar_t[size];
@@ -198,7 +198,7 @@ Track::Track(path file)
     if (!Editor::isValidSize(size)) 
     {
         fclose(pFile); m_valid = false;
-        MsgWndw::get()->showMsg("File loading failed!");
+        MsgWndw::get()->showMsg(_("File loading failed!"));
         return;
     }
     cc = new c8[size];
@@ -211,7 +211,7 @@ Track::Track(path file)
     if (!Editor::isValidSize(size)) 
     {
         fclose(pFile); m_valid = false;
-        MsgWndw::get()->showMsg("File loading failed!");
+        MsgWndw::get()->showMsg(_("File loading failed!"));
         return;
     }
     cc = new c8[size];
@@ -226,7 +226,7 @@ Track::Track(path file)
     if (!m_terrain->isValid())
     {
         fclose(pFile);
-        MsgWndw::get()->showMsg("Loading failed :invalid terrain!");
+        MsgWndw::get()->showMsg(_("Loading failed :invalid terrain!"));
         m_valid = false;
         return;
     }
@@ -248,7 +248,7 @@ Track::Track(path file)
     fread(&size, sizeof(u8), 1, pFile);
     if (size < 0 || size > MAX_ROAD_NUM)
     {
-        MsgWndw::get()->showMsg("Loading failed: invalid terrain!");
+        MsgWndw::get()->showMsg(_("Loading failed: invalid terrain!"));
     }
     else
     {
@@ -257,7 +257,7 @@ Track::Track(path file)
             m_driveline = new DriveLine(sm->getRootSceneNode(), sm, 0, pFile);
             if (!m_driveline->isValid())
             {
-                std::cerr << "Warning: invalid driveline!\n";
+                std::cerr << _("Warning: invalid driveline!\n");
                 ISpline* spline = new TCR(sm->getRootSceneNode(), sm, 0);
                 m_driveline = new DriveLine(sm->getRootSceneNode(), sm, 0, spline, L"DriveLine");
             }
@@ -296,7 +296,7 @@ Track::Track(path file)
         if (!Editor::isValidSize(size))
         {
             m_valid = false;
-            MsgWndw::get()->showMsg("Loading failed!");
+            MsgWndw::get()->showMsg(_("Loading failed!"));
             fclose(pFile);
             return;            
         }
@@ -346,7 +346,7 @@ void Track::save()
 
   if (!pFile)
   {
-      MsgWndw::get()->showMsg("Save failed: file could not be created!\n");
+      MsgWndw::get()->showMsg(_("Save failed: file could not be created!\n"));
       return;
   }
 
@@ -416,7 +416,7 @@ void Track::save()
   fclose(pFile);
   Editor::getEditor()->addToRecentlyOpenedList(m_file_name);
 
-  MsgWndw::get()->showMsg("Track saved!\n");
+  MsgWndw::get()->showMsg(_("Track saved!\n"));
 
 } // save
 
@@ -574,7 +574,7 @@ void Track::build()
     scene << "</scene>\n";
     scene.close();
 
-    MsgWndw::get()->showMsg("Track exported!");
+    MsgWndw::get()->showMsg(_("Track exported!"));
 
 } // build
 
