@@ -96,6 +96,7 @@ void TexModCmd::undo()
     }
 
     tex->unlock();
+    tex->regenerateMipMapLevels();
 } // undo
 
 // ----------------------------------------------------------------------------

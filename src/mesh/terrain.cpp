@@ -324,7 +324,7 @@ void Terrain::draw(const TerrainMod& tm)
 
         }
     m_material.getTexture(1)->unlock();
-
+    m_material.getTexture(1)->regenerateMipMapLevels();
 } // draw
 
 
@@ -497,6 +497,8 @@ Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
     fread(m_material.getTexture(1)->lock(ETLM_WRITE_ONLY), sizeof(u8),
                                              4 * SPIMG_X*SPIMG_Y, fp);
     m_material.getTexture(1)->unlock();
+    m_material.getTexture(1)->regenerateMipMapLevels();
+
     m_highlight_visible = false;
 
     ITexture* tex;
