@@ -598,6 +598,7 @@ void Editor::runTrack()
     if (m_exe_loc.empty())
     {
         m_gui_env->addFileOpenDialog(L"Select STK binary:", true, 0, 333);
+        if (m_viewport) m_viewport->lock();
         return;
     }
     stringc msg = "";
@@ -693,8 +694,6 @@ bool Editor::OnEvent(const SEvent& event)
        && event.GUIEvent.EventType == EGET_BUTTON_CLICKED)
             if (importantButtonClicked(event.GUIEvent.Caller->getID()))
                 return true;
-
-    if (m_msg_wndw->isVisible()) return false;
 
     if (!m_valid_data_dir)
     {
@@ -862,21 +861,25 @@ bool Editor::OnEvent(const SEvent& event)
         }
     } // EventType == EET_GUI_EVENT
 
+    bool should_quit = false;
     // gui active, there is nothing we should do
-    if (m_viewport->isLocked()) return false;
+    if (m_viewport->isLocked()) should_quit = true;
 
     if (m_gui_env->getFocus())
     {
         s32 id = m_gui_env->getFocus()->getID();
         if (id == RoadPanel::NAMEBOX || id == EnvPanel::SF_ID
             || id == TerrPanel::H_MAX_EDIT_BOX || id == TerrPanel::H_MIN_EDIT_BOX)
-            return false;
+            should_quit = true;
     }
 
     // keyboard event
     if (event.EventType == EET_KEY_INPUT_EVENT)
     {
-        m_keys.keyEvent(event.KeyInput.Key, event.KeyInput.PressedDown);
+        if (!event.KeyInput.PressedDown || !should_quit)
+            m_keys.keyEvent(event.KeyInput.Key, event.KeyInput.PressedDown);
+
+        if (should_quit) return false;
 
         if (event.KeyInput.PressedDown)
         {
