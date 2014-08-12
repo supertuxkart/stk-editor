@@ -627,42 +627,46 @@ bool Editor::run()
 
 	while (m_device->run())
     {
-        current_time = m_device->getTimer()->getTime();
-        if (m_valid_data_dir && !m_msg_wndw->isVisible())
-            m_viewport->animate(current_time - last_time);
-
-		// drawing
-//		m_video_driver->beginScene(true, true, SColor(255, 80, 0, 170));
-        m_video_driver->beginScene(true, true, SColor(255, 120, 80, 170));
-
-        m_indicator->renderToTexture();
-
-        //m_rcs->drawGrid();
-
-        m_scene_manager->drawAll();
-
-        m_viewport->draw();
-        m_rcs->render();
-
-		m_gui_env->drawAll();
-
-        if (m_viewport->getState() != Viewport::FREECAM && !m_rcs->isVisible())
-            m_indicator->drawToScreen();
-
-		m_video_driver->endScene();
-
-        if (m_video_driver->getScreenSize() != m_screen_size)
+        if (m_device->isWindowActive())
         {
-            m_screen_size = m_video_driver->getScreenSize();
-            m_toolbar->reallocate();
-            m_toolbox->reallocate();
-            m_tex_sel->reallocate();
-            m_rcs->reallocate();
-            if (m_indicator) m_indicator->reallocate();
-            m_new_dialog_wndw->reallocate(m_screen_size);
-        }
-        last_time = current_time;
-    }
+            current_time = m_device->getTimer()->getTime();
+            if (m_valid_data_dir && !m_msg_wndw->isVisible())
+                m_viewport->animate(current_time - last_time);
+
+            // drawing
+            //m_video_driver->beginScene(true, true, SColor(255, 80, 0, 170));
+            m_video_driver->beginScene(true, true, SColor(255, 120, 80, 170));
+
+            m_indicator->renderToTexture();
+
+            //m_rcs->drawGrid();
+
+            m_scene_manager->drawAll();
+
+            m_viewport->draw();
+            m_rcs->render();
+
+            m_gui_env->drawAll();
+
+            if (m_viewport->getState() != Viewport::FREECAM && !m_rcs->isVisible())
+                m_indicator->drawToScreen();
+
+            m_video_driver->endScene();
+
+            if (m_video_driver->getScreenSize() != m_screen_size)
+            {
+                m_screen_size = m_video_driver->getScreenSize();
+                m_toolbar->reallocate();
+                m_toolbox->reallocate();
+                m_tex_sel->reallocate();
+                m_rcs->reallocate();
+                if (m_indicator) m_indicator->reallocate();
+                m_new_dialog_wndw->reallocate(m_screen_size);
+            }
+            last_time = current_time;
+        } // isWindowActive
+        else m_device->yield();
+    } // while device->run
 
     if (m_config_loc!="")
     {
