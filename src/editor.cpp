@@ -354,6 +354,11 @@ bool Editor::init()
     m_indicator = 0;
     m_exe_loc   = "";
 
+    m_toolbar   = 0;
+    m_toolbox   = 0;
+    m_rcs       = 0;
+    m_tex_sel   = 0;
+
     IrrlichtDevice *nulldevice = createDevice(video::EDT_NULL);
     m_screen_size = nulldevice->getVideoModeList()->getDesktopResolution();
     readConfigFile(nulldevice->getFileSystem());
@@ -364,7 +369,7 @@ bool Editor::init()
 
     m_device->setResizable(true);
     m_device->setWindowCaption(L"SuperTuxKart Track Editor");
-    
+
     m_video_driver  = m_device->getVideoDriver();
     m_scene_manager = m_device->getSceneManager();
     m_gui_env       = m_device->getGUIEnvironment();
@@ -442,12 +447,6 @@ void Editor::readConfigFile(IFileSystem* file_system)
         {
             PHYSFS_setWriteDir(dir.c_str());
             PHYSFS_mkdir(".stk-te");
-        }
-        if (!xml_reader)
-        {
-            std::ofstream f;
-            f.open("config.xml");
-            f.close();
             return;
         }
     }
@@ -503,10 +502,10 @@ void Editor::writeResAndExePathIntoConfig()
     f.open((m_config_loc + "/config.xml").c_str());
     f << "<config>\n";
     f << "  <data_dir path=\"" << p.c_str() << "\" />\n";
-    
+
     if (!m_exe_loc.empty())
         f << "  <exe path=\"" << m_exe_loc.c_str() << "\" />\n";
-    
+
     f << "  <res x=\"" << m_screen_size.Width << "\" y=\"";
     f << m_screen_size.Height << "\" />\n";
     f << "</config>\n";
@@ -611,7 +610,7 @@ void Editor::runTrack()
 Editor* Editor::getEditor(dimension2du screen_size)
 {
     if (m_editor != 0) return m_editor;
-    
+
     m_editor = new Editor();
        m_editor->m_screen_size = screen_size;
     if (!m_editor->init()) return 0;
@@ -654,10 +653,10 @@ bool Editor::run()
             if (m_video_driver->getScreenSize() != m_screen_size)
             {
                 m_screen_size = m_video_driver->getScreenSize();
-                m_toolbar->reallocate();
-                m_toolbox->reallocate();
-                m_tex_sel->reallocate();
-                m_rcs->reallocate();
+                if (m_toolbar) m_toolbar->reallocate();
+                if (m_toolbox) m_toolbox->reallocate();
+                if (m_tex_sel) m_tex_sel->reallocate();
+                if (m_rcs)     m_rcs->reallocate();
                 if (m_indicator) m_indicator->reallocate();
                 m_new_dialog_wndw->reallocate(m_screen_size);
             }
