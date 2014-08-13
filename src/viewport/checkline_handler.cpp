@@ -135,12 +135,16 @@ void CheckLineHandler::build(std::ofstream* scene)
                 p1 = it->n1->getPosition();
                 p2 = it->n2->getPosition();
                 (*scene) << "    <check-line kind=\"activate\" other-ids=\"" << j + 2;
-                (*scene) << "\" p1=\"" << p1.X << " " << p1.Z << "\" p2=\"" << p2.X;
-                (*scene) << " " << p2.Z << "\" same-group=\"" << j + 1 << "\"/>\n";
+                (*scene) << "\" p1=\"" << p1.X << " " << p1.Y << " " << p1.Z << "\" p2=\"" << p2.X;
+                (*scene) << " " << p2.Y << " " << p2.Z << "\" same-group=\"" << j + 1 << "\"/>\n";
                 it++;
                 j++;
             }
         }
+
+        std::list<CheckLine>::iterator it2 = m_check_lines.begin();
+        for (it2 = m_check_lines.begin(); it2 != m_check_lines.end(); it2++)
+            if (!it->removed && it->active) it = it2;
 
         p1 = it->n1->getPosition();
         p2 = it->n2->getPosition();
