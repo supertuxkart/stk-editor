@@ -54,6 +54,8 @@ public:
     void cancelActive();
 
     void build(std::ofstream* scene);
+    void save(FILE* fp);
+    void reload(FILE* fp);
 
     void draw();
 

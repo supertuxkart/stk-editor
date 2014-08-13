@@ -277,6 +277,10 @@ Track::Track(path file)
             else std::cerr << "Warning: invalid road - skipped :(\n";
         } // roads
     } // valid roadnum
+
+    // CHECKLINES
+
+    Viewport::get()->loadCheckLines(pFile);
     
     // OBJECTS
     u32 num;
@@ -393,6 +397,10 @@ void Track::save()
       r = m_roads[i];
       r->save(pFile);
   }
+
+  //CHECKLINES
+
+  Viewport::get()->saveCheckLines(pFile);
 
   // OBJECTS
   ISceneManager* sm = Editor::getEditor()->getSceneManager();

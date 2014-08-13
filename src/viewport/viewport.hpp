@@ -125,21 +125,23 @@ public:
     void showSky();
     void setSky(Sky* sky);
 
-    void                setRCSMode(bool b)                   { m_rcs_mode       = b;     }
-    void                setFreeCamera(ICameraSceneNode* cam) { m_free_camera    = cam;   }
-    static void         setLastEntityID(u32 id)              { m_last_entity_ID = id;    }
-    static u32          getLastEntityID()                    { return m_last_entity_ID;  }
-    bool                getSplineMode()                      { return m_spline_mode;     }
-    Track*              getTrack()                           { return m_track;           }
-    Terrain*            getTerrain()                         { return m_terrain;         }
-    Sky*                getSky()                             { return m_sky;             }
-    void                hideSky()                            { if (m_sky) m_sky->hide(); }
-    u32                 getState()                           { return m_state;           }
-    vector3df           getAztecPos()                        { return m_aztec_cam->Pos();}
-    void                printCheckLine(std::ofstream* f)     { m_clh.build(f);           }
-    void                setEditMode(Editing e)               { m_edit = e;               }
-    bool                isLocked()                           { return m_locked;          }
-    void                lock(bool b = true)                  { m_locked = b;             }
+    void                setRCSMode(bool b)                   { m_rcs_mode       = b;        }
+    void                setFreeCamera(ICameraSceneNode* cam) { m_free_camera    = cam;      }
+    static void         setLastEntityID(u32 id)              { m_last_entity_ID = id;       }
+    static u32          getLastEntityID()                    { return m_last_entity_ID;     }
+    bool                getSplineMode()                      { return m_spline_mode;        }
+    Track*              getTrack()                           { return m_track;              }
+    Terrain*            getTerrain()                         { return m_terrain;            }
+    Sky*                getSky()                             { return m_sky;                }
+    void                hideSky()                            { if (m_sky) m_sky->hide();    }
+    u32                 getState()                           { return m_state;              }
+    vector3df           getAztecPos()                        { return m_aztec_cam->Pos();   }
+    void                printCheckLine(std::ofstream* f)     { m_clh.build(f);              }
+    void                setEditMode(Editing e)               { m_edit = e;                  }
+    bool                isLocked()                           { return m_locked;             }
+    void                lock(bool b = true)                  { m_locked = b;                }
+    void                saveCheckLines(FILE* fp)             { m_clh.save(fp);              }
+    void                loadCheckLines(FILE* fp)             { m_clh.reload(fp);            }
 
     ~Viewport();
 };

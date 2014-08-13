@@ -155,6 +155,66 @@ void CheckLineHandler::build(std::ofstream* scene)
 } // build
 
 // ----------------------------------------------------------------------------
+void CheckLineHandler::save(FILE* fp)
+{
+    std::list<CheckLine>::iterator it = m_check_lines.begin();
+    u32 size = 0;
+    while (it != m_check_lines.end() && it->active)
+    {
+        if (!it->removed) size++;
+        it++;
+    }
+    fwrite(&size, sizeof(u32), 1, fp);
+    
+    it = m_check_lines.begin();
+    while (it != m_check_lines.end() && it->active)
+    {
+        if (!it->removed)
+        {
+            fwrite(&it->n1->getPosition(), sizeof(vector3df), 1, fp);
+            fwrite(&it->n2->getPosition(), sizeof(vector3df), 1, fp);
+        }
+        it++;
+    }
+} // save
+
+// ----------------------------------------------------------------------------
+void CheckLineHandler::reload(FILE* fp)
+{
+    std::list<CheckLine>::iterator it = m_check_lines.begin();
+    while (it != m_check_lines.end())
+    {
+        it->n1->remove();
+        it->n1 = 0;
+        it->n2->remove();
+        it->n2 = 0;
+        it++;
+    }
+    m_check_lines.clear();
+    
+    ISceneManager* sm = Editor::getEditor()->getSceneManager();
+    
+    u32 size;
+    fread(&size, sizeof(u32), 1, fp);
+    for (u32 i = 0; i < size; i++)
+    {
+        vector3df n1, n2;
+        fread(&n1, sizeof(vector3df), 1, fp);
+        fread(&n2, sizeof(vector3df), 1, fp);
+        CheckLine cl;
+        cl.n1 = sm->addSphereSceneNode(0.2f, 16, 0, ANOTHER_MAGIC_NUMBER);
+        cl.n2 = sm->addSphereSceneNode(0.2f, 16, 0, ANOTHER_MAGIC_NUMBER);
+        cl.n1->setPosition(n1);
+        cl.n2->setPosition(n2);
+        cl.active = true;
+        m_check_lines.push_back(cl);
+        cl.n1 = 0;
+        cl.n2 = 0;
+    }
+    (*m_check_lines.begin()).n1->getPosition();
+} // reload
+
+// ----------------------------------------------------------------------------
 void CheckLineHandler::draw()
 {
     IVideoDriver* vd = Editor::getEditor()->getVideoDriver();
