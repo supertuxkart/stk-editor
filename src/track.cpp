@@ -563,7 +563,7 @@ void Track::build()
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
     ISceneNode* node;
     int i = 1;
-    stringw name;
+    stringc name;
     while ((node = sm->getSceneNodeFromId(MAGIC_NUMBER + i)))
     {
         name = node->getName();
