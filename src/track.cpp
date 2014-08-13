@@ -277,7 +277,7 @@ Track::Track(path file)
             else std::cerr << "Warning: invalid road - skipped :(\n";
         } // roads
     } // valid roadnum
-
+    
     // OBJECTS
     u32 num;
     fread(&num, sizeof(u32), 1, pFile);
@@ -329,6 +329,7 @@ Track::Track(path file)
         } // invalid node
         delete[] name;
     }
+    
     fclose(pFile);
 } // Track - from file
 
@@ -397,7 +398,14 @@ void Track::save()
   ISceneManager* sm = Editor::getEditor()->getSceneManager();
   ISceneNode* node;
   u32 num = Viewport::getLastEntityID() - MAGIC_NUMBER;
-  fwrite(&num, sizeof(u32), 1, pFile);
+  u32 vnum = 0;
+  for (u32 i = 0; i < num; i++)
+  {
+      node = sm->getSceneNodeFromId(MAGIC_NUMBER + i + 1);
+      if (node && node->isVisible()) vnum++;
+  }
+
+  fwrite(&vnum, sizeof(u32), 1, pFile);
 
   for (u32 i = 0; i < num; i++)
   {
