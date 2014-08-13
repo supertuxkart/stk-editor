@@ -476,6 +476,7 @@ void Viewport::deleteCmd()
             CreateRoadCmd* crd = new CreateRoadCmd(m_active_road, true);
             crd->redo();
             m_command_handler.add(crd);
+            m_active_road = m_track->getRoadByID(0);
             return;
         } // road is removed
         for (it = sel.begin(); it != sel.end(); it++)
