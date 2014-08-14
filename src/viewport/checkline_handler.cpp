@@ -215,7 +215,6 @@ void CheckLineHandler::reload(FILE* fp)
         cl.n1 = 0;
         cl.n2 = 0;
     }
-    (*m_check_lines.begin()).n1->getPosition();
 } // reload
 
 // ----------------------------------------------------------------------------
