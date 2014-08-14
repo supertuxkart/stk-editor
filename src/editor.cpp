@@ -78,7 +78,7 @@ bool Editor::buttonClicked(s32 ID)
         return true;
     case ToolBar::TBI_MUSIC:
         m_viewport->lock();
-        m_gui_env->addFileOpenDialog(L"Select music:", true, 0, 1234, false, m_music_loc);
+        m_gui_env->addFileOpenDialog(L"Select music:", true, 0, 1234, true, m_music_loc);
         return true;
         // WELCOME SCREEN
     case ToolBar::TBI_SAVE:
@@ -213,7 +213,7 @@ bool Editor::importantButtonClicked(int ID)
         m_welcome_screen->hide();
     case ToolBar::TBI_OPEN:
         m_new_dialog_wndw->hide();
-        m_gui_env->addFileOpenDialog(L"Open track:", true, 0, -1, false, m_maps_path);
+        m_gui_env->addFileOpenDialog(L"Open track:", true, 0, -1, true, m_maps_path);
         if (m_viewport) m_viewport->lock();
         return true;
         // WELCOME SCREEN
@@ -326,7 +326,7 @@ void Editor::ctrlShortcuts(EKEY_CODE code)
         break;
     case KEY_KEY_O:
         m_new_dialog_wndw->hide();
-        m_gui_env->addFileOpenDialog(L"Open track:", true, 0, -1, false, m_maps_path);
+        m_gui_env->addFileOpenDialog(L"Open track:", true, 0, -1, true, m_maps_path);
         break;
     default:
         break;
@@ -534,6 +534,7 @@ bool Editor::validateDataLoc(path file)
                                             false, EFAT_FOLDER, "", &m_tex_dir))
         return false;
     m_data_loc = file;
+
     initDataLoc();
 
     std::ofstream f;
@@ -573,6 +574,8 @@ void Editor::initDataLoc()
     m_track_dir = m_data_loc.c_str();
     m_track_dir += "tracks/";
 
+    file_system->changeWorkingDirectoryTo(m_def_wd);
+
     m_tex_sel = TexSel::getTexSel();
     m_toolbox = ToolBox::getToolBox();
 
@@ -586,7 +589,7 @@ void Editor::dataDirLocDlg()
 {
     IGUIFileOpenDialog* ofd = m_gui_env->addFileOpenDialog(
         L"Pls. select data directory (folder containing textures, tracks, etc.):",
-        true, 0, -1, false);
+        true, 0, -1, true);
     ofd->setMinSize(dimension2du(600, 512));
     ofd->setRelativePosition(position2di(m_screen_size.Width / 2 - 300, 100));
 } // dataDirLocDlg
@@ -596,7 +599,7 @@ void Editor::runTrack()
 {
     if (m_exe_loc.empty())
     {
-        m_gui_env->addFileOpenDialog(L"Select STK binary:", true, 0, 333);
+        m_gui_env->addFileOpenDialog(L"Select STK binary:", true, 0, 333,true);
         if (m_viewport) m_viewport->lock();
         return;
     }
