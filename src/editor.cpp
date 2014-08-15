@@ -369,7 +369,7 @@ bool Editor::init()
     if (!m_device) return false;
 
     m_device->setResizable(true);
-    m_device->setWindowCaption(L"SuperTuxKart Track Editor Beta v0.01");
+    m_device->setWindowCaption(L"SuperTuxKart Track Editor Beta v0.02");
     m_device->maximizeWindow();
 
     m_video_driver  = m_device->getVideoDriver();
