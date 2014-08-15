@@ -48,8 +48,11 @@ void NewDialogWndw::init()
     m_grav_road_check = gui_env->addCheckBox(false, rect<s32>(80, 160, 220, 180), 
                                                     m_wndw, -1, L"  Gravity Roads");
     
-    frame = rect<s32>(120,190,180,210);
-    gui_env->addButton(frame, m_wndw, BTN_ID, _(L"Create"), _(L"Create"));
+    frame = rect<s32>(180, 195, 250, 215);
+    gui_env->addButton(frame, m_wndw, BTN_ID,     _(L"Create"), _(L"Create"));
+
+    frame = rect<s32>(40, 195, 110, 215);
+    gui_env->addButton(frame, m_wndw, BTN_ID + 1, _(L"Cancel"), _(L"Cancel"));
 
     m_wndw->setDrawTitlebar(false);
     m_wndw->getCloseButton()->setVisible(false);

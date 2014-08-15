@@ -231,6 +231,7 @@ bool Editor::importantButtonClicked(int ID)
         return true;
     case NewDialogWndw::BTN_ID:
         newTrack();
+    case NewDialogWndw::BTN_ID+1:
         m_new_dialog_wndw->hide();
         return true;
     case MsgWndw::OK_BTN_ID:
