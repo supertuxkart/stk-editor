@@ -265,7 +265,8 @@ void Editor::simpleShortcuts(EKEY_CODE code)
     switch (code)
     {
     case KEY_ESCAPE:
-        m_device->closeDevice();
+        m_msg_wndw->showMsg(_(L"Do you really want to quit?\n"
+                              L"Any unsaved progress will be lost!"), true, true);
         return;
     case KEY_DELETE:
         m_viewport->deleteCmd();
