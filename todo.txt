@@ -1,5 +1,4 @@
 TODO list:
 
 - beta
-- create cancel buttons - new track
 - "Try the track" doesn't work
