@@ -38,11 +38,17 @@ void TexSel::init()
     m_cancel = gui_env->addButton(rect<s32>(95, ss.Height - 78, 155, ss.Height - 58),
         m_wndw, FIRST_BTN_ID + 2, _(L"Cancel"));
 
+    IGUIImage* guimg = gui_env->addImage(rect<s32>(0, 0, ss.Width, ss.Height), 0, 0, 0);
+    guimg->setScaleImage(true);
+    guimg->setImage(Editor::loadImg("img/loading_screen.png"));
+
+    Editor::getEditor()->render();
+
     loadTextures();
     initButtons();
     bindTexturesToButton(0);
     hide();
-
+    guimg->remove();
 } // init
 
 // ----------------------------------------------------------------------------
@@ -100,8 +106,31 @@ void TexSel::loadTextures()
     IFileArchive* dir = Editor::getEditor()->getTexDir();
     ITexture* t;
     const IFileList* file_list = dir->getFileList();
+    IGUIEnvironment* gui_env = Editor::getEditor()->getGUIEnv();
+    dimension2du ss = Editor::getEditor()->getScreenSize();
+    
+    IGUIImage* guimg[10];
+    u32 offset = (ss.Width - 10 * 60) / 2;
+    for (u32 i = 0; i < 10; i++)
+    {
+        guimg[i] = gui_env->addImage(rect<s32>(i * 60 + offset, ss.Height/2 - 25, 
+                                i * 60 + 50 + offset, ss.Height/2 + 25), 0, 0, 0);
+        guimg[i]->setScaleImage(true);
+        guimg[i]->setImage(Editor::loadImg("img/tux.png"));
+        guimg[i]->setVisible(false);
+    }
+    u32 lix = 0;
+    u32 j;
     for (unsigned int i = 0; i < file_list->getFileCount(); i++)
     {
+        for (j = 0; j <= 10 * i / file_list->getFileCount(); j++)
+            guimg[j]->setVisible(true);
+        if (j != lix)
+        {
+            lix = j;
+            Editor::getEditor()->render();
+        }
+
         path p = file_list->getFullFileName(i);
         if ((p.equals_substring_ignore_case(".png", p.size() - 4) || 
             p.equals_substring_ignore_case(".jpg", p.size() - 4) ||
@@ -111,6 +140,10 @@ void TexSel::loadTextures()
         {
             m_tex_list.push_back(t);
         }
+    }
+    for (u32 i = 0; i < 10; i++)
+    {
+        guimg[i]->remove();
     }
 } // loadTextures
 

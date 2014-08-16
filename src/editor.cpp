@@ -362,6 +362,12 @@ bool Editor::init()
     m_rcs       = 0;
     m_tex_sel   = 0;
 
+    m_indicator = 0;
+    m_viewport  = 0;
+    m_rcs       = 0;
+
+    m_screen_size = dimension2du(10, 10);
+
     IrrlichtDevice *nulldevice = createDevice(video::EDT_NULL);
     m_screen_size = nulldevice->getVideoModeList()->getDesktopResolution();
     readConfigFile(nulldevice->getFileSystem());
@@ -372,7 +378,9 @@ bool Editor::init()
 
     m_device->setResizable(true);
     m_device->setWindowCaption(L"SuperTuxKart Track Editor Beta v0.03");
-    m_device->maximizeWindow();
+
+    if (m_screen_size.Width < 20 || m_screen_size.Height < 20)
+        m_device->maximizeWindow();
 
     m_video_driver  = m_device->getVideoDriver();
     m_scene_manager = m_device->getSceneManager();
@@ -625,6 +633,30 @@ Editor* Editor::getEditor(dimension2du screen_size)
 } // getEditorf
 
 // ----------------------------------------------------------------------------
+void Editor::render()
+{
+    m_video_driver->beginScene(true, true, SColor(255, 120, 80, 170));
+
+    if (m_indicator)
+        m_indicator->renderToTexture();
+    m_scene_manager->drawAll();
+
+    if (m_viewport)
+        m_viewport->draw();
+    if (m_rcs)
+        m_rcs->render();
+
+    m_gui_env->drawAll();
+
+    if (m_viewport && m_indicator && m_viewport->getState() != Viewport::FREECAM 
+                                                          && !m_rcs->isVisible())
+        m_indicator->drawToScreen();
+
+    m_video_driver->endScene();
+} // render
+
+
+// ----------------------------------------------------------------------------
 bool Editor::run()
 {
     if (!m_device) return 0;
@@ -642,20 +674,7 @@ bool Editor::run()
 
             // drawing
             //m_video_driver->beginScene(true, true, SColor(255, 80, 0, 170));
-            m_video_driver->beginScene(true, true, SColor(255, 120, 80, 170));
-
-            m_indicator->renderToTexture();
-            m_scene_manager->drawAll();
-
-            m_viewport->draw();
-            m_rcs->render();
-
-            m_gui_env->drawAll();
-
-            if (m_viewport->getState() != Viewport::FREECAM && !m_rcs->isVisible())
-                m_indicator->drawToScreen();
-
-            m_video_driver->endScene();
+            render();
 
             if (m_video_driver->getScreenSize() != m_screen_size)
             {

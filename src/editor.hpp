@@ -89,6 +89,7 @@ public:
     static bool                 isValidSize(u8 size);
 
     static Editor*              getEditor(dimension2du screen_size = dimension2du(1280, 720));
+    void                        render();
     bool                        run();
     virtual bool                OnEvent(const SEvent& event);
     void                        keepMouseIn(s32 sx, s32 sy);
