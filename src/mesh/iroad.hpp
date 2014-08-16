@@ -29,17 +29,22 @@ public:
 
     virtual stringc getTexName() { return ""; }
 
-    void    setClosed(bool b)     { m_closed = b; refresh();                     }
-    void    setDetail(float d)    { m_detail = d; refresh(); setWireFrame(true); }
-    void    setWidth(float d)     { m_width = d;  refresh(); setWireFrame(true); }
+    void    setClosed(bool b)     { m_closed = b;  refresh();                     }
+    void    setSwap(bool b)       { m_swap_uv = b; refresh();                     }
+    void    setDetail(float d)    { m_detail = d;  refresh(); setWireFrame(true); }
+    void    setWidth(float d)     { m_width = d;   refresh(); setWireFrame(true); }
 
     bool      isClosedRoad()      { return m_closed; }
+    bool      isSwapOn()          { return m_swap_uv;}
     bool      isValid()           { return m_valid;  }
     ISpline*  getSpline()         { return m_spline; }
 
     virtual void    save(FILE* fp);
-    virtual void    setWireFrame(bool b)    {};
-    virtual void    setTexWrapCount(u32 twc){};
+    virtual void    setWireFrame(bool b)   {};
+    virtual void    setUWrapCount(u32 twc) {};
+    virtual void    setVWrapCount(u32 twc) {};
+    virtual void    setUOffset(f32 d)      {};
+    virtual void    setVOffset(f32 d)      {};
 
 // ----------------------------------------------------------------------------
     // inherited functions - ISceneNode

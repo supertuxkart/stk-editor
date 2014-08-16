@@ -8,10 +8,14 @@ class Road :public IRoad, public ISubscriber
 {
 private:
 
-    u32                             m_tex_warp_count;
+    u32                             m_u_warp_count;
+    u32                             m_v_warp_count;
     u32                             m_width_vert_num;
 
     f32                             m_district;
+    
+    f32                             m_offset_u;
+    f32                             m_offset_v;
 
     CMeshBuffer<S3DVertex2TCoords>* m_mesh_buff;
     SMesh                           m_smesh;
@@ -46,15 +50,18 @@ public:
     static array<vector2df> genStandardCrossSection(u32 wvn);
     
     virtual stringc getTexName();
-    
-    ITriangleSelector*              getTriangleSel(){ return m_tri;                  }
-    CMeshBuffer<S3DVertex2TCoords>* getMeshBuffer() { return m_mesh_buff;            }
-    array<vector2df>                getCrossSectionArray() { return m_cross_section; }
 
-    virtual const aabbox3d<f32>& getBoundingBox() const                        
-                                    { return m_mesh_buff->getBoundingBox();    }
-    void                         setTexWrapCount(u32 c)
-                                    { m_tex_warp_count = c; refresh(); setWireFrame(false); }
+    void setUWrapCount(u32 c)       { m_u_warp_count = c; refresh(); setWireFrame(false); }
+    void setVWrapCount(u32 c)       { m_v_warp_count = c; refresh(); setWireFrame(false); }
+
+    void setUOffset(f32 d)          { m_offset_u = d;     refresh(); setWireFrame(false); }
+    void setVOffset(f32 d)          { m_offset_v = d;     refresh(); setWireFrame(false); }
+    
+    ITriangleSelector*              getTriangleSel()       { return m_tri;                }
+    CMeshBuffer<S3DVertex2TCoords>* getMeshBuffer()        { return m_mesh_buff;          }
+    array<vector2df>                getCrossSectionArray() { return m_cross_section;      }
+
+    virtual const aabbox3d<f32>& getBoundingBox() const { return m_mesh_buff->getBoundingBox();}
 };
 
 #endif

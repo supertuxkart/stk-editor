@@ -37,38 +37,67 @@ void RoadPanel::init()
     m_detail_sb->setMax(100);
     m_detail_sb->setPos(25);
 
-    gui_env->addButton(rect<s32>(30, 123, 90, 143), m_wndw, TEX_CHANGE, _(L"Texture"));
+    gui_env->addButton(rect<s32>(30, 123, 90, 143), m_wndw, TEXTURE, _(L"Texture"));
 
-    m_texture_sb = gui_env->addScrollBar(true, rect<s32>(100, 128, 210, 138), m_wndw, TEX_CHANGE);
-    m_texture_sb->setMin(1);
-    m_texture_sb->setMax(100);
-    m_texture_sb->setPos(25);
+    // SCROLLBAR - WRAP U
+    m_u_sb = gui_env->addScrollBar(true, rect<s32>(100, 128, 210, 138), m_wndw, WRAP_U);
+    m_u_sb->setMin(1);
+    m_u_sb->setMax(15);
+    m_u_sb->setPos(1);
+    m_u_sb->setLargeStep(2);
+    m_u_sb->setSmallStep(1);
 
-    m_closed_road_cb = gui_env->addCheckBox(false, rect<s32>(30,145,210,175), 
-                                          m_wndw, CLOSED_ROAD, L"Closed Road");
+    // SCROLLBAR - WRAP V
+    m_v_sb = gui_env->addScrollBar(true, rect<s32>(100, 148, 210, 158), m_wndw, WRAP_V);
+    m_v_sb->setMin(1);
+    m_v_sb->setMax(100);
+    m_v_sb->setPos(25);
 
-    gui_env->addButton(rect<s32>(30, 180, 80, 230), m_wndw, ADD, L"", _(L"Add ControlPoint"))
+    // SCROLLBAR - OFFSET U
+    m_u_offset_sb = gui_env->addScrollBar(true, rect<s32>(100, 168, 210, 178), m_wndw, OFFSET_U);
+    m_u_offset_sb->setMin(0);
+    m_u_offset_sb->setMax(20);
+    m_u_offset_sb->setPos(0);
+    m_u_offset_sb->setLargeStep(4);
+    m_u_offset_sb->setSmallStep(1);
+
+    // SCROLLBAR - OFFSET V
+    m_v_offset_sb = gui_env->addScrollBar(true, rect<s32>(100, 188, 210, 198), m_wndw, OFFSET_V);
+    m_v_offset_sb->setMin(0);
+    m_v_offset_sb->setMax(20);
+    m_v_offset_sb->setPos(0);
+    m_v_offset_sb->setLargeStep(4);
+    m_v_offset_sb->setSmallStep(1);
+
+    // CHECKBOX 
+    m_swap_uv        = gui_env->addCheckBox(false, rect<s32>(30,255,210,285),
+                                            m_wndw, SWAP_UV, L"Swap UV");
+
+    m_closed_road_cb = gui_env->addCheckBox(false, rect<s32>(30, 290, 210, 320),
+                                            m_wndw, CLOSED_ROAD, L"Closed Road");
+
+    gui_env->addButton(rect<s32>(30, 330, 80, 380), m_wndw, ADD, L"", _(L"Add ControlPoint"))
         ->setImage(Editor::loadImg("img/dl_add.png"));
-    gui_env->addButton(rect<s32>(95, 180, 145, 230), m_wndw, INSERT, L"", _(L"Insert ControlPoint"))
+    gui_env->addButton(rect<s32>(95, 330, 145, 380), m_wndw, INSERT, L"", _(L"Insert ControlPoint"))
         ->setImage(Editor::loadImg("img/dl_insert.png"));
-    gui_env->addButton(rect<s32>(160, 180, 210, 230), m_wndw, EXIT, L"", _(L"Finish Point Placing"))
+    gui_env->addButton(rect<s32>(160, 330, 210, 380), m_wndw, EXIT, L"", _(L"Finish Point Placing"))
         ->setImage(Editor::loadImg("img/dl_ready.png"));
 
-    gui_env->addButton(rect<s32>(60, 245, 110, 295), m_wndw, CROSS_SECTION, L"", _(L"Editor road cross section"))
+    gui_env->addButton(rect<s32>(60, 395, 110, 445), m_wndw, CROSS_SECTION, L"", _(L"Editor road cross section"))
         ->setImage(Editor::loadImg("img/edit_crossroads_section.png"));
-    gui_env->addButton(rect<s32>(130, 245, 180, 295), m_wndw, ATTACH_TO_DL, L"", _(L"Attach to DriveLine"))
+    gui_env->addButton(rect<s32>(130, 395, 180, 445), m_wndw, ATTACH_TO_DL, L"", _(L"Attach to DriveLine"))
         ->setImage(Editor::loadImg("img/create-quads.png"));
 
-    m_spline_type_cb = gui_env->addComboBox(rect<s32>(30, 320, 150, 340), m_wndw);
+    m_spline_type_cb = gui_env->addComboBox(rect<s32>(30, 470, 150, 490), m_wndw);
     m_spline_type_cb->addItem(L"Bezier", 0);
     m_spline_type_cb->addItem(L"Catmull-Rom", 1);
 
-    m_text_field = gui_env->addEditBox(L"RoadMesh_1",rect<s32>(30, 345, 150, 365),true,m_wndw,NAMEBOX);
+    m_text_field = gui_env->addEditBox(L"RoadMesh_1",rect<s32>(30, 495, 150, 515),true,m_wndw,NAMEBOX);
 
-    gui_env->addButton(rect<s32>(160, 320, 210, 365), m_wndw, CREATE, L"", _(L"Create New Road Mesh"))
+    gui_env->addButton(rect<s32>(160, 470, 210, 515), m_wndw, CREATE, L"", _(L"Create New Road Mesh"))
         ->setImage(Editor::loadImg("img/road_create.png"));
         
-    gui_env->addButton(rect<s32>(30, 380, 210, 430), m_wndw, CHECKLINE, L"CHECKLINE");
+    gui_env->addButton(rect<s32>(30, 530, 210, 580), m_wndw, CHECKLINE, L"CHECKLINE");
 
     m_insert = false;
 
@@ -122,9 +151,27 @@ f32 RoadPanel::getDetail()
 } // getWidth
 
 //----------------------------------------------------------------------------
-u32 RoadPanel::getTexWrapCount()
+u32 RoadPanel::getTexUCount()
 {
-    return m_texture_sb->getPos();
+    return m_u_sb->getPos();
+} // getTexWrapCount
+
+//----------------------------------------------------------------------------
+u32 RoadPanel::getTexVCount()
+{
+    return m_v_sb->getPos();
+} // getTexWrapCount
+
+//----------------------------------------------------------------------------
+f32 RoadPanel::getTexUOffset()
+{
+    return (m_u_offset_sb->getPos() / 20.0f);
+} // getTexWrapCount
+
+//----------------------------------------------------------------------------
+f32 RoadPanel::getTexVOffset()
+{
+    return (m_v_offset_sb->getPos()/ 20.0f);
 } // getTexWrapCount
 
 //----------------------------------------------------------------------------
@@ -155,6 +202,7 @@ void RoadPanel::setActiveRoad(u32 ix, IRoad* r)
 {
     m_cb->setSelected(ix);
     m_closed_road_cb->setChecked(r->isClosedRoad());
+    m_swap_uv->setChecked(r->isSwapOn());
 } // setActiveRoad
 
 //----------------------------------------------------------------------------

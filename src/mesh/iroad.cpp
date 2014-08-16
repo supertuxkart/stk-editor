@@ -41,6 +41,7 @@ IRoad::IRoad(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
     setName(cc);
     delete[] cc;
 
+    fread(&m_closed, sizeof(bool), 1, fp);
     fread(&m_detail, sizeof(f32), 1, fp);
     fread(&m_width, sizeof(f32), 1, fp);
 
@@ -80,6 +81,7 @@ void IRoad::save(FILE* fp)
     fwrite(&size, sizeof(u8), 1, fp);
     fwrite(getName(), sizeof(c8), size, fp);
 
+    fwrite(&m_closed, sizeof(bool), 1, fp);
     fwrite(&m_detail, sizeof(f32), 1, fp);
     fwrite(&m_width, sizeof(f32), 1, fp);
 

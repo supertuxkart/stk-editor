@@ -145,7 +145,7 @@ bool Editor::buttonClicked(s32 ID)
     case RoadPanel::ATTACH_TO_DL:
         m_viewport->attachRoadToDriveLine();
         return true;
-    case RoadPanel::TEX_CHANGE:
+    case RoadPanel::TEXTURE:
         for (int i = RoadPanel::getRoadPanel()->getSelectedRoadID(); i != 0; i = 0)
         {
             m_tex_sel->subscribe((Road*)m_viewport->getTrack()->getRoadByID(i));
@@ -370,7 +370,7 @@ bool Editor::init()
     if (!m_device) return false;
 
     m_device->setResizable(true);
-    m_device->setWindowCaption(L"SuperTuxKart Track Editor Beta v0.02");
+    m_device->setWindowCaption(L"SuperTuxKart Track Editor Beta v0.03");
     m_device->maximizeWindow();
 
     m_video_driver  = m_device->getVideoDriver();
@@ -836,10 +836,25 @@ bool Editor::OnEvent(const SEvent& event)
                 m_viewport->getTrack()->getRoadByID(rp->getSelectedRoadID())
                                                  ->setWidth(rp->getWidth());
                 return true;
-            case RoadPanel::TEX_CHANGE:
+            case RoadPanel::WRAP_U:
                 rp = RoadPanel::getRoadPanel();
                 m_viewport->getTrack()->getRoadByID(rp->getSelectedRoadID())
-                                                ->setTexWrapCount(rp->getTexWrapCount());
+                                                ->setUWrapCount(rp->getTexUCount());
+                return true;
+            case RoadPanel::WRAP_V:
+                rp = RoadPanel::getRoadPanel();
+                m_viewport->getTrack()->getRoadByID(rp->getSelectedRoadID())
+                    ->setVWrapCount(rp->getTexVCount());
+                return true;
+            case RoadPanel::OFFSET_U:
+                rp = RoadPanel::getRoadPanel();
+                m_viewport->getTrack()->getRoadByID(rp->getSelectedRoadID())
+                    ->setUOffset(rp->getTexUOffset());
+                return true;
+            case RoadPanel::OFFSET_V:
+                rp = RoadPanel::getRoadPanel();
+                m_viewport->getTrack()->getRoadByID(rp->getSelectedRoadID())
+                    ->setVOffset(rp->getTexVOffset());
                 return true;
             default:
                 break;
@@ -856,6 +871,9 @@ bool Editor::OnEvent(const SEvent& event)
                 return true;
             case RoadPanel::CLOSED_ROAD:
                 m_viewport->roadClosedStateChanged();
+                return true;
+            case RoadPanel::SWAP_UV:
+                m_viewport->roadSwapStateChanged();
                 return true;
             default:
                 break;

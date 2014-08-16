@@ -118,6 +118,7 @@ public:
     void                restoreCam();
     void                selectDriveLine();
     void                roadClosedStateChanged();
+    void                roadSwapStateChanged();
     void                registerCPCreation(IRoad* road);
 
     Indicator*          getIndicator();

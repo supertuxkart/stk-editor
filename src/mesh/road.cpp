@@ -9,7 +9,10 @@
 // ----------------------------------------------------------------------------
 void Road::textureExport(FILE* fp)
 {
-    fwrite(&m_tex_warp_count, sizeof(u32), 1, fp);
+    fwrite(&m_u_warp_count, sizeof(u32), 1, fp);
+    fwrite(&m_v_warp_count, sizeof(u32), 1, fp);
+    fwrite(&m_offset_u, sizeof(f32), 1, fp);
+    fwrite(&m_offset_v, sizeof(f32), 1, fp);
     ITexture* tex = m_mesh_buff->Material.getTexture(0);
     u8 v = 1;
     if (tex)
@@ -27,7 +30,10 @@ void Road::textureExport(FILE* fp)
 // ----------------------------------------------------------------------------
 void Road::textureImport(FILE* fp)
 {
-    fread(&m_tex_warp_count, sizeof(u32), 1, fp);
+    fread(&m_u_warp_count, sizeof(u32), 1, fp);
+    fread(&m_v_warp_count, sizeof(u32), 1, fp);
+    fread(&m_offset_u, sizeof(f32), 1, fp);
+    fread(&m_offset_v, sizeof(f32), 1, fp);
     ITexture* tex;
     u8 v;
     fread(&v, sizeof(u8), 1, fp);
@@ -77,8 +83,8 @@ void Road::calcVertexRow(vector3df p, vector3df n, vector3df w, int offset,
         m_mesh_buff->Vertices[offset + i].Color = 
             (m_cross_section[i].Y>0) ? SColor(255, 255, 255, 255) : SColor(255, 0, 0, 0);
 
-        f32 u = m_cross_sec_point_coords[i] / m_district;
-        f32 v = t*m_tex_warp_count;
+        f32 u = m_cross_sec_point_coords[i] / m_district * m_u_warp_count + m_offset_u;
+        f32 v = t*m_v_warp_count + m_offset_v;
         m_mesh_buff->Vertices[offset + i].TCoords =
             vector2df(m_swap_uv * v + (1 - m_swap_uv) * u, (1- m_swap_uv) * v + m_swap_uv * u);
     }
@@ -141,8 +147,11 @@ Road::Road(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s, stringw n
 {
     m_district                            = -1;
     m_width_vert_num                      = 12;
-    m_tex_warp_count                      = 10;
+    m_u_warp_count                        = 1;
+    m_v_warp_count                        = 10;
     m_tri                                 = 0;
+    m_offset_u                            = 0.0f;
+    m_offset_v                            = 0.0f;
     m_closed                              = false;
     m_swap_uv                             = false;
 

@@ -755,6 +755,12 @@ void Viewport::roadClosedStateChanged()
 } // roadNormModeChanged
 
 // ----------------------------------------------------------------------------
+void Viewport::roadSwapStateChanged()
+{
+    m_active_road->setSwap(RoadPanel::getRoadPanel()->getSwapState());
+} // roadNormModeChanged
+
+// ----------------------------------------------------------------------------
 void Viewport::registerCPCreation(IRoad* road)
 {
     m_command_handler.add(new RoadCmd(road));
