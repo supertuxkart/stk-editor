@@ -79,6 +79,7 @@ void TexSel::bindTexturesToButton(u32 page)
             {
                 m_btn_table[i].first->setVisible(true);
                 m_btn_table[i].first->setImage(*it);
+                m_btn_table[i].first->setScaleImage(true);
                 m_btn_table[i].second = *it;
                 i++;
             }
