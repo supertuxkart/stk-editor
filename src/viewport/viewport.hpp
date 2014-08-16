@@ -120,6 +120,7 @@ public:
     void                roadClosedStateChanged();
     void                roadSwapStateChanged();
     void                registerCPCreation(IRoad* road);
+    bool                escPressed();
 
     Indicator*          getIndicator();
 

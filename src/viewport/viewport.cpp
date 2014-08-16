@@ -767,6 +767,18 @@ void Viewport::registerCPCreation(IRoad* road)
 } // roadNormModeChanged
 
 // ----------------------------------------------------------------------------
+bool Viewport::escPressed()
+{
+    if (m_selection_handler->getSelection().size() > 0 || m_spline_mode)
+    {
+        setSplineMode(false);
+        m_selection_handler->clearSelection();
+        return false;
+    }
+    return true;
+} // escPressed
+
+// ----------------------------------------------------------------------------
 Indicator*  Viewport::getIndicator()
 {
     return m_aztec_cam->getIndicator();
