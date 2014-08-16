@@ -77,8 +77,10 @@ void Road::calcVertexRow(vector3df p, vector3df n, vector3df w, int offset,
         m_mesh_buff->Vertices[offset + i].Color = 
             (m_cross_section[i].Y>0) ? SColor(255, 255, 255, 255) : SColor(255, 0, 0, 0);
 
-        m_mesh_buff->Vertices[offset + i].TCoords = 
-            vector2df(m_cross_sec_point_coords[i] / m_district, t*m_tex_warp_count);
+        f32 u = m_cross_sec_point_coords[i] / m_district;
+        f32 v = t*m_tex_warp_count;
+        m_mesh_buff->Vertices[offset + i].TCoords =
+            vector2df(m_swap_uv * v + (1 - m_swap_uv) * u, (1- m_swap_uv) * v + m_swap_uv * u);
     }
 } // calcVertexRow
 
@@ -107,6 +109,30 @@ void Road::createIndexList(int nj, int ni)
         m_mesh_buff->Indices[ix] = 0 + j                * ni;   ix++;
         m_mesh_buff->Indices[ix] = ni - 1 + (j + 1)     * ni;   ix++;
     }
+
+    if (m_closed && m_spline->getPointNum() > 3)
+    {
+        int j = nj - 1;
+        for (int i = 0; i < ni - 1; i++)
+        {
+            m_mesh_buff->Indices[ix] = i + 1 + 0       * ni;   ix++;
+            m_mesh_buff->Indices[ix] = i + 0           * ni;   ix++;
+            m_mesh_buff->Indices[ix] = i + 1 + j       * ni;   ix++;
+
+            m_mesh_buff->Indices[ix] = i + j           * ni;   ix++;
+            m_mesh_buff->Indices[ix] = i + 1 + j       * ni;   ix++;
+            m_mesh_buff->Indices[ix] = i + 0           * ni;   ix++;
+        }
+
+        m_mesh_buff->Indices[ix] = 0 + 0               * ni;   ix++;
+        m_mesh_buff->Indices[ix] = ni - 1 + 0          * ni;   ix++;
+        m_mesh_buff->Indices[ix] = 0 + j               * ni;   ix++;
+
+        m_mesh_buff->Indices[ix] = ni - 1 + j           * ni;   ix++;
+        m_mesh_buff->Indices[ix] = 0 + j                * ni;   ix++;
+        m_mesh_buff->Indices[ix] = ni - 1 + 0           * ni;   ix++;
+    }
+
 } // createIndexList
 
 // ----------------------------------------------------------------------------
@@ -117,6 +143,8 @@ Road::Road(ISceneNode* parent, ISceneManager* mgr, s32 id, ISpline* s, stringw n
     m_width_vert_num                      = 12;
     m_tex_warp_count                      = 10;
     m_tri                                 = 0;
+    m_closed                              = false;
+    m_swap_uv                             = false;
 
     setCrossSection(genStandardCrossSection(m_width_vert_num));
 
@@ -146,18 +174,25 @@ void Road::refresh()
     assert(m_width_vert_num % 4 == 0);
 
     m_spline->updatePosition();
+    
+    /*
     if (m_auto_calc_norm)
         m_spline->genNormalsFromFirst();
+    */
 
     m_mesh_buff->setDirty();
     if (!m_spline->hasEnoughPoints()) return;
 
     int spn = m_spline->getPointNum() - 1;
+
+    u32 index_num = (int)((1.0f / m_detail * spn) + (m_closed && m_spline->getPointNum() > 3))
+                    * m_width_vert_num * 6;
+
     m_mesh_buff->Vertices.reallocate((int)(1.0f / m_detail * spn + 1) * m_width_vert_num);
-    m_mesh_buff->Indices.reallocate((int)(1.0f / m_detail * spn) * m_width_vert_num * 6);
+    m_mesh_buff->Indices.reallocate(index_num);
 
     m_mesh_buff->Vertices.set_used((int)(1.0f / m_detail * spn + 1) * m_width_vert_num);
-    m_mesh_buff->Indices.set_used((int)(1.0f / m_detail * spn) * m_width_vert_num * 6);
+    m_mesh_buff->Indices.set_used(index_num);
 
     vector3df last_point = m_spline->p(0);
     vector3df point;
@@ -258,7 +293,7 @@ void Road::setCrossSection(array<vector2df> cs)
         m_district += (m_cross_section[i] - m_cross_section[i - 1]).getLength();
         m_cross_sec_point_coords.push_back(m_district);
     }
-    m_district += (m_cross_section[0] - m_cross_section[m_width_vert_num - 1]).getLength();
+    //m_district += (m_cross_section[0] - m_cross_section[m_width_vert_num - 1]).getLength();
 
 } // setCrossSection
 

@@ -854,8 +854,8 @@ bool Editor::OnEvent(const SEvent& event)
                 TerrPanel::getTerrPanel()->refreshTerrModData();
                 m_viewport->setState(Viewport::TERRAIN_MOD);
                 return true;
-            case RoadPanel::AUTO_NORM_CHECK_BOX:
-                m_viewport->roadNormModeChanged();
+            case RoadPanel::CLOSED_ROAD:
+                m_viewport->roadClosedStateChanged();
                 return true;
             default:
                 break;

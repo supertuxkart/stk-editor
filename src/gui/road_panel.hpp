@@ -31,7 +31,7 @@ public:
         TEXTURE,
         TEX_CHANGE,
         CHECKLINE,
-        AUTO_NORM_CHECK_BOX,
+        CLOSED_ROAD,
         NAMEBOX
     };
 
@@ -53,7 +53,7 @@ private:
     IGUIScrollBar*               m_detail_sb;
     IGUIScrollBar*               m_texture_sb;
 
-    IGUICheckBox*                m_auto_norm_cb;
+    IGUICheckBox*                m_closed_road_cb;
                                  
     unsigned int                 m_next_road_mesh_ID;
     bool                         m_insert;
@@ -80,8 +80,8 @@ public:
     void                  setActiveRoad(u32 ix, IRoad* r);
 
     stringw               getNextRoadType();
-    stringw               getNextRoadName() { return m_text_field->getText();     }
-    bool                  getNormMode()     { return m_auto_norm_cb->isChecked(); }
+    stringw               getNextRoadName() { return m_text_field->getText();       }
+    bool                  getClosedState()  { return m_closed_road_cb->isChecked(); }
 };
 
 #endif

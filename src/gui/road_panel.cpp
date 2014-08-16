@@ -44,8 +44,8 @@ void RoadPanel::init()
     m_texture_sb->setMax(100);
     m_texture_sb->setPos(25);
 
-    m_auto_norm_cb = gui_env->addCheckBox(false, rect<s32>(30,145,210,175), 
-                                          m_wndw, AUTO_NORM_CHECK_BOX, L"Calculate Normals");
+    m_closed_road_cb = gui_env->addCheckBox(false, rect<s32>(30,145,210,175), 
+                                          m_wndw, CLOSED_ROAD, L"Closed Road");
 
     gui_env->addButton(rect<s32>(30, 180, 80, 230), m_wndw, ADD, L"", _(L"Add ControlPoint"))
         ->setImage(Editor::loadImg("img/dl_add.png"));
@@ -154,7 +154,7 @@ void RoadPanel::updateRoadList()
 void RoadPanel::setActiveRoad(u32 ix, IRoad* r)
 {
     m_cb->setSelected(ix);
-    m_auto_norm_cb->setChecked(r->getAutoNorm());
+    m_closed_road_cb->setChecked(r->isClosedRoad());
 } // setActiveRoad
 
 //----------------------------------------------------------------------------

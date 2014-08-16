@@ -749,9 +749,9 @@ void Viewport::selectDriveLine()
 } // selectDriveLine
 
 // ----------------------------------------------------------------------------
-void Viewport::roadNormModeChanged()
+void Viewport::roadClosedStateChanged()
 {
-    m_active_road->setAutoNorm(RoadPanel::getRoadPanel()->getNormMode());
+    m_active_road->setClosed(RoadPanel::getRoadPanel()->getClosedState());
 } // roadNormModeChanged
 
 // ----------------------------------------------------------------------------
