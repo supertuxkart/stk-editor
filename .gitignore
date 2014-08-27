@@ -29,8 +29,11 @@ stk-editor
 *.vcxproj.filters
 *.vcxproj.user
 
+CMakeLists.txt.user
+
 *~
 
 *.xml
 
 libraries/
+build/
