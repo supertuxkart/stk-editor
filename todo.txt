@@ -1,4 +1,4 @@
 TODO list:
 
-- beta
-- "Try the track" doesn't work
+- cross section editor improvement: modifying the amount of points should not erase the existing geometry
+- closed road's texture coordinate fix
