@@ -22,12 +22,39 @@
 stk-editor
 
 # VS files
-*.sln
+
 *.suo
-*.sdf
-*.vcxproj
-*.vcxproj.filters
-*.vcxproj.user
+*.user
+*.userosscache
+*.sln.docstates
+
+*_i.c
+*_p.c
+*_i.h
+*.ilk
+*.meta
+*.obj
+*.pch
+*.pdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.tmp_proj
+*.log
+*.vspscc
+*.vssscc
+.builds
+*.pidb
+*.svclog
+*.scc
+
+
+
 
 CMakeLists.txt.user
 
