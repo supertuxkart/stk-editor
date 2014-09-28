@@ -53,6 +53,16 @@ stk-editor
 *.svclog
 *.scc
 
+*.aps
+*.ncb
+*.opensdf
+*.sdf
+*.cachefile
+
+*.psess
+*.vsp
+*.vspx
+
 
 
 
