@@ -13,7 +13,6 @@
 *.lai
 *.la
 *.a
-*.lib
 
 # Executables
 *.exe
@@ -62,6 +61,7 @@ stk-editor
 *.psess
 *.vsp
 *.vspx
+*.tlog
 
 
 
