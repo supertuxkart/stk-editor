@@ -26,7 +26,6 @@ const u32 Terrain::SPIMG_Y = 1024;
 void Terrain::callOnVertices(TerrainMod* tmod, bool call_outside,
     bool call_in_square)
 {
-
     s32 ix, iz, dx, dz;
     vector2df cpos;
 
@@ -435,7 +434,7 @@ Terrain::Terrain(ISceneNode* parent, ISceneManager* mgr, s32 id, FILE* fp)
     fread(&m_x, sizeof(f32), 1, fp);
     fread(&m_z, sizeof(f32), 1, fp);
 
-    if (m_x < 1 || m_z < 1 || m_x > 200 || m_z > 200)
+    if (m_x < 1 || m_z < 1 || m_x > 500 || m_z > 500)
     {
         m_valid = false;
         return;

@@ -41,9 +41,9 @@ void NewDialogWndw::init()
     m_size_cb = gui_env->addComboBox(frame, m_wndw);
 
     m_size_cb->addItem(_(L"Small"      ),  50);
-    m_size_cb->addItem(_(L"Medium"     ),  75);
-    m_size_cb->addItem(_(L"Large"      ),  100);
-    m_size_cb->addItem(_(L"Extra Large"),  120);
+    m_size_cb->addItem(_(L"Medium"     ),  125);
+    m_size_cb->addItem(_(L"Large"      ),  250);
+    m_size_cb->addItem(_(L"Extra Large"),  350);
 
     m_grav_road_check = gui_env->addCheckBox(false, rect<s32>(80, 160, 220, 180), 
                                                     m_wndw, -1, L"  Gravity Roads");
