@@ -615,8 +615,8 @@ void Editor::runTrack()
         if (m_viewport) m_viewport->lock();
         return;
     }
-    stringc msg = "";
-    msg += m_exe_loc + " --no-start-screen --track=";
+    stringc msg = "\"";
+    msg += m_exe_loc + "\" --no-start-screen --track=";
     msg += m_viewport->getTrack()->getFileName();
     system(msg.c_str());
 } // runTrack
