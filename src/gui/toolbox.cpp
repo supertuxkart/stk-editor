@@ -12,13 +12,14 @@ ToolBox* ToolBox::m_toolbox = 0;
 // ----------------------------------------------------------------------------
 void ToolBox::init()
 {
-    IGUIEnvironment* gui_env = Editor::getEditor()->getGUIEnv();
+    Editor* editor = Editor::getEditor();
+    IGUIEnvironment* gui_env = editor->getGUIEnv();
 
     m_wndw = gui_env->addWindow(
             rect<s32>(),
             false, L"Stuffs", 0, TBOX_ID);
     initWndw(m_wndw);
-    dimension2du ss = Editor::getEditor()->getScreenSize();
+    dimension2du ss = editor->getScreenSize();
     m_wndw->setRelativePosition(position2di(ss.Width - 250, 50));
 
     m_terr_wndw = gui_env->addWindow(rect<s32>(), false, _(L"Terrain"), m_wndw, TWND_ID);
@@ -40,14 +41,16 @@ void ToolBox::init()
     initWndw(m_extr_wndw);
     m_extr_wndw->setVisible(false);
 
+
+    path icons = editor->getIconsLoc();
     gui_env->addButton(rect<s32>(0, 0, 50, 50), m_wndw,   TWND_ID)
-        ->setImage(Editor::loadImg("img/terrain.png"));
+        ->setImage(Editor::loadImg(icons + "terrain.png"));
     gui_env->addButton(rect<s32>(50, 0, 100, 50), m_wndw, EWND_ID)
-        ->setImage(Editor::loadImg("img/env.png"));
+        ->setImage(Editor::loadImg(icons + "env.png"));
     gui_env->addButton(rect<s32>(100, 0, 150, 50), m_wndw, RWND_ID)
-        ->setImage(Editor::loadImg("img/road.png"));
+        ->setImage(Editor::loadImg(icons + "road.png"));
     gui_env->addButton(rect<s32>(150, 0, 200, 50), m_wndw, XWND_ID)
-        ->setImage(Editor::loadImg("img/extra.png"));
+        ->setImage(Editor::loadImg(icons + "extra.png"));
 
 } // init
 

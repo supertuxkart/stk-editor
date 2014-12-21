@@ -390,6 +390,26 @@ bool Editor::init()
     m_screen_size   = m_video_driver->getScreenSize();
     m_def_wd        = m_device->getFileSystem()->getWorkingDirectory();
 
+    // lights
+    m_scene_manager->setAmbientLight(SColorf(0.3f, 0.3f, 0.3f, 1.0f));
+    ILightSceneNode* l = m_scene_manager->addLightSceneNode(0, vector3df(0, 1, 0),
+                                              SColorf(1.0f, 1.0f, 1.0f), 500, -1);
+    l->setLightType(ELT_DIRECTIONAL);
+    l->setPosition(vector3df(0, 
+        1, 0));
+
+    m_device->setEventReceiver(this);
+
+    if (!isValidDataLoc()) dataDirLocDlg();
+
+    return true;
+} // init
+
+// ----------------------------------------------------------------------------
+void Editor::initAfterDataDirKnown()
+{
+    m_rcs = RoadCrossSectionWndw::get();
+
     // fonts
     IGUISkin* skin = m_gui_env->getSkin();
     m_font = m_gui_env->getFont(m_data_loc + L"editor/font/font.xml");
@@ -402,15 +422,6 @@ bool Editor::init()
         col.setAlpha(255);
         skin->setColor((EGUI_DEFAULT_COLOR)i, col);
     }
-
-    // lights
-    m_scene_manager->setAmbientLight(SColorf(0.3f, 0.3f, 0.3f, 1.0f));
-    ILightSceneNode* l = m_scene_manager->addLightSceneNode(0, vector3df(0, 1, 0),
-                                              SColorf(1.0f, 1.0f, 1.0f), 500, -1);
-    l->setLightType(ELT_DIRECTIONAL);
-    l->setPosition(vector3df(0, 1, 0));
-
-    m_rcs = RoadCrossSectionWndw::get();
 
     // free camera
     ICameraSceneNode* cam;
@@ -436,13 +447,7 @@ bool Editor::init()
     m_new_dialog_wndw = NewDialogWndw::get();
     m_new_dialog_wndw->hide();
     m_welcome_screen = WelcomeScreen::get();
-
-    m_device->setEventReceiver(this);
-
-    if (!isValidDataLoc()) dataDirLocDlg();
-
-    return true;
-} // init
+} // initAfterDataDirKnown
 
 
 // ----------------------------------------------------------------------------
@@ -481,6 +486,7 @@ void Editor::readConfigFile(IFileSystem* file_system)
             else  if (node_name.equals_ignore_case(xml_reader->getNodeName()))
             {
                 m_data_loc = xml_reader->getAttributeValueSafe(L"path");
+                m_icons_loc = m_data_loc + "editor/icons/";
             }
             else if (exe.equals_ignore_case(xml_reader->getNodeName()))
             {
@@ -547,6 +553,7 @@ bool Editor::validateDataLoc(path file)
                                             false, EFAT_FOLDER, "", &m_tex_dir))
         return false;
     m_data_loc = file;
+    m_icons_loc = m_data_loc + "editor/icons/";
 
     initDataLoc();
 
@@ -573,6 +580,8 @@ void Editor::initDataLoc()
     }
     file_system->addFileArchive(m_data_loc, false, false, EFAT_FOLDER);
     m_valid_data_dir = true;
+
+    initAfterDataDirKnown();
 
     path p = m_data_loc.c_str();
     p += "editor/maps";
@@ -742,6 +751,8 @@ bool Editor::OnEvent(const SEvent& event)
         } // GUI_EVENT
         return false;
     } // !valid data dir
+
+    if (!m_viewport) return false;
 
     // mouse event
     if (event.EventType == EET_MOUSE_INPUT_EVENT)

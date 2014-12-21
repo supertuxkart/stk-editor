@@ -7,15 +7,16 @@
 Indicator::Indicator(vector3df p, vector3df t, vector3df u,
                      f32 wVol, f32 hWol, f32 zNear, f32 zFar)
 {
-    ISceneManager* sm = Editor::getEditor()->getSceneManager();
-    IVideoDriver*  vd = Editor::getEditor()->getVideoDriver();
+    Editor* editor = Editor::getEditor();
+    ISceneManager* sm = editor->getSceneManager();
+    IVideoDriver*  vd = editor->getVideoDriver();
 
     m_cam = sm->addCameraSceneNode();
     update(p, t, u);
     setProjMat(wVol, hWol, zNear, zFar);
     
     m_model = sm->addAnimatedMeshSceneNode(
-        sm->getMesh(L"img/indicator.b3d"), m_cam);
+        sm->getMesh(editor->getIconsLoc() + L"indicator.b3d"), m_cam);
 
     m_ss = vd->getScreenSize();
     m_rtt = vd->addRenderTargetTexture(m_ss, "RTT1", ECF_A8R8G8B8);

@@ -17,6 +17,7 @@ void RoadPanel::init()
     m_next_road_mesh_ID = 1;
 
     Editor* editor = Editor::getEditor();
+    path icons     = editor->getIconsLoc();
 
     IGUIEnvironment* gui_env = editor->getGUIEnv();
     IGUIFont* font = editor->getFont();
@@ -79,16 +80,16 @@ void RoadPanel::init()
                                             m_wndw, CLOSED_ROAD, L"Closed Road");
 
     gui_env->addButton(rect<s32>(30, 330, 80, 380), m_wndw, ADD, L"", _(L"Add ControlPoint"))
-        ->setImage(Editor::loadImg("img/dl_add.png"));
+        ->setImage(Editor::loadImg(icons + "dl_add.png"));
     gui_env->addButton(rect<s32>(95, 330, 145, 380), m_wndw, INSERT, L"", _(L"Insert ControlPoint"))
-        ->setImage(Editor::loadImg("img/dl_insert.png"));
+        ->setImage(Editor::loadImg(icons + "dl_insert.png"));
     gui_env->addButton(rect<s32>(160, 330, 210, 380), m_wndw, EXIT, L"", _(L"Finish Point Placing"))
-        ->setImage(Editor::loadImg("img/dl_ready.png"));
+        ->setImage(Editor::loadImg(icons + "dl_ready.png"));
 
     gui_env->addButton(rect<s32>(60, 395, 110, 445), m_wndw, CROSS_SECTION, L"", _(L"Editor road cross section"))
-        ->setImage(Editor::loadImg("img/edit_crossroads_section.png"));
+        ->setImage(Editor::loadImg(icons + "edit_crossroads_section.png"));
     gui_env->addButton(rect<s32>(130, 395, 180, 445), m_wndw, ATTACH_TO_DL, L"", _(L"Attach to DriveLine"))
-        ->setImage(Editor::loadImg("img/create-quads.png"));
+        ->setImage(Editor::loadImg(icons + "create-quads.png"));
 
     m_spline_type_cb = gui_env->addComboBox(rect<s32>(30, 470, 150, 490), m_wndw);
     m_spline_type_cb->addItem(L"Bezier", 0);
@@ -97,7 +98,7 @@ void RoadPanel::init()
     m_text_field = gui_env->addEditBox(L"RoadMesh_1",rect<s32>(30, 495, 150, 515),true,m_wndw,NAMEBOX);
 
     gui_env->addButton(rect<s32>(160, 470, 210, 515), m_wndw, CREATE, L"", _(L"Create New Road Mesh"))
-        ->setImage(Editor::loadImg("img/road_create.png"));
+        ->setImage(Editor::loadImg(icons + "road_create.png"));
         
     gui_env->addButton(rect<s32>(30, 530, 210, 580), m_wndw, CHECKLINE, L"CHECKLINE");
 

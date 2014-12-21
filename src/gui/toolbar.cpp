@@ -7,27 +7,29 @@ ToolBar* ToolBar::m_toolbar = 0;
 // ----------------------------------------------------------------------------
 void ToolBar::init()
 {
-    m_bar = Editor::getEditor()->getGUIEnv()->addToolBar();
+    Editor* editor = Editor::getEditor();
+    path icons = editor->getIconsLoc();
+    m_bar      = editor->getGUIEnv()->addToolBar();
     m_bar->setMinSize(dimension2du(0,50));
 
-    buttonInit(0,  TBI_NEW,         "img/new.png",      _(L"New (ctrl+n)"));
-    buttonInit(1,  TBI_OPEN,        "img/open.png",     _(L"Open (ctrl+o)"));
-    buttonInit(2,  TBI_SAVE,        "img/save.png",     _(L"Save (ctrl+s)"));
-    buttonInit(3,  TBI_EXPORT ,     "img/save_as.png",  _(L"Export (ctrl+shift+s)"));
-    buttonInit(4,  TBI_UNDO,        "img/undo.png",     _(L"Undo (ctrl+z)"));
-    buttonInit(5,  TBI_REDO,        "img/redo.png",     _(L"Redo (ctrl+y)"));
-    buttonInit(6,  TBI_SELECT,      "img/select.png",   _(L"Select (shift+a)"));
-    buttonInit(7,  TBI_MOVE,        "img/move.png",     _(L"Move (shift+g)"));
-    buttonInit(8,  TBI_ROTATE,      "img/rotate.png",   _(L"Rotate (shift+r)"));
-    buttonInit(9,  TBI_SCALE,       "img/scale.png",    _(L"Scale (shift+s)"));
-    buttonInit(10, TBI_DELETE,      "img/delete.png",   _(L"Delete (del)"));
-    buttonInit(11, TBI_CAM,         "img/cam1.png",     _(L"Toggle camera mode (c)"));
-    buttonInit(12, TBI_RECAM,       "img/cam2.png",     _(L"Restore camera state (NUM1)"));
-    buttonInit(13, TBI_DRIVELINE,   "img/spline.png",   _(L"Select DriveLine (r)"));  
-    buttonInit(14, TBI_HIDE_TERRAIN,"img/ht.png",       _(L"Hide terrain (t)"));
-    buttonInit(15, TBI_MUSIC,       "img/music.png",    _(L"Music"));
-    buttonInit(16, TBI_TRY,         "img/try.png",      _(L"Try your track"));
-    buttonInit(17, TBI_EXIT,        "img/exit.png",     _(L"Quit (esc)"));
+    buttonInit(0,  TBI_NEW,         (icons + "new.png").c_str(),      _(L"New (ctrl+n)"));
+    buttonInit(1,  TBI_OPEN,        (icons + "open.png").c_str(),     _(L"Open (ctrl+o)"));
+    buttonInit(2,  TBI_SAVE,        (icons + "save.png").c_str(),     _(L"Save (ctrl+s)"));
+    buttonInit(3,  TBI_EXPORT ,     (icons + "save_as.png").c_str(),  _(L"Export (ctrl+shift+s)"));
+    buttonInit(4,  TBI_UNDO,        (icons + "undo.png").c_str(),     _(L"Undo (ctrl+z)"));
+    buttonInit(5,  TBI_REDO,        (icons + "redo.png").c_str(),     _(L"Redo (ctrl+y)"));
+    buttonInit(6,  TBI_SELECT,      (icons + "select.png").c_str(),   _(L"Select (shift+a)"));
+    buttonInit(7,  TBI_MOVE,        (icons + "move.png").c_str(),     _(L"Move (shift+g)"));
+    buttonInit(8,  TBI_ROTATE,      (icons + "rotate.png").c_str(),   _(L"Rotate (shift+r)"));
+    buttonInit(9,  TBI_SCALE,       (icons + "scale.png").c_str(),    _(L"Scale (shift+s)"));
+    buttonInit(10, TBI_DELETE,      (icons + "delete.png").c_str(),   _(L"Delete (del)"));
+    buttonInit(11, TBI_CAM,         (icons + "cam1.png").c_str(),     _(L"Toggle camera mode (c)"));
+    buttonInit(12, TBI_RECAM,       (icons + "cam2.png").c_str(),     _(L"Restore camera state (NUM1)"));
+    buttonInit(13, TBI_DRIVELINE,   (icons + "spline.png").c_str(),   _(L"Select DriveLine (r)"));  
+    buttonInit(14, TBI_HIDE_TERRAIN,(icons + "ht.png").c_str(),       _(L"Hide terrain (t)"));
+    buttonInit(15, TBI_MUSIC,       (icons + "music.png").c_str(),    _(L"Music"));
+    buttonInit(16, TBI_TRY,         (icons + "try.png").c_str(),      _(L"Try your track"));
+    buttonInit(17, TBI_EXIT,        (icons + "exit.png").c_str(),     _(L"Quit (esc)"));
 
     reallocate();
 

@@ -12,8 +12,10 @@ EnvPanel* EnvPanel::m_env_panel = 0;
 // ----------------------------------------------------------------------------
 void EnvPanel::init()
 {
-    IGUIEnvironment* gui_env = Editor::getEditor()->getGUIEnv();
-    dimension2du ss = Editor::getEditor()->getScreenSize();
+    Editor* editor = Editor::getEditor();
+    IGUIEnvironment* gui_env = editor->getGUIEnv();
+    dimension2du ss = editor->getScreenSize();
+    path icons = editor->getIconsLoc();
 
     m_wndw->setRelativePosition(position2di(0, 50));
 
@@ -38,11 +40,11 @@ void EnvPanel::init()
 
     m_next = gui_env->addButton(rect<s32>(195, ss.Height - 145, 235, ss.Height - 105),
         m_wndw, FIRST_BTN_ID + m_btn_num + 1);
-    m_next->setImage(Editor::loadImg("img/obj_next.png"));
+    m_next->setImage(Editor::loadImg(icons + "obj_next.png"));
 
     m_prev = gui_env->addButton(rect<s32>(15, ss.Height - 145, 55, ss.Height - 105),
         m_wndw, FIRST_BTN_ID + m_btn_num);
-    m_prev->setImage(Editor::loadImg("img/obj_previous.png"));
+    m_prev->setImage(Editor::loadImg(icons + "/obj_previous.png"));
 
     refreshBtnTable();
 

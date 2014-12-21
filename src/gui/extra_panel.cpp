@@ -8,6 +8,7 @@ void ExtraPanel::init()
 {
     Editor* editor = Editor::getEditor();
     IGUIEnvironment* gui_env = editor->getGUIEnv();
+    path icons = editor->getIconsLoc();
 
     m_wndw->setRelativePosition(position2di(0, 50));
 
@@ -20,10 +21,10 @@ void ExtraPanel::init()
     IGUIButton* b6 = gui_env->addButton(rect<s32>(130, 50, 180, 100), m_wndw, BTN_SNITRO);
     IGUIButton* b7 = gui_env->addButton(rect<s32>(190, 50, 240, 100), m_wndw, BTN_BNITRO);
 
-    b4->setImage(Editor::loadImg(L"img/banana.png"));
-    b5->setImage(Editor::loadImg(L"img/gift.png"));
-    b6->setImage(Editor::loadImg(L"img/snitro.png"));
-    b7->setImage(Editor::loadImg(L"img/bnitro.png"));
+    b4->setImage(Editor::loadImg(icons + L"banana.png"));
+    b5->setImage(Editor::loadImg(icons + L"gift.png"));
+    b6->setImage(Editor::loadImg(icons + L"snitro.png"));
+    b7->setImage(Editor::loadImg(icons + L"bnitro.png"));
 
 } // init
 

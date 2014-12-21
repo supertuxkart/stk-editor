@@ -13,9 +13,11 @@ void RoadCrossSectionWndw::init()
     m_grid_on  = true;
     m_grid     = 0.25;
     m_rt       = 0;
-    IGUIEnvironment* gui_env = Editor::getEditor()->getGUIEnv();
-    m_smgr                   = Editor::getEditor()->getSceneManager();
-    m_driver                 = Editor::getEditor()->getVideoDriver();
+    Editor* editor = Editor::getEditor();
+    IGUIEnvironment* gui_env = editor->getGUIEnv();
+    m_smgr                   = editor->getSceneManager();
+    m_driver                 = editor->getVideoDriver();
+    path icons               = editor->getIconsLoc();
 
     dimension2du ss = Editor::getEditor()->getScreenSize();
 
@@ -55,14 +57,14 @@ void RoadCrossSectionWndw::init()
     m_ok     = gui_env->addButton(rect<s32>((s32)x,h - 100, (s32)x+50, h-50)); x += dx + 50;
     m_cancel = gui_env->addButton(rect<s32>((s32)x,h - 100, (s32)x+50, h-50)); x += dx + 50;
 
-    m_gof    ->setImage(Editor::loadImg("img/grid-on_align-off.png"));
-    m_gp     ->setImage(Editor::loadImg("img/grid-plus.png"));
-    m_gm     ->setImage(Editor::loadImg("img/grid-minus.png"));
-    m_pp     ->setImage(Editor::loadImg("img/points-plus.png"));
-    m_pm     ->setImage(Editor::loadImg("img/points-minus.png"));
-    m_sym    ->setImage(Editor::loadImg("img/symm_off.png"));
-    m_ok     ->setImage(Editor::loadImg("img/qsave.png"));
-    m_cancel ->setImage(Editor::loadImg("img/qcancel.png"));
+    m_gof    ->setImage(Editor::loadImg(icons + "grid-on_align-off.png"));
+    m_gp     ->setImage(Editor::loadImg(icons + "grid-plus.png"));
+    m_gm     ->setImage(Editor::loadImg(icons + "grid-minus.png"));
+    m_pp     ->setImage(Editor::loadImg(icons + "points-plus.png"));
+    m_pm     ->setImage(Editor::loadImg(icons + "points-minus.png"));
+    m_sym    ->setImage(Editor::loadImg(icons + "symm_off.png"));
+    m_ok     ->setImage(Editor::loadImg(icons + "qsave.png"));
+    m_cancel ->setImage(Editor::loadImg(icons + "qcancel.png"));
 
     m_gof    ->setID(GRID_ON_OFF);
     m_gp     ->setID(GRID_P     );
@@ -281,20 +283,21 @@ void RoadCrossSectionWndw::animate(u32 dt, bool dirty)
 // ----------------------------------------------------------------------------
 void RoadCrossSectionWndw::buttonClicked(u32 id)
 {
+    path icons = Editor::getEditor()->getIconsLoc();
     switch (id)
     {
     case SYM_ON_OFF:
-        m_sym_mode = !m_sym_mode;        
+        m_sym_mode = !m_sym_mode;
         if (m_sym_mode)
         {
-            m_sym->setImage(Editor::loadImg("img/symm_on.png"));
+            m_sym->setImage(Editor::loadImg(icons + "symm_on.png"));
             m_sym->setToolTipText(_(L"Click to turn off symmetry"));
         }
         else
         {
-            m_sym->setImage(Editor::loadImg("img/symm_off.png"));
+            m_sym->setImage(Editor::loadImg(icons + "symm_off.png"));
             m_sym->setToolTipText(_(L"Click to turn on symmetry"));
-        }        
+        }
         for (u32 j = 0; j < 2; j++)
         {
             for (u32 i = 0; i < m_node_num / 4; i++)
@@ -316,20 +319,20 @@ void RoadCrossSectionWndw::buttonClicked(u32 id)
         if (!m_grid_on) 
         { 
             m_grid_on = true; 
-            m_gof->setImage(Editor::loadImg("img/grid-on_align-off.png"));
+            m_gof->setImage(Editor::loadImg(icons + "grid-on_align-off.png"));
         } // grid on
         else
         {
             if (!m_allign) 
             { 
                 m_allign = true; 
-                m_gof->setImage(Editor::loadImg("img/grid-on_align-on.png"));
+                m_gof->setImage(Editor::loadImg(icons + "grid-on_align-on.png"));
                 m_gof->setToolTipText(_(L"Grid off alignment off"));
             }
             else 
             { 
                 m_allign = false; m_grid_on = false; 
-                m_gof->setImage(Editor::loadImg("img/grid-off_align-off.png"));
+                m_gof->setImage(Editor::loadImg(icons + "grid-off_align-off.png"));
                 m_gof->setToolTipText(_(L"Grid on alignment off"));
             } // allign on
         } // !grid on

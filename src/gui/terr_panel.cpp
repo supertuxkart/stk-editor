@@ -15,7 +15,8 @@ void TerrPanel::init()
     Editor* editor = Editor::getEditor();
 
     IGUIEnvironment* gui_env = editor->getGUIEnv();
-    IGUIFont* font = editor->getFont();
+    IGUIFont* font           = editor->getFont();
+    path icons               = editor->getIconsLoc();
 
     m_wndw->setRelativePosition(position2di(0, 50));
     
@@ -48,15 +49,15 @@ void TerrPanel::init()
     IGUIButton* b1 = gui_env->addButton(rect<s32>(105, 100, 135, 130), m_wndw, EDGE_1);
     IGUIButton* b2 = gui_env->addButton(rect<s32>(155, 100, 185, 130), m_wndw, EDGE_2);
     IGUIButton* b3 = gui_env->addButton(rect<s32>(205, 100, 235, 130), m_wndw, EDGE_3);
-    b1->setImage(Editor::loadImg("img/edge1.png"));
-    b2->setImage(Editor::loadImg("img/edge2.png"));
-    b3->setImage(Editor::loadImg("img/edge3.png"));
+    b1->setImage(Editor::loadImg(icons + "edge1.png"));
+    b2->setImage(Editor::loadImg(icons + "edge2.png"));
+    b3->setImage(Editor::loadImg(icons + "edge3.png"));
 
     gui_env->addStaticText(_(L"Edge:"), rect<s32>(15, 100, 100, 120),
         false, false, m_wndw, -1, false);
 
     m_active_edge_frame = gui_env->addImage(rect<s32>(200, 95, 240, 135), m_wndw);
-    m_active_edge_frame->setImage(Editor::loadImg("img/frame.png"));
+    m_active_edge_frame->setImage(Editor::loadImg(icons + "frame.png"));
     m_active_edge_frame->setUseAlphaChannel(true);
     // edge end
 
@@ -77,7 +78,7 @@ void TerrPanel::init()
 
     // height modifier begin
     gui_env->addButton(rect<s32>(30, 255, 80, 305), m_wndw, H_BTN, L"", _(L"Spade"))
-        ->setImage(Editor::loadImg("img/hm.png"));
+        ->setImage(Editor::loadImg(icons + "hm.png"));
 
     m_h_max_cb = gui_env->addCheckBox(false, rect<s32>(105, 250, 175, 280),
                                       m_wndw, H_MAX_CHECK_BOX, L"Max:");
@@ -95,13 +96,13 @@ void TerrPanel::init()
 
     // BRUSH
     gui_env->addButton(rect<s32>(30, 350, 80, 400), m_wndw,T_SOFT_BTN, L"", _(L"Soft Brush"))
-        ->setImage(Editor::loadImg("img/sb.png"));
+        ->setImage(Editor::loadImg(icons + "sb.png"));
 
     gui_env->addButton(rect<s32>(95, 350, 145, 400), m_wndw, T_HARD_BTN, L"", _(L"Hard Brush"))
-        ->setImage(Editor::loadImg("img/hb.png"));
+        ->setImage(Editor::loadImg(icons + "hb.png"));
 
     gui_env->addButton(rect<s32>(160, 350, 210, 400), m_wndw, T_BRIGHTNESS_BTN, L"", _(L"Brightness"))
-        ->setImage(Editor::loadImg("img/bb.png"));
+        ->setImage(Editor::loadImg(icons + "bb.png"));
 
     // SKYBOX
 

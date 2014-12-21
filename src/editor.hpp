@@ -63,6 +63,7 @@ private:
 
     path                        m_data_loc;
     path                        m_config_loc;
+    path                        m_icons_loc;
     IFileArchive*               m_tex_dir;
     IFileArchive*               m_xml_dir;
     path                        m_track_dir;
@@ -71,6 +72,7 @@ private:
     path                        m_exe_loc;
 
     bool                        init();
+    void                        initAfterDataDirKnown();
     void                        readConfigFile(IFileSystem* file_system);
     void                        fileInit();
     void                        initResolFromConfigFile();
@@ -121,6 +123,7 @@ public:
     IFileArchive*               getXMLDir()       { return m_xml_dir;       }
     path                        getMapsPath()     { return m_maps_path;     }
     path                        getTrackDir()     { return m_track_dir;     }
+    path                        getIconsLoc()     { return m_icons_loc;     }
 
 };
 

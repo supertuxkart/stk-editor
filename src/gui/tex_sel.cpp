@@ -13,9 +13,12 @@ TexSel* TexSel::m_self = 0;
 // ----------------------------------------------------------------------------
 void TexSel::init()
 {
-    IGUIEnvironment* gui_env = Editor::getEditor()->getGUIEnv();
+    Editor* editor = Editor::getEditor();
+    path icons = editor->getIconsLoc();
 
-    dimension2du ss = Editor::getEditor()->getScreenSize();
+    IGUIEnvironment* gui_env = editor->getGUIEnv();
+
+    dimension2du ss = editor->getScreenSize();
 
     m_wndw = gui_env->addWindow(rect<s32>(ss.Width-500, 50, ss.Width-250, ss.Height),
                                 false, _(L"Textures"), 0, 0);
@@ -29,20 +32,20 @@ void TexSel::init()
     m_next = gui_env->addButton(rect<s32>(190, ss.Height - 78, 240, ss.Height - 58),
         m_wndw, FIRST_BTN_ID + 1);
 
-    m_next->setImage(Editor::loadImg("img/texture_next.png"));
+    m_next->setImage(Editor::loadImg(icons + "texture_next.png"));
 
     m_prev = gui_env->addButton(rect<s32>(10, ss.Height - 78, 60, ss.Height - 58),
         m_wndw, FIRST_BTN_ID);
-    m_prev->setImage(Editor::loadImg("img/texture_previous.png"));
+    m_prev->setImage(Editor::loadImg(icons + "texture_previous.png"));
 
     m_cancel = gui_env->addButton(rect<s32>(95, ss.Height - 78, 155, ss.Height - 58),
         m_wndw, FIRST_BTN_ID + 2, _(L"Cancel"));
 
     IGUIImage* guimg = gui_env->addImage(rect<s32>(0, 0, ss.Width, ss.Height), 0, 0, 0);
     guimg->setScaleImage(true);
-    guimg->setImage(Editor::loadImg("img/loading_screen.png"));
+    guimg->setImage(Editor::loadImg(icons + "loading_screen.png"));
 
-    Editor::getEditor()->render();
+    editor->render();
 
     loadTextures();
     initButtons();
@@ -103,11 +106,12 @@ void TexSel::bindTexturesToButton(u32 page)
 // ----------------------------------------------------------------------------
 void TexSel::loadTextures()
 {
-    IFileArchive* dir = Editor::getEditor()->getTexDir();
+    Editor* editor = Editor::getEditor();
+    IFileArchive* dir = editor->getTexDir();
     ITexture* t;
     const IFileList* file_list = dir->getFileList();
-    IGUIEnvironment* gui_env = Editor::getEditor()->getGUIEnv();
-    dimension2du ss = Editor::getEditor()->getScreenSize();
+    IGUIEnvironment* gui_env = editor->getGUIEnv();
+    dimension2du ss = editor->getScreenSize();
     
     IGUIImage* guimg[10];
     u32 offset = (ss.Width - 10 * 60) / 2;
@@ -116,7 +120,7 @@ void TexSel::loadTextures()
         guimg[i] = gui_env->addImage(rect<s32>(i * 60 + offset, ss.Height/2 - 25, 
                                 i * 60 + 50 + offset, ss.Height/2 + 25), 0, 0, 0);
         guimg[i]->setScaleImage(true);
-        guimg[i]->setImage(Editor::loadImg("img/tux.png"));
+        guimg[i]->setImage(Editor::loadImg(editor->getIconsLoc() + "tux.png"));
         guimg[i]->setVisible(false);
     }
     u32 lix = 0;
@@ -128,7 +132,7 @@ void TexSel::loadTextures()
         if (j != lix)
         {
             lix = j;
-            Editor::getEditor()->render();
+            editor->render();
         }
 
         path p = file_list->getFullFileName(i);
@@ -136,7 +140,7 @@ void TexSel::loadTextures()
             p.equals_substring_ignore_case(".jpg", p.size() - 4) ||
             p.equals_substring_ignore_case(".bmp", p.size() - 4) ||
             p.equals_substring_ignore_case(".jpeg", p.size() - 5))
-            && (t = Editor::getEditor()->getVideoDriver()->getTexture(p)))
+            && (t = editor->getVideoDriver()->getTexture(p)))
         {
             m_tex_list.push_back(t);
         }
