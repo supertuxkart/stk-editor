@@ -12,9 +12,10 @@ TerrPanel* TerrPanel::m_terr_panel = 0;
 // ----------------------------------------------------------------------------
 void TerrPanel::init()
 {
-    IGUIEnvironment* gui_env = Editor::getEditor()->getGUIEnv();
+    Editor* editor = Editor::getEditor();
 
-    IGUIFont* font = gui_env->getFont(L"font/font.xml");
+    IGUIEnvironment* gui_env = editor->getGUIEnv();
+    IGUIFont* font = editor->getFont();
 
     m_wndw->setRelativePosition(position2di(0, 50));
     

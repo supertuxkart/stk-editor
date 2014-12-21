@@ -49,6 +49,8 @@ private:
     TexSel*                     m_tex_sel;
     RoadCrossSectionWndw*       m_rcs;
 
+    IGUIFont*                   m_font;
+
     bool                        m_valid_data_dir;
 
     path                        m_def_wd;
@@ -114,6 +116,7 @@ public:
     ISceneManager*              getSceneManager() { return m_scene_manager; }
     IGUIEnvironment*            getGUIEnv()       { return m_gui_env;       }
     dimension2du                getScreenSize()   { return m_screen_size;   }
+    IGUIFont*                   getFont()         { return m_font;          }
     IFileArchive*               getTexDir()       { return m_tex_dir;       }
     IFileArchive*               getXMLDir()       { return m_xml_dir;       }
     path                        getMapsPath()     { return m_maps_path;     }

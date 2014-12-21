@@ -6,14 +6,13 @@ ExtraPanel* ExtraPanel::m_extra_panel = 0;
 // ----------------------------------------------------------------------------
 void ExtraPanel::init()
 {
-    IGUIEnvironment* gui_env = Editor::getEditor()->getGUIEnv();
-
-    IGUIFont* font = gui_env->getFont(L"font/font.xml");
+    Editor* editor = Editor::getEditor();
+    IGUIEnvironment* gui_env = editor->getGUIEnv();
 
     m_wndw->setRelativePosition(position2di(0, 50));
 
     gui_env->addStaticText(_(L"Items:"), rect<s32>(10, 10, 200, 30),
-                           false, false, m_wndw, -1, false)->setOverrideFont(font);
+                           false, false, m_wndw, -1, false)->setOverrideFont(editor->getFont());
 
 
     IGUIButton* b4 = gui_env->addButton(rect<s32>(10,  50, 60,  100), m_wndw, BTN_BANANA);

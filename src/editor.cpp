@@ -351,20 +351,21 @@ bool Editor::isValidSize(u8 size)
 // ----------------------------------------------------------------------------
 bool Editor::init()
 {
-    m_maps_path = 0;
-    m_music_loc = 0;
-    m_valid_data_dir = false;
-    m_indicator = 0;
-    m_exe_loc   = "";
+    m_maps_path         = NULL;
+    m_music_loc         = NULL;
+    m_indicator         = NULL;
+    m_valid_data_dir    = false;
+    m_exe_loc           = "";
 
-    m_toolbar   = 0;
-    m_toolbox   = 0;
-    m_rcs       = 0;
-    m_tex_sel   = 0;
+    m_toolbar           = NULL;
+    m_toolbox           = NULL;
+    m_rcs               = NULL;
+    m_tex_sel           = NULL;
 
-    m_indicator = 0;
-    m_viewport  = 0;
-    m_rcs       = 0;
+    m_indicator         = NULL;
+    m_viewport          = NULL;
+    m_rcs               = NULL;
+    m_font              = NULL;
 
     m_screen_size = dimension2du(10, 10);
 
@@ -391,11 +392,11 @@ bool Editor::init()
 
     // fonts
     IGUISkin* skin = m_gui_env->getSkin();
-    IGUIFont* font = m_gui_env->getFont(L"font/font.xml");
-    skin->setFont(font);
+    m_font = m_gui_env->getFont(m_data_loc + L"editor/font/font.xml");
+    skin->setFont(m_font);
 
     // removing gui transparency
-    for (s32 i = 0; i<EGDC_COUNT; ++i)
+    for (s32 i = 0; i < EGDC_COUNT; ++i)
     {
         video::SColor col = skin->getColor((EGUI_DEFAULT_COLOR)i);
         col.setAlpha(255);

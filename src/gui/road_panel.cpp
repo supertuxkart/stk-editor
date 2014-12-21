@@ -16,8 +16,10 @@ void RoadPanel::init()
 {
     m_next_road_mesh_ID = 1;
 
-    IGUIEnvironment* gui_env = Editor::getEditor()->getGUIEnv();
-    IGUIFont* font = gui_env->getFont(L"font/font.xml");
+    Editor* editor = Editor::getEditor();
+
+    IGUIEnvironment* gui_env = editor->getGUIEnv();
+    IGUIFont* font = editor->getFont();
     m_wndw->setRelativePosition(position2di(0, 50));
     gui_env->addStaticText(_(L"Selected Road:"), rect<s32>(10, 10, 200, 30),
         false, false, m_wndw, -1, false)->setOverrideFont(font);
