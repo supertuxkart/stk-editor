@@ -43,7 +43,7 @@ void TexSel::init()
 
     IGUIImage* guimg = gui_env->addImage(rect<s32>(0, 0, ss.Width, ss.Height), 0, 0, 0);
     guimg->setScaleImage(true);
-    guimg->setImage(Editor::loadImg(icons + "loading_screen.png"));
+    guimg->setImage(Editor::loadImg(icons + "loading_screen.jpg"));
 
     editor->render();
 
