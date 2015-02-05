@@ -694,7 +694,7 @@ bool Editor::run()
                 if (m_tex_sel) m_tex_sel->reallocate();
                 if (m_rcs)     m_rcs->reallocate();
                 if (m_indicator) m_indicator->reallocate();
-                m_new_dialog_wndw->reallocate(m_screen_size);
+                if (m_new_dialog_wndw) m_new_dialog_wndw->reallocate(m_screen_size);
             }
             last_time = current_time;
         } // isWindowActive
