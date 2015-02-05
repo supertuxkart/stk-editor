@@ -23,7 +23,7 @@ extern "C" void bz_internal_error(int errorCode)
 	#ifndef _IRR_USE_NON_SYSTEM_ZLIB_
 	#include <zlib.h> // use system lib
 	#else
-	#include "zlib/zlib.h"
+	#include "zlib.h"
 	#endif
 
 	#ifdef _IRR_COMPILE_WITH_ZIP_ENCRYPTION_

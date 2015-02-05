@@ -75,3 +75,4 @@ CMakeLists.txt.user
 
 libraries/
 build/
+build-*/
