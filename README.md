@@ -5,9 +5,17 @@ SuperTuxKart - Track Editor
 
 ##---BUILD---
 
-###Windows
+To build the editor on linux you need zlib and physfs development packages. If
+you use distribution based on Debian, you can install it using following
+command:
+    sudo apt-get install libphysfs1 libphysfs-dev zlib1g zlib1g-dev
 
-Thanks to deveee, the editor has cmake support now. It works pretty much the same way it does with the game.
+If you have Windows operating system, it uses static physfs and zlib libraries.
+You don't need to install any dependencies.
+
+Just create build directory and use
+    cmake ..
+    make
 
 
 For additional information check the wiki page:
