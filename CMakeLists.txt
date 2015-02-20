@@ -7,6 +7,8 @@ if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release")
 endif()
 
+option(STATIC_PHYSFS "Force build with static physfs library" OFF)
+
 # These variables enable MSVC to find libraries located in "dependencies"
 if(WIN32)
     set(ENV{PATH} "$ENV{PATH};${PROJECT_SOURCE_DIR}/dependencies/include")
@@ -27,18 +29,21 @@ if(NOT OPENGL_FOUND)
     message(FATAL_ERROR "OpenGL not found")
 endif()
 
-if(WIN32)
+if(WIN32 OR APPLE)
     add_subdirectory("${PROJECT_SOURCE_DIR}/lib/zlib")
     include_directories("${PROJECT_SOURCE_DIR}/lib/zlib")
     set(ZLIB_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/lib/zlib" "${PROJECT_BINARY_DIR}/lib/zlib/")
     set(ZLIB_LIBRARY zlibstatic)
+else()
+    find_package(ZLIB REQUIRED)
+endif()
 
+if(WIN32 OR APPLE OR STATIC_PHYSFS)
     add_definitions(-DPHYSFS_BUILD_STATIC)
     add_subdirectory("${PROJECT_SOURCE_DIR}/lib/physfs")
     include_directories("${PROJECT_SOURCE_DIR}/lib/physfs")
     set(PHYSFS_LIBRARY physfs-static)
 else()
-    find_package(ZLIB REQUIRED)
     find_package(PhysFS REQUIRED)
 endif()
 
@@ -49,7 +54,7 @@ if(WIN32)
     add_definitions(-D_IRR_STATIC_LIB_)
 endif()
 
-if(UNIX)
+if(UNIX AND NOT APPLE)
     find_package(X11 REQUIRED)
     list(APPEND LINK_LIBRARIES ${X11_LIBRARIES} "-lXxf86vm" -lX11 "-Wl,-O1")
 endif()
@@ -67,7 +72,6 @@ else()
         add_definitions(-DNDEBUG)
     endif()
 endif()
-
 
 
 add_executable(${PROJECT_NAME} ${STKTE_SOURCES})
