@@ -8,6 +8,7 @@ if (NOT CMAKE_BUILD_TYPE)
 endif()
 
 option(STATIC_PHYSFS "Force build with static physfs library" OFF)
+option(STATIC_ZLIB "Force build with static zlib library" OFF)
 
 # These variables enable MSVC to find libraries located in "dependencies"
 if(WIN32)
@@ -29,7 +30,7 @@ if(NOT OPENGL_FOUND)
     message(FATAL_ERROR "OpenGL not found")
 endif()
 
-if(WIN32 OR APPLE)
+if(WIN32 OR APPLE OR STATIC_ZLIB)
     add_subdirectory("${PROJECT_SOURCE_DIR}/lib/zlib")
     include_directories("${PROJECT_SOURCE_DIR}/lib/zlib")
     set(ZLIB_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/lib/zlib" "${PROJECT_BINARY_DIR}/lib/zlib/")
@@ -56,7 +57,8 @@ endif()
 
 if(UNIX AND NOT APPLE)
     find_package(X11 REQUIRED)
-    list(APPEND LINK_LIBRARIES ${X11_LIBRARIES} "-lXxf86vm" -lX11 "-Wl,-O1")
+    include_directories(${X11_INCLUDE_DIR})
+    find_library(IRRLICHT_XF86VM_LIBRARY Xxf86vm)
 endif()
 
 if(MSVC)
@@ -77,14 +79,17 @@ endif()
 add_executable(${PROJECT_NAME} ${STKTE_SOURCES})
 
 # Link options
-target_link_libraries(
-    ${PROJECT_NAME}
-    irrlicht
-    ${LINK_LIBRARIES}
-    ${PHYSFS_LIBRARY}
-    ${OPENGL_LIBRARIES}
+target_link_libraries(${PROJECT_NAME}
+                      irrlicht
+                      ${PHYSFS_LIBRARY}
+                      ${OPENGL_LIBRARIES}
 )
 
-if(WIN32)
+if(UNIX AND NOT APPLE)
+    target_link_libraries(${PROJECT_NAME} 
+                          ${X11_LIBRARIES}
+                          ${IRRLICHT_XF86VM_LIBRARY}
+    )
+elseif(WIN32)
     target_link_libraries(${PROJECT_NAME} winmm)
 endif()
