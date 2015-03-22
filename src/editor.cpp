@@ -587,6 +587,13 @@ void Editor::initDataLoc()
     p += "editor/maps";
     m_maps_path = new c8[p.size() + 1];
     strcpy(m_maps_path, p.c_str());
+    
+    if (!PHYSFS_exists(p.c_str()))
+    {
+        std::cerr << "Warning: maps directory doesn't exist. Creating...\n";
+        PHYSFS_setWriteDir(m_data_loc.c_str());
+        PHYSFS_mkdir("editor/maps");
+    }
 
     p = m_data_loc.c_str();
     p += "music";
