@@ -86,9 +86,9 @@ stringc Sky::getXmlString()
     stringc h;
 
     s += Editor::getTexStr(m_up) + " " + Editor::getTexStr(m_down) + " " + 
-         Editor::getTexStr(m_left) + " ";
-    s += Editor::getTexStr(m_right) + " " + Editor::getTexStr(m_front) + " " + 
-         Editor::getTexStr(m_back);
+         Editor::getTexStr(m_right) + " ";
+    s += Editor::getTexStr(m_left) + " " + Editor::getTexStr(m_back) + " " + 
+         Editor::getTexStr(m_front);
     s += h + "\"/>\n";
 
     return s;

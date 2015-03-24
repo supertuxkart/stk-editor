@@ -493,7 +493,7 @@ void Track::build()
     std::ofstream mat;
     mat.open((p + "/materials.xml").c_str());
     mat << "<materials>\n";
-    mat << "  <material name=\"splatt.png\" graphical-effect=\"splatting\"";
+    mat << "  <material name=\"splat.png\" shader=\"splatting\"";
     SMaterial m = m_terrain->getMaterial(0);
     for (int i = 1; i < 5; i++)
     {
@@ -523,7 +523,7 @@ void Track::build()
     stringw track;
     track += "<track  name           = \"";
     track += m_track_name + L"\"\n";
-    track += "        version        = \"5\"\n";
+    track += "        version        = \"6\"\n";
     track += "        groups         = \"made-by-STK-TE\"\n";
     track += "        designer       = \"";
     track += m_designer + "\"\n";
@@ -532,7 +532,12 @@ void Track::build()
     track += "\"\n";
     track += "        screenshot     = \"screenshot.jpg\"\n";
     track += "        smooth-normals = \"true\"\n";
-    track += "        reverse        = \"Y\"\n>\n";
+    track += "        default-number-of-laps = \"3\"\n";
+    track += "        reverse        = \"Y\"\n";
+    track += "        bloom          = \"Y\"\n";
+    track += "        bloom-threshold = \"0.75\"\n";
+    track += "        clouds         = \"N\"\n";
+    track += "        shadows        = \"Y\"\n>\n";
     track += "</track>\n";
 
     PHYSFS_uint64 len = 4 * track.size();
