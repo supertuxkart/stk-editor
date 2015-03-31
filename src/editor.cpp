@@ -356,16 +356,15 @@ bool Editor::init()
     m_indicator         = NULL;
     m_valid_data_dir    = false;
     m_exe_loc           = "";
-
     m_toolbar           = NULL;
     m_toolbox           = NULL;
     m_rcs               = NULL;
     m_tex_sel           = NULL;
-
     m_indicator         = NULL;
     m_viewport          = NULL;
     m_rcs               = NULL;
     m_font              = NULL;
+    m_new_dialog_wndw   = NULL;
 
     m_screen_size = dimension2du(10, 10);
 
@@ -395,7 +394,7 @@ bool Editor::init()
     ILightSceneNode* l = m_scene_manager->addLightSceneNode(0, vector3df(0, 1, 0),
                                               SColorf(1.0f, 1.0f, 1.0f), 500, -1);
     l->setLightType(ELT_DIRECTIONAL);
-    l->setPosition(vector3df(0, 
+    l->setPosition(vector3df(0,
         1, 0));
 
     m_device->setEventReceiver(this);
@@ -587,7 +586,7 @@ void Editor::initDataLoc()
     p += "editor/maps";
     m_maps_path = new c8[p.size() + 1];
     strcpy(m_maps_path, p.c_str());
-    
+
     if (!PHYSFS_exists(p.c_str()))
     {
         std::cerr << "Warning: maps directory doesn't exist. Creating...\n";
@@ -665,7 +664,7 @@ void Editor::render()
 
     m_gui_env->drawAll();
 
-    if (m_viewport && m_indicator && m_viewport->getState() != Viewport::FREECAM 
+    if (m_viewport && m_indicator && m_viewport->getState() != Viewport::FREECAM
                                                           && !m_rcs->isVisible())
         m_indicator->drawToScreen();
 

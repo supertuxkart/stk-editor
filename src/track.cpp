@@ -127,7 +127,7 @@ Track::Track(f32 tx, f32 tz)
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
     m_terrain = new Terrain(sm->getRootSceneNode(), sm, 1, tx, tz,
                            min_(2 * ((s32) tx),200), min_(2 * ((s32) tz),200));
-	
+
     ISpline* spline = new TCR(sm->getRootSceneNode(), sm, 0);
     m_driveline = new DriveLine(sm->getRootSceneNode(), sm, 0, spline, L"DriveLine");
     m_roads.push_back(m_driveline);
@@ -168,11 +168,11 @@ Track::Track(path file)
     u8 size;
     wchar_t* c;
     fread(&size, sizeof(u8), 1, pFile);
-    if (!Editor::isValidSize(size)) 
-    { 
+    if (!Editor::isValidSize(size))
+    {
         fclose(pFile); m_valid = false;
         MsgWndw::get()->showMsg(_("File loading failed!"));
-        return; 
+        return;
     }
     c = new wchar_t[size];
     fread(c, sizeof(wchar_t), size, pFile);
@@ -195,7 +195,7 @@ Track::Track(path file)
     // FILE NAME
     c8* cc;
     fread(&size, sizeof(u8), 1, pFile);
-    if (!Editor::isValidSize(size)) 
+    if (!Editor::isValidSize(size))
     {
         fclose(pFile); m_valid = false;
         MsgWndw::get()->showMsg(_("File loading failed!"));
@@ -208,7 +208,7 @@ Track::Track(path file)
 
     // MUSIC
     fread(&size, sizeof(u8), 1, pFile);
-    if (!Editor::isValidSize(size)) 
+    if (!Editor::isValidSize(size))
     {
         fclose(pFile); m_valid = false;
         MsgWndw::get()->showMsg(_("File loading failed!"));
@@ -281,7 +281,7 @@ Track::Track(path file)
     // CHECKLINES
 
     Viewport::get()->loadCheckLines(pFile);
-    
+
     // OBJECTS
     u32 num;
     fread(&num, sizeof(u32), 1, pFile);
@@ -302,11 +302,11 @@ Track::Track(path file)
             m_valid = false;
             MsgWndw::get()->showMsg(_("Loading failed!"));
             fclose(pFile);
-            return;            
+            return;
         }
         c8 *name = new c8[size];
         fread(name, sizeof(c8), size, pFile);
-        
+
         path p = name;
         if (p == path("banana") || p == path("item")
             || p == path("small-nitro") || p == path("big-nitro"))
@@ -333,7 +333,7 @@ Track::Track(path file)
         } // invalid node
         delete[] name;
     }
-    
+
     fclose(pFile);
 } // Track - from file
 
@@ -542,7 +542,7 @@ void Track::build()
 
     PHYSFS_uint64 len = 4 * track.size();
     char*         dst = new char[len];
-#ifdef _WIN32
+#if defined(_WIN32) || defined(WIN32)
     PHYSFS_utf8FromUcs2((PHYSFS_uint16*)track.c_str(),dst,len);
 #else
     PHYSFS_utf8FromUcs4((PHYSFS_uint32*)track.c_str(), dst, len);
