@@ -244,7 +244,6 @@ Track::Track(path file)
 
     // ROADS
 
-    IRoad* r;
     fread(&size, sizeof(u8), 1, pFile);
     if (size < 0 || size > MAX_ROAD_NUM)
     {
@@ -252,6 +251,7 @@ Track::Track(path file)
     }
     else
     {
+        IRoad* r;
         if (size > 0)
         {
             m_driveline = new DriveLine(sm->getRootSceneNode(), sm, 0, pFile);

@@ -10,7 +10,7 @@ CommandHandler::CommandHandler()
 CommandHandler::~CommandHandler()
 {
     std::list<ICmd*>::iterator it;
-    for (it = m_cmd_stack.begin(); it != m_cmd_stack.end(); it++) delete (*it);
+    for (it = m_cmd_stack.begin(); it != m_cmd_stack.end(); ++it) delete (*it);
 } // ~CommandHandler
 
 // ----------------------------------------------------------------------------
@@ -18,7 +18,7 @@ void CommandHandler::add(ICmd* cmd)
 {
     std::list<ICmd*>::iterator it;
 
-    for (it = m_it; it != m_cmd_stack.end(); it++) delete (*it);
+    for (it = m_it; it != m_cmd_stack.end(); ++it) delete (*it);
     m_it = m_cmd_stack.erase(m_it, it);
 
     m_it = m_cmd_stack.insert(m_it, cmd);
@@ -50,7 +50,7 @@ void CommandHandler::undo()
 void CommandHandler::clear()
 {
     std::list<ICmd*>::iterator it;
-    for (it = m_cmd_stack.begin(); it != m_cmd_stack.end(); it++) delete (*it);
+    for (it = m_cmd_stack.begin(); it != m_cmd_stack.end(); ++it) delete (*it);
     m_cmd_stack.clear();
 } // undo
 
