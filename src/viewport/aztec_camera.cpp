@@ -64,8 +64,9 @@ void AztecCamera::processKeys(f32 dt)
         || (m_mmb_move && m_mouse->middle_btn_down)) return;
     // camera moving
 
-    if ((m_keys->state(W_PRESSED) ^ m_keys->state(S_PRESSED))
-        || (m_keys->state(A_PRESSED) ^ m_keys->state(D_PRESSED)))
+    if ((m_keys->state(E_PRESSED) ^ m_keys->state(Q_PRESSED))
+        || (m_keys->state(A_PRESSED) ^ m_keys->state(D_PRESSED))
+		|| (m_keys->state(W_PRESSED) ^ m_keys->state(S_PRESSED)))
     {
         bool b = false;
         float sgn;
@@ -77,18 +78,25 @@ void AztecCamera::processKeys(f32 dt)
         vector3df n = tar - pos;
         vector3df r = n.crossProduct(up);
 
-        if (m_keys->state(W_PRESSED) ^ m_keys->state(S_PRESSED))
+        if (m_keys->state(E_PRESSED) ^ m_keys->state(Q_PRESSED))
         {
-            sgn = m_keys->state(S_PRESSED) ? -1.0f : 1.0f;
+            sgn = m_keys->state(Q_PRESSED) ? -1.0f : 1.0f;
             d += up * sgn * dt / 20.0f;
             b = true;
-        } // w-s component
+        } // q-e component
         if (m_keys->state(A_PRESSED) ^ m_keys->state(D_PRESSED))
         {
             sgn = m_keys->state(D_PRESSED) ? -1.0f : 1.0f;
             d += r.normalize() * sgn * dt / 20.0f;
             b = true;
         } // a-d component
+		if (m_keys->state(W_PRESSED) ^ m_keys->state(S_PRESSED))
+		{
+			sgn = m_keys->state(W_PRESSED) ? -1.0f : 1.0f;
+			m_normal_cd += sgn * dt / 10.0f;
+			if (m_normal_cd < 8) m_normal_cd = 8;
+			setHeight();
+		} // q-e component
         if (b)
         {
             pos += d;

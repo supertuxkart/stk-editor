@@ -11,6 +11,8 @@ enum Key
     A_PRESSED,
     S_PRESSED,
     D_PRESSED,
+	Q_PRESSED,
+	E_PRESSED,
     R_PRESSED,
     G_PRESSED,
     ESC_PRESSED,
@@ -55,6 +57,12 @@ struct Keys
         case KEY_KEY_D:
             m_key_state[D_PRESSED] = pressed;
             break;
+		case KEY_KEY_Q:
+			m_key_state[Q_PRESSED] = pressed;
+			break;
+		case KEY_KEY_E:
+			m_key_state[E_PRESSED] = pressed;
+			break;
         case KEY_KEY_R:
             m_key_state[R_PRESSED] = pressed;
             break;
