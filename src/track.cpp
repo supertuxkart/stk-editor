@@ -493,7 +493,7 @@ void Track::build()
     std::ofstream mat;
     mat.open((p + "/materials.xml").c_str());
     mat << "<materials>\n";
-    mat << "  <material name=\"splat.png\" shader=\"splatting\"";
+    mat << "  <material name=\"splatt.png\" shader=\"splatting\"";
     SMaterial m = m_terrain->getMaterial(0);
     for (int i = 1; i < 5; i++)
     {
