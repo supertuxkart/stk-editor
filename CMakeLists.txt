@@ -53,6 +53,7 @@ include_directories("${PROJECT_SOURCE_DIR}/lib/irrlicht/include")
 
 if(WIN32)
     add_definitions(-D_IRR_STATIC_LIB_)
+	configure_file("${PROJECT_SOURCE_DIR}/src/icon_rc.template" "${PROJECT_BINARY_DIR}/tmp/icon.rc")
 endif()
 
 if(UNIX AND NOT APPLE)
@@ -75,8 +76,7 @@ else()
     endif()
 endif()
 
-
-add_executable(${PROJECT_NAME} ${STKTE_SOURCES})
+add_executable(${PROJECT_NAME} "${PROJECT_BINARY_DIR}/tmp/icon.rc" ${STKTE_SOURCES})
 
 # Link options
 target_link_libraries(${PROJECT_NAME}
