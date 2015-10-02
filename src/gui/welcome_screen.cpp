@@ -35,7 +35,7 @@ void WelcomeScreen::init()
     std::list<stringc> list;
     std::list<stringc>::iterator it;
     list = Editor::getEditor()->readRecentlyOpenedList();
-    for (it = list.begin(); it != list.end(); it++)
+    for (it = list.begin(); it != list.end(); ++it)
     {
         stringw s = *it;
         m_lb->addItem(s.c_str());

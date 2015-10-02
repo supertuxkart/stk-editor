@@ -6,7 +6,7 @@
 ISceneNode* CheckLineHandler::startPlacingNew()
 {
     std::list<CheckLine>::iterator it = m_check_lines.begin();
-    while (it != m_check_lines.end() && it->active) it++;
+    while (it != m_check_lines.end() && it->active) ++it;
     m_check_lines.erase(it, m_check_lines.end());
 
     ISceneManager* sm = Editor::getEditor()->getSceneManager();
@@ -40,8 +40,8 @@ void CheckLineHandler::undo()
     if (m_check_lines.size() == 0) return;
 
     std::list<CheckLine>::iterator it = m_check_lines.begin();
-    while (it != m_check_lines.end() && it->active) it++;
-    if (it != m_check_lines.begin()) it--;
+    while (it != m_check_lines.end() && it->active) ++it;
+    if (it != m_check_lines.begin()) --it;
 
     it->active = false;
     it->n1->setVisible(false);
@@ -52,7 +52,7 @@ void CheckLineHandler::undo()
 void CheckLineHandler::redo()
 {
     std::list<CheckLine>::iterator it = m_check_lines.begin();
-    while (it != m_check_lines.end() && it->active) it++;
+    while (it != m_check_lines.end() && it->active) ++it;
     if (it != m_check_lines.end())
     {
         it->active = true;
@@ -68,7 +68,7 @@ bool CheckLineHandler::isCheckLine(ISceneNode* n)
     while (it != m_check_lines.end())
     {
         if (&(*it->n1) == n || &(*it->n2) == n) return true;
-        it++;
+        ++it;
     }
     return false;
 } // isCheckLine
@@ -86,7 +86,7 @@ void CheckLineHandler::remove(ISceneNode* n, bool remove)
             it->n2->setVisible(!remove);
             return;
         }
-        it++;
+        ++it;
     }
 } // remove
 
@@ -116,7 +116,7 @@ void CheckLineHandler::build(std::ofstream* scene)
     while (it != m_check_lines.end() && it->active)
     {
         if (!it->removed) i++;
-        it++;
+        ++it;
     }
 
     if (i>0)
@@ -128,7 +128,7 @@ void CheckLineHandler::build(std::ofstream* scene)
         {
             if (it->removed)
             {
-                it++;
+                ++it;
             }
             else
             {
@@ -137,13 +137,13 @@ void CheckLineHandler::build(std::ofstream* scene)
                 (*scene) << "    <check-line kind=\"activate\" other-ids=\"" << j + 2;
                 (*scene) << "\" p1=\"" << p1.X << " " << p1.Y << " " << p1.Z << "\" p2=\"" << p2.X;
                 (*scene) << " " << p2.Y << " " << p2.Z << "\" same-group=\"" << j + 1 << "\"/>\n";
-                it++;
+                ++it;
                 j++;
             }
         }
 
         std::list<CheckLine>::iterator it2 = m_check_lines.begin();
-        for (it2 = m_check_lines.begin(); it2 != m_check_lines.end(); it2++)
+        for (it2 = m_check_lines.begin(); it2 != m_check_lines.end(); ++it2)
             if (!it->removed && it->active) it = it2;
 
         p1 = it->n1->getPosition();
@@ -166,7 +166,7 @@ void CheckLineHandler::save(FILE* fp)
     while (it != m_check_lines.end() && it->active)
     {
         if (!it->removed) size++;
-        it++;
+        ++it;
     }
     fwrite(&size, sizeof(u32), 1, fp);
     
@@ -178,7 +178,7 @@ void CheckLineHandler::save(FILE* fp)
             fwrite(&it->n1->getPosition(), sizeof(vector3df), 1, fp);
             fwrite(&it->n2->getPosition(), sizeof(vector3df), 1, fp);
         }
-        it++;
+        ++it;
     }
 } // save
 
@@ -192,7 +192,7 @@ void CheckLineHandler::reload(FILE* fp)
         it->n1 = 0;
         it->n2->remove();
         it->n2 = 0;
-        it++;
+        ++it;
     }
     m_check_lines.clear();
     
@@ -233,6 +233,6 @@ void CheckLineHandler::draw()
             vd->draw3DLine(it->n1->getPosition(), it->n2->getPosition(),
                                                 SColor(255, 255, 0, 0));
         }
-        it++;
+        ++it;
     }
 } // draw

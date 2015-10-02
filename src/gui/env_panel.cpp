@@ -29,7 +29,7 @@ void EnvPanel::init()
     m_lib = new Library(L"env", m_btn_num);
     std::list<stringw> list = m_lib->getCategoryList();
     std::list<stringw>::iterator it;
-    for (it = list.begin(); it != list.end(); it++)
+    for (it = list.begin(); it != list.end(); ++it)
     {
         m_cb->addItem((*it).c_str());
     }
@@ -111,7 +111,7 @@ void EnvPanel::refreshBtnTable()
 
     stringw dir = L"editor/img/";
     int i;
-    for (i = 0; i < m_btn_num && it != elements.end(); i++, it++)
+    for (i = 0; i < m_btn_num && it != elements.end(); i++, ++it)
     {
         ITexture* img = Editor::loadImg(dir+(*it)->getImg());
         if (!img) img = Editor::loadImg(dir + "noimg.png");

@@ -87,12 +87,12 @@ std::list<Element*> Library::getElements(unsigned int ix)
     std::list<Element*> elements;
     std::list<Element*>::iterator it = m_selected_elements.begin();
 
-    for (unsigned int i = 0; i < ix * m_buffer_size; i++, it++);
+    for (unsigned int i = 0; i < ix * m_buffer_size; i++, ++it);
 
     for (unsigned int i = 0; i < m_buffer_size && it != m_selected_elements.end(); i++)
     {
         elements.push_back(*it);
-        it++;
+        ++it;
     }
 
     return elements;
@@ -116,7 +116,7 @@ Library::~Library()
     {
         std::list<Element*> list = *(*it).second;
         std::list<Element*>::iterator iit;
-        for (iit = list.begin(); iit != list.end(); iit++)
+        for (iit = list.begin(); iit != list.end(); ++iit)
             delete (*iit);
         delete (*it).second;
     }

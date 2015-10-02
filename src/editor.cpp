@@ -1027,7 +1027,7 @@ void Editor::addToRecentlyOpenedList(stringc name)
     list = readRecentlyOpenedList();
 
     std::list<stringc>::iterator it;
-    for (it = list.begin(); it != list.end(); it++)
+    for (it = list.begin(); it != list.end(); ++it)
         if ((*it) == name) return;
 
     if (list.size() >= EVIL_NUMBER)
@@ -1041,7 +1041,7 @@ void Editor::addToRecentlyOpenedList(stringc name)
     f << "<files>\n";
 
     it = list.begin();
-    for (; it != list.end(); it++)
+    for (; it != list.end(); ++it)
     {
         f << "  <file name=\"" << (*it).c_str() << "\" />\n";
     }
