@@ -20,7 +20,13 @@ endif()
 set(STKTE_SOURCE_DIR "${PROJECT_SOURCE_DIR}/src")
 include_directories(${STKTE_SOURCE_DIR})
 
+if(WIN32)
+    add_definitions(-D_IRR_STATIC_LIB_)
+    configure_file("${PROJECT_SOURCE_DIR}/src/icon_rc.template" "${PROJECT_BINARY_DIR}/tmp/icon.rc")
+endif()
+
 file(GLOB_RECURSE STKTE_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "${STKTE_SOURCE_DIR}/*.cpp")
+file(GLOB_RECURSE STKTE_RESOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "${PROJECT_BINARY_DIR}/tmp/*.rc")
 
 # OpenGL
 find_package(OpenGL REQUIRED)
@@ -51,11 +57,6 @@ endif()
 add_subdirectory("${PROJECT_SOURCE_DIR}/lib/irrlicht")
 include_directories("${PROJECT_SOURCE_DIR}/lib/irrlicht/include")
 
-if(WIN32)
-    add_definitions(-D_IRR_STATIC_LIB_)
-	configure_file("${PROJECT_SOURCE_DIR}/src/icon_rc.template" "${PROJECT_BINARY_DIR}/tmp/icon.rc")
-endif()
-
 if(UNIX AND NOT APPLE)
     find_package(X11 REQUIRED)
     include_directories(${X11_INCLUDE_DIR})
@@ -76,7 +77,7 @@ else()
     endif()
 endif()
 
-add_executable(${PROJECT_NAME} "${PROJECT_BINARY_DIR}/tmp/icon.rc" ${STKTE_SOURCES})
+add_executable(${PROJECT_NAME} ${STKTE_SOURCES} ${STKTE_RESOURCES})
 
 # Link options
 target_link_libraries(${PROJECT_NAME}
