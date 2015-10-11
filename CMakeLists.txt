@@ -1,5 +1,10 @@
 project(stk-editor)
 cmake_minimum_required(VERSION 2.8)
+
+if(NOT (CMAKE_MAJOR_VERSION VERSION_LESS 3))
+  cmake_policy(SET CMP0043 OLD)
+endif()
+
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 if (NOT CMAKE_BUILD_TYPE)
