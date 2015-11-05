@@ -20,7 +20,6 @@
 stk-editor
 
 # VS files
-
 *.suo
 *.userosscache
 *.sln.docstates
@@ -64,15 +63,11 @@ stk-editor/vs/stk_editor/Debug/stk_editor.tlog
 *.vspx
 *.tlog
 
-
-
-
 CMakeLists.txt.user
-
 *~
-
 *.xml
 
+.idea/
 libraries/
 build/
 build-*/

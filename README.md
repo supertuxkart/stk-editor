@@ -1,24 +1,40 @@
-stk-editor
-==========
+# stk-editor
 
-SuperTuxKart - Track Editor
+SuperTuxKart - Track Editor.
 
-##---BUILD---
+How to use it: 
+- wiki: http://supertuxkart.sourceforge.net/Track_Editor
+- video demo: https://youtu.be/Uae2NW5yFHc
 
-###Linux
+# BUILD
+## Linux
 
 To build the editor on linux you need zlib and physfs development packages. If you use distribution based on Debian, you can install it using following command:
 ```
     sudo apt-get install libphysfs1 libphysfs-dev zlib1g zlib1g-dev
 ```
 
-If you have it already installed, just create build directory and use:
-```
-    cmake ..
-    make
-```
+If you have it already installed, just follow the next instructions:
 
-###Windows
+1. Change into the `stk-editor` directory:
+``` cd stk-editor ```
+
+2. Create the build directory and change into it:
+``` mkdir build && cd build ```
+
+3. Run cmake with default options for a RELEASE build:
+``` cmake .. ```
+
+4. (Optional) If you want a DEBUG build of the editor run:
+``` cmake .. -DCMAKE_BUILD_TYPE=Debug ```
+
+5. Compile (in this example we use 2, but if you have a machine with 4 threads/cores you could use `-j4` to compile faster):
+``` make -j2 ```
+
+6. Run:
+``` ./stk-editor ```
+
+## Windows
 
 If you have Windows operating system, it uses static physfs and zlib libraries. You don't need to install any dependencies.
 
@@ -31,12 +47,6 @@ If you have Windows operating system, it uses static physfs and zlib libraries. 
 8. (Optional) From the configuration type drop down menu, select 'Release.'
 9. Select Build->Build Solution (or press F7) to compile.
 
-
-
-##License
+# License
 This software is released under the GNU General Public License (GPL) which
 can be found in the file `LICENSE` in the same directory as this file.
-
-
-For additional information check the wiki page:
-http://supertuxkart.sourceforge.net/Track_Editor
