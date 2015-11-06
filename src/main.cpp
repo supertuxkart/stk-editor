@@ -2,12 +2,12 @@
 
 #include <physfs.h>
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     PHYSFS_init(argv[0]);
-    Editor* editor = Editor::getEditor();
+    Editor *editor = Editor::getEditor();
 
-    if (editor!=0)
+    if (editor != nullptr)
         editor->run();
 
     return 0;

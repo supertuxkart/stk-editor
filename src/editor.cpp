@@ -31,7 +31,7 @@
 
 #define MAX_VALID_STRING_SIZE 200
 
-Editor* Editor::m_editor = 0;
+Editor* Editor::m_editor = nullptr;
 
 // ----------------------------------------------------------------------------
 bool Editor::buttonClicked(s32 ID)
@@ -640,11 +640,12 @@ void Editor::runTrack()
 // ----------------------------------------------------------------------------
 Editor* Editor::getEditor(dimension2du screen_size)
 {
-    if (m_editor != 0) return m_editor;
+    if (m_editor != nullptr) return m_editor;
 
     m_editor = new Editor();
-       m_editor->m_screen_size = screen_size;
-    if (!m_editor->init()) return 0;
+    m_editor->m_screen_size = screen_size;
+
+    if (!m_editor->init()) return nullptr;
     return m_editor;
 } // getEditorf
 

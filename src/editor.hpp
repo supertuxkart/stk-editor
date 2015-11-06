@@ -33,7 +33,7 @@ class Editor :public IEventReceiver
 private:
     static const u32            EVIL_NUMBER = 5;
     static Editor*              m_editor;
-    
+
     IrrlichtDevice*             m_device;
     IVideoDriver*               m_video_driver;
     ISceneManager*              m_scene_manager;
