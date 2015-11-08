@@ -1,4 +1,5 @@
 # stk-editor
+[![Build Status](https://travis-ci.org/supertuxkart/stk-editor.svg)](https://travis-ci.org/supertuxkart/stk-editor)
 
 SuperTuxKart - Track Editor.
 
