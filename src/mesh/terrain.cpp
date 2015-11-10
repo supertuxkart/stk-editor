@@ -6,9 +6,12 @@
 
 #include "commands/iterrain_cmd.hpp"
 
+#include "autodropped.hpp"
+
 #include <algorithm>
 #include <assert.h>
 #include <iostream>
+#include <memory>
 
 const u32 Terrain::SPIMG_X = 1024;
 const u32 Terrain::SPIMG_Y = 1024;
@@ -242,14 +245,14 @@ ITexture* Terrain::createSplattingImg()
 {
     IVideoDriver* vd = Editor::getEditor()->getVideoDriver();
 
-    IImage* img = vd->createImage(ECF_A8R8G8B8, dimension2du(SPIMG_X, SPIMG_Y));
+    auto img = autoDropped(
+        vd->createImage(ECF_A8R8G8B8, dimension2du(SPIMG_X, SPIMG_Y)));
 
     for (u32 i = 0; i < SPIMG_X; i++)
         for (u32 j = 0; j < SPIMG_Y; j++)
             img->setPixel(i, j, SColor(255, 0, 0, 0));
 
-    m_splattingImg = img;
-    return vd->addTexture("splatt.png", img);
+    return vd->addTexture("splatt.png", img.get());
 } // initSplattingImg
 
 // ----------------------------------------------------------------------------

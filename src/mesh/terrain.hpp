@@ -39,8 +39,6 @@ private:
     SMaterial           m_material;
     SMaterial           m_highlight_material;
 
-    IImage*             m_splattingImg;
-
     u16                 m_tile_num_x;
     u16                 m_tile_num_z;
 

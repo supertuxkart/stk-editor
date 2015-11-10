@@ -20,6 +20,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <assert.h>
+#include <memory>
 
 #define TOP_SECRET_SIGNATURE_NUMBER 3293525171
 #define MAX_ROAD_NUM 1000
@@ -244,7 +245,6 @@ Track::Track(path file)
 
     // ROADS
 
-    IRoad* r;
     fread(&size, sizeof(u8), 1, pFile);
     if (size < 0 || size > MAX_ROAD_NUM)
     {
@@ -266,13 +266,15 @@ Track::Track(path file)
         } // driveline
         for (u8 i = 1; i < size; i++)
         {
-            r = new Road(sm->getRootSceneNode(), sm, 0, pFile);
+            std::unique_ptr<IRoad> r(new Road(sm->getRootSceneNode(), sm, 0, pFile));
             if (r->isValid())
             {
-                m_roads.push_back(r);
+                m_roads.push_back(r.get());
                 r->refresh();
                 r->setWireFrame(false);
                 Viewport::get()->setSplineMode(false);
+		// Explicitly release r to prevent it from being deleted.
+                r.release();
             }
             else std::cerr << "Warning: invalid road - skipped :(\n";
         } // roads

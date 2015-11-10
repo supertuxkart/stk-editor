@@ -2,7 +2,9 @@
 #include "gui/element.hpp"
 
 #include "editor.hpp"
+#include "autodropped.hpp"
 #include <iostream>
+#include <memory>
 
 using namespace io;
 
@@ -17,10 +19,12 @@ Library::Library(stringw name, unsigned int buffer_size)
 
     for (unsigned int i = 0; i < file_list->getFileCount(); i++)
     {
-        IXMLReader* xml_reader = file_system->createXMLReader(
-            file_list->getFullFileName(i));
+        auto xml_reader = autoDropped(
+            file_system->createXMLReader(file_list->getFullFileName(i)));
 
-        Element* element = new Element(xml_reader);
+        // Make sure we don't leak element.
+        std::unique_ptr<Element> element(new Element(xml_reader.get()));
+
         if (element->isValid())
         {
             stringw categ = element->getCategory();
@@ -30,13 +34,13 @@ Library::Library(stringw name, unsigned int buffer_size)
             {
                 // category doesn't exist -> create
                 std::list<Element*>* list = new std::list<Element*>();
-                list->push_back(element);
+                list->push_back(element.release());
                 std::pair<stringw, std::list<Element*>*> p(categ, list);
                 m_element_table.insert(p);
             }
             else
             {
-                (*it).second->push_back(element);
+                (*it).second->push_back(element.release());
             }
         }
     }
