@@ -5,10 +5,15 @@
 # http://docs.travis-ci.com/user/languages/cpp/
 
 language: cpp
+sudo: false
 
 compiler:
   - gcc
   - clang
+
+os:
+  - linux
+#  - osx
 
 matrix:
   fast_finish: true
@@ -18,20 +23,23 @@ env:
     - BUILD_TYPE="Debug"
     - BUILD_TYPE="Release"
 
-before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install build-essential libxxf86vm-dev libphysfs1 libphysfs-dev zlib1g zlib1g-dev
-
 before_script:
-  - export THREADS=`nproc`
+  - export THREADS=$((`nproc` + 1))
   - echo "THREADS = $THREADS"
-  - cmake --version
+  - free -mt
 
 script:
-  # Clean from previous Travis build
-  - git clean -f
-  # Then build:
-  - mkdir "build-$BUILD_TYPE"
-  - cd "build-$BUILD_TYPE"
+  - mkdir "build"
+  - cd "build"
   - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE
   - make VERBOSE=1 -j $THREADS
+
+addons:
+  apt:
+    packages:
+      - build-essential
+      - libxxf86vm-dev
+      - libphysfs1
+      - libphysfs-dev
+      - zlib1g
+      - zlib1g-dev
