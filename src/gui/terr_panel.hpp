@@ -93,6 +93,7 @@ public:
     static TerrPanel*     getTerrPanel(IGUIWindow* wndw = 0);
 
     TerrainMod*           getTerrainModData()         { return &m_tmod; }
+    void                  setScrollBarsEnabled(bool isEnabled);
     void                  btnDown(int btn);
     void                  refreshTerrModData();
     void                  refreshSkyButtons(Sky* sky);

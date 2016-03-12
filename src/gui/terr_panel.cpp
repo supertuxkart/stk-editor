@@ -9,6 +9,15 @@
 
 TerrPanel* TerrPanel::m_terr_panel = 0;
 
+void TerrPanel::setScrollBarsEnabled(bool isEnabled)
+{
+    if(m_h_radius)
+        m_h_radius->setEnabled(isEnabled);
+    if(m_h_intensity)
+        m_h_intensity->setEnabled(isEnabled); 
+    
+} // setScrollBarsEnabled
+
 // ----------------------------------------------------------------------------
 void TerrPanel::init()
 {

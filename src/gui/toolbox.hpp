@@ -37,7 +37,7 @@ private:
     IGUIWindow*     m_env_wndw;
     IGUIWindow*     m_road_wndw;
     IGUIWindow*     m_extr_wndw;
-
+    
     // private functions:
 
     void    init();
@@ -48,6 +48,7 @@ protected:
     void                initWndw(IGUIWindow* wndw);
 
 public:
+    void                setScrollBarsEnabled(bool isEnabled);
     static ToolBox*     getToolBox();
     void                reallocate();
     void                setWndw(int ID);

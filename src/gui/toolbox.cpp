@@ -10,6 +10,13 @@
 ToolBox* ToolBox::m_toolbox = 0;
 
 // ----------------------------------------------------------------------------
+void ToolBox::setScrollBarsEnabled(bool isEnabled) 
+{ 
+    m_terr_panel->setScrollBarsEnabled(isEnabled); 
+    
+} // setScrollBarsEnabled
+
+// ----------------------------------------------------------------------------
 void ToolBox::init()
 {
     Editor* editor = Editor::getEditor();
