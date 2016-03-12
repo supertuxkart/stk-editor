@@ -13,7 +13,7 @@ ToolBox* ToolBox::m_toolbox = 0;
 void ToolBox::setScrollBarsEnabled(bool isEnabled) 
 { 
     m_terr_panel->setScrollBarsEnabled(isEnabled); 
-    
+    m_road_panel->setScrollBarsEnabled(isEnabled);
 } // setScrollBarsEnabled
 
 // ----------------------------------------------------------------------------
