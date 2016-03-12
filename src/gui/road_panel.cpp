@@ -10,7 +10,23 @@
 #include "spline/tcr.hpp"
 
 RoadPanel* RoadPanel::m_road_panel = 0;
-
+    
+void RoadPanel::setScrollBarsEnabled(bool isEnabled)
+{
+    if(m_width_sb)
+        m_width_sb->setEnabled(isEnabled);
+    if(m_detail_sb)
+        m_detail_sb->setEnabled(isEnabled); 
+    if(m_u_sb)
+        m_u_sb->setEnabled(isEnabled);
+    if(m_v_sb)
+        m_v_sb->setEnabled(isEnabled);
+    if(m_u_offset_sb)
+        m_u_offset_sb->setEnabled(isEnabled);
+    if(m_v_offset_sb)
+        m_v_offset_sb->setEnabled(isEnabled);
+    
+} // setScrollBarsEnabled
 // ----------------------------------------------------------------------------
 void RoadPanel::init()
 {

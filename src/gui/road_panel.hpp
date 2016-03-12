@@ -75,6 +75,7 @@ private:
     void                  textureChange();
 
 public:
+    void                  setScrollBarsEnabled(bool isEnabled);
     static RoadPanel*     getRoadPanel(IGUIWindow* wndw = 0);
     void                  btnDown(int btn);
     bool                  isInsertMode()    { return m_insert; }

@@ -770,6 +770,7 @@ bool Editor::OnEvent(const SEvent& event)
              event.MouseInput.Y >= (s32)m_screen_size.Height - 15 ||
             (event.MouseInput.X >(s32)m_screen_size.Width - 500 && m_tex_sel->isActive()))
         {
+            m_toolbox->setScrollBarsEnabled(true);
             u32 s = m_viewport->getState();
             if (s == Viewport::EDIT ||
                (s==Viewport::SELECT && m_mouse.middle_btn_down))
@@ -781,6 +782,10 @@ bool Editor::OnEvent(const SEvent& event)
                 return false;
             }
         } // mouse is outside
+        else // mouse is inside
+        {
+            m_toolbox->setScrollBarsEnabled(false);
+        }
         m_mouse.in_view = true;
         m_viewport->setFocus(true);
         m_mouse.refresh(event);
