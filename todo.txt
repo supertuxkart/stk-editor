@@ -3,6 +3,5 @@ TODO list:
 - cross section editor improvement: modifying the amount of points should not erase the existing geometry
 - closed road's texture coordinate fix
 - ambient light
-- mouse wheel modify the position of the camera and scrollsbars at the same time
 - attach to driveline "works" on not yet placed control point
 - try the track doesn't work
