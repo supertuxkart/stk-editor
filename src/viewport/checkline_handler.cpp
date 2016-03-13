@@ -216,7 +216,20 @@ void CheckLineHandler::reload(FILE* fp)
         cl.n2 = 0;
     }
 } // reload
-
+// ----------------------------------------------------------------------------
+void CheckLineHandler::clearCheckLines()
+{
+    std::list<CheckLine>::iterator it = m_check_lines.begin();
+    while (it != m_check_lines.end())
+    {
+        it->n1->remove();
+        it->n1 = 0;
+        it->n2->remove();
+        it->n2 = 0;
+        it++;
+    }
+    m_check_lines.clear();
+} // clearCheckLines
 // ----------------------------------------------------------------------------
 void CheckLineHandler::draw()
 {

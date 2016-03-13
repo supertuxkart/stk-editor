@@ -1015,6 +1015,7 @@ void Editor::newTrack()
     t->setDesigner(m_new_dialog_wndw->getDesigner());
     t->setGravityRoad(m_new_dialog_wndw->gravRoad());
     m_viewport->setTrack(t);
+    m_viewport->setSplineMode(false);
 
     RoadPanel::getRoadPanel()->updateRoadList();
 

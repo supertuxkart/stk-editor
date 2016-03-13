@@ -57,6 +57,7 @@ public:
     void save(FILE* fp);
     void reload(FILE* fp);
 
+    void clearCheckLines();
     void draw();
 
     ~CheckLineHandler(){};
