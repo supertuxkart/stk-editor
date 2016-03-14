@@ -3,6 +3,8 @@
 
 #include <irrlicht.h>
 
+#include "gui/simple_gui_objects.hpp"
+
 using namespace irr;
 using namespace gui;
 using namespace core;
@@ -36,7 +38,19 @@ public:
         CHECKLINE,
         CLOSED_ROAD,
         SWAP_UV,
-        NAMEBOX
+        NAMEBOX,
+        ST_ROAD_SELECTED,
+        //CB_WIDTH, WIDTH
+        //CB_DETAIL, DETAIL
+        //BT_TEXTURE, TEXTURE
+        //BT_ADD_CONTROLPOINT, ADD
+        //BT_INSERT_CONTROLPOINT, INSERT
+        //BT_FINISH_POINT_PLACING, EXIT
+        //BT_EDIT_CROSSROADS_SECTION, CROSS_SECTION
+        //BT_ATTACH_TO_DRIVELINE, ATTACH_TO_DL
+        //BT_CREATE_ROAD, CREATE
+        //BT_CHECKLINE
+        V_SCROLL
     };
 
 private:
@@ -65,9 +79,52 @@ private:
                                  
     unsigned int                 m_next_road_mesh_ID;
     bool                         m_insert;
+    
+    IGUIStaticText*             m_st_road_selected;
+    IGUIStaticText*             m_st_width;
+    IGUIStaticText*             m_st_detail;
+    IGUIButton*                 m_bt_texture;
+    IGUIButton*                 m_bt_add_controlpoint;
+    IGUIButton*                 m_bt_insert_controlpoint;
+    IGUIButton*                 m_bt_finish_point_placing;
+    IGUIButton*                 m_bt_edit_crossroads_section;
+    IGUIButton*                 m_bt_attach_to_driveline;
+    IGUIButton*                 m_bt_create_road;
+    IGUIButton*                 m_bt_checkline;
 
+    IGUIScrollBar*              m_v_scroll;
+    
+    // root relative positions of components
+    rect<s32>                   m_v_scroll_rp                       = rect<s32>(240, 0, 250, 10);
+    rect<s32>                   m_cb_rp                             = rect<s32>(30, 45, 210, 65);
+    rect<s32>                   m_spline_type_cb_rp                 = rect<s32>(30, 470, 150, 490);
+    rect<s32>                   m_text_field_rp                     = rect<s32>(30, 495, 150, 515);
+
+    rect<s32>                   m_width_sb_rp                       = rect<s32>(100, 80, 210, 90);
+    rect<s32>                   m_detail_sb_rp                      = rect<s32>(100, 95, 210, 105);
+    rect<s32>                   m_u_sb_rp                           = rect<s32>(100, 128, 210, 138);
+    rect<s32>                   m_v_sb_rp                           = rect<s32>(100, 148, 210, 158);
+    rect<s32>                   m_u_offset_sb_rp                    = rect<s32>(100, 168, 210, 178);
+    rect<s32>                   m_v_offset_sb_rp                    = rect<s32>(100, 188, 210, 198);
+
+    rect<s32>                   m_closed_road_cb_rp                 = rect<s32>(30, 290, 210, 320);
+    rect<s32>                   m_swap_uv_rp                        = rect<s32>(30,255,210,285);
+    
+    rect<s32>                   m_st_road_selected_text_rp          = rect<s32>(10, 10, 200, 30);
+    rect<s32>                   m_st_width_rp                       = rect<s32>(30, 77, 90, 92);
+    rect<s32>                   m_st_detail_rp                      = rect<s32>(30, 92, 90, 117);
+    rect<s32>                   m_bt_texture_rp                     = rect<s32>(30, 123, 90, 143);
+    rect<s32>                   m_bt_add_controlpoint_rp            = rect<s32>(30, 330, 80, 380);
+    rect<s32>                   m_bt_insert_controlpoint_rp         = rect<s32>(95, 330, 145, 380);
+    rect<s32>                   m_bt_finish_point_placing_rp        = rect<s32>(160, 330, 210, 380);
+    rect<s32>                   m_bt_edit_crossroads_section_rp     = rect<s32>(60, 395, 110, 445);
+    rect<s32>                   m_bt_attach_to_driveline_rp         = rect<s32>(130, 395, 180, 445);
+    rect<s32>                   m_bt_create_road_rp                 = rect<s32>(160, 470, 210, 515);
+    rect<s32>                   m_bt_checkline_rp                   = rect<s32>(30, 530, 210, 580);
     // private functions:
 
+    SimpleGuiComponents         m_gui_panel_components;
+    
     RoadPanel() {};
 
     void                  init();
@@ -95,6 +152,7 @@ public:
     stringw               getNextRoadName() { return m_text_field->getText();       }
     bool                  getClosedState()  { return m_closed_road_cb->isChecked(); }
     bool                  getSwapState()    { return m_swap_uv->isChecked();        }
+    void                  updatePanelComponentPositions();
 };
 
 #endif

@@ -15,22 +15,25 @@ class SimpleGuiComponent {
 public:
     SimpleGuiComponent(){}
     SimpleGuiComponent(IGUIWindow* setWindow, IGUIScrollBar* setScrollBar, rect<s32> setRootPos) 
-    : m_wndw(setWindow), m_scrollbar(setScrollBar), m_image(nullptr), m_editbox(nullptr), m_button(nullptr), m_statictext(nullptr), m_checkbox(nullptr), rootPos(setRootPos), m_active(setScrollBar)    {}
+    : m_wndw(setWindow), m_scrollbar(setScrollBar), m_image(nullptr), m_editbox(nullptr), m_button(nullptr), m_statictext(nullptr), m_checkbox(nullptr), m_combobox(nullptr), rootPos(setRootPos), m_active(setScrollBar)    {}
     
     SimpleGuiComponent(IGUIWindow* setWindow, IGUIImage* setImage, rect<s32> setRootPos)         
-    : m_wndw(setWindow), m_scrollbar(nullptr), m_image(setImage), m_editbox(nullptr), m_button(nullptr), m_statictext(nullptr), m_checkbox(nullptr), rootPos(setRootPos), m_active(setImage)            {}
+    : m_wndw(setWindow), m_scrollbar(nullptr), m_image(setImage), m_editbox(nullptr), m_button(nullptr), m_statictext(nullptr), m_checkbox(nullptr), m_combobox(nullptr), rootPos(setRootPos), m_active(setImage)            {}
     
     SimpleGuiComponent(IGUIWindow* setWindow, IGUIEditBox* setEditBox, rect<s32> setRootPos)     
-    : m_wndw(setWindow), m_scrollbar(nullptr), m_image(nullptr), m_editbox(setEditBox), m_button(nullptr), m_statictext(nullptr), m_checkbox(nullptr), rootPos(setRootPos), m_active(setEditBox)        {}
+    : m_wndw(setWindow), m_scrollbar(nullptr), m_image(nullptr), m_editbox(setEditBox), m_button(nullptr), m_statictext(nullptr), m_checkbox(nullptr), m_combobox(nullptr), rootPos(setRootPos), m_active(setEditBox)        {}
     
     SimpleGuiComponent(IGUIWindow* setWindow, IGUIButton* setButton, rect<s32> setRootPos)       
-    : m_wndw(setWindow), m_scrollbar(nullptr), m_image(nullptr), m_editbox(nullptr), m_button(setButton), m_statictext(nullptr), m_checkbox(nullptr), rootPos(setRootPos), m_active(setButton)          {}
+    : m_wndw(setWindow), m_scrollbar(nullptr), m_image(nullptr), m_editbox(nullptr), m_button(setButton), m_statictext(nullptr), m_checkbox(nullptr), m_combobox(nullptr), rootPos(setRootPos), m_active(setButton)          {}
     
     SimpleGuiComponent(IGUIWindow* setWindow, IGUIStaticText* setStaticText, rect<s32> setRootPos)       
-    : m_wndw(setWindow), m_scrollbar(nullptr), m_image(nullptr), m_editbox(nullptr), m_button(nullptr), m_statictext(setStaticText), m_checkbox(nullptr), rootPos(setRootPos), m_active(setStaticText)  {}
+    : m_wndw(setWindow), m_scrollbar(nullptr), m_image(nullptr), m_editbox(nullptr), m_button(nullptr), m_statictext(setStaticText), m_checkbox(nullptr), m_combobox(nullptr), rootPos(setRootPos), m_active(setStaticText)  {}
     
     SimpleGuiComponent(IGUIWindow* setWindow, IGUICheckBox* setCheckBox, rect<s32> setRootPos)       
-    : m_wndw(setWindow), m_scrollbar(nullptr), m_image(nullptr), m_editbox(nullptr), m_button(nullptr), m_statictext(nullptr), m_checkbox(setCheckBox), rootPos(setRootPos), m_active(setCheckBox)      {}
+    : m_wndw(setWindow), m_scrollbar(nullptr), m_image(nullptr), m_editbox(nullptr), m_button(nullptr), m_statictext(nullptr), m_checkbox(setCheckBox), m_combobox(nullptr), rootPos(setRootPos), m_active(setCheckBox)      {}
+    
+    SimpleGuiComponent(IGUIWindow* setWindow, IGUIComboBox* setComboBox, rect<s32> setRootPos)       
+    : m_wndw(setWindow), m_scrollbar(nullptr), m_image(nullptr), m_editbox(nullptr), m_button(nullptr), m_statictext(nullptr), m_checkbox(nullptr), m_combobox(setComboBox), rootPos(setRootPos), m_active(setComboBox)      {}
     
     ~SimpleGuiComponent(){}
     
@@ -44,6 +47,7 @@ private:
     IGUIButton*     m_button;
     IGUIStaticText* m_statictext;
     IGUICheckBox*   m_checkbox;
+    IGUIComboBox*   m_combobox;
     
     IGUIElement* m_active;
     
@@ -60,12 +64,13 @@ public:
     
     ~SimpleGuiComponents(){}
     // TODO: unique_ptr<SimpleGuiComponent*>
-    void addGuiComponent(IGUIWindow* setWindow, IGUIScrollBar* setScrollBar, rect<s32> setRootPos)    { SimpleGuiComponentList.push_front(new SimpleGuiComponent(setWindow, setScrollBar, setRootPos)); }
-    void addGuiComponent(IGUIWindow* setWindow, IGUIImage* setImage, rect<s32> setRootPos)            { SimpleGuiComponentList.push_front(new SimpleGuiComponent(setWindow, setImage, setRootPos));     }
-    void addGuiComponent(IGUIWindow* setWindow, IGUIEditBox* setEditBox, rect<s32> setRootPos)        { SimpleGuiComponentList.push_front(new SimpleGuiComponent(setWindow, setEditBox, setRootPos));   }
-    void addGuiComponent(IGUIWindow* setWindow, IGUIButton* setbutton, rect<s32> setRootPos)          { SimpleGuiComponentList.push_front(new SimpleGuiComponent(setWindow, setbutton, setRootPos));    }
-    void addGuiComponent(IGUIWindow* setWindow, IGUIStaticText* setStaticText, rect<s32> setRootPos)  { SimpleGuiComponentList.push_front(new SimpleGuiComponent(setWindow, setStaticText, setRootPos));}
-    void addGuiComponent(IGUIWindow* setWindow, IGUICheckBox* setCheckBox, rect<s32> setRootPos)      { SimpleGuiComponentList.push_front(new SimpleGuiComponent(setWindow, setCheckBox, setRootPos));  }
+    void addComponent(IGUIWindow* setWindow, IGUIScrollBar* setScrollBar, rect<s32> setRootPos)    { SimpleGuiComponentList.push_front(new SimpleGuiComponent(setWindow, setScrollBar, setRootPos)); }
+    void addComponent(IGUIWindow* setWindow, IGUIImage* setImage, rect<s32> setRootPos)            { SimpleGuiComponentList.push_front(new SimpleGuiComponent(setWindow, setImage, setRootPos));     }
+    void addComponent(IGUIWindow* setWindow, IGUIEditBox* setEditBox, rect<s32> setRootPos)        { SimpleGuiComponentList.push_front(new SimpleGuiComponent(setWindow, setEditBox, setRootPos));   }
+    void addComponent(IGUIWindow* setWindow, IGUIButton* setbutton, rect<s32> setRootPos)          { SimpleGuiComponentList.push_front(new SimpleGuiComponent(setWindow, setbutton, setRootPos));    }
+    void addComponent(IGUIWindow* setWindow, IGUIStaticText* setStaticText, rect<s32> setRootPos)  { SimpleGuiComponentList.push_front(new SimpleGuiComponent(setWindow, setStaticText, setRootPos));}
+    void addComponent(IGUIWindow* setWindow, IGUICheckBox* setCheckBox, rect<s32> setRootPos)      { SimpleGuiComponentList.push_front(new SimpleGuiComponent(setWindow, setCheckBox, setRootPos));  }
+    void addComponent(IGUIWindow* setWindow, IGUIComboBox* setComboBox, rect<s32> setRootPos)      { SimpleGuiComponentList.push_front(new SimpleGuiComponent(setWindow, setComboBox, setRootPos));  }
     
     void updateComponentPositions(int locationAsPixel)
     {
