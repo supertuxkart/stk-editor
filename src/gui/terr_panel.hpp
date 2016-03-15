@@ -134,53 +134,53 @@ private:
     IGUIStaticText*               m_edge_b3;
     
     // panel component root relative positions
-    rect<s32>               m_h_radius_rp                       = rect<s32>(100, 45, 240, 55);
-    rect<s32>               m_h_intensity_rp                    = rect<s32>(100, 75, 240, 85);
+    rect<s32>               m_h_radius_rp;
+    rect<s32>               m_h_intensity_rp;
     
-    rect<s32>               m_active_edge_frame_rp              = rect<s32>(200, 95, 240, 135);
+    rect<s32>               m_active_edge_frame_rp;
 
-    rect<s32>               m_h_min_value_rp                    = rect<s32>(170, 285, 210, 305);
-    rect<s32>               m_h_max_value_rp                    = rect<s32>(170, 255, 210, 275);
+    rect<s32>               m_h_min_value_rp;
+    rect<s32>               m_h_max_value_rp;
 
-    rect<s32>               m_h_min_cb_rp                       = rect<s32>(105, 280, 175, 310);
-    rect<s32>               m_h_max_cb_rp                       = rect<s32>(105, 250, 175, 280);
+    rect<s32>               m_h_min_cb_rp;
+    rect<s32>               m_h_max_cb_rp;
 
-    rect<s32>               m_tb1_rp                            = rect<s32>(10,  150, 60,  200); 
-    rect<s32>               m_tb2_rp                            = rect<s32>(70,  150, 120, 200); 
-    rect<s32>               m_tb3_rp                            = rect<s32>(130, 150, 180, 200); 
-    rect<s32>               m_tb4_rp                            = rect<s32>(190, 150, 240, 200); 
+    rect<s32>               m_tb1_rp; 
+    rect<s32>               m_tb2_rp; 
+    rect<s32>               m_tb3_rp; 
+    rect<s32>               m_tb4_rp; 
 
-    rect<s32>               m_edge_b1_rp                        = rect<s32>(105, 100, 135, 130);
-    rect<s32>               m_edge_b2_rp                        = rect<s32>(155, 100, 185, 130);
-    rect<s32>               m_edge_b3_rp                        = rect<s32>(205, 100, 235, 130);
+    rect<s32>               m_edge_b1_rp;
+    rect<s32>               m_edge_b2_rp;
+    rect<s32>               m_edge_b3_rp;
     
-    rect<s32>               m_sb1_rp                            = rect<s32>(30,  475, 80,  525);
-    rect<s32>               m_sb2_rp                            = rect<s32>(95,  475, 145, 525);
-    rect<s32>               m_sb3_rp                            = rect<s32>(160, 475, 210, 525);
-    rect<s32>               m_sb4_rp                            = rect<s32>(30,  555, 80,  605);
-    rect<s32>               m_sb5_rp                            = rect<s32>(95,  555, 145, 605);
-    rect<s32>               m_sb6_rp                            = rect<s32>(160, 555, 210, 605);
+    rect<s32>               m_sb1_rp;
+    rect<s32>               m_sb2_rp;
+    rect<s32>               m_sb3_rp;
+    rect<s32>               m_sb4_rp;
+    rect<s32>               m_sb5_rp;
+    rect<s32>               m_sb6_rp;
     
-    rect<s32>               m_brush_text_rp                     = rect<s32>(10, 10, 200, 30);
-    rect<s32>               m_radius_text_rp                    = rect<s32>(15, 40, 100, 60);
-    rect<s32>               m_intensity_text_rp                 = rect<s32>(15, 70, 100, 90);
-    rect<s32>               m_edge_text_rp                      = rect<s32>(15, 100, 100, 120);
-    rect<s32>               m_soft_brush_text_rp                = rect<s32>(30, 350, 80, 400);
-    rect<s32>               m_hard_brush_text_rp                = rect<s32>(95, 350, 145, 400);
-    rect<s32>               m_brightness_text_rp                = rect<s32>(160, 350, 210, 400);
-    rect<s32>               m_skybox_text_rp                    = rect<s32>(10, 430, 200, 450);
-    rect<s32>               m_up_text_rp                        = rect<s32>(30, 455, 80, 475);
-    rect<s32>               m_down_text_rp                      = rect<s32>(95, 455, 145, 475);
-    rect<s32>               m_left_text_rp                      = rect<s32>(160, 455, 210, 475);
-    rect<s32>               m_right_text_rp                     = rect<s32>(30, 535, 80, 555);
-    rect<s32>               m_front_text_rp                     = rect<s32>(95, 535, 145, 555);
-    rect<s32>               m_back_text_rp                      = rect<s32>(160, 535, 210, 555);
+    rect<s32>               m_brush_text_rp;
+    rect<s32>               m_radius_text_rp;
+    rect<s32>               m_intensity_text_rp;
+    rect<s32>               m_edge_text_rp;
+    rect<s32>               m_soft_brush_text_rp;
+    rect<s32>               m_hard_brush_text_rp;
+    rect<s32>               m_brightness_text_rp;
+    rect<s32>               m_skybox_text_rp;
+    rect<s32>               m_up_text_rp;
+    rect<s32>               m_down_text_rp;
+    rect<s32>               m_left_text_rp;
+    rect<s32>               m_right_text_rp;
+    rect<s32>               m_front_text_rp;
+    rect<s32>               m_back_text_rp;
     
-    rect<s32>               m_change_texture_b1_rp              = rect<s32>(10, 205, 60,   220);
-    rect<s32>               m_change_texture_b2_rp              = rect<s32>(70, 205, 120,  220);
-    rect<s32>               m_change_texture_b3_rp              = rect<s32>(130, 205, 180, 220);
-    rect<s32>               m_change_texture_b4_rp              = rect<s32>(190, 205, 240, 220);
-    rect<s32>               m_spade_texture_rp                  = rect<s32>(30, 255, 80, 305);
+    rect<s32>               m_change_texture_b1_rp;
+    rect<s32>               m_change_texture_b2_rp;
+    rect<s32>               m_change_texture_b3_rp;
+    rect<s32>               m_change_texture_b4_rp;
+    rect<s32>               m_spade_texture_rp;
  
     // private functions:
     SimpleGuiComponents     m_gui_panel_components;

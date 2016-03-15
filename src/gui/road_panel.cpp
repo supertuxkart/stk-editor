@@ -38,6 +38,33 @@ void RoadPanel::init()
     IGUIEnvironment* gui_env = editor->getGUIEnv();
     IGUIFont* font = editor->getFont();
     
+    m_v_scroll_rp                       = rect<s32>(240, 0, 250, 10);
+    m_cb_rp                             = rect<s32>(30, 45, 210, 65);
+    m_spline_type_cb_rp                 = rect<s32>(30, 470, 150, 490);
+    m_text_field_rp                     = rect<s32>(30, 495, 150, 515);
+
+    m_width_sb_rp                       = rect<s32>(100, 80, 210, 90);
+    m_detail_sb_rp                      = rect<s32>(100, 95, 210, 105);
+    m_u_sb_rp                           = rect<s32>(100, 128, 210, 138);
+    m_v_sb_rp                           = rect<s32>(100, 148, 210, 158);
+    m_u_offset_sb_rp                    = rect<s32>(100, 168, 210, 178);
+    m_v_offset_sb_rp                    = rect<s32>(100, 188, 210, 198);
+
+    m_closed_road_cb_rp                 = rect<s32>(30, 290, 210, 320);
+    m_swap_uv_rp                        = rect<s32>(30,255,210,285);
+    
+    m_st_road_selected_text_rp          = rect<s32>(10, 10, 200, 30);
+    m_st_width_rp                       = rect<s32>(30, 77, 90, 92);
+    m_st_detail_rp                      = rect<s32>(30, 92, 90, 117);
+    m_bt_texture_rp                     = rect<s32>(30, 123, 90, 143);
+    m_bt_add_controlpoint_rp            = rect<s32>(30, 330, 80, 380);
+    m_bt_insert_controlpoint_rp         = rect<s32>(95, 330, 145, 380);
+    m_bt_finish_point_placing_rp        = rect<s32>(160, 330, 210, 380);
+    m_bt_edit_crossroads_section_rp     = rect<s32>(60, 395, 110, 445);
+    m_bt_attach_to_driveline_rp         = rect<s32>(130, 395, 180, 445);
+    m_bt_create_road_rp                 = rect<s32>(160, 470, 210, 515);
+    m_bt_checkline_rp                   = rect<s32>(30, 530, 210, 580);
+    
     m_wndw->setRelativePosition(position2di(0, 50));
     
     m_v_scroll = gui_env->addScrollBar(false, rect<s32>(240, 0, 250, 10),
