@@ -6,6 +6,7 @@
 #include "mesh/terrain.hpp"
 #include "mesh/sky.hpp"
 #include "gui/tex_sel.hpp"
+#include "gui/irr_gui_objects.hpp"
 
 TerrPanel* TerrPanel::m_terr_panel = 0;
 

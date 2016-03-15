@@ -12,6 +12,7 @@ using namespace core;
 class IRoad;
 class DriveLine;
 class Track;
+class SimpleGuiComponents;
 
 class RoadPanel
 {
@@ -40,15 +41,15 @@ public:
         SWAP_UV,
         NAMEBOX,
         ST_ROAD_SELECTED,
-        //CB_WIDTH, WIDTH
-        //CB_DETAIL, DETAIL
-        //BT_TEXTURE, TEXTURE
-        //BT_ADD_CONTROLPOINT, ADD
-        //BT_INSERT_CONTROLPOINT, INSERT
-        //BT_FINISH_POINT_PLACING, EXIT
-        //BT_EDIT_CROSSROADS_SECTION, CROSS_SECTION
-        //BT_ATTACH_TO_DRIVELINE, ATTACH_TO_DL
-        //BT_CREATE_ROAD, CREATE
+        CB_WIDTH, //WIDTH
+        CB_DETAIL, //DETAIL
+        BT_TEXTURE, //TEXTURE
+        BT_ADD_CONTROLPOINT, //ADD
+        BT_INSERT_CONTROLPOINT, //INSERT
+        BT_FINISH_POINT_PLACING, //EXIT
+        BT_EDIT_CROSSROADS_SECTION, //CROSS_SECTION
+        BT_ATTACH_TO_DRIVELINE, //ATTACH_TO_DL
+        BT_CREATE_ROAD, //CREATE
         //BT_CHECKLINE
         V_SCROLL
     };

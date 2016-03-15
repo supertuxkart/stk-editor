@@ -2,15 +2,15 @@
 #define TERRPANEL_HPP
 
 #include "mesh/mesh_structs.hpp"
-#include <irrlicht.h>
-
 #include "gui/irr_gui_objects.hpp"
+#include <irrlicht.h>
 
 using namespace irr;
 using namespace gui;
 using namespace core;
 
 class Sky;
+class SimpleGuiComponents;
 
 class TerrPanel
 {
