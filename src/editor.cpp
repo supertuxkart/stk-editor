@@ -875,6 +875,7 @@ bool Editor::OnEvent(const SEvent& event)
                 return true;
             case RoadPanel::V_SCROLL:
                 RoadPanel::getRoadPanel()->updatePanelComponentPositions();
+                return true;
             case RoadPanel::DETAIL:
                 rp = RoadPanel::getRoadPanel();
                 m_viewport->getTrack()->getRoadByID(rp->getSelectedRoadID())
