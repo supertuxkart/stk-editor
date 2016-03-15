@@ -10,7 +10,8 @@
 #include "spline/tcr.hpp"
 
 RoadPanel* RoadPanel::m_road_panel = 0;
-    
+
+// TODO: m_v_scroll
 void RoadPanel::setScrollBarsEnabled(bool isEnabled)
 {
     if(m_width_sb)

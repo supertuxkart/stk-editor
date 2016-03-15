@@ -3,7 +3,7 @@
 
 #include <irrlicht.h>
 
-#include "gui/simple_gui_objects.hpp"
+#include "gui/irr_gui_objects.hpp"
 
 using namespace irr;
 using namespace gui;
