@@ -710,6 +710,7 @@ void Viewport::clear()
     m_selection_handler->clearSelection();
     m_command_handler.clear();
     setState(SELECT);
+    m_clh.clearCheckLines();
     m_last_entity_ID = MAGIC_NUMBER;
     if (m_track)
     {
