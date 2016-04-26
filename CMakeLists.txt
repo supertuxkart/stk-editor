@@ -1,4 +1,4 @@
-project(stk-editor)
+project(supertuxkart-editor)
 cmake_minimum_required(VERSION 2.8)
 
 if(NOT (CMAKE_MAJOR_VERSION VERSION_LESS 3))
