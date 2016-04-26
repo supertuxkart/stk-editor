@@ -48,6 +48,11 @@ If you have Windows operating system, it uses static physfs and zlib libraries. 
 8. (Optional) From the configuration type drop down menu, select 'Release.'
 9. Select Build->Build Solution (or press F7) to compile.
 
+# Troubleshooting
+When you start the STK-Editor at the first Time you should select a Folder. 
+If you don't select the DATA Direktory you get the folloing failture message:
+``` Could not create archive for: textures ```
+
 # License
 This software is released under the GNU General Public License (GPL) which
 can be found in the file `LICENSE` in the same directory as this file.
