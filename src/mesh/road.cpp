@@ -3,6 +3,8 @@
 #include "editor.hpp"
 #include "viewport/viewport.hpp"
 
+#include "gui/msg_wndw.hpp"
+
 #include <iostream>
 #include "assert.h"
 
@@ -276,6 +278,13 @@ void Road::attachToDriveLine(IRoad* dl)
 {
     ISpline* dl_spline = dl->getSpline();
     u32 n = m_spline->getPointNum();
+
+	if (n < 2)
+	{
+		MsgWndw::get()->showMsg(_("You have to create the road first!\nThis tool applies driveline points to the road."));
+		return;
+	}
+
     vector3df pos;
     f32 t;
     for (u32 i = 0; i < n; i++)
