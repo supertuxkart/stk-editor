@@ -12,7 +12,7 @@ How to use it:
 
 To build the editor on linux you need zlib and physfs development packages. If you use distribution based on Debian, you can install it using following command:
 ```
-sudo apt-get install build-essential libxxf86vm-dev libphysfs1 libphysfs-dev zlib1g zlib1g-dev
+sudo apt-get install build-essential freeglut3-dev libxxf86vm-dev libphysfs1 libphysfs-dev zlib1g zlib1g-dev
 ```
 
 If you have it already installed, just follow the next instructions:
