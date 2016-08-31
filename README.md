@@ -4,7 +4,7 @@
 SuperTuxKart - Track Editor.
 
 How to use it: 
-- wiki: http://supertuxkart.sourceforge.net/Track_Editor
+- wiki: [http://supertuxkart.sourceforge.net/Track_Editor](https://web.archive.org/web/20151004231634/http://supertuxkart.sourceforge.net/Track_Editor)
 - video demo: https://youtu.be/Uae2NW5yFHc
 
 # BUILD
@@ -34,7 +34,7 @@ If you have it already installed, just follow the next instructions:
 ``` make -j2 ```
 
 6. Run:
-``` ./stk-editor ```
+`./supertuxkart-editor`
 
 ## Windows
 
@@ -50,11 +50,13 @@ If you have Windows operating system, it uses static physfs and zlib libraries. 
 9. Select Build->Build Solution (or press F7) to compile.
 
 # Troubleshooting
-When you start the STK-Editor at the first Time you should select a Folder. 
-If you don't select the DATA Directory you get the folloing failture message:
+When you start the stk-editor the first time you should select the `stk-assets` directory.
+If you don't select the [`stk-assets`](https://supertuxkart.net/Source_control) directory you get the following failure message:
 ``` Could not create archive for: textures ```
 
+You can download the `stk-assets` by issusing the following command:
+``` svn checkout https://svn.code.sf.net/p/supertuxkart/code/stk-assets stk-assets ```
 
 # License
 This software is released under the GNU General Public License (GPL) which
-can be found in the file `LICENSE` in the same directory as this file.
+can be found in the file [`LICENSE`](LICENSE) in the same directory as this file.
