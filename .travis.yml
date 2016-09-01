@@ -43,3 +43,14 @@ addons:
       - libphysfs-dev
       - zlib1g
       - zlib1g-dev
+
+notifications:
+  irc:
+    channels:
+      - "irc.freenode.org#supertuxkart"
+    skip_join: false
+    use_notice: true
+    template:
+      - "[%{repository}#%{branch} @%{commit}] %{author}): %{message}"
+      - "Diff: %{compare_url}"
+      - "Build: %{build_url}"
