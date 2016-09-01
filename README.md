@@ -4,7 +4,7 @@
 SuperTuxKart - Track Editor.
 
 How to use it: 
-- wiki: [http://supertuxkart.sourceforge.net/Track_Editor](https://web.archive.org/web/20151004231634/http://supertuxkart.sourceforge.net/Track_Editor)
+- wiki: https://supertuxkart.net/Track_Editor
 - video demo: https://youtu.be/Uae2NW5yFHc
 
 # BUILD
