@@ -865,10 +865,16 @@ bool Editor::OnEvent(const SEvent& event)
         case EGET_SCROLL_BAR_CHANGED:
             switch (id)
             {
+            case TerrPanel::V_SCROLL:
+                TerrPanel::getTerrPanel()->updatePanelComponentPositions();
+                return true;
             case TerrPanel::INTENSITY:
             case TerrPanel::RADIUS:
                 TerrPanel::getTerrPanel()->refreshTerrModData();
                 m_viewport->setState(Viewport::TERRAIN_MOD);
+                return true;
+            case RoadPanel::V_SCROLL:
+                RoadPanel::getRoadPanel()->updatePanelComponentPositions();
                 return true;
             case RoadPanel::DETAIL:
                 rp = RoadPanel::getRoadPanel();
