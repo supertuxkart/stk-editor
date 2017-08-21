@@ -20,6 +20,8 @@
 #include "mesh/road.hpp"
 #include "mesh/terrain.hpp"
 
+#include "spm/sp_mesh_loader.hpp"
+
 #include <physfs.h>
 #include <iostream>
 #include <fstream>
@@ -396,6 +398,10 @@ bool Editor::init()
     l->setLightType(ELT_DIRECTIONAL);
     l->setPosition(vector3df(0,
         1, 0));
+
+    SPMeshLoader* spml = new SPMeshLoader(m_scene_manager);
+    m_scene_manager->addExternalMeshLoader(spml);
+    spml->drop();
 
     m_device->setEventReceiver(this);
 
@@ -1092,22 +1098,22 @@ void Editor::addItem(u32 id)
     {
     case ExtraPanel::BTN_BANANA:
         node = m_scene_manager->addAnimatedMeshSceneNode(
-            m_scene_manager->getMesh("models/banana.b3d"));
+            m_scene_manager->getMesh("models/banana.spm"));
         node->setName("banana");
         break;
     case ExtraPanel::BTN_ITEM:
         node = m_scene_manager->addAnimatedMeshSceneNode(
-            m_scene_manager->getMesh("models/gift-box.b3d"));
+            m_scene_manager->getMesh("models/gift-box.spm"));
         node->setName("item");
         break;
     case ExtraPanel::BTN_SNITRO:
         node = m_scene_manager->addAnimatedMeshSceneNode(
-            m_scene_manager->getMesh("models/nitrotank-small.b3d"));
+            m_scene_manager->getMesh("models/nitrotank-small.spm"));
         node->setName("small-nitro");
         break;
     case ExtraPanel::BTN_BNITRO:
         node = m_scene_manager->addAnimatedMeshSceneNode(
-            m_scene_manager->getMesh("models/nitrotank-big.b3d"));
+            m_scene_manager->getMesh("models/nitrotank-big.spm"));
         node->setName("big-nitro");
         break;
     default:

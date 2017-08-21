@@ -32,22 +32,22 @@ ISceneNode* Track::loadItem(stringc name)
     ISceneNode* node = 0;
     if (name == "banana")
     {
-        node = sm->addAnimatedMeshSceneNode(sm->getMesh("models/banana.b3d"));
+        node = sm->addAnimatedMeshSceneNode(sm->getMesh("models/banana.spm"));
         node->setName("banana");
     }
     if (name == "item")
     {
-        node = sm->addAnimatedMeshSceneNode(sm->getMesh("models/gift-box.b3d"));
+        node = sm->addAnimatedMeshSceneNode(sm->getMesh("models/gift-box.spm"));
         node->setName("item");
     }
     if (name == "small-nitro")
     {
-        node = sm->addAnimatedMeshSceneNode(sm->getMesh("models/nitrotank-small.b3d"));
+        node = sm->addAnimatedMeshSceneNode(sm->getMesh("models/nitrotank-small.spm"));
         node->setName("small-nitro");
     }
     if (name == "big-nitro")
     {
-        node = sm->addAnimatedMeshSceneNode(sm->getMesh("models/nitrotank-big.b3d"));
+        node = sm->addAnimatedMeshSceneNode(sm->getMesh("models/nitrotank-big.spm"));
         node->setName("big-nitro");
     }
     return node;
