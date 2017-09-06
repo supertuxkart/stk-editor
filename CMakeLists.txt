@@ -65,7 +65,6 @@ include_directories("${PROJECT_SOURCE_DIR}/lib/irrlicht/include")
 if(UNIX AND NOT APPLE)
     find_package(X11 REQUIRED)
     include_directories(${X11_INCLUDE_DIR})
-    find_library(IRRLICHT_XF86VM_LIBRARY Xxf86vm)
 endif()
 
 if(UNIX OR MINGW)
@@ -92,14 +91,11 @@ add_executable(${PROJECT_NAME} ${STKTE_SOURCES} ${STKTE_RESOURCES})
 target_link_libraries(${PROJECT_NAME}
                       irrlicht
                       ${PHYSFS_LIBRARY}
-                      ${OPENGL_LIBRARIES}
+                      ${OPENGL_gl_LIBRARY}
 )
 
 if(UNIX AND NOT APPLE)
-    target_link_libraries(${PROJECT_NAME} 
-                          ${X11_LIBRARIES}
-                          ${IRRLICHT_XF86VM_LIBRARY}
-    )
+    target_link_libraries(${PROJECT_NAME} ${X11_X11_LIB} ${X11_Xxf86vm_LIB})
 elseif(WIN32)
     target_link_libraries(${PROJECT_NAME} winmm)
 endif()
