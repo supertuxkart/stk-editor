@@ -257,8 +257,8 @@ void SPMeshLoader::decompress(irr::io::IReadFile* spm, unsigned vertices_count,
             }
             if (read_tangent)
             {
-                // Unused, tangents are re-calculated anyway
-                spm->read(tmp, 8);
+                // Tangents are not used in editor at the moment
+                spm->read(tmp, 4);
             }
         }
         if (vt == SPVT_SKINNED)
