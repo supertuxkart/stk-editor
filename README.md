@@ -20,7 +20,7 @@ libgl1-mesa-dev mesa-common-dev zlib1g zlib1g-dev cmake
 
 ### Compiling
 
-To compile SuperTuxKart, run the following commands inside `stk-editor` directory:
+To compile the STK editor, run the following commands inside `stk-editor` directory:
 
 ```bash
 mkdir build
