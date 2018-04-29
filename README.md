@@ -11,6 +11,12 @@ How to use it:
 ## Linux
 ### Dependencies
 
+To build the STK editor from source, you'll need to install the following packages
+
+  * OpenGL (mesa)
+  * zlib (zlib1g-dev)
+  * physfs (libphysfs-dev)
+
 To install the required dependencies, run this command (Debian/Ubuntu):
 
 ```
