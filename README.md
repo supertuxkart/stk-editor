@@ -9,31 +9,38 @@ How to use it:
 
 # BUILD
 ## Linux
+### Dependencies
 
-To build the editor on linux you need zlib and physfs development packages. If you use distribution based on Debian, you can install it using following command:
+To build the STK editor from source, you'll need to install the following packages
+
+  * OpenGL (mesa)
+  * zlib (zlib1g-dev)
+  * physfs (libphysfs-dev)
+
+To install the required dependencies, run this command (Debian/Ubuntu):
+
 ```
 sudo apt-get install build-essential libxxf86vm-dev libphysfs1 libphysfs-dev \
 libgl1-mesa-dev mesa-common-dev zlib1g zlib1g-dev cmake
 ```
 
-If you have it already installed, just follow the next instructions:
+### Compiling
 
-1. Change into the `stk-editor` directory:
-``` cd stk-editor ```
+To compile the STK editor, run the following commands inside `stk-editor` directory:
 
-2. Create the build directory and change into it:
-``` mkdir build && cd build ```
+```bash
+mkdir build
+cd build
+cmake ..
+make -j4
+```
 
-3. Run cmake with default options for a RELEASE build:
-``` cmake .. ```
+"-j4" is an example, for a faster build, use "-jx" instead, where "x" is the amount of CPU threads you have, minus one.
 
-4. (Optional) If you want a DEBUG build of the editor run:
+(Optional) If you want a DEBUG build of the editor replace the cmake line with this:
 ``` cmake .. -DCMAKE_BUILD_TYPE=Debug ```
 
-5. Compile (in this example we use 2, but if you have a machine with 4 threads/cores you could use `-j4` to compile faster):
-``` make -j2 ```
-
-6. Run:
+#### To Run:
 `./supertuxkart-editor`
 
 ## Windows
