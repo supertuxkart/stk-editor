@@ -15,6 +15,10 @@ endif()
 option(STATIC_PHYSFS "Force build with static physfs library" OFF)
 option(STATIC_ZLIB "Force build with static zlib library" OFF)
 
+if(UNIX OR MINGW)
+    option(DEBUG_SYMBOLS "Compile with debug symbols" OFF)
+endif()
+
 # These variables enable MSVC to find libraries located in "dependencies"
 if(WIN32)
     set(ENV{PATH} "$ENV{PATH};${PROJECT_SOURCE_DIR}/dependencies/include")
@@ -22,6 +26,7 @@ if(WIN32)
     set(ENV{OPENALDIR} ${PROJECT_SOURCE_DIR}/dependencies)
 endif()
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
 set(STKTE_SOURCE_DIR "${PROJECT_SOURCE_DIR}/src")
 include_directories(${STKTE_SOURCE_DIR})
 
@@ -32,6 +37,13 @@ endif()
 
 file(GLOB_RECURSE STKTE_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "${STKTE_SOURCE_DIR}/*.cpp")
 file(GLOB_RECURSE STKTE_RESOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "${PROJECT_BINARY_DIR}/tmp/*.rc")
+
+if(UNIX OR MINGW)
+    if(DEBUG_SYMBOLS)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g")
+    endif()
+endif()
 
 # OpenGL
 find_package(OpenGL REQUIRED)
