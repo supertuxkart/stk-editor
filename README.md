@@ -55,7 +55,7 @@ If you have Windows operating system, it uses static physfs and zlib libraries. 
 1. Install VS 2013 (or later). The free express versions work fine. Older versions may or may not work.
 2. Download and extract the stk-editor source - either a released package or from our [git/svn repositories](http://supertuxkart.sourceforge.net/Source_control)
 3. Download cmake and install it. Start cmake-gui and select the 'stk-editor' root directory as 'Where is the source code', and a new directory 'build' under the 'stk-editor' root directory (next to lib, src, etc) as the build directory ('Where to build the binaries').
-4. Click on 'Generate'. If the build directory doesn't exist, you will be asked to create it, then asked to select your VS version. Make sure to select the right version (be aware of the easy to confuse version numbers: VS 2013 = version 12). Click on configure, then generate. This will create the directory 'build', and a VS solution in that directory.
+4. Click on 'Generate'. If the build directory doesn't exist, you will be asked to create it, then asked to select your VS version. Make sure to select the right version (be aware of the easy to confuse version numbers: VS 2013 = version 12). Click on configure, then generate. This will create the directory 'build', and a VS solution in that directory. Alternatively, to install via the command line, you can use `cmake -S path\to\source -B path\to\build\folder`
 5. Run Visual Studio, and open the solution (.sln) file generated in the 'build' folder
 6. Right click on the 'stk-editor' project in the solution explorer, and select 'Set as StartUp Project.'
 7. (Optional) From the configuration type drop down menu, select 'Release.'
