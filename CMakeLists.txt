@@ -98,6 +98,7 @@ else()
 endif()
 
 add_executable(${PROJECT_NAME} ${STKTE_SOURCES} ${STKTE_RESOURCES})
+file(COPY ${PROJECT_SOURCE_DIR}/src/font/ DESTINATION ${PROJECT_BINARY_DIR}/bin/font)
 
 # Link options
 target_link_libraries(${PROJECT_NAME}

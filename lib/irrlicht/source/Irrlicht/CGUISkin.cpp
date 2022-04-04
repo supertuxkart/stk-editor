@@ -25,7 +25,7 @@ CGUISkin::CGUISkin(EGUI_SKIN_TYPE type, video::IVideoDriver* driver)
 
 	if ((Type == EGST_WINDOWS_CLASSIC) || (Type == EGST_WINDOWS_METALLIC))
 	{
-		Colors[EGDC_3D_DARK_SHADOW]     = video::SColor(101,50,50,50);
+		Colors[EGDC_3D_DARK_SHADOW]     = video::SColor(101,50,50, 100);
 		Colors[EGDC_3D_SHADOW]          = video::SColor(101,130,130,130);
 		Colors[EGDC_3D_FACE]            = video::SColor(101,210,210,210);
 		Colors[EGDC_3D_HIGH_LIGHT]      = video::SColor(101,255,255,255);
@@ -54,12 +54,12 @@ CGUISkin::CGUISkin(EGUI_SKIN_TYPE type, video::IVideoDriver* driver)
 
 		Sizes[EGDS_SCROLLBAR_SIZE] = 14;
 		Sizes[EGDS_MENU_HEIGHT] = 30;
-		Sizes[EGDS_WINDOW_BUTTON_WIDTH] = 15;
+		Sizes[EGDS_WINDOW_BUTTON_WIDTH] = 30;
 		Sizes[EGDS_CHECK_BOX_WIDTH] = 18;
 		Sizes[EGDS_MESSAGE_BOX_WIDTH] = 500;
 		Sizes[EGDS_MESSAGE_BOX_HEIGHT] = 200;
 		Sizes[EGDS_BUTTON_WIDTH] = 80;
-		Sizes[EGDS_BUTTON_HEIGHT] = 30;
+		Sizes[EGDS_BUTTON_HEIGHT] = 50;
 
 		Sizes[EGDS_TEXT_DISTANCE_X] = 2;
 		Sizes[EGDS_TEXT_DISTANCE_Y] = 0;

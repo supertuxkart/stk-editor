@@ -11,24 +11,24 @@ void WelcomeScreen::init()
     IGUIEnvironment* gui_env = Editor::getEditor()->getGUIEnv();
     dimension2du ss = Editor::getEditor()->getScreenSize();
 
-    rect<s32> frame = rect<s32>((s32)(ss.Width / 2.0f - 150),
-        (s32)(ss.Height / 2.0f - 100),
-        (s32)(ss.Width / 2.0f + 150),
-        (s32)(ss.Height / 2.0f + 175));
+    rect<s32> frame = rect<s32>((s32)(ss.Width / 2.0f - 300),
+        (s32)(ss.Height / 2.0f - 200),
+        (s32)(ss.Width / 2.0f + 300),
+        (s32)(ss.Height / 2.0f + 200));
     m_wndw = gui_env->addWindow(frame, false, _(L"New Track"), 0);
 
-    gui_env->addStaticText(_(L"Welcome!"), rect<s32>(110, 20, 190, 40),
+    gui_env->addStaticText(_(L"Welcome!"), rect<s32>(260, 20, 380, 40),
                                                    false, true, m_wndw);
 
-    m_lb = gui_env->addListBox(rect<s32>(20, 50, 280, 180), m_wndw);
+    m_lb = gui_env->addListBox(rect<s32>(20, 50, 580, 300), m_wndw);
 
-    IGUIButton* bos = gui_env->addButton(rect<s32>(70, 200, 230, 220),
+    IGUIButton* bos = gui_env->addButton(rect<s32>(200, 310, 400, 350),
                                          m_wndw, FBTN_ID, _(L"Open Selected"));
 
-    gui_env->addButton(rect<s32>(70, 240, 125, 265),
+    gui_env->addButton(rect<s32>(302.5f, 355, 400, 390),
                     m_wndw, FBTN_ID + 1, _(L"Open"));
 
-    gui_env->addButton(rect<s32>(175, 240, 230, 265),
+    gui_env->addButton(rect<s32>(200, 355, 297.5f, 390),
                      m_wndw, FBTN_ID + 2, _(L"New"));
 
 
