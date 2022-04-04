@@ -6,3 +6,4 @@ TODO list:
 - mouse wheel modify the position of the camera and scrollsbars at the same time
 - attach to driveline "works" on not yet placed control point
 - try the track doesn't work
+- Mac support
