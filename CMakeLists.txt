@@ -98,7 +98,7 @@ else()
 endif()
 
 add_executable(${PROJECT_NAME} ${STKTE_SOURCES} ${STKTE_RESOURCES})
-configure_file( ${PROJECT_SOURCE_DIR}/src/fonts/arial.bmp ${PROJECT_BINARY_DIR}/bin/arial.bmp COPYONLY)
+file(COPY ${PROJECT_SOURCE_DIR}/src/font/ DESTINATION ${PROJECT_BINARY_DIR}/bin/font)
 
 # Link options
 target_link_libraries(${PROJECT_NAME}

@@ -401,7 +401,7 @@ bool Editor::init()
   
     //fonts
     IGUISkin* initSkin = m_gui_env->getSkin();
-    IGUIFont* initFont = m_gui_env->getFont("arial.bmp");
+    IGUIFont* initFont = m_gui_env->getFont("font/font.xml");
     initSkin->setFont(initFont);
 
     SPMeshLoader* spml = new SPMeshLoader(m_scene_manager);
@@ -422,7 +422,7 @@ void Editor::initAfterDataDirKnown()
 
     // fonts
     IGUISkin* skin = m_gui_env->getSkin();
-    m_font = m_gui_env->getFont("arial.bmp");
+    m_font = m_gui_env->getFont("font/font.xml");
     skin->setFont(m_font);
 
     // removing gui transparency
