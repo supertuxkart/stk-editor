@@ -86,25 +86,26 @@ CGUIFileOpenDialog::CGUIFileOpenDialog(const wchar_t* title,
 	CloseButton->grab();
 
 	OKButton = Environment->addButton(
-		core::rect<s32>(RelativeRect.getWidth()-80, 30, RelativeRect.getWidth()-10, 50),
+		core::rect<s32>(RelativeRect.getWidth()-100, 40, RelativeRect.getWidth()-10, 70),
 		this, -1, skin ? skin->getDefaultText(EGDT_MSG_BOX_OK) : L"OK");
 	OKButton->setSubElement(true);
 	OKButton->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
 	OKButton->grab();
 
 	CancelButton = Environment->addButton(
-		core::rect<s32>(RelativeRect.getWidth()-80, 55, RelativeRect.getWidth()-10, 75),
+		core::rect<s32>(RelativeRect.getWidth()-100, 75, RelativeRect.getWidth()-10, 105),
 		this, -1, skin ? skin->getDefaultText(EGDT_MSG_BOX_CANCEL) : L"Cancel");
 	CancelButton->setSubElement(true);
 	CancelButton->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
 	CancelButton->grab();
 
-	FileBox = Environment->addListBox(core::rect<s32>(10, 55, RelativeRect.getWidth()-90, 230), this, -1, true);
+	FileBox = Environment->addListBox(core::rect<s32>(10, 75, RelativeRect.getWidth()-110, 230), this, -1, true);
 	FileBox->setSubElement(true);
 	FileBox->setAlignment(EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT);
+	FileBox->setItemHeight(30);
 	FileBox->grab();
 
-	FileNameText = Environment->addEditBox(0, core::rect<s32>(10, 30, RelativeRect.getWidth()-90, 50), true, this);
+	FileNameText = Environment->addEditBox(0, core::rect<s32>(10, 40, RelativeRect.getWidth()-110, 70), true, this);
 	FileNameText->setSubElement(true);
 	FileNameText->setAlignment(EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
 	FileNameText->grab();

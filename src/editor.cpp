@@ -398,6 +398,11 @@ bool Editor::init()
     l->setLightType(ELT_DIRECTIONAL);
     l->setPosition(vector3df(0,
         1, 0));
+  
+    //fonts
+    IGUISkin* initSkin = m_gui_env->getSkin();
+    IGUIFont* initFont = m_gui_env->getFont("arial.bmp");
+    initSkin->setFont(initFont);
 
     SPMeshLoader* spml = new SPMeshLoader(m_scene_manager);
     m_scene_manager->addExternalMeshLoader(spml);
@@ -417,7 +422,7 @@ void Editor::initAfterDataDirKnown()
 
     // fonts
     IGUISkin* skin = m_gui_env->getSkin();
-    m_font = m_gui_env->getFont(m_data_loc + L"editor/font/font.xml");
+    m_font = m_gui_env->getFont("arial.bmp");
     skin->setFont(m_font);
 
     // removing gui transparency
@@ -622,10 +627,10 @@ void Editor::initDataLoc()
 void Editor::dataDirLocDlg()
 {
     IGUIFileOpenDialog* ofd = m_gui_env->addFileOpenDialog(
-        L"Pls. select data directory (folder containing textures, tracks, etc.):",
+        L"Select data directory (folder containing textures, tracks, etc.):",
         true, 0, -1, true);
-    ofd->setMinSize(dimension2du(600, 512));
-    ofd->setRelativePosition(position2di(m_screen_size.Width / 2 - 300, 100));
+    ofd->setMinSize(dimension2du(800, 600));
+    ofd->setRelativePosition(position2di(m_screen_size.Width / 2 - 400, m_screen_size.Height / 2 - 300));
 } // dataDirLocDlg
 
 // ----------------------------------------------------------------------------
@@ -658,7 +663,7 @@ Editor* Editor::getEditor(dimension2du screen_size)
 // ----------------------------------------------------------------------------
 void Editor::render()
 {
-    m_video_driver->beginScene(true, true, SColor(255, 120, 80, 170));
+    m_video_driver->beginScene(true, true, SColor(32, 32, 32, 32));
 
     if (m_indicator)
         m_indicator->renderToTexture();
