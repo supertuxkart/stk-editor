@@ -65,7 +65,6 @@ stk-editor/vs/stk_editor/Debug/stk_editor.tlog
 
 CMakeLists.txt.user
 *~
-*.xml
 
 .idea/
 libraries/
