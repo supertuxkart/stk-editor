@@ -130,6 +130,7 @@ void AztecCamera::processKeys(f32 dt)
 // ----------------------------------------------------------------------------
 void AztecCamera::processMouse(f32 dt)
 {
+    setHeight();
     if (m_mouse->middlePressed())
         m_mmb_move = m_keys->m_key_state[SHIFT_PRESSED];
     if (m_mouse->middleReleased())
