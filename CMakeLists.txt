@@ -112,3 +112,5 @@ if(UNIX AND NOT APPLE)
 elseif(WIN32)
     target_link_libraries(${PROJECT_NAME} winmm)
 endif()
+
+install(TARGETS supertuxkart-editor)
